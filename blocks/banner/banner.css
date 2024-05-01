@@ -1,0 +1,120 @@
+.spotlightcircle {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  width: 470px;
+  text-align: center;
+  border-radius: 288px;
+  border: 10px solid white;
+  height: 460px;
+  padding: 25px;
+  /* top: 50%; */
+  -ms-transform: translateY(-15%);
+  -webkit-transform: translateY(-15%);
+  transform: translateY(-15%);
+}
+
+.spotlightcircle a:any-link {
+  text-decoration: none;
+}
+
+.spotlightcircle h2 {
+  font-size: 42px;
+}
+
+.spotlightcircle h2,
+.spotlightcircle h3 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.spotlightcircle > div {
+  transform: translateY(100px);
+}
+
+.spotlightcircle > div:first-of-type {
+  margin-bottom: 15px;
+}
+
+.spotlight-white .spotlightcircle {
+  background: RGBA(255, 255, 255, 0.5);
+}
+
+.spotlight-blue .spotlightcircle {
+  background: RGBA(0, 50, 100, 0.7);
+}
+
+.spotlight-white .spotlightcircle h2 a:any-link {
+  color: #383838;
+}
+
+
+.spotlight-blue .spotlightcircle h2 a:any-link {
+  color: white;
+}
+
+.spotlight-white .spotlightcircle h3 a:any-link {
+  color: #003264;
+}
+
+
+.spotlight-blue .spotlightcircle h3 a:any-link {
+  /* color: #fcd700; */
+  color: white;
+}
+
+.text-left .spotlightcircle {
+  left: 30px;
+}
+
+.text-right .spotlightcircle {
+  right: 30px;
+}
+
+.spotlightcircle .button-container {
+  color: #fff;
+  background-color: #4572b7;
+  border-color: #4572b7;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  border-radius: 4px;
+  width: 103px;
+  height: 20px;
+  padding: 6px 12px;
+  font-size: 14px;
+  margin: auto;
+}
+
+.spotlightcircle .button-container:hover {
+  background-color: #003264;
+}
+
+.spotlightcircle .button-container a:any-link {
+  color: white;
+  text-decoration: none;
+}
+
+.spotlightcircle .input-group {
+  display: flex;
+  justify-content: center;
+}
+
+.spotlightcircle .input-group input {
+  width: 214px;
+  height: 16px;
+  padding: 5px 10px;
+}
+
+.spotlightcircle .input-group button {
+  width: 65px;
+  height: 30px;
+  padding: 5px 10px;
+  font-size: 12px;
+  color:#383838;
+  text-shadow: none;
+}
+
+.spotlightcircle .input-group button:hover {
+  color: white;
+  background-color: #003264;
+}

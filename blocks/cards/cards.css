@@ -1,23 +1,36 @@
+.block.cards {
+  margin-top: 30px;
+}
+
 .cards > ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(278px, 1fr));
-  grid-gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 10px 30px;
 }
 
 .cards > ul > li {
   border: 1px solid var(--dark-color);
-  background-color: var(--background-color)
+  background-color: var(--background-color);
+  width: 204px;
+  height: 300px;
+  position: relative;
 }
 
 .cards .cards-card-body {
-  margin: 16px;
+  margin: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .cards .cards-card-image {
   line-height: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .cards .cards-card-body > *:first-child {
@@ -25,7 +38,32 @@
 }
 
 .cards > ul > li img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
+  width: 204px;
+  height: 300px;
+  /* aspect-ratio: 4 / 3; */
   object-fit: cover;
+}
+
+.cards .cards-card-body .button-container {
+  text-align: center;
+  width: 184px;
+  font-size: 16px;
+  transition: all 0.3s ease-in-out;
+}
+
+.cards .cards-card-body .button-container a:any-link {
+  color: white;
+  text-decoration: none;
+}
+
+.cards .cards-card-body .button-container:first-of-type {
+  background-color: #003264;
+}
+
+.cards .cards-card-body .button-container:first-of-type:hover {
+  background-color: #0055b9;
+}
+
+.cards .cards-card-body .button-container:last-of-type {
+  text-shadow: 0 0 5px #000;
 }
