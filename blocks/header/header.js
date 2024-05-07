@@ -1,5 +1,5 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { nav, div, span, a, img, button, i } from '../../scripts/dom-helpers.js';
+import { nav, div, span, a, img, form, label, input } from '../../scripts/dom-helpers.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 
@@ -14,7 +14,7 @@ async function buildNav() {
   $nav.innerHTML = navHTML;
 
   if (navHTML) {
-    const $header = document.querySelector('header');
+    const $header = document.querySelector('header .header');
     $header.append($nav);
 
     function closeDropdown() {
@@ -61,6 +61,7 @@ async function buildNav() {
 
 export default async function decorate(block) {
   buildNav();
+
   // nav burger menu
   const $navBtn = div({ class: 'nav-btn' }, span(), span(), span());
   $navBtn.addEventListener('click', () => {
@@ -73,15 +74,26 @@ export default async function decorate(block) {
     }
   });
 
-  const $logo = a({ class: 'logo', href: '/' }, img({
+  const $logo = a({ id: 'logo', href: '/', 'aria-label': 'Visit Home Page' }, img({
     src: '/icons/hubble-homes-logo.svg',
     width: '130',
     height: '65',
     alt: 'Hubble Homes, LLC',
   }));
 
+  const $promo = a({ id: 'promo', href: '/promotions/promotions-detail/quick-move-ins' }, 
+    '$25K Your Way | Quick Move-Ins',
+    span('Get Details'),
+  );
 
+  const $search = form({id: 'search'}, 
+    label({ class: 'sr-only', for: 'navSearch'}, 'Type plan, city, zip, community, phrase or MLS'),
+    input({ type: 'submit', name: 'navSearchText'}, img({ src: '/icons/search.svg', height: 30, width: 30})),
+    input({ type: 'text', name: 'navSearch', placeholder: 'Type plan, city, zip, community, phrase or MLS#'}),
+  );
 
-  block.replaceWith($logo, $navBtn,);
+  const $phone = a({ id: 'phone', href: 'tel:208-620-2607'}, '208-620-2607')
 
+block.innerHTML = '';
+  block.append($logo, $promo, $search, $phone, $navBtn);
 }

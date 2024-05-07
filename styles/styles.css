@@ -21,6 +21,7 @@
   --dark-blue: #003264;
   --light-blue: #0055b9;
   --yellow: #fcd700;
+  --link-light-gray: #717171;
 
   /* fonts */
   --body-font-family: roboto, roboto-fallback;
@@ -78,12 +79,11 @@ body.appear {
 }
 
 header {
-  position: relative;
+  position: sticky;
   inset: 0;
-  margin: auto;
   z-index: 9;
   height: var(--nav-height);
-  max-width: var(--max-content-width);
+  background: #fff;
 }
 
 h1, h2, h3,
@@ -128,6 +128,27 @@ main pre {
   overflow-x: auto;
   white-space: pre;
 }
+
+/* screan reader only */
+.sr-only {
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  border:0
+ }
+ 
+ .sr-only-focusable:active,.sr-only-focusable:focus {
+  position:static;
+  width:auto;
+  height:auto;
+  margin:0;
+  overflow:visible;
+  clip:auto
+ }
 
 /* links */
 a:any-link {
