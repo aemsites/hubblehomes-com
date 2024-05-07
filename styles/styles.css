@@ -43,7 +43,7 @@
 
   /* sizes */
   --nav-height: 90px;
-  --max-content-width: 1770px;
+  --max-content-width: 1170px;
 }
 
 @font-face {
@@ -140,7 +140,7 @@ main pre {
   clip:rect(0,0,0,0);
   border:0
  }
- 
+
  .sr-only-focusable:active,.sr-only-focusable:focus {
   position:static;
   width:auto;

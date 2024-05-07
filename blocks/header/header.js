@@ -76,8 +76,8 @@ export default async function decorate(block) {
 
   const $logo = a({ id: 'logo', href: '/', 'aria-label': 'Visit Home Page' }, img({
     src: '/icons/hubble-homes-logo.svg',
-    width: '130',
-    height: '65',
+    width: '110',
+
     alt: 'Hubble Homes, LLC',
   }));
 
@@ -88,12 +88,14 @@ export default async function decorate(block) {
 
   const $search = form({id: 'search'}, 
     label({ class: 'sr-only', for: 'navSearch'}, 'Type plan, city, zip, community, phrase or MLS'),
-    input({ type: 'submit', name: 'navSearchText'}, img({ src: '/icons/search.svg', height: 30, width: 30})),
+    div({ class: 'search-icon' }, img({ src: '/icons/search.svg', height: 17, width: 17})),
     input({ type: 'text', name: 'navSearch', placeholder: 'Type plan, city, zip, community, phrase or MLS#'}),
   );
 
-  const $phone = a({ id: 'phone', href: 'tel:208-620-2607'}, '208-620-2607')
+  const $phone = a({ id: 'phone', href: 'tel:208-620-2607'}, '208-620-2607');
+
+  const $chat = div({ id: 'chat'}, img({ src: '/icons/lets-chat.png'}))
 
 block.innerHTML = '';
-  block.append($logo, $promo, $search, $phone, $navBtn);
+  block.append($logo, $promo, $search, $phone, $chat, $navBtn);
 }

@@ -3,84 +3,101 @@ header * {
   margin: 0;
 }
 
-
 .header {
   position: relative;
   margin: auto;
   z-index: 9;
   max-width: var(--max-content-width);
   height: inherit;
+  font-family: 'lato', sans-serif;
+  font-size: 16px;
 }
 
-.logo {
+#logo {
   position: absolute;
-  top: 10px;
+  top: 18px;
+  left: 40px;
   display: inline-block;
 }
 
-
-a#promo, a#phone {
+/* promo & phone */
+a#promo,
+a#phone {
   position: absolute;
   top: 8px;
-  left: 160px;
+  left: 170px;
   color: var(--link-light-gray);
   text-decoration: none;
-  font-size: 16px;
+  font-size: 1em;
+  font-weight: 600;
   transition: all 0.3s ease-in-out;
-  line-height: 16px;
+  line-height: .9em;
 }
 
 a:hover#promo {
   color: var(--dark-blue);
 }
+
 #promo span {
   display: block;
-  font-size: 13px;
+  font-size: .8em;
+  font-weight: 400;
 }
+
 a#promo span::after {
-  content: ' >'; /*  todo fix to use font-awesome */
+  content: ' >';
   color: var(--yellow);
 }
 
-
 a#phone {
-  left: 780px;
-  padding: 4px 12px;
+  top: 0;
+  left: 764px;
+  padding: 8px;
 }
+
 a:hover#phone {
   background: var(--dark-blue);
   color: #fff;
-
 }
 
 
 /* search form */
-#search input {
+#search input,
+.search-icon {
   position: absolute;
-  display: flex-block;
   top: 4px;
   font: inherit;
   font-family: inherit;
   color: #555;
-  height: 30px;
+  height: 28px;
   font-size: 12px;
   border: 1px solid #cccccc;
   background: #fff;
 }
-#search input[type="submit"] {
-  left: 420px;
-  width: 60px;
+
+#search .search-icon {
+  left: 432px;
+  width: 46px;
   border-right: 0px solid;
   border-radius: 4px 0 0 4px;
-  background: url('/icons/search.svg') no-repeat;
-  font-size: 0;
-  height: 32px;
 }
+
+#search .search-icon img {
+  opacity: .25;
+  padding: 5px 0 0 12px;
+}
+
+
 #search input[type="text"] {
-  left: 480px;
+  left: 478px;
   border-left: 0px solid;
   border-radius: 0 4px 4px 0;
-  width: 260px;
+  width: 254px;
+  color: #555;
+}
+
+input[type="text"]::placeholder {
+  color: #999;
 }
 
 #search input:focus[type="text"] {
@@ -90,13 +107,20 @@ a:hover#phone {
 }
 
 
+/* chat */
+#chat {
+  position: absolute;
+  top: 4px;
+  right: 183px;
+}
 
 
+
+/* nav */
 nav {
   position: absolute;
   bottom: 0;
   left: 260px;
-
 }
 
 nav ul {
@@ -105,21 +129,22 @@ nav ul {
 }
 
 /* top level */
-nav > div > ul > li {
+nav>div>ul>li {
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
   cursor: pointer;
   height: 50px;
   padding: 0 14px;
+  font-weight: 600;
   font-size: 1em;
   color: var(--link-light-gray);
   text-transform: uppercase;
   float: left;
 }
 
-nav > div > ul > li:hover,
-nav > div > ul > li.on {
+nav>div>ul>li:hover,
+nav>div>ul>li.on {
   background: var(--dark-blue);
   color: #fff;
 }
@@ -132,27 +157,31 @@ nav a {
 }
 
 /* dropdown menu */
-nav > div > ul > li > ul {
+nav>div>ul>li>ul {
   display: none;
   position: absolute;
-  top: 50px;  
-  width: 420px; /* todo: fix so this is not hard coded */
+  top: 50px;
+  width: 420px;
+  /* todo: fix so this is not hard coded */
   margin-left: -14px;
   background: var(--dark-blue);
   box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
   font-size: 14px;
 }
-nav > div > ul > li.on > ul { display: block; }
+
+nav>div>ul>li.on>ul {
+  display: block;
+}
 
 /* left col */
-nav > div > ul > li > ul > li {
+nav>div>ul>li>ul>li {
   text-transform: none;
   padding: 10px 0 0;
   /* width: 220px; */
 }
 
 /* left col links */
-nav > div > ul > li > ul > li a {
+nav>div>ul>li>ul>li a {
   padding: 1px 14px;
   text-decoration: none !important;
   white-space: nowrap;
@@ -160,12 +189,12 @@ nav > div > ul > li > ul > li a {
   color: var(--yellow) !important;
 }
 
-nav > div > ul > li > ul > li a:hover {
+nav>div>ul>li>ul>li a:hover {
   background: var(--light-blue);
 }
 
 
-nav > div > ul > li > ul > li > ul > li > a {
+nav>div>ul>li>ul>li>ul>li>a {
   color: #fff !important;
 }
 
