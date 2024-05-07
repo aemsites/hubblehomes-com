@@ -18,6 +18,9 @@
   --light-color: #eee;
   --dark-color: #ccc;
   --text-color: black;
+  --dark-blue: #003264;
+  --light-blue: #0055b9;
+  --yellow: #fcd700;
 
   /* fonts */
   --body-font-family: roboto, roboto-fallback;
@@ -37,8 +40,9 @@
   --heading-font-size-s: 20px;
   --heading-font-size-xs: 18px;
 
-  /* nav height */
-  --nav-height: 64px;
+  /* sizes */
+  --nav-height: 90px;
+  --max-content-width: 1770px;
 }
 
 @font-face {
@@ -74,7 +78,12 @@ body.appear {
 }
 
 header {
+  position: relative;
+  inset: 0;
+  margin: auto;
+  z-index: 9;
   height: var(--nav-height);
+  max-width: var(--max-content-width);
 }
 
 h1, h2, h3,
