@@ -112,6 +112,7 @@ input[type="text"]::placeholder {
   position: absolute;
   top: 4px;
   right: 183px;
+  cursor: pointer;
 }
 
 
@@ -161,12 +162,11 @@ nav>div>ul>li>ul {
   display: none;
   position: absolute;
   top: 50px;
-  width: 420px;
-  /* todo: fix so this is not hard coded */
+  width: 520px; /* todo: fix so this is not hard coded */
   margin-left: -14px;
+  padding: 4px 0 14px;
   background: var(--dark-blue);
   box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
-  font-size: 14px;
 }
 
 nav>div>ul>li.on>ul {
@@ -176,23 +176,34 @@ nav>div>ul>li.on>ul {
 /* left col */
 nav>div>ul>li>ul>li {
   text-transform: none;
-  padding: 10px 0 0;
-  /* width: 220px; */
+  padding: 6px 0 0;
+  font-size: .85em;
+  line-height: 1.6em;
+  font-weight: normal;
 }
 
 /* left col links */
 nav>div>ul>li>ul>li a {
-  padding: 1px 14px;
+  padding: 0 12px;
   text-decoration: none !important;
   white-space: nowrap;
   cursor: pointer;
-  color: var(--yellow) !important;
 }
 
 nav>div>ul>li>ul>li a:hover {
   background: var(--light-blue);
 }
 
+/* headings */
+nav>div>ul>li>ul>li>a {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--yellow);
+}
+
+nav>div>ul>li>ul>li strong a {
+  color: #fff;
+}
 
 nav>div>ul>li>ul>li>ul>li>a {
   color: #fff !important;
@@ -202,8 +213,8 @@ nav>div>ul>li>ul>li>ul>li>a {
 .right-col {
   position: absolute;
   top: 0;
-  left: 220px;
-  width: 260px;
+  left: 240px;
+  width: 280px;
   height: 100%;
   background: #fff;
   color: #000;

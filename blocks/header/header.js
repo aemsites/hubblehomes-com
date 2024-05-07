@@ -4,41 +4,38 @@ import { loadFragment } from '../fragment/fragment.js';
 
 
 const $body = document.body;
-let $nav;
-
 
 async function buildNav() {
   const fetchNav = await fetch('/nav/nav.plain.html');
   const navHTML = await fetchNav.text();
-  $nav = nav();
+  const $nav = nav();
   $nav.innerHTML = navHTML;
 
   if (navHTML) {
     const $header = document.querySelector('header .header');
-    $header.append($nav);
 
     function closeDropdown() {
       const $on = $nav.querySelector('.on');
       if ($on) $on.classList.remove('on');
     }
 
-    // top level dropdown
+    // top level dropdowns
     const l1_LIs = $nav.querySelectorAll('div > ul > li');
     l1_LIs.forEach(li => {
       li.addEventListener('click', (e) => {
-        closeDropdown()
+        closeDropdown();
         li.classList.toggle('on');
       });
     });
 
     $body.addEventListener('click', (e) => {
-      if (!$nav.contains(e.target)) closeDropdown()
+      if (!$nav.contains(e.target)) closeDropdown();
     });
     
-    // 2nd level li - build right column 
+    // 2nd level lis (build right column)
     const l2_LIs = $nav.querySelectorAll('li > ul > li');
     l2_LIs.forEach(async li => {
-        if (li.textContent.includes("RIGHT-COLUMN:")) {
+        if (li.textContent.includes('RIGHT-COLUMN:')) {
             const a = li.querySelector('a');
             if (a) {
                 const href = a.getAttribute('href');
@@ -55,29 +52,18 @@ async function buildNav() {
             li.remove();
         }
     });
+
+    $header.append($nav);
   }
 }
 
-
 export default async function decorate(block) {
-  buildNav();
-
-  // nav burger menu
-  const $navBtn = div({ class: 'nav-btn' }, span(), span(), span());
-  $navBtn.addEventListener('click', () => {
-    if (!$body.classList.contains('nav-open')) {
-      if (!$nav) buildNav();
-      else open('nav');
-      close('modal');
-    } else {
-      close('nav');
-    }
-  });
+  block.innerHTML = '';
 
   const $logo = a({ id: 'logo', href: '/', 'aria-label': 'Visit Home Page' }, img({
     src: '/icons/hubble-homes-logo.svg',
     width: '110',
-
+    height: '56',
     alt: 'Hubble Homes, LLC',
   }));
 
@@ -94,8 +80,18 @@ export default async function decorate(block) {
 
   const $phone = a({ id: 'phone', href: 'tel:208-620-2607'}, '208-620-2607');
 
-  const $chat = div({ id: 'chat'}, img({ src: '/icons/lets-chat.png'}))
+  const $chat = div({ id: 'chat'}, img({ src: '/icons/lets-chat.png', width: '81', height: '38'}))
 
-block.innerHTML = '';
-  block.append($logo, $promo, $search, $phone, $chat, $navBtn);
+  const $bgrBtn = div({ class: 'burger-btn' }, span(), span(), span());
+  $bgrBtn.addEventListener('click', () => {
+    if (!$body.classList.contains('mobile-nav-open')) {
+      $body.classList.add('mobile-nav-open');
+    } else {
+      $body.classList.remove('mobile-nav-open');
+    }
+  });
+
+  buildNav();
+
+  block.append($logo, $promo, $search, $phone, $chat, $bgrBtn);
 }
