@@ -3,7 +3,6 @@ import { nav, div, span, a, img, form, label, input } from '../../scripts/dom-he
 import { loadFragment } from '../fragment/fragment.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
-
 const $body = document.body;
 
 async function buildNav() {
@@ -40,23 +39,22 @@ async function buildNav() {
             const a = li.querySelector('a');
             if (a) {
                 const href = a.getAttribute('href');
-                const rightColFrag = await loadFragment(href);
-                if (rightColFrag) {
-                  const $rightCol = div({ class: 'r-col'});
-                  while (rightColFrag.firstElementChild) { 
-                    const $rCol = rightColFrag.firstElementChild;
+                const rColFrag = await loadFragment(href);
+                if (rColFrag) {
+                  const $rCol = div({ class: 'r-col'});
+                  while (rColFrag.firstElementChild) { 
+                    const $rColContent = rColFrag.firstElementChild;
 
-                    // format picture
-                    const $rColPics = $rCol.querySelectorAll('picture');
-                    $rColPics.forEach(pic => {
-                      console.log(pic);
-
-                      // createOptimizedPicture(image, 'alt', false, [{ width: '240' }])
+                    // format pic
+                    $rColContent.querySelectorAll('picture').forEach(pic => {
+                      const img = pic.querySelector('img');
+                      const opt =  createOptimizedPicture(img.src, 'alt', false, [{ width: '240' }]);
+                      pic.replaceWith(opt);
                     });
 
-                    $rightCol.append($rCol);
+                    $rCol.append($rColContent);
                   }
-                  li.parentNode.append($rightCol);
+                  li.parentNode.append($rCol);
                 } else {
                   // eslint-disable-next-line no-console
                   console.error('Failed to load login fragment.');
@@ -95,7 +93,7 @@ export default async function decorate(block) {
 
   const $chat = div({ id: 'chat'}, img({ src: '/icons/lets-chat.png', width: '81', height: '38'}))
 
-  const $bgrBtn = div({ class: 'burger-btn' }, span(), span(), span());
+  const $bgrBtn = div({ class: 'bgr-btn' }, span(), span(), span());
   $bgrBtn.addEventListener('click', () => {
     if (!$body.classList.contains('mobile-nav-open')) {
       $body.classList.add('mobile-nav-open');
@@ -103,8 +101,12 @@ export default async function decorate(block) {
       $body.classList.remove('mobile-nav-open');
     }
   });
+  const $overlay = div({ class: 'overlay' });
+  $body.append($overlay);
 
   buildNav();
 
   block.append($logo, $promo, $search, $phone, $chat, $bgrBtn);
+
+  block.replaceWith($navBtn, $logo, $loginBtn);
 }

@@ -242,7 +242,92 @@ nav .r-col p.button-container {
   float: right;
   margin: -70px 0 0 0;
 }
+
 nav .r-col p.button-container a {
   margin: 0;
   transform: scale(.6);
+}
+
+
+
+/* nav button - hamburger */
+.bgr-btn {
+  display: none;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 26px;
+  padding: 9px 10px;
+  align-self: center;
+  cursor: pointer;
+  color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.bgr-btn span {
+  display: block;
+  height: 2px;
+  background: #888;
+  border-radius: 1px;
+  /* transition: all var(--nav-transition-time); */
+  position: relative;
+}
+.bgr-btn span+span { margin-top: 6px }
+
+
+
+
+@media (width <= 1170px) {
+
+  #promo, #search, #phone, #chat, nav { display: none }
+
+  .bgr-btn, .mobile-nav-open nav { display: block }
+
+  /* reduce scrolling */
+  body.mobile-nav-open {
+    position: fixed; 
+    overflow-y: scroll;
+  }
+
+  nav {
+    top: var(--nav-height);
+    left: 20px;
+  }
+  
+  /* top level */
+  nav>div>ul>li {
+    height: auto;
+    padding: 10px 0 0 14px;
+    width: calc(100vw - 60px);
+  }
+
+  nav>div>ul>li.on {
+    margin-top: 10px;
+  }
+
+  nav>div>ul>li.on>ul {
+    min-width: calc(100vw - 60px);
+    border-top: 1px solid #fff;
+    margin-top: 10px;
+  }
+
+  /* dropdown menus */
+  nav>div>ul>li>ul {
+    position: relative;
+    top: auto !important;
+    padding: 10px 0;
+    width: calc(100vw - 46px) !important;
+    box-shadow: none;
+  }
+
+  nav .r-col { right: -1px }
+
+  .mobile-nav-open .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9;
+    background: #fff;
+    height: 100vh;
+  }
 }

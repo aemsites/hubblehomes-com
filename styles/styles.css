@@ -81,9 +81,10 @@ body.appear {
 header {
   position: sticky;
   inset: 0;
-  z-index: 9;
+  z-index: 99;
   height: var(--nav-height);
   background: #fff;
+  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1);
 }
 
 h1, h2, h3,
