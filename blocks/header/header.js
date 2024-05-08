@@ -1,6 +1,7 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { nav, div, span, a, img, form, label, input } from '../../scripts/dom-helpers.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
 
 
 const $body = document.body;
@@ -41,8 +42,20 @@ async function buildNav() {
                 const href = a.getAttribute('href');
                 const rightColFrag = await loadFragment(href);
                 if (rightColFrag) {
-                  const $rightCol = div({ class: 'right-col'});
-                  while (rightColFrag.firstElementChild) $rightCol.append(rightColFrag.firstElementChild);
+                  const $rightCol = div({ class: 'r-col'});
+                  while (rightColFrag.firstElementChild) { 
+                    const $rCol = rightColFrag.firstElementChild;
+
+                    // format picture
+                    const $rColPics = $rCol.querySelectorAll('picture');
+                    $rColPics.forEach(pic => {
+                      console.log(pic);
+
+                      // createOptimizedPicture(image, 'alt', false, [{ width: '240' }])
+                    });
+
+                    $rightCol.append($rCol);
+                  }
                   li.parentNode.append($rightCol);
                 } else {
                   // eslint-disable-next-line no-console

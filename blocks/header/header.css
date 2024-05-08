@@ -13,6 +13,8 @@ header * {
   font-size: 16px;
 }
 
+.header a {  text-decoration: none !important }
+
 #logo {
   position: absolute;
   top: 18px;
@@ -27,7 +29,6 @@ a#phone {
   top: 8px;
   left: 170px;
   color: var(--link-light-gray);
-  text-decoration: none;
   font-size: 1em;
   font-weight: 600;
   transition: all 0.3s ease-in-out;
@@ -122,6 +123,7 @@ nav {
   position: absolute;
   bottom: 0;
   left: 260px;
+  user-select: none;
 }
 
 nav ul {
@@ -142,6 +144,7 @@ nav>div>ul>li {
   color: var(--link-light-gray);
   text-transform: uppercase;
   float: left;
+  /* transition: all .2s ease-in-out;  */
 }
 
 nav>div>ul>li:hover,
@@ -154,24 +157,27 @@ nav>div>ul>li.on {
 /* all links */
 nav a {
   display: block;
-  text-decoration: none;
 }
 
-/* dropdown menu */
+/* dropdown menus */
 nav>div>ul>li>ul {
   display: none;
   position: absolute;
   top: 50px;
-  width: 520px; /* todo: fix so this is not hard coded */
   margin-left: -14px;
   padding: 4px 0 14px;
   background: var(--dark-blue);
   box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
 }
+nav>div>ul>li.on>ul { display: block }
 
-nav>div>ul>li.on>ul {
-  display: block;
-}
+/* drowdown widths (left col) */
+nav>div>ul>li:nth-child(1)>ul>li { width: 230px }
+nav>div>ul>li:nth-child(2)>ul>li { width: 153px }
+
+/* drowdown widths w/right col = left-col [+] right-col (260px) */
+nav>div>ul>li:nth-child(1)>ul { width: 490px }
+nav>div>ul>li:nth-child(2)>ul { width: 413px }
 
 /* left col */
 nav>div>ul>li>ul>li {
@@ -185,37 +191,58 @@ nav>div>ul>li>ul>li {
 /* left col links */
 nav>div>ul>li>ul>li a {
   padding: 0 12px;
-  text-decoration: none !important;
-  white-space: nowrap;
   cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
-
-nav>div>ul>li>ul>li a:hover {
-  background: var(--light-blue);
-}
+nav>div>ul>li>ul>li a:hover { background: var(--light-blue) }
 
 /* headings */
 nav>div>ul>li>ul>li>a {
   font-size: 1.1em;
   font-weight: 600;
   color: var(--yellow);
+  text-wrap: nowrap;
 }
 
-nav>div>ul>li>ul>li strong a {
-  color: #fff;
-}
-
-nav>div>ul>li>ul>li>ul>li>a {
-  color: #fff !important;
-}
+nav>div>ul>li>ul>li>ul>li>a, /* all 3rd level links */
+nav>div>ul>li>ul>li>ul>li> strong a, /* 3rd level bold links */
+nav>div>ul>li>ul>li:not(:has(> ul)) >a /* headings w/out children */
+{ color: #fff }
 
 /* right column */
-.right-col {
+nav .r-col {
   position: absolute;
   top: 0;
-  left: 240px;
-  width: 280px;
+  right: 0;
+  width: 260px;
   height: 100%;
   background: #fff;
   color: #000;
+}
+
+nav .r-col p {
+  padding: 10px;
+}
+
+nav .r-col picture img {
+  width: 240px;
+  height: 132px;
+}
+
+nav .r-col strong {
+  display: inline-block;
+  font-family: "lato", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #717171;
+  width: 160px;
+}
+
+nav .r-col p.button-container {
+  float: right;
+  margin: -70px 0 0 0;
+}
+nav .r-col p.button-container a {
+  margin: 0;
+  transform: scale(.6);
 }
