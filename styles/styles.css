@@ -12,22 +12,29 @@
 
 :root {
   /* colors */
-  --link-color: #035fe6;
+  --link-color: #383838;
   --link-hover-color: #136ff6;
   --background-color: white;
   --light-color: #eee;
   --dark-color: #ccc;
   --text-color: black;
+  --color-grey: #333;
+  --btn-bg-color: #428bca;
+  --btn-border:  #357ebd;
+  --btn-bg-color-2: #3071a9;
+  --btn-border-2: #285e8e;
 
   /* fonts */
-  --body-font-family: roboto, roboto-fallback;
+  --body-font-family: lato, lato-fallback;
   --heading-font-family: var(--body-font-family);
   --fixed-font-family: 'Roboto Mono', menlo, consolas, 'Liberation Mono', monospace;
 
   /* body sizes */
-  --body-font-size-m: 22px;
-  --body-font-size-s: 18px;
-  --body-font-size-xs: 16px;
+  --body-font-size-xl: 22px;
+  --body-font-size-l: 18px;
+  --body-font-size-m: 16px;
+  --body-font-size-s: 14px;
+  --body-font-size-xs: 12px;
 
   /* heading sizes */
   --heading-font-size-xxl: 48px;
@@ -38,11 +45,11 @@
   --heading-font-size-xs: 18px;
 
   /* nav height */
-  --nav-height: 64px;
+  --nav-height: 90px;
 }
 
 @font-face {
-  font-family: roboto-fallback;
+  font-family: lato-fallback;
   size-adjust: 100.06%;
   ascent-override: 95%;
   src: local('Arial');
@@ -50,12 +57,12 @@
 
 @media (width >= 900px) {
   :root {
-    --heading-font-size-xxl: 60px;
-    --heading-font-size-xl: 48px;
-    --heading-font-size-l: 36px;
-    --heading-font-size-m: 30px;
-    --heading-font-size-s: 24px;
-    --heading-font-size-xs: 22px;
+    --heading-font-size-xxl: 36px;
+    --heading-font-size-xl: 30px;
+    --heading-font-size-l: 24px;
+    --heading-font-size-m: 18px;
+    --heading-font-size-s: 14px;
+    --heading-font-size-xs: 12px;
   }
 }
 
@@ -80,23 +87,35 @@ header {
 h1, h2, h3,
 h4, h5, h6 {
   font-family: var(--heading-font-family);
-  font-weight: 600;
-  line-height: 1.25;
-  margin-top: 1em;
-  margin-bottom: .5em;
+  font-weight: 400;
+  line-height: 1.1;
+  margin-top: 3px;
+  margin-bottom: 2px;
   scroll-margin: calc(var(--nav-height) + 1em);
 }
 
-h1 { font-size: var(--heading-font-size-xxl) }
+h1 em {
+  color: #665600;
+  font-style: normal;
+}
+
+h1 {
+  font-weight: 900; 
+  font-size: var(--heading-font-size-xxl) 
+}
 h2 { font-size: var(--heading-font-size-xl) }
 h3 { font-size: var(--heading-font-size-l) }
 h4 { font-size: var(--heading-font-size-m) }
 h5 { font-size: var(--heading-font-size-s) }
 h6 { font-size: var(--heading-font-size-xs) }
 
-p, dl, ol, ul, pre, blockquote {
+dl, ol, ul, pre, blockquote {
   margin-top: 1em;
   margin-bottom: 1em;
+}
+
+p {
+  margin:0 0 10px;
 }
 
 code, pre {
@@ -110,6 +129,17 @@ code {
 
 pre {
   overflow: scroll;
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: var(--body-font-size-s);
+  line-height: 1.4286;
+  color: var(--color-grey);
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: var(--light-color);
+  border: 1px solid var(--dark-color);
+  border-radius: 4px;
 }
 
 main pre {
@@ -124,6 +154,7 @@ main pre {
 a:any-link {
   color: var(--link-color);
   text-decoration: none;
+  font-weight: 600;
 }
 
 a:hover {
@@ -132,46 +163,63 @@ a:hover {
 }
 
 /* buttons */
-a.button:any-link, button {
-  font-family: var(--body-font-family);
+button {
   display: inline-block;
-  box-sizing: border-box;
-  text-decoration: none;
-  border: 2px solid transparent;
-  padding: 5px 30px;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: var(--body-font-size-s); 
+  line-height: 1.4286;
   text-align: center;
-  font-style: normal;
-  font-weight: 600;
-  cursor: pointer;
-  color: var(--background-color);
-  background-color: var(--link-color);
-  margin: 16px 0;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  border-radius: 30px;
+  vertical-align: middle;    
+  touch-action: manipulation;
+  cursor: pointer;    
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
 }
 
-a.button:hover, a.button:focus, button:hover, button:focus  {
-  background-color: var(--link-hover-color);
-  cursor: pointer;
+a.button:focus, button:focus  {
+  outline: thin dotted;
+  outline: 5px auto;
+  outline-offset: -2px;
+}
+
+a.button:hover, button:hover {
+  color: var(--color-grey);
+  text-decoration: none;
+}
+
+button:active {
+  background-image: none;
+  outline: 0;  
+  box-shadow: inset 0 3px 5px rgb(0 0 0 12.5%);
 }
 
 button:disabled, button:disabled:hover {
-  background-color: var(--light-color);
-  cursor: unset;
+  background-color: var(--light-color);  
+  pointer-events: none;
+  cursor: not-allowed;  
+  box-shadow: none;
+  opacity: .65;
 }
 
 a.button.secondary, button.secondary {
   background-color: unset;
   border: 2px solid currentcolor;
-  color: var(--text-color)
+  color: var(--text-color);
 }
 
 main img {
   max-width: 100%;
   width: auto;
   height: auto;
+}
+
+main img.search-by-map {
+  height: 60px;
+  width: auto;
 }
 
 .icon {
@@ -193,7 +241,7 @@ main .section {
 @media (width >= 600px) {
   main .section {
     padding: 64px 32px;
-  }
+  }  
 }
 
 @media (width >= 900px) {
@@ -208,3 +256,57 @@ main .section.light,
 main .section.highlight {
   background-color: var(--light-color);
 }
+
+.default-content-wrapper {
+  text-align: center;
+  font-size: 24px;
+}
+
+.section.yellow {
+  padding: 0;
+  background-color: #fcd700;
+  margin-bottom: 20px;
+}
+
+.section.yellow .default-content-wrapper {
+  width: 975px;
+  font-size: 16px;
+  padding: 30px;
+}
+
+.block.banner {
+  position: relative;
+  overflow: hidden;
+  margin-top: 30px;
+  height: calc((100vw - 94px)/3.3);
+}
+
+@media (width >= 1235px) {
+  .block.banner {
+    height: 356px;
+  }
+}
+
+.btn-primary {
+  color: var(--background-color);
+  background-color:var(--btn-bg-color);
+  border-color: var(--btn-border);
+}
+
+.btn-primary:hover,.btn-primary:focus,.btn-primary.focus,.btn-primary:active,.btn-primary.active,.open>.dropdown-toggle.btn-primary {
+  color: var(--background-color);
+  background-color:#3071a9;
+  border-color:#285e8e;
+}
+
+.btn-primary:active,.btn-primary.active,.open>.dropdown-toggle.btn-primary {
+  background-image:none;
+}
+
+.btn-primary.disabled,.btn-primary[disabled],.btn-primary.disabled:hover,.btn-primary[disabled]:hover {
+  background-color: var(--btn-bg-color);
+  border-color: var(--btn-border);
+}
+
+
+
