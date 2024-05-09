@@ -1,3 +1,5 @@
+/* stylelint-disable declaration-block-single-line-max-declarations, no-descending-specificity */
+
 header * {
   padding: 0;
   margin: 0;
@@ -68,14 +70,14 @@ a:hover#phone {
   color: #555;
   height: 28px;
   font-size: 12px;
-  border: 1px solid #cccccc;
+  border: 1px solid #ccc;
   background: #fff;
 }
 
 #search .search-icon {
   left: 432px;
-  width: 46px;
-  border-right: 0px solid;
+  width: 40px;
+  border-right: 0 solid;
   border-radius: 4px 0 0 4px;
 }
 
@@ -85,11 +87,12 @@ a:hover#phone {
 }
 
 #search input[type="text"] {
-  left: 478px;
-  border-left: 0px solid;
+  left: 472px;
+  border-left: 0 solid;
   border-radius: 0 4px 4px 0;
-  width: 254px;
+  width: 256px;
   color: #555;
+  padding-left: 4px;
 }
 
 input[type="text"]::placeholder {
@@ -99,7 +102,7 @@ input[type="text"]::placeholder {
 #search input:focus[type="text"] {
   border-color: #66afe9;
   outline: 0;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+  box-shadow: inset 0 1px 1px rgb(102 175 233 / 60%), 0 0 8px rgb(102 175 233 / 60%);
 }
 
 /* chat */
@@ -154,7 +157,7 @@ nav>div>ul>li>ul {
   margin-left: -14px;
   padding: 4px 0 14px;
   background: var(--dark-blue);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+  box-shadow: 0 6px 12px rgb(0 0 0 / 17%);
 }
 nav>div>ul>li.on>ul { display: block }
 
@@ -299,7 +302,6 @@ nav .r-col p:not(:first-child) picture img { margin-top: 30px }
   nav>div>ul>li {
     clear: left;
     height: auto;
-    /* min-width: inherit; */
     padding: 10px 0 0 14px;
   }
 
