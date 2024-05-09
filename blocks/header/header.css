@@ -44,9 +44,10 @@ a:hover#promo { color: var(--dark-blue) }
 }
 
 a#promo span::after {
-  content: ' >'; /* TODO: perhaps use font-awesome - determin if it's necessary */
-  font-size: 1.2em;
+  content: ' >';
+  font-size: 1.5em;
   color: var(--yellow);
+  vertical-align: top;
 }
 
 a#phone {
@@ -163,7 +164,7 @@ nav>div>ul>li.on>ul { display: block }
 
 nav>div>ul>li>ul>li {
   text-transform: none;
-  padding: 6px 0 0;
+  padding: 4px 0 0;
   font-size: .85em;
   line-height: 1.6em;
   font-weight: normal;
@@ -181,6 +182,7 @@ nav>div>ul>li>ul>li a {
   padding: 0 12px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  color: #fff;
 }
 nav>div>ul>li>ul>li a:hover { background: var(--light-blue) }
 
@@ -193,9 +195,12 @@ nav>div>ul>li>ul>li>a {
 }
 
 nav>div>ul>li>ul>li>ul>li>a, /* all 3rd level links */
-nav>div>ul>li>ul>li>ul>li> strong a, /* 3rd level bold links */
 nav>div>ul>li>ul>li:not(:has(> ul)) >a /* headings w/out children */
-{ padding-left: 15px; color: #fff }
+{ 
+  padding-left: 15px; 
+  font-weight: 400 !important;
+  color: #fff;
+}
 
 /* right column */
 nav .r-col {
