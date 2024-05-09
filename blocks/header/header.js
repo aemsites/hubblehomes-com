@@ -23,7 +23,8 @@ async function buildNav() {
     const l1LIs = $nav.querySelectorAll('div > ul > li');
     l1LIs.forEach((li) => {
       li.addEventListener('click', () => {
-        closeDropdown($nav);
+        const isOn = li.classList.contains('on');
+        if (!isOn) closeDropdown($nav);
         li.classList.toggle('on');
       });
     });

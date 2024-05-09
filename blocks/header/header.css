@@ -302,11 +302,13 @@ nav .r-col p:not(:first-child) picture img { margin-top: 30px }
   nav>div>ul>li {
     clear: left;
     height: auto;
-    padding: 10px 0 0 14px;
+    padding: 10px 0 10px 14px;
+    width: calc(100vw - 60px);
+    border-top: 1px solid #fff;
   }
 
-  nav>div>ul>li:not(:first-child).on {
-    margin-top: 10px;
+  nav>div>ul>li.on {
+    padding-bottom: 0;
   }
 
   /* dropdown menus */
@@ -322,8 +324,17 @@ nav .r-col p:not(:first-child) picture img { margin-top: 30px }
     border-top: 1px solid #fff;
     margin-top: 10px;
   }
+
+  nav>div>ul>li>ul>li { width: auto !important }
+  nav>div>ul>li:nth-child(2)>ul { min-height: 420px }
 }
 
 @media (width <= 540px) {
-  nav .r-col { display: none }
+  nav .r-col { 
+    position: relative;
+    margin: 10px 10px 0;
+    width: auto;
+  }
+
+  nav .r-col picture { margin-left: calc((100vw - 300px) * .5) }
 }
