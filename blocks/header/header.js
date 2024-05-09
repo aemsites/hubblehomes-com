@@ -86,14 +86,14 @@ export default async function decorate(block) {
   // TODO: add autocomplete
   const $search = form({id: 'search'}, 
     label({ class: 'sr-only', for: 'navSearch'}, 'Type plan, city, zip, community, phrase or MLS'),
-    div({ class: 'search-icon' }, img({ src: '/icons/search.svg', height: 17, width: 17})),
+    div({ class: 'search-icon' }, img({ src: '/icons/search.svg', height: 17, width: 17, alt: 'search' })),
     input({ type: 'text', name: 'navSearch', placeholder: 'Type plan, city, zip, community, phrase or MLS#'}),
   );
 
   const $phone = a({ id: 'phone', href: 'tel:208-620-2607'}, '208-620-2607');
 
   // TODO: add chat functionality
-  const $chat = div({ id: 'chat'}, img({ src: '/icons/lets-chat.png', width: '81', height: '38'}))
+  const $chat = div({ id: 'chat'}, img({ src: '/icons/lets-chat.png', width: '81', height: '38', alt: 'Let\'s Chat'}))
 
   const $bgrBtn = div({ class: 'bgr-btn' }, span(), span(), span());
   $bgrBtn.addEventListener('click', () => {
