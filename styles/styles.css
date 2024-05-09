@@ -23,6 +23,10 @@
   --btn-border:  #357ebd;
   --btn-bg-color-2: #3071a9;
   --btn-border-2: #285e8e;
+  --dark-blue: #003264;
+  --light-blue: #0055b9;
+  --yellow: #fcd700;
+  --link-light-gray: #717171;
 
   /* fonts */
   --body-font-family: lato, lato-fallback;
@@ -44,8 +48,9 @@
   --heading-font-size-s: 20px;
   --heading-font-size-xs: 18px;
 
-  /* nav height */
+  /* sizes */
   --nav-height: 90px;
+  --max-content-width: 1170px;
 }
 
 @font-face {
@@ -81,7 +86,12 @@ body.appear {
 }
 
 header {
+  position: sticky;
+  inset: 0;
+  z-index: 99;
   height: var(--nav-height);
+  background: #fff;
+  box-shadow: 0 0 3px 0 rgb(0 0 0 / 10%);
 }
 
 h1, h2, h3,
@@ -150,16 +160,35 @@ main pre {
   white-space: pre;
 }
 
+/* screan reader only */
+.sr-only {
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  border:0
+ }
+
+ .sr-only-focusable:active,.sr-only-focusable:focus {
+  position:static;
+  width:auto;
+  height:auto;
+  margin:0;
+  overflow:visible;
+  clip:auto
+ }
+
 /* links */
 a:any-link {
-  color: var(--link-color);
   text-decoration: none;
   font-weight: 600;
 }
 
 a:hover {
   text-decoration: underline;
-  color: var(--link-hover-color);
 }
 
 /* buttons */
@@ -258,7 +287,6 @@ main .section.highlight {
 }
 
 .default-content-wrapper {
-  text-align: center;
   font-size: 24px;
 }
 
