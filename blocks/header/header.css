@@ -9,7 +9,7 @@ header * {
   z-index: 9;
   max-width: var(--max-content-width);
   height: inherit;
-  font-family: 'lato', sans-serif;
+  font-family: var(--body-font-family);
   font-size: 16px;
 }
 
@@ -34,19 +34,16 @@ a#phone {
   transition: all 0.3s ease-in-out;
   line-height: .9em;
 }
-
-a:hover#promo {
-  color: var(--dark-blue);
-}
+a:hover#promo { color: var(--dark-blue) }
 
 #promo span {
   display: block;
-  font-size: .8em;
-  font-weight: 400;
+  font-size: .72em;
 }
 
 a#promo span::after {
-  content: ' >';
+  content: ' >'; /* TODO: perhaps use font-awesome - determin if it's necessary */
+  font-size: 1.2em;
   color: var(--yellow);
 }
 
@@ -60,7 +57,6 @@ a:hover#phone {
   background: var(--dark-blue);
   color: #fff;
 }
-
 
 /* search form */
 #search input,
@@ -88,7 +84,6 @@ a:hover#phone {
   padding: 5px 0 0 12px;
 }
 
-
 #search input[type="text"] {
   left: 478px;
   border-left: 0px solid;
@@ -107,7 +102,6 @@ input[type="text"]::placeholder {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
 }
 
-
 /* chat */
 #chat {
   position: absolute;
@@ -116,8 +110,6 @@ input[type="text"]::placeholder {
   cursor: pointer;
 }
 
-
-
 /* nav */
 nav {
   position: absolute;
@@ -125,6 +117,8 @@ nav {
   left: 260px;
   user-select: none;
 }
+
+nav a { display: block }
 
 nav ul {
   list-style: none;
@@ -144,19 +138,12 @@ nav>div>ul>li {
   color: var(--link-light-gray);
   text-transform: uppercase;
   float: left;
-  /* transition: all .2s ease-in-out;  */
 }
 
 nav>div>ul>li:hover,
 nav>div>ul>li.on {
   background: var(--dark-blue);
   color: #fff;
-}
-
-
-/* all links */
-nav a {
-  display: block;
 }
 
 /* dropdown menus */
@@ -171,15 +158,6 @@ nav>div>ul>li>ul {
 }
 nav>div>ul>li.on>ul { display: block }
 
-/* drowdown widths (left col) */
-nav>div>ul>li:nth-child(1)>ul>li { width: 230px }
-nav>div>ul>li:nth-child(2)>ul>li { width: 153px }
-
-/* drowdown widths w/right col = left-col [+] right-col (260px) */
-nav>div>ul>li:nth-child(1)>ul { width: 490px }
-nav>div>ul>li:nth-child(2)>ul { width: 413px }
-
-/* left col */
 nav>div>ul>li>ul>li {
   text-transform: none;
   padding: 6px 0 0;
@@ -188,7 +166,14 @@ nav>div>ul>li>ul>li {
   font-weight: normal;
 }
 
-/* left col links */
+/* drowdown (left col) */
+nav>div>ul>li:nth-child(1)>ul>li { width: 230px }
+nav>div>ul>li:nth-child(2)>ul>li { width: 153px }
+
+/* drowdown (right col) = left-col [+] right-col (260px) */
+nav>div>ul>li:nth-child(1)>ul { width: 490px }
+nav>div>ul>li:nth-child(2)>ul { width: 413px }
+
 nav>div>ul>li>ul>li a {
   padding: 0 12px;
   cursor: pointer;
@@ -207,7 +192,7 @@ nav>div>ul>li>ul>li>a {
 nav>div>ul>li>ul>li>ul>li>a, /* all 3rd level links */
 nav>div>ul>li>ul>li>ul>li> strong a, /* 3rd level bold links */
 nav>div>ul>li>ul>li:not(:has(> ul)) >a /* headings w/out children */
-{ color: #fff }
+{ padding-left: 15px; color: #fff }
 
 /* right column */
 nav .r-col {
@@ -220,37 +205,41 @@ nav .r-col {
   color: #000;
 }
 
+nav .r-col .section { padding: 10px }
+
 nav .r-col p {
-  padding: 10px;
-}
-
-nav .r-col picture img {
-  width: 240px;
-  height: 132px;
-}
-
-nav .r-col strong {
-  display: inline-block;
-  font-family: "lato", sans-serif;
+  text-transform: none;
+  font-family: var(--body-font-family);
   font-size: 14px;
-  font-weight: 600;
-  color: #717171;
-  width: 160px;
+  line-height: 1.4em;
+  color: var(--link-light-gray);
 }
 
-nav .r-col p.button-container {
-  float: right;
-  margin: -70px 0 0 0;
+nav .r-col p.button-container { float: right }
+
+/* TODO: button style could be moved to styles.css */
+nav .r-col .button {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4em;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  touch-action: manipulation;
+  user-select: none;
+  border-radius: 3px;
+  color: var(--dark-blue);
+  background: var(--yellow);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
+nav .r-col .button:hover { color: #fff; background: var(--dark-blue); }
 
-nav .r-col p.button-container a {
-  margin: 0;
-  transform: scale(.6);
-}
+nav .r-col p:not(:first-child) picture img { margin-top: 30px }
 
-
-
-/* nav button - hamburger */
+/* hamburger button */
 .bgr-btn {
   display: none;
   position: absolute;
@@ -270,45 +259,51 @@ nav .r-col p.button-container a {
   height: 2px;
   background: #888;
   border-radius: 1px;
-  /* transition: all var(--nav-transition-time); */
   position: relative;
 }
 .bgr-btn span+span { margin-top: 6px }
 
 
-
-
 @media (width <= 1170px) {
 
-  #promo, #search, #phone, #chat, nav { display: none }
+  #promo, #search, #phone, #chat { display: none }
 
-  .bgr-btn, .mobile-nav-open nav { display: block }
+  #logo { left: 34px }
 
-  /* reduce scrolling */
-  body.mobile-nav-open {
-    position: fixed; 
-    overflow-y: scroll;
-  }
+  .bgr-btn { display: block }
 
   nav {
     top: var(--nav-height);
-    left: 20px;
+    left: 0;
   }
   
+  nav>div {
+    position: absolute; 
+    inset: 0;
+    height: 0;
+    width: 100vw;
+    padding: 0 20px;
+    overflow: hidden;
+    background: #fff;
+    transition: all 600ms ease-in-out;  /* match js -> navTransitionTime */
+  }
+  .mobile-nav-open { position: fixed; overflow-y: scroll; }   /* disable content scrolling */
+  .mobile-nav-open nav>div { height: 100vh }
+  .mobile-nav-open.done nav>div { overflow: auto }
+
+  nav>div>ul { 
+    height: 840px; /* max height with items expanded - revisit to make fluid */ 
+  }
+
   /* top level */
   nav>div>ul>li {
+    clear: left;
     height: auto;
+    /* min-width: inherit; */
     padding: 10px 0 0 14px;
-    width: calc(100vw - 60px);
   }
 
-  nav>div>ul>li.on {
-    margin-top: 10px;
-  }
-
-  nav>div>ul>li.on>ul {
-    min-width: calc(100vw - 60px);
-    border-top: 1px solid #fff;
+  nav>div>ul>li:not(:first-child).on {
     margin-top: 10px;
   }
 
@@ -321,13 +316,12 @@ nav .r-col p.button-container a {
     box-shadow: none;
   }
 
-  nav .r-col { right: -1px }
-
-  .mobile-nav-open .overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9;
-    background: #fff;
-    height: 100vh;
+  nav>div>ul>li.on>ul {
+    border-top: 1px solid #fff;
+    margin-top: 10px;
   }
+}
+
+@media (width <= 540px) {
+  nav .r-col { display: none }
 }

@@ -32,7 +32,7 @@ async function buildNav() {
       if (!$nav.contains(e.target)) closeDropdown();
     });
     
-    // 2nd level lis (build right column)
+    // 2nd level lis - build right column fragment
     const l2_LIs = $nav.querySelectorAll('li > ul > li');
     l2_LIs.forEach(async li => {
         if (li.textContent.includes('RIGHT-COLUMN:')) {
@@ -45,7 +45,7 @@ async function buildNav() {
                   while (rColFrag.firstElementChild) { 
                     const $rColContent = rColFrag.firstElementChild;
 
-                    // format pic
+                    // optimize pic
                     $rColContent.querySelectorAll('picture').forEach(pic => {
                       const img = pic.querySelector('img');
                       const opt =  createOptimizedPicture(img.src, 'alt', false, [{ width: '240' }]);
@@ -83,6 +83,7 @@ export default async function decorate(block) {
     span('Get Details'),
   );
 
+  // TODO: add autocomplete
   const $search = form({id: 'search'}, 
     label({ class: 'sr-only', for: 'navSearch'}, 'Type plan, city, zip, community, phrase or MLS'),
     div({ class: 'search-icon' }, img({ src: '/icons/search.svg', height: 17, width: 17})),
@@ -91,22 +92,23 @@ export default async function decorate(block) {
 
   const $phone = a({ id: 'phone', href: 'tel:208-620-2607'}, '208-620-2607');
 
+  // TODO: add chat functionality
   const $chat = div({ id: 'chat'}, img({ src: '/icons/lets-chat.png', width: '81', height: '38'}))
 
   const $bgrBtn = div({ class: 'bgr-btn' }, span(), span(), span());
   $bgrBtn.addEventListener('click', () => {
+    const navTransitionTime = 600; // match css -> nav>div
     if (!$body.classList.contains('mobile-nav-open')) {
       $body.classList.add('mobile-nav-open');
+      setTimeout(() => {
+        $body.classList.add('done');
+      }, navTransitionTime);
     } else {
-      $body.classList.remove('mobile-nav-open');
+      $body.classList.remove('mobile-nav-open', 'done');
     }
   });
-  const $overlay = div({ class: 'overlay' });
-  $body.append($overlay);
 
   buildNav();
 
   block.append($logo, $promo, $search, $phone, $chat, $bgrBtn);
-
-  block.replaceWith($navBtn, $logo, $loginBtn);
 }
