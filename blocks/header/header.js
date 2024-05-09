@@ -48,7 +48,7 @@ async function buildNav() {
               // optimize pic
               $rColContent.querySelectorAll('picture').forEach((pic) => {
                 const image = pic.querySelector('img');
-                const opt = createOptimizedPicture(image.src, 'alt', false, [{ width: '240' }]);
+                const opt = createOptimizedPicture(image.src, 'alt', true, [{ width: '240' }]);
                 pic.replaceWith(opt);
               });
 
