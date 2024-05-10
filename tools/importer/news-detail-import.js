@@ -86,7 +86,7 @@ const createMetadata = (main, document, url) => {
       const categoriesString = categoriesText.substring(categoriesLabelIndex + 'Categories:'.length).trim();
       const categoriesArray = categoriesString
         .split(/\s*[/|]\s*/)
-        .map(category => category.trim());
+        .map((category) => category.trim());
       meta.Categories = categoriesArray.join(', ');
     }
   }
@@ -99,28 +99,28 @@ const createMetadata = (main, document, url) => {
 };
 
 const removeUnwantedSections = (document) => {
-  const tagsElements = Array.from(document.querySelectorAll('small strong')).filter(el => el.textContent === "Tags:");
+  const tagsElements = Array.from(document.querySelectorAll('small strong')).filter((el) => el.textContent === 'Tags:');
   if (tagsElements.length) {
     tagsElements[0].parentElement.remove();
   }
 
-  const leaveReplyHeaders = Array.from(document.querySelectorAll('h3')).filter(el => el.textContent.toLowerCase() === "leave a reply");
+  const leaveReplyHeaders = Array.from(document.querySelectorAll('h3')).filter((el) => el.textContent.toLowerCase() === 'leave a reply');
   if (leaveReplyHeaders.length) {
     leaveReplyHeaders[0].remove();
   }
 
   // Remove "By Hubble Homes, LLC" text directly
   const byTextNodes = Array.from(document.querySelectorAll('div.col-sm-9.sidebarbody'))
-                           .flatMap(el => Array.from(el.childNodes))
-                           .filter(node => node.nodeType === Node.TEXT_NODE && node.textContent
-                           .trim() === "By Hubble Homes, LLC");
+    .flatMap((el) => Array.from(el.childNodes))
+    .filter((node) => node.nodeType === Node.TEXT_NODE && node.textContent
+      .trim() === 'By Hubble Homes, LLC');
   if (byTextNodes.length) {
     byTextNodes[0].remove();
   }
 
   // Remove any <img> directly inside the <body> tag
   const bodyImages = Array.from(document.body.querySelectorAll(':scope > img'));
-  bodyImages.forEach(img => img.remove());
+  bodyImages.forEach((img) => img.remove());
 };
 
 export default {
