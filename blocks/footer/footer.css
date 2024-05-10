@@ -1,4 +1,6 @@
 footer {
+  /* TODO: hiding temporarily - b/c it pushes content width */
+  display :none;
   padding: 2rem;
   background-color: var(--light-color);
   font-size: var(--body-font-size-s);
