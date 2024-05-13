@@ -1,0 +1,331 @@
+.models a:hover {
+  text-decoration: none;
+}
+
+.models > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(278px, 1fr));
+  grid-gap: 16px;
+}
+
+.models > ul > li {
+  border: 1px solid var(--dark-color);
+  background-color: var(--background-color);
+  border: none
+}
+
+.models .model-card-header {
+  border: none;
+}
+
+.models .model-name {
+  font-family: "lato", sans-serif;
+  font-weight: 400;
+  color: #383838;
+  padding-bottom: 5px;
+}
+
+.models .model-address {
+  color: #0055b9;
+  font-weight: 400;
+  text-decoration: none;
+  padding-bottom: 5px;
+}
+
+.models .model-card-details {
+  text-align: center;
+}
+
+.models .model-card-details h3 {
+  padding-bottom: 5px;
+  padding-top: 10px;
+  text-transform: uppercase;
+  margin-top: 3px;
+  margin-bottom: 2px;
+}
+
+.models .model-card-body {
+  margin: 16px;
+}
+
+.models .model-card-image {
+  line-height: 0;
+}
+
+.models .model-card-body > *:first-child {
+  margin-top: 0;
+}
+
+.models .model-card-image {
+  position: relative;
+  line-height: 0;
+}
+
+.models .model-card-image img {
+  width: 100%;
+  object-fit: cover;
+  border: none;
+}
+
+.models .model-card-image-overlay {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 100%;
+  padding: 2px 10px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.models .model-card-image-overlay .share {
+  color: white;
+  font-size: 20px;
+  text-shadow: 0 0 5px #000;
+  max-width: 40px;
+  aspect-ratio: auto;
+}
+
+.models .model-card-image-overlay .status {
+  color: #fff;
+  border: 1px solid #fff;
+  background: rgba(0, 50, 100, 0.3);
+  font-size: 14px;
+  padding-left: 5px;
+  padding-right: 5px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.models .model-card-image-overlay .favorite {
+  max-width: 40px;
+  float: right;
+}
+
+.models .model-card-image-overlay > div:nth-child(1) {
+  width: 25%;
+  float: left;
+}
+
+.models .model-card-image-overlay > div:nth-child(2) {
+  width: 50%;
+  float: left;
+}
+
+.models .model-card-tagline {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: var(--dark-blue);
+  color: #ffffff;
+  padding: 5px;
+  font-size: 12px;
+  align-items: center;
+}
+
+.models .model-card-tagline-price-container {
+  display: flex;
+  align-items: center;
+}
+
+.models .model-card-tagline-price {
+  padding-right: 3px;
+}
+
+.models .model-card-tagline-price-increase {
+  text-decoration: line-through;
+  padding-left: 3px;
+}
+
+.models .model-card-tagline-price-increase-icon {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #3c763d;
+}
+
+
+
+.models .model-card-tagline-price-per-month {
+  font-weight: bold;
+}
+
+.models .model-card-tagline-monthly-per-month {
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.models .model-card-tagline-monthly-container {
+  text-align: right;
+  color: var(--yellow);
+  font-size: 15px;
+}
+
+/* The following is the CSS for the beds, baths, sq cars */
+.models .model-grid-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.models .model-grid-details > div {
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+
+.models .model-grid-details .model-grid-details-item {
+  background-color: #e7e7e7;
+  text-transform: uppercase;
+  padding: 2px 2px 4px 2px;
+}
+
+.models .model-grid-details .model-grid-details-value {
+  padding: 2px 2px 2px 2px;
+  border: 1px solid #e7e7e7;
+}
+
+.models .model-card-bottom-details {
+  border-left: 1px solid #e7e7e7;
+  border-right: 1px solid #e7e7e7;
+  border-bottom: 1px solid #e7e7e7;
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    grid-gap: 3px;
+    padding: 0 3px;
+  }
+
+  .grid-item {
+    font-size: 15px;
+    font-weight: normal;
+    color: grey;
+  }
+
+  .grid-item.phone a {
+    color: var(--text-color);
+    font-size: 18px !important;
+  }
+
+  .grid-item.interactive-button {
+    color: #383838;
+    font-weight: 600;
+  }
+
+  .grid-item form {
+    display: inline;
+    width: 100%;
+  }
+
+  .grid-item.directions {
+    text-align: left;
+  }
+
+  .grid-item.directions:before {
+    content: "\f5eb";
+    /*font-family: "Font Awesome 5 Pro";*/
+  }
+
+  .grid-item input {
+    margin: 0;
+    width: 9px;
+    height: 9px;
+    padding-right: 3px
+  }
+
+  .grid-item.getmoreinfo,
+  .grid-item.photosandcompare {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .grid-item.photosandcompare a {
+    width: 100%;
+  }
+
+  .grid-item.getmoreinfo a {
+    width: 100%;
+  }
+
+  .grid-item.communityspecs3padding {
+    padding: 3px;
+    font-size: 11px;
+  }
+
+  .grid-item.grey-button {
+    background-color: #847b75;
+    border-color: #847b75;
+  }
+
+  .grid-item.grey-button a {
+    color: #fff;
+  }
+
+  .grid-item.grey-button:hover {
+    background-color: #69625d;
+    border-color: #69625d;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .grid-item.black-button {
+    background-color: #423c36;
+    border-color: #423c36;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .grid-item.black-button a {
+    color: #fff;
+  }
+
+  .grid-item.black-button:hover {
+    background-color: #181614;
+    border-color: #181614;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .grid-item.lot-choice {
+    color: #fff;
+    background-color: #847b75;
+    border-color: #847b75;
+  }
+
+}
+
+/* Styling for links */
+.grid-item a {
+  text-decoration: none;
+}
+
+.communitysmallbutton {
+  padding: 5px 5px;
+  font-size: 13px;
+}
+
+.btn-primary2:hover {
+  color: #fff;
+  background-color: #303a4a;
+  border-color: #303a4a;
+  transition: all 0.3s ease-in-out;
+}
+
+.models .btn-primary {
+  background-image: none;
+  color: #003264;
+  background-color: #fcd700;
+  border-color: #fcd700;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+.models .btn-primary:hover {
+  color: #fff;
+  background-color: #003264;
+  border-color: #003264;
+  transition: all 0.3s ease-in-out;
+}
