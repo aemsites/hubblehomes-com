@@ -170,6 +170,7 @@
 .models .model-grid-details {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
+  text-align: center;
 }
 
 .models .model-grid-details > div {
@@ -193,6 +194,7 @@
   border-left: 1px solid #e7e7e7;
   border-right: 1px solid #e7e7e7;
   border-bottom: 1px solid #e7e7e7;
+  text-align: center;
 
   .grid-container {
     display: grid;
