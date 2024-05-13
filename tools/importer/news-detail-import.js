@@ -16,13 +16,21 @@ const createCarouselBlock = (document) => {
       const title = item.querySelector('.carousel-caption .carousel-header div')?.textContent || '';
       const description = item.querySelector('.carousel-caption .carousel-copy div')?.textContent || '';
 
-      const content = `${imgElement}<h3>${title}</h3><p>${description}</p>`;
+      let content = `${imgElement}<h3>${title}</h3><p>${description}</p>`;
+      
+      cells.push([content]); // Add the concatenated content as a new row with HTML
 
-      cells.push([content]);
+      // Check for a PDF link
+      const btnLink = item.querySelector('.carousel-button a');
+      if (btnLink) {
+        const btnUrl = btnLink.href;
+        const btnLabel = btnLink.textContent.trim();
+        cells.push(['url', btnUrl]); // Add the PDF link as a new row
+      }
     });
 
     const table = WebImporter.DOMUtils.createTable(cells, document);
-    carousel.replaceWith(table);
+    carousel.replaceWith(table); // Replace the original carousel section with the new table
   }
 };
 
@@ -40,6 +48,21 @@ const createVideoBlock = (document) => {
       const table = WebImporter.DOMUtils.createTable(cells, document);
       videoContainer.replaceWith(table);
     }
+  }
+};
+
+const createAboutColumnBlock = (document) => {
+  const panelGroups = document.querySelectorAll('.panel-group');
+  if (panelGroups.length > 0) {
+    const cells = [['Columns (About)']]; // Title row
+
+    panelGroups.forEach((panelGroup) => {
+      const content = panelGroup.outerHTML;
+      cells.push([content]); // Add the panel group content as a new row with HTML
+    });
+
+    const table = WebImporter.DOMUtils.createTable(cells, document);
+    panelGroups.forEach((panelGroup) => panelGroup.replaceWith(table)); // Replace the original panel groups with the new table
   }
 };
 
@@ -150,6 +173,7 @@ export default {
     ]);
 
     removeUnwantedSections(document);
+    createAboutColumnBlock(document);
     createCarouselBlock(document);
     createVideoBlock(document);
     createMetadata(main, document, url);
