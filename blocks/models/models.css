@@ -1,0 +1,46 @@
+@import url("./layouts.css");
+@import url("./cards/card.css");
+
+/* Section title grey divider */
+.models .grey-divider {
+  margin-bottom: 30px;
+}
+
+.models {
+  > ul.repeating-grid {
+    --grid-repeat: 1;
+
+    @media (width >= 768px) {
+      --grid-repeat: 2;
+    }
+
+    @media (width >= 992px) {
+      --grid-repeat: 3;
+    }
+
+    @media (width >= 1200px) {
+      --grid-repeat: 4;
+    }
+  }
+}
+
+.models > ul > li {
+  min-height: 445px;
+}
+
+
+/* currently not used needing feedback from the customer */
+.models .model-card-tagline-price-increase {
+  text-decoration: line-through;
+  padding-left: 3px;
+}
+
+/* currently not used needing feedback from the customer */
+.models .model-card-tagline-price-increase-icon {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #3c763d;
+}

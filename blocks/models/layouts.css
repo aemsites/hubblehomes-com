@@ -1,0 +1,117 @@
+@layer reset, theme, layout;
+
+@layer reset {
+    .models {
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+    }
+}
+
+@layer theme {
+    :root {
+        --layout-fluid-min: 225px;
+        --layout-default-repeat: 4;
+        --layout-default-gap: 20px;
+    }
+
+    .models {
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+    }
+}
+
+@layer layout {
+    /* grid container with three equally sized columns that take up one fraction (1fr) of the available space with a gap */
+    .repeating-grid {
+        --p-grid-span: var(--grid-span, --layout-grid-span);
+        --p-grid-repeat: var(--grid-repeat, var(--layout-default-repeat));
+        --p-repeating-grid-gap: var(--grid-gap, var(--layout-default-gap));
+
+        display: grid;
+        grid-template-columns: repeat(var(--p-grid-repeat), 1fr);
+        gap: var(--p-repeating-grid-gap);
+    }
+
+    .repeating-flex {
+        --p-flex-repeat: var(--flex-repeat, var(--layout-default-repeat));
+        --p-repeating-flex-gap: var(--flex-gap, var(--layout-default-gap));
+        --p-gap-count: calc(var(--p-flex-repeat) - 1);
+        --p-gap-repeater-calc: calc(
+            var(--p-repeating-flex-gap) / var(--p-flex-repeat) * var(--p-gap-count)
+        );
+
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--p-repeating-flex-gap);
+
+        > * {
+            flex: 1 1 calc((100% / var(--p-flex-repeat)) - var(--p-gap-repeater-calc));
+        }
+    }
+
+    .fluid-grid {
+        --p-fluid-grid-min: var(--fluid-grid-min, var(--layout-fluid-min));
+        --p-fluid-grid-gap: var(--grid-gap, var(--layout-default-gap));
+
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(var(--p-fluid-grid-min), 100%), 1fr));
+        gap: var(--p-fluid-grid-gap);
+    }
+
+    .fluid-flex {
+        --p-fluid-flex-min: var(--fluid-flex-min, var(--layout-fluid-min));
+        --p-fluid-flex-gap: var(--flex-gap, var(--layout-default-gap));
+
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--p-fluid-flex-gap);
+
+        > * {
+            flex: 1 1 var(--p-fluid-flex-min);
+        }
+    }
+
+    /* Utilities */
+    .subgrid-cols {
+        display: flex;
+        gap: var(--subgrid-gap, 0);
+
+        > * {
+            flex: 1;
+        }
+    }
+
+    .subgrid-rows {
+        &:has(> :nth-child(1):last-child) { --subgrid-rows: 1; }
+        &:has(> :nth-child(2):last-child) { --subgrid-rows: 2; }
+        &:has(> :nth-child(3):last-child) { --subgrid-rows: 3; }
+        &:has(> :nth-child(4):last-child) { --subgrid-rows: 4; }
+        &:has(> :nth-child(5):last-child) { --subgrid-rows: 5; }
+
+        > * {
+            display: grid;
+            gap: var(--subgrid-gap, 0);
+            grid-row: auto / span var(--subgrid-rows, 5);
+            grid-template-rows: subgrid;
+        }
+
+        :is(.fluid-grid:not(.subgrid-rows),
+            .repeating-grid:not(.subgrid-rows),
+            .repeating-flex,
+            .fluid-flex) {
+            > * {
+                container: var(--grid-item-container, grid-item) / inline-size;
+            }
+        }
+    }
+
+    /* spanning grid columns */
+    .grid-col-span-2 { grid-column-end: span 2; }
+    .grid-col-span-3 { grid-column-end: span 3; }
+}
