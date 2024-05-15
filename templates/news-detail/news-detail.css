@@ -5,6 +5,9 @@
   margin: 0;
 }
 
+/* TODO: temp LHS fix until carousel block is developed */
+.hero-carousel {display: none}
+
 .news-detail h1 {
   text-align: center;
   box-sizing: border-box;
