@@ -1,4 +1,5 @@
 import {
+  createOptimizedPicture,
   readBlockConfig
 } from '../../scripts/aem.js';
 import {div, h3, picture, img, li, span} from '../../scripts/dom-helpers.js'
@@ -127,29 +128,31 @@ function createBottomDetails(model) {
   const bottomDetails = div();
   bottomDetails.classList.add('model-card-bottom-details');
 
-  const grid = `<div class="grid-container">
-      <div class="grid-item">${model.story} Story</div>
-      <a href="https://contradovip.com/hubble-homes/amethyst?touch=1" class="grid-item interactive-button">Interactive Plan</a>
+  bottomDetails.innerHTML = `<div class="grid-container">
+      <div class="grid-item stories">${model.story} Story</div>
+      <a href="https://contradovip.com/hubble-homes/amethyst?touch=1" class="grid-item interactive">Interactive Plan</a>
       <div class="grid-item grey-button"><a href="https://www.google.com">Choose Your Lot</a></div>
       <div class="grid-item black-button"><a href="#">Request a Tour</a></div>
       <div class="grid-item phone"><a href="tel:2086495529">208-649-5529</a></div>
       
       <div class="grid-item getmoreinfo">
-          <a class="btn btn-sm btn-primary2 btn-square communitysmallbutton" href="#">Get Info</a>
-          <a class="btn btn-sm btn-primary btn-square communitysmallbutton" href="#">More</a>
+          <a class="btn-primary2 btn-community" href="#">Get Info</a>
+          <a class="btn-primary btn-community" href="#">More</a>
       </div>
       <a class="grid-item communityspecs3padding directions">Directions</a>
 
       <div class="grid-item communityspecs3padding photosandcompare">
-          <a href="/new-homes/idaho/boise-metro/caldwell/mason-creek/spruce#groupSS-1" target="_blank">Photos</a>
+          <a href="/new-homes/idaho/boise-metro/caldwell/mason-creek/spruce#groupSS-1" target="_blank">
+            <i class="fas fa-images"></i> Photos
+          </a>
           <form>
-            <input type="checkbox" name="CompareItem" id="CompareItem_12_75_2728"  onchange="this.form.submit()">
-            <label for="CompareItem" style="padding-top: 0px;"><strong>Compare</strong></label>
+            <input type="checkbox" name="CompareItem" id="CompareItem"  onchange="this.form.submit()">
+            <label for="CompareItem">
+                <strong>Compare</strong>
+            </label>
           </form>
       </div>
   </div>`
-
-  bottomDetails.innerHTML = grid;
 
   return bottomDetails;
 }
@@ -157,6 +160,8 @@ function createBottomDetails(model) {
 function createCardDetails(model, isFeatured) {
   const cardDetails = div();
   cardDetails.classList.add('model-card-details');
+
+  const pic = createOptimizedPicture(model.image, model.title, true, [{ media: '(min-width: 600px)', width: '400' }, { width: '750' }]);
 
   cardDetails.innerHTML = `
   <div>
@@ -170,13 +175,13 @@ function createCardDetails(model, isFeatured) {
       </div>
     </div>
 
-    <div class="model-card-image">
-        <a href="/new-homes/idaho/boise-metro/meridian/canyons-at-prescott-ridge/bradshaw/6135-w-fireline-ct/999"
-			class="gtm-inventorydetail">
-			<picture>
-              <img src="${model.image}" alt=""/>
-            </picture>
-		</a>
+    <div class="model-card-image-holder">
+        <div class="model-card-image-picture">
+          <a href="/new-homes/idaho/boise-metro/meridian/canyons-at-prescott-ridge/bradshaw/6135-w-fireline-ct/999"
+              class="gtm-inventorydetail">
+              ${pic.outerHTML}
+          </a>
+		</div>
 		
         <div class="model-card-image-overlay">
 			<div class="col-xs-3 text-left">
@@ -210,6 +215,7 @@ function createCardDetails(model, isFeatured) {
 
 function createModelCard(model, isFeatured) {
   const modelCard = li();
+
   const details = createCardDetails(model, isFeatured);
   const tagline = createTagLine(model, isFeatured);
   const grid = modelGridDetails(model);
@@ -226,12 +232,17 @@ function createModelCard(model, isFeatured) {
 export default function decorate(block) {
   const {
     models,
-    modelstoshow
+    title,
   } = readBlockConfig(block);
 
-  const isFeatured = block.classList.contains("featured") ? true : false;
+  const isFeatured = block.classList.contains("featured");
 
   block.textContent = '';
+
+  const titleEl = div(title);
+  titleEl.classList.add('grey-divider');
+
+  block.appendChild(titleEl);
 
   loadModels(models).then((models) => {
     const ul = document.createElement('ul');
