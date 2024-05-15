@@ -6,10 +6,7 @@ import { loadFragment } from '../../blocks/fragment/fragment.js';
 export default async function decorate(doc) {
   const $page = doc.querySelector('main .section');
   const $mainContent = div();
-  const articleChildren = [...$page.children];
-  [...articleChildren].forEach((child) => {
-    $mainContent.append(child);
-  });
+  [...$page.children].forEach((child) => $mainContent.append(child));
 
   // hero carousel
   const $carousel = div({ class: 'hero-carousel wip' });
