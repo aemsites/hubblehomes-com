@@ -98,6 +98,7 @@ const createMetadata = (main, document, url) => {
   const postDateElement = document.querySelector('.text-center small strong');
   if (postDateElement && postDateElement.textContent.includes('Posted:')) {
     meta.PublishedDate = postDateElement.nextSibling.textContent.split('|')[0].trim();
+    postDateElement.remove();
   }
 
   // Categories
@@ -112,6 +113,7 @@ const createMetadata = (main, document, url) => {
         .map((category) => category.trim());
       meta.Categories = categoriesArray.join(', ');
     }
+    categoriesElement.remove();
   }
 
   // Create Metadata Block
@@ -170,11 +172,12 @@ export default {
       '.cd-top',
       '#buttonClickModal',
       'noscript',
+      '.homesearchmapwrapper',
     ]);
 
     removeUnwantedSections(document);
     createAboutColumnBlock(document);
-    createCarouselBlock(document);
+    //createCarouselBlock(document);
     createVideoBlock(document);
     createMetadata(main, document, url);
 
