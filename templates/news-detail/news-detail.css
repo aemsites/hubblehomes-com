@@ -28,6 +28,10 @@
   margin-bottom: 10px;
 }
 
+.news-detail main .section img {
+  min-height: 500px
+}
+
 /* breadcrumbs */
 .breadcrumbs {
   font-size: .8em;
