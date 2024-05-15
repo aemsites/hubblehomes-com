@@ -71,10 +71,8 @@
   }
 }
 
-  /* TODO: 
-    helper class used for debugging or to highlight 
-    "Work In Progress" blocks 
-    remove .wip before go-live 
+  /* TODO: remove .wip before go-live
+    helper class used for debugging or to highlight "Work In Progress" blocks 
   */
 .wip {
   position: relative;

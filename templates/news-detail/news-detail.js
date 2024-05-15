@@ -33,7 +33,7 @@ export default async function decorate(doc) {
   $h1.insertAdjacentElement('afterend', $postMeta);
 
   // breadcrumbs
-  // TODO:  make breadcrumbs a common function - perhaps a block
+  // TODO: make breadcrumbs a common function - perhaps a block
   const $breadCrumbs = div({ class: 'breadcrumbs' },
     a({ href: '/', 'arial-lable': 'View Home Page' }, 'Home'),
     ' > ',
@@ -63,9 +63,9 @@ export default async function decorate(doc) {
   );
 
   const $newPage = div({ class: 'section' },
-    $breadCrumbs,
     div({ class: 'content-wrapper' },
       div({ class: 'content' },
+        $breadCrumbs,
         $mainContent,
         $socialShare,
         $replyForm,

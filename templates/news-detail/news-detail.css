@@ -28,8 +28,7 @@
   margin-bottom: 10px;
 }
 
-
-/* Breadcrumbs */
+/* breadcrumbs */
 .breadcrumbs {
   font-size: .8em;
   color: #c8c8c8;
@@ -46,7 +45,6 @@
 .breadcrumbs a:hover { 
   color: #0055b9; 
 }
-
 
 /* layout - may move to styles */
 .content-wrapper {
@@ -66,10 +64,10 @@ aside {
 }
 
 
-
 /* sidebar */
 aside > div {
-  padding: 0 10px;
+  padding: 40px 20px 0;
+  font-size: 1em;
 }
 
 aside h3 {
@@ -143,3 +141,14 @@ button.twitter { background: #000 url('/icons/twitter.svg') }
 button.pinterest { background: #CB2027 url('/icons/pinterest.svg') }
 button.email { background: #7d7d7d url('/icons/email.svg') }
 button.sharethis { background: #95D03A url('/icons/sharethis.svg') }
+
+
+/* Reply Form */
+.reply-form {
+  padding: 120px 0;
+  margin: 20px !important;
+}
+
+@media (width <= 800px) {
+  .content-wrapper { display: block }
+}
