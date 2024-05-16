@@ -5,14 +5,12 @@ function createLinkElement(hrefValue, innerHTML) {
     link.href = hrefValue;
     link.classList.add('spotlight-link');
     link.innerHTML = innerHTML;
-
     return link;
 }
 
-
 function createButton(hrefValue) {
-    const spotlight_button = button({class: 'spotlightbutton'});
-
+    const spotlight_button = document.createElement('button');
+    spotlight_button.classList.add('spotlightbutton');
     spotlight_button.textContent = 'LEARN MORE';
     spotlight_button.addEventListener('click', () => {
         window.location.href = hrefValue;
@@ -20,81 +18,80 @@ function createButton(hrefValue) {
     return spotlight_button;
 }
 
-
-
 function createBannerText(block) {
-    // extract text values from block elements
-    const spotlight_title = block.querySelector('h2');
-    const spotlight_subtitle = block.querySelector('h3');
+    // Extract text values from block elements
+    const spotlight_title = block.querySelector('h2').innerHTML;
+    const spotlight_subtitle = block.querySelector('h3').innerHTML;
 
-    // create hyperlinks with the text values
+    // Create hyperlinks with the text values
     const spotlight_link = block.querySelector('a');
     const hrefValue = spotlight_link ? spotlight_link.href : '#';
-    const title_link = createLinkElement(hrefValue, spotlight_title.innerHTML);
-    const subtitle_link = createLinkElement(hrefValue, spotlight_subtitle.innerHTML);
+    const title_link = createLinkElement(hrefValue, spotlight_title);
+    const subtitle_link = createLinkElement(hrefValue, spotlight_subtitle);
 
-    // style the hyperlinks
-    const heading = h2(title_link);
-    const subheading = h3(subtitle_link);
+    // Style the hyperlinks
+    const heading = document.createElement('h2');
     heading.classList.add('spotlighttext', 'title');
+    heading.appendChild(title_link);
+    const subheading = document.createElement('h3');
     subheading.classList.add('spotlighttext', 'subtitle');
+    subheading.appendChild(subtitle_link);
 
-    // create the button
+    // Create the button
     const spotlight_button = createButton(hrefValue);
 
-    const textDiv = div();
-    textDiv.classList.add('spotlighttext');
+    // Create the form element
+    const spotlight_form = document.createElement('form');
+    spotlight_form.classList.add('spotlightform');
+    const spotlight_input = document.createElement('input');
+    spotlight_input.classList.add('spotlightinput');
+    spotlight_input.placeholder = 'Enter Email';
+    spotlight_form.appendChild(spotlight_input);
+    const spotlight_form_button = document.createElement('button');
+    spotlight_form_button.classList.add('spotlightformbutton');
+    spotlight_form_button.textContent = 'SUBMIT';
+    spotlight_form.appendChild(spotlight_form_button);
 
+    const textDiv = document.createElement('div');
+    textDiv.classList.add('spotlighttext');
     textDiv.appendChild(heading);
     textDiv.appendChild(subheading);
     textDiv.appendChild(spotlight_button);
-
-    // create the form element 
-    const spotlight_form = form({ class: "spotlightform" });
-    const spotlight_input = input({ class: "spotlightinput" });
-    spotlight_input.placeholder = "Enter Email";
-    spotlight_form.appendChild(spotlight_input);
-    const spotlight_form_button = button({ class: "spotlightformbutton" });
-    spotlight_form_button.textContent = "SUBMIT";
-    spotlight_form.appendChild(spotlight_form_button);
-
-
     textDiv.appendChild(spotlight_form);
 
+    // Remove original elements
+    block.querySelector('h2').remove();
+    block.querySelector('h3').remove();
+    if (spotlight_link) spotlight_link.remove();
 
-    spotlight_title.remove();
-    spotlight_subtitle.remove();
-    spotlight_link.remove();
     return textDiv;
 }
 
 export default function decorate(block) {
     const spotlight_text = createBannerText(block);
 
-    const bannerElement = div({ class: "bannerElement" });
-
-    const bannerPicture = div({ class: "banner-picture" });
+    const bannerElement = div({ class: 'bannerElement' });
+    const bannerPicture = div({ class: 'banner-picture' });
 
     const pictureElement = block.querySelector('picture');
     const imgElement = pictureElement.querySelector('source');
     const src = imgElement.getAttribute('srcset');
     bannerPicture.style.backgroundImage = `url(${src})`;
 
-    block.innerHTML = "";
+    block.innerHTML = '';
 
-    // desktop version
-    const spotlightHolder = div({ class: "spotlightcircleholder" });
-    const spotlightcircle = div({ class: "spotlightcircle" });
-    spotlightcircle.appendChild(spotlight_text);
+    // Desktop version
+    const spotlightHolder = div({ class: 'spotlightHolder' });
+    const spotlightcircle = div({ class: 'spotlightcircle' }, spotlight_text.cloneNode(true));
+
     spotlightHolder.appendChild(spotlightcircle);
-
-    bannerPicture.appendChild(spotlightHolder)
+    bannerPicture.appendChild(spotlightHolder);
     bannerElement.appendChild(bannerPicture);
 
-    // mobile version
-    const mobileBannerHolder = div({ class: "mobileBannerTextHolder" });
+    // Mobile version
+    const mobileBannerHolder = document.createElement('div');
+    mobileBannerHolder.classList.add('mobileBannerTextHolder');
     const mobileSpotlightText = spotlight_text.cloneNode(true);
-
     mobileBannerHolder.appendChild(mobileSpotlightText);
     bannerElement.appendChild(mobileBannerHolder);
 
