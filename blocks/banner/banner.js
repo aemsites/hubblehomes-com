@@ -1,18 +1,4 @@
-import { readBlockConfig, createOptimizedPicture } from '../../scripts/aem.js';
 import { div, button, h2, h3, form, input } from '../../scripts/dom-helpers.js';
-
-
-function createTextDiv(bigtextLink, smalltextLink, button) {
-    const textDiv = document.createElement('div');
-    textDiv.classList.add('text-center');
-
-    // append the a element to the div
-    textDiv.appendChild(bigtextLink);
-    textDiv.appendChild(smalltextLink);
-    textDiv.appendChild(button);
-
-    return textDiv;
-}
 
 function createLinkElement(hrefValue, innerHTML) {
     const link = document.createElement('a');
@@ -20,14 +6,12 @@ function createLinkElement(hrefValue, innerHTML) {
     link.classList.add('spotlight-link');
     link.innerHTML = innerHTML;
 
-
     return link;
 }
 
 
 function createButton(hrefValue) {
-    const spotlight_button = button();
-    spotlight_button.classList.add('spotlightbutton');
+    const spotlight_button = button({class: 'spotlightbutton'});
 
     spotlight_button.textContent = 'LEARN MORE';
     spotlight_button.addEventListener('click', () => {
@@ -66,11 +50,11 @@ function createBannerText(block) {
     textDiv.appendChild(spotlight_button);
 
     // create the form element 
-    const spotlight_form = form({class: "spotlightform"});
-    const spotlight_input = input({class: "spotlightinput"});
+    const spotlight_form = form({ class: "spotlightform" });
+    const spotlight_input = input({ class: "spotlightinput" });
     spotlight_input.placeholder = "Enter Email";
     spotlight_form.appendChild(spotlight_input);
-    const spotlight_form_button = button({class: "spotlightformbutton"});
+    const spotlight_form_button = button({ class: "spotlightformbutton" });
     spotlight_form_button.textContent = "SUBMIT";
     spotlight_form.appendChild(spotlight_form_button);
 
@@ -108,7 +92,7 @@ export default function decorate(block) {
     bannerElement.appendChild(bannerPicture);
 
     // mobile version
-    const mobileBannerHolder = div({ class: "mobileBannerTextHolder"});
+    const mobileBannerHolder = div({ class: "mobileBannerTextHolder" });
     const mobileSpotlightText = spotlight_text.cloneNode(true);
 
     mobileBannerHolder.appendChild(mobileSpotlightText);
