@@ -87,6 +87,8 @@ export function ul(...items) { return domEl('ul', ...items); }
 export function ol(...items) { return domEl('ol', ...items); }
 export function li(...items) { return domEl('li', ...items); }
 export function i(...items) { return domEl('i', ...items); }
+export function small(...items) { return domEl('small', ...items); }
+export function strong(...items) { return domEl('strong', ...items); }
 export function img(...items) { return domEl('img', ...items); }
 export function span(...items) { return domEl('span', ...items); }
 export function input(...items) { return domEl('input', ...items); }
