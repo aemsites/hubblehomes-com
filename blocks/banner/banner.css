@@ -1,0 +1,191 @@
+.banner .banner-picture {
+    position: relative;
+    height: 375px;
+    padding: 0 16px;
+    max-width: 1200px;
+    background-size: cover;
+    background-position: center;
+
+}
+
+.banner .bannerElement {
+    padding-bottom: 25px;
+    background-size: cover;
+    background-position: center;
+}
+
+.banner .spotlight-link {
+    color: inherit;
+    /* this will make the link color the same as the parent element */
+    text-decoration: none;
+    /* this will remove the underline */
+}
+
+
+.banner .spotlighttext .title {
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1em;
+    padding-bottom: 20px;
+}
+
+.banner .spotlighttext .subtitle {
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1em;
+    padding-bottom: 20px;
+}
+
+.banner .spotlightbutton {
+    background-color: var(--btn-bg-color-3);
+    color: var(--background-color);
+    margin-bottom: 20px;
+}
+
+.banner .spotlightformbutton {
+    background-color: var(--yellow);
+    color: var(--dark-blue);
+    font-size: var(--body-font-size-xs);
+    box-sizing: border-box;
+    max-height: 30px;
+
+    -webkit-transition: all 0.3s ease-in-out;
+}
+
+.banner .spotlightinput {
+    padding: 0%;
+    margin: 0%;
+    height: 30px;
+    box-sizing: border-box;
+    padding: 5px 10px;
+    font-size: var(--body-font-size-xs);
+    line-height: 1.5;
+}
+
+
+.banner .spotlightform {
+    height: 30px;
+    padding: 10px 0;
+}
+
+.banner-wrapper:nth-child(odd) .spotlighttext .title {
+    color: var(--link-color);
+}
+
+.banner-wrapper:nth-child(even) .spotlighttext .title {
+    color: var(--background-color);
+}
+
+.banner-wrapper:nth-child(odd) .spotlighttext .subtitle {
+    color: var(--dark-blue);
+}
+
+.banner-wrapper:nth-child(even) .spotlighttext .subtitle {
+    color: var(--yellow);
+}
+
+.banner-wrapper:nth-child(odd) .spotlightcircleholder {
+    margin-left: 50%;
+}
+
+.banner-wrapper:nth-child(even) .spotlightcircleholder {
+    margin-right: 50%;
+}
+
+/* white translucent */
+.banner-wrapper:nth-child(odd) .spotlightcircleholder .spotlightcircle {
+    background: RGBA(255, 255, 255, 0.5);
+}
+
+/* blue translucent */
+.banner-wrapper:nth-child(even) .spotlightcircleholder .spotlightcircle {
+    background: RGBA(0, 50, 100, 0.5);
+}
+
+/* white solid */
+.banner-wrapper:nth-child(odd) .mobileBannerTextHolder {
+    background: RGBA(240, 240, 240, 1);
+}
+
+/* blue solid */
+.banner-wrapper:nth-child(even) .mobileBannerTextHolder {
+    background: RGBA(0, 50, 100, 1);
+}
+
+
+/* .banner img {
+    width: 100%;
+    /* Make the image fill the container horizontally 
+    height: auto;
+    /* Maintain the image's aspect ratio */
+    /* object-fit: cover; 
+    object-position: center;
+} */
+
+
+.banner .spotlightcircleholder {
+    max-height: 375px;
+    box-sizing: border-box;
+    overflow: hidden;
+    width: 50%;
+
+}
+
+.banner .spotlightcircleholder .spotlightcircle {
+    border-radius: 288px;
+    height: 530px;
+    margin: auto;
+    transform: translateY(-15%);
+    border: 10px solid white;
+}
+
+.banner .spotlighttext {
+    text-align: center;
+    position: relative;
+    padding: 0 9px;
+    top: 25%;
+}
+
+.banner .mobileBannerTextHolder {
+    padding: 20px;
+}
+
+
+@media (width < 1000px) {
+    .banner .spotlightcircleholder .spotlightcircle {
+        display: none;
+    }
+
+    .banner .mobileBannerTextHolder {
+        display: block;
+    }
+
+    .banner .spotlightinput{
+        width: 66.66666667%;
+    }
+
+}
+
+@media (width >=1000px) {
+    .banner .spotlightcircle {
+        width: 440px;
+    }
+
+    .banner .mobileBannerTextHolder {
+        display: none;
+    }
+
+    .banner .spotlightinput{
+        width: 170px;
+    }
+}
+
+@media (width >=1200px) {
+    .banner .spotlightcircle {
+        width: 540px;
+    }
+
+    .banner .spotlightinput{
+        width: 240px;
+    }
+}
