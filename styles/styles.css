@@ -72,6 +72,35 @@
   }
 }
 
+  /* TODO: remove .wip before go-live
+    helper class used for debugging or to highlight "Work In Progress" blocks 
+  */
+.wip {
+  position: relative;
+  outline: 1px solid rgba(255 0 255 / 20%);
+  background: rgba(255 255 0 / 5%);
+}
+
+.wip:hover {
+  outline: 1px solid rgba(255 0 255 / 100%);
+  background-color: rgba(255 255 0 / 50%);
+}
+
+.wip:hover::after {
+  content: "THIS IS A WORK IN PROGRESS";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  background: #f0f0f0;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  white-space: nowrap;
+  color: #000;
+}
+
 body {
   font-size: var(--body-font-size-m);
   margin: 0;
@@ -288,7 +317,7 @@ main .section.highlight {
 }
 
 .default-content-wrapper {
-  font-size: 24px;
+  /* font-size: 24px; */
 }
 
 .section.yellow {
