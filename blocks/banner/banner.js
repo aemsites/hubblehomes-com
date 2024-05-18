@@ -1,5 +1,5 @@
 import {
-  div, button, h2, h3, form, input
+  div, button, h2, h3, form, input,
 } from '../../scripts/dom-helpers.js';
 
 function createLinkElement(hrefValue, innerHTML) {
@@ -48,13 +48,13 @@ function createBannerText(block) {
   textDiv.appendChild(subheading);
   textDiv.appendChild(spotlightButton);
 
-  // create the form element 
-  const spotlightForm = form({ class: "spotlightform" });
-  const spotlightInput = input({ class: "spotlightinput" });
-  spotlightInput.placeholder = "Enter Email";
+  // create the form element
+  const spotlightForm = form({ class: 'spotlightform' });
+  const spotlightInput = input({ class: 'spotlightinput' });
+  spotlightInput.placeholder = 'Enter Email';
   spotlightForm.appendChild(spotlightInput);
-  const spotlightFormButton = button({ class: "spotlightformbutton" });
-  spotlightFormButton.textContent = "SUBMIT";
+  const spotlightFormButton = button({ class: 'spotlightformbutton' });
+  spotlightFormButton.textContent = 'SUBMIT';
   spotlightForm.appendChild(spotlightFormButton);
 
   textDiv.appendChild(spotlightForm);
@@ -68,20 +68,20 @@ function createBannerText(block) {
 export default function decorate(block) {
   const spotlightText = createBannerText(block);
 
-  const bannerElement = div({ class: "bannerElement" });
+  const bannerElement = div({ class: 'bannerElement' });
 
-  const bannerPicture = div({ class: "banner-picture" });
+  const bannerPicture = div({ class: 'banner-picture' });
 
   const pictureElement = block.querySelector('picture');
   const imgElement = pictureElement.querySelector('source');
   const src = imgElement.getAttribute('srcset');
   bannerPicture.style.backgroundImage = `url(${src})`;
 
-  block.innerHTML = "";
+  block.innerHTML = '';
 
   // desktop version
-  const spotlightHolder = div({ class: "spotlightcircleholder" });
-  const spotlightCircle = div({ class: "spotlightcircle" });
+  const spotlightHolder = div({ class: 'spotlightcircleholder' });
+  const spotlightCircle = div({ class: 'spotlightcircle' });
   spotlightCircle.appendChild(spotlightText);
   spotlightHolder.appendChild(spotlightCircle);
 
@@ -89,7 +89,7 @@ export default function decorate(block) {
   bannerElement.appendChild(bannerPicture);
 
   // mobile version
-  const mobileBannerHolder = div({ class: "mobileBannerTextHolder" });
+  const mobileBannerHolder = div({ class: 'mobileBannerTextHolder' });
   const mobileSpotlightText = spotlightText.cloneNode(true);
 
   mobileBannerHolder.appendChild(mobileSpotlightText);
