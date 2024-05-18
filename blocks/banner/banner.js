@@ -1,4 +1,6 @@
-import { div, button, h2, h3, form, input } from '../../scripts/dom-helpers.js';
+import {
+  div, button, h2, h3, form, input
+} from '../../scripts/dom-helpers.js';
 
 function createLinkElement(hrefValue, innerHTML) {
   const link = document.createElement('a');
@@ -10,65 +12,61 @@ function createLinkElement(hrefValue, innerHTML) {
 }
 
 function createButton(hrefValue) {
-  const spotlight_button = button({ class: 'spotlightbutton' });
+  const spotlightButton = button({ class: 'spotlightbutton' });
 
-  spotlight_button.textContent = 'LEARN MORE';
-  spotlight_button.addEventListener('click', () => {
+  spotlightButton.textContent = 'LEARN MORE';
+  spotlightButton.addEventListener('click', () => {
     window.location.href = hrefValue;
   });
-  return spotlight_button;
+  return spotlightButton;
 }
-
-
 
 function createBannerText(block) {
   // extract text values from block elements
-  const spotlight_title = block.querySelector('h2');
-  const spotlight_subtitle = block.querySelector('h3');
+  const spotlightTitle = block.querySelector('h2');
+  const spotlightSubtitle = block.querySelector('h3');
 
   // create hyperlinks with the text values
-  const spotlight_link = block.querySelector('a');
-  const hrefValue = spotlight_link ? spotlight_link.href : '#';
-  const title_link = createLinkElement(hrefValue, spotlight_title.innerHTML);
-  const subtitle_link = createLinkElement(hrefValue, spotlight_subtitle.innerHTML);
+  const spotlightLink = block.querySelector('a');
+  const hrefValue = spotlightLink ? spotlightLink.href : '#';
+  const titleLink = createLinkElement(hrefValue, spotlightTitle.innerHTML);
+  const subtitleLink = createLinkElement(hrefValue, spotlightSubtitle.innerHTML);
 
   // style the hyperlinks
-  const heading = h2(title_link);
-  const subheading = h3(subtitle_link);
+  const heading = h2(titleLink);
+  const subheading = h3(subtitleLink);
   heading.classList.add('spotlighttext', 'title');
   subheading.classList.add('spotlighttext', 'subtitle');
 
   // create the button
-  const spotlight_button = createButton(hrefValue);
+  const spotlightButton = createButton(hrefValue);
 
   const textDiv = div();
   textDiv.classList.add('spotlighttext');
 
   textDiv.appendChild(heading);
   textDiv.appendChild(subheading);
-  textDiv.appendChild(spotlight_button);
+  textDiv.appendChild(spotlightButton);
 
   // create the form element 
-  const spotlight_form = form({ class: "spotlightform" });
-  const spotlight_input = input({ class: "spotlightinput" });
-  spotlight_input.placeholder = "Enter Email";
-  spotlight_form.appendChild(spotlight_input);
-  const spotlight_form_button = button({ class: "spotlightformbutton" });
-  spotlight_form_button.textContent = "SUBMIT";
-  spotlight_form.appendChild(spotlight_form_button);
+  const spotlightForm = form({ class: "spotlightform" });
+  const spotlightInput = input({ class: "spotlightinput" });
+  spotlightInput.placeholder = "Enter Email";
+  spotlightForm.appendChild(spotlightInput);
+  const spotlightFormButton = button({ class: "spotlightformbutton" });
+  spotlightFormButton.textContent = "SUBMIT";
+  spotlightForm.appendChild(spotlightFormButton);
 
+  textDiv.appendChild(spotlightForm);
 
-  textDiv.appendChild(spotlight_form);
-
-
-  spotlight_title.remove();
-  spotlight_subtitle.remove();
-  spotlight_link.remove();
+  spotlightTitle.remove();
+  spotlightSubtitle.remove();
+  spotlightLink.remove();
   return textDiv;
 }
 
 export default function decorate(block) {
-  const spotlight_text = createBannerText(block);
+  const spotlightText = createBannerText(block);
 
   const bannerElement = div({ class: "bannerElement" });
 
@@ -83,16 +81,16 @@ export default function decorate(block) {
 
   // desktop version
   const spotlightHolder = div({ class: "spotlightcircleholder" });
-  const spotlightcircle = div({ class: "spotlightcircle" });
-  spotlightcircle.appendChild(spotlight_text);
-  spotlightHolder.appendChild(spotlightcircle);
+  const spotlightCircle = div({ class: "spotlightcircle" });
+  spotlightCircle.appendChild(spotlightText);
+  spotlightHolder.appendChild(spotlightCircle);
 
   bannerPicture.appendChild(spotlightHolder)
   bannerElement.appendChild(bannerPicture);
 
   // mobile version
   const mobileBannerHolder = div({ class: "mobileBannerTextHolder" });
-  const mobileSpotlightText = spotlight_text.cloneNode(true);
+  const mobileSpotlightText = spotlightText.cloneNode(true);
 
   mobileBannerHolder.appendChild(mobileSpotlightText);
   bannerElement.appendChild(mobileBannerHolder);
