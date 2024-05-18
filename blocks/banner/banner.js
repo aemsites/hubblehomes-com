@@ -85,7 +85,7 @@ export default function decorate(block) {
   spotlightCircle.appendChild(spotlightText);
   spotlightHolder.appendChild(spotlightCircle);
 
-  bannerPicture.appendChild(spotlightHolder)
+  bannerPicture.appendChild(spotlightHolder);
   bannerElement.appendChild(bannerPicture);
 
   // mobile version
