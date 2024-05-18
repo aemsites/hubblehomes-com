@@ -12,7 +12,7 @@ function createLinkElement(hrefValue, innerHTML) {
 }
 
 function createButton(hrefValue) {
-  const spotlightButton = button({ class: 'spotlightbutton' });
+  const spotlightButton = button({ class: 'spotlight-button' });
 
   spotlightButton.textContent = 'LEARN MORE';
   spotlightButton.addEventListener('click', () => {
@@ -35,25 +35,25 @@ function createBannerText(block) {
   // style the hyperlinks
   const heading = h2(titleLink);
   const subheading = h3(subtitleLink);
-  heading.classList.add('spotlighttext', 'title');
-  subheading.classList.add('spotlighttext', 'subtitle');
+  heading.classList.add('spotlight-text', 'title');
+  subheading.classList.add('spotlight-text', 'subtitle');
 
   // create the button
   const spotlightButton = createButton(hrefValue);
 
   const textDiv = div();
-  textDiv.classList.add('spotlighttext');
+  textDiv.classList.add('spotlight-text');
 
   textDiv.appendChild(heading);
   textDiv.appendChild(subheading);
   textDiv.appendChild(spotlightButton);
 
   // create the form element
-  const spotlightForm = form({ class: 'spotlightform' });
-  const spotlightInput = input({ class: 'spotlightinput' });
+  const spotlightForm = form({ class: 'spotlight-form' });
+  const spotlightInput = input({ class: 'spotlight-input' });
   spotlightInput.placeholder = 'Enter Email';
   spotlightForm.appendChild(spotlightInput);
-  const spotlightFormButton = button({ class: 'spotlightformbutton' });
+  const spotlightFormButton = button({ class: 'spotlight-form-button' });
   spotlightFormButton.textContent = 'SUBMIT';
   spotlightForm.appendChild(spotlightFormButton);
 
@@ -68,7 +68,7 @@ function createBannerText(block) {
 export default function decorate(block) {
   const spotlightText = createBannerText(block);
 
-  const bannerElement = div({ class: 'bannerElement' });
+  const bannerElement = div({ class: 'banner-element' });
 
   const bannerPicture = div({ class: 'banner-picture' });
 
@@ -80,8 +80,8 @@ export default function decorate(block) {
   block.innerHTML = '';
 
   // desktop version
-  const spotlightHolder = div({ class: 'spotlightcircleholder' });
-  const spotlightCircle = div({ class: 'spotlightcircle' });
+  const spotlightHolder = div({ class: 'spotlight-circle-holder' });
+  const spotlightCircle = div({ class: 'spotlight-circle' });
   spotlightCircle.appendChild(spotlightText);
   spotlightHolder.appendChild(spotlightCircle);
 
@@ -89,7 +89,7 @@ export default function decorate(block) {
   bannerElement.appendChild(bannerPicture);
 
   // mobile version
-  const mobileBannerHolder = div({ class: 'mobileBannerTextHolder' });
+  const mobileBannerHolder = div({ class: 'mobile-bannertext-holder' });
   const mobileSpotlightText = spotlightText.cloneNode(true);
 
   mobileBannerHolder.appendChild(mobileSpotlightText);
