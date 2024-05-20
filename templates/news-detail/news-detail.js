@@ -9,7 +9,7 @@ export default async function decorate(doc) {
   [...$page.children].forEach((child) => $mainContent.append(child));
 
   // hero carousel
-  const $carousel = div({ class: 'hero-carousel wip' });
+  const $carousel = div({ class: 'hero-carousel' });
   loadFragment('/news/news-detail/fragments/hero-carousel').then((frag) => {
     $carousel.append(frag.firstElementChild);
   });
