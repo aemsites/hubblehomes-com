@@ -11,7 +11,7 @@ export default async function decorate(doc) {
   // hero carousel
   const $carousel = div({ class: 'hero-carousel wip' });
   loadFragment('/news/news-detail/fragments/hero-carousel').then((frag) => {
-    $carousel.append(frag.firstElementChild.querySelector('.carousel-wrapper'));
+    $carousel.append(frag.firstElementChild);
   });
 
   // aside
