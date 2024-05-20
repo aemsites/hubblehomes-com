@@ -49,7 +49,6 @@
 }
 
 .banner .spotlight-input {
-  padding: 0%;
   margin: 0%;
   height: 30px;
   box-sizing: border-box;
@@ -61,6 +60,35 @@
 .banner .spotlight-form {
   height: 30px;
 }
+
+
+.banner .spotlight-text {
+  text-align: center;
+  padding: 0 10px;
+  margin: auto;
+  position: relative;
+  top: 20%;
+}
+
+.banner .spotlight-circle-holder {
+  max-height: 375px;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+}
+
+.banner .spotlight-circle-holder .spotlight-circle {
+  border-radius: 288px;
+  height: 530px;
+  margin: auto;
+  border: 10px solid white;
+  transform: translateY(-15%);
+}
+
+.banner .mobile-bannertext-holder {
+  padding: 20px;
+}
+
 
 .banner-wrapper:nth-child(odd) .spotlight-text .title {
   color: var(--link-color);
@@ -87,52 +115,23 @@
 }
 
 /* white translucent */
-.banner-wrapper:nth-child(odd) .spotlight-circle-holder .spotlight-circle  {
-  background: rgba(255, 255, 255, 0.5);
+.banner-wrapper:nth-child(odd) .spotlight-circle-holder .spotlight-circle {
+  background: rgba(255 255 255 / 50%);
 }
 
 /* blue translucent */
-.banner-wrapper:nth-child(even) .spotlight-circle-holder .spotlight-circle  {
-  background: rgba(0, 50, 100, 0.5);
+.banner-wrapper:nth-child(even) .spotlight-circle-holder .spotlight-circle {
+  background: rgba(0 50 100 / 50%);
 }
 
 /* white solid */
 .banner-wrapper:nth-child(odd) .mobile-bannertext-holder {
-  background: rgba(240, 240, 240, 1);
+  background: rgba(240 240 240 / 100%);
 }
 
 /* blue solid */
 .banner-wrapper:nth-child(even) .mobile-bannertext-holder {
-  background: rgba(0, 50, 100, 1);
-}
-
-
-.banner .spotlight-text {
-  text-align: center;
-  padding: 0 10px;
-  margin: auto;
-  position: relative;
-  top: 20%;
-  /* translate: translateY(50%); */
-}
-
-.banner .spotlight-circle-holder {
-  max-height: 375px;
-  box-sizing: border-box;
-  overflow: hidden;
-  position: relative;
-}
-
-.banner .spotlight-circle-holder .spotlight-circle {
-  border-radius: 288px;
-  height: 530px;
-  margin: auto;
-  border: 10px solid white;
-  transform: translateY(-15%);
-}
-
-.banner .mobile-bannertext-holder {
-  padding: 20px;
+  background: rgba(0 50 100 / 100%);
 }
 
 @media (width < 1000px) {
