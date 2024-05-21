@@ -5,7 +5,7 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 let auto;
 let autoInterval;
 let autoDuration = '6000'; // default if not set in block
-const fadeDuration = 700; // match css transition duration -> .carousel.fade .slide
+const fadeDuration = 700; // match time in css -> .carousel.fade .slide
 let isInitialLoad = true;
 const initialLoadDelay = 3000;
 
@@ -41,14 +41,13 @@ function showSlide(block, dir) {
   }
 }
 
-function createSlide(row, slideIndex) {
-  const active = slideIndex === 0 ? 'active' : '';
-  const $slide = li({ 'data-slide-index': slideIndex, class: `slide ${active}` });
+function createSlide(row, i) {
+  const isFirst = i === 0;
+  const $slide = li({ 'data-slide-index': i, class: `slide ${isFirst ? 'active' : ''}` });
 
-  row.querySelectorAll(':scope > div').forEach((column, i) => {
-    column.classList.add(`slide-${i === 0 ? 'image' : 'content'}`);
-
-    if (i === 0) {
+  row.querySelectorAll(':scope > div').forEach((column, n) => {
+    column.classList.add(`slide-${n === 0 ? 'image' : 'content'}`);
+    if (n === 0) {
       const img = column.querySelector('img');
       if (img) {
         const imgSizes = [
@@ -58,12 +57,11 @@ function createSlide(row, slideIndex) {
           { media: '(min-width: 1024px)', width: '1920' },
         ];
         column.innerHTML = '';
-        column.append(createOptimizedPicture(img.src, 'test', true, imgSizes));
+        column.append(createOptimizedPicture(img.src, `slide ${n}`, !!isFirst, imgSizes));
       }
     }
     $slide.append(column);
   });
-
   const labeledBy = $slide.querySelector('h1, h2, h3, h4, h5, h6');
   if (labeledBy) $slide.setAttribute('aria-labelledby', labeledBy.getAttribute('id'));
 
@@ -98,7 +96,7 @@ export default async function decorate(block) {
   block.setAttribute('aria-roledescription', 'Carousel');
 
   const rows = block.querySelectorAll(':scope > div');
-  const isSingleSlide = rows.length < 2;
+  const isSingle = rows.length < 2;
 
   const $slides = ul({ class: 'slides' });
   rows.forEach((row, i) => {
@@ -107,25 +105,25 @@ export default async function decorate(block) {
     row.remove();
   });
 
-  let $slideButtons;
-  if (!isSingleSlide) {
+  let $slideBtns;
+  if (!isSingle) {
     const $prev = button({ class: 'prev', 'aria-label': 'Previous Slide' });
     $prev.addEventListener('click', () => showSlide(block, -1));
     const $next = button({ class: 'next', 'aria-label': 'Previous Slide' });
     $next.addEventListener('click', () => showSlide(block, 1));
-    $slideButtons = div({ class: 'buttons' }, $prev, $next);
+    $slideBtns = div({ class: 'buttons' }, $prev, $next);
 
     block.dataset.activeSlide = 0;
   }
 
   const $container = div({ class: 'slides-container' },
     $slides,
-    $slideButtons,
+    $slideBtns,
   );
 
   block.prepend($container);
 
-  // autoscroll functionality
+  // auto slide functionality
   if (auto) {
     const autoSlide = (entries) => {
       entries.forEach((entry) => {
@@ -146,8 +144,8 @@ export default async function decorate(block) {
     autoObserver.observe(block);
 
     // pause when mouse is over
-    $container.addEventListener('mouseenter', () => stopAuto());
-    $container.addEventListener('mouseleave', () => startAuto(block));
+    $slides.addEventListener('mouseenter', () => stopAuto());
+    $slides.addEventListener('mouseleave', () => startAuto(block));
 
     // pause when tab is not active or window is not focused
     document.addEventListener('visibilitychange', () => {
