@@ -123,6 +123,7 @@ header {
   background: #fff;
   box-shadow: 0 0 3px 0 rgb(0 0 0 / 10%);
 }
+helix-sidekick[pushdown] ~ header { top: 49px }
 
 h1, h2, h3,
 h4, h5, h6 {
