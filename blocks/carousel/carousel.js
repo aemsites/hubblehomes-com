@@ -7,7 +7,7 @@ let autoInterval;
 let autoDuration = '6000'; // default if not set in block
 const fadeDuration = 700; // match time in css -> .carousel.fade .slide
 let isInitialLoad = true;
-const initialLoadDelay = 3000;
+const initialLoadDelay = 4000;
 
 function showSlide(block, dir) {
   const cl = block.classList;
@@ -57,7 +57,7 @@ function createSlide(row, i) {
           { media: '(min-width: 1024px)', width: '1920' },
         ];
         column.innerHTML = '';
-        column.append(createOptimizedPicture(img.src, `slide ${n}`, !!isFirst, imgSizes));
+        column.append(createOptimizedPicture(img.src, `slide ${n}`, true, imgSizes));
       }
     }
     $slide.append(column);
