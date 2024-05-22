@@ -45,14 +45,14 @@ function createBannerText(block) {
   // create the button
   const spotlightButton = createButton(hrefValue);
 
-    // create the form element
-    const spotlightForm = form({ class: 'spotlight-form' });
-    const spotlightInput = input({ class: 'spotlight-input' });
-    spotlightInput.placeholder = 'Enter Email';
-    spotlightForm.appendChild(spotlightInput);
-    const spotlightFormButton = button({ class: 'spotlight-form-button' });
-    spotlightFormButton.textContent = 'SUBMIT';
-    spotlightForm.appendChild(spotlightFormButton);
+  // create the form element
+  const spotlightForm = form({ class: 'spotlight-form' });
+  const spotlightInput = input({ class: 'spotlight-input' });
+  spotlightInput.placeholder = 'Enter Email';
+  spotlightForm.appendChild(spotlightInput);
+  const spotlightFormButton = button({ class: 'spotlight-form-button' });
+  spotlightFormButton.textContent = 'SUBMIT';
+  spotlightForm.appendChild(spotlightFormButton);
 
   // create the text container div
   const textDiv = div({ class: 'spotlight-text' });
