@@ -30,6 +30,42 @@ function buildHeroBlock(main) {
     main.prepend(section);
   }
 }
+/**
+ * Builds the banner block
+ * @param {Element} main The container element
+ */
+function buildBannerBlock(main) {
+  const divs = main.querySelectorAll(':scope > div');
+
+  divs.forEach((div) => {
+    const bannerImage = div.querySelector('picture');
+    const bannerTitle = div.querySelector('h2');
+    const bannerSubtitle = div.querySelector('h3');
+    const bannerLink = div.querySelector('a');
+    if (bannerImage && bannerTitle && bannerSubtitle && bannerLink) {
+      const isCorrectOrder = (bannerImage.compareDocumentPosition(bannerTitle)
+        && Node.DOCUMENT_POSITION_FOLLOWING)
+        && (bannerTitle.compareDocumentPosition(bannerSubtitle) && Node.DOCUMENT_POSITION_FOLLOWING)
+        && (bannerSubtitle.compareDocumentPosition(bannerLink) && Node.DOCUMENT_POSITION_FOLLOWING);
+
+      if (isCorrectOrder) {
+        const content = [[{
+          elems: [
+            bannerImage,
+            bannerTitle,
+            bannerSubtitle,
+            bannerLink,
+          ],
+        },
+        ]];
+        const bannerDiv = document.createElement('div');
+        const banner = buildBlock('banner', content);
+        bannerDiv.appendChild(banner);
+        div.replaceWith(bannerDiv);
+      }
+    }
+  });
+}
 
 /**
  * load fonts.css and set a session storage flag
@@ -50,6 +86,7 @@ async function loadFonts() {
 function buildAutoBlocks(main) {
   try {
     buildHeroBlock(main);
+    buildBannerBlock(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);

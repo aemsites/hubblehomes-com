@@ -13,11 +13,11 @@ function createLinkElement(hrefValue, innerHTML) {
 
 function createButton(hrefValue) {
   const spotlightButton = button({ class: 'spotlight-button' });
-
   spotlightButton.textContent = 'LEARN MORE';
   spotlightButton.addEventListener('click', () => {
     window.location.href = hrefValue;
   });
+
   return spotlightButton;
 }
 
@@ -32,6 +32,10 @@ function createBannerText(block) {
   const titleLink = createLinkElement(hrefValue, spotlightTitle.innerHTML);
   const subtitleLink = createLinkElement(hrefValue, spotlightSubtitle.innerHTML);
 
+  spotlightTitle.remove();
+  spotlightSubtitle.remove();
+  spotlightLink.remove();
+
   // style the hyperlinks
   const heading = h2(titleLink);
   const subheading = h3(subtitleLink);
@@ -41,27 +45,22 @@ function createBannerText(block) {
   // create the button
   const spotlightButton = createButton(hrefValue);
 
-  const textDiv = div();
-  textDiv.classList.add('spotlight-text');
+    // create the form element
+    const spotlightForm = form({ class: 'spotlight-form' });
+    const spotlightInput = input({ class: 'spotlight-input' });
+    spotlightInput.placeholder = 'Enter Email';
+    spotlightForm.appendChild(spotlightInput);
+    const spotlightFormButton = button({ class: 'spotlight-form-button' });
+    spotlightFormButton.textContent = 'SUBMIT';
+    spotlightForm.appendChild(spotlightFormButton);
 
+  // create the text container div
+  const textDiv = div({ class: 'spotlight-text' });
   textDiv.appendChild(heading);
   textDiv.appendChild(subheading);
   textDiv.appendChild(spotlightButton);
-
-  // create the form element
-  const spotlightForm = form({ class: 'spotlight-form' });
-  const spotlightInput = input({ class: 'spotlight-input' });
-  spotlightInput.placeholder = 'Enter Email';
-  spotlightForm.appendChild(spotlightInput);
-  const spotlightFormButton = button({ class: 'spotlight-form-button' });
-  spotlightFormButton.textContent = 'SUBMIT';
-  spotlightForm.appendChild(spotlightFormButton);
-
   textDiv.appendChild(spotlightForm);
 
-  spotlightTitle.remove();
-  spotlightSubtitle.remove();
-  spotlightLink.remove();
   return textDiv;
 }
 
@@ -69,7 +68,6 @@ export default function decorate(block) {
   const spotlightText = createBannerText(block);
 
   const bannerElement = div({ class: 'banner-element' });
-
   const bannerPicture = div({ class: 'banner-picture' });
 
   const pictureElement = block.querySelector('picture');
