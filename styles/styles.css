@@ -219,10 +219,6 @@ a:any-link {
   font-weight: 600;
 }
 
-a:hover {
-  text-decoration: underline;
-}
-
 /* buttons */
 button {
   display: inline-block;
