@@ -79,6 +79,7 @@
   cursor: pointer;
   background: transparent;
   outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 .carousel .btns button.next { left: auto; right: 0; }
 
@@ -100,7 +101,9 @@
   opacity: .5;
   transition: opacity 200ms;
 }
-.carousel .btns button:hover::after{ opacity: 1 }
+.carousel .btns button:hover::after { opacity: 1 }
+.carousel .btns button:focus::after { opacity: .5 }
+
 
 .carousel .btns button.next::after {
   transform: rotate(180deg);
