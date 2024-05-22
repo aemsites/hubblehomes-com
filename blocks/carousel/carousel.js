@@ -1,5 +1,5 @@
 /* eslint-disable object-curly-newline, function-paren-newline */
-import { div, ul, li, button } from '../../scripts/dom-helpers.js';
+import { div, ul, li, button, p } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
 let auto;
@@ -39,33 +39,12 @@ function showSlide(block, dir) {
       $currentActive.classList.remove('active');
     }, fadeDuration);
   }
-}
 
-function createSlide(row, i) {
-  const isFirst = i === 0;
-  const $slide = li({ 'data-slide-index': i, class: `slide ${isFirst ? 'active' : ''}` });
-
-  row.querySelectorAll(':scope > div').forEach((column, n) => {
-    column.classList.add(`slide-${n === 0 ? 'image' : 'content'}`);
-    if (n === 0) {
-      const img = column.querySelector('img');
-      if (img) {
-        const imgSizes = [
-          { media: '(max-width: 480px)', width: '480' },
-          { media: '(min-width: 480px) and (max-width: 768px)', width: '768' },
-          { media: '(min-width: 768px) and (max-width: 1024px)', width: '1024' },
-          { media: '(min-width: 1024px)', width: '1920' },
-        ];
-        column.innerHTML = '';
-        column.append(createOptimizedPicture(img.src, `slide ${n}`, true, imgSizes));
-      }
-    }
-    $slide.append(column);
-  });
-  const labeledBy = $slide.querySelector('h1, h2, h3, h4, h5, h6');
-  if (labeledBy) $slide.setAttribute('aria-labelledby', labeledBy.getAttribute('id'));
-
-  return $slide;
+  // reset auto when clicked
+  if (auto) {
+    stopAuto();
+    setTimeout(() => { startAuto(block); }, autoDuration);
+  }
 }
 
 // auto slide functions
@@ -82,13 +61,63 @@ function stopAuto() {
   autoInterval = undefined;
 }
 
-export default async function decorate(block) {
-  const blockClasses = block.className.split(' ');
-  const autoClass = blockClasses.find((className) => className.startsWith('auto-'));
+function createSlide(row, i) {
+  const isFirst = i === 0;
+  const $slide = li({ 'data-slide-index': i, class: `slide ${isFirst ? 'active' : ''}` });
 
+  row.querySelectorAll(':scope > div').forEach((column, col) => {
+    // decorate image
+    if (col === 0) {
+      column.classList.add('slide-image');
+      const img = column.querySelector('img');
+      if (img) {
+        const imgSizes = [
+          { media: '(max-width: 480px)', width: '480' },
+          { media: '(min-width: 480px) and (max-width: 768px)', width: '768' },
+          { media: '(min-width: 768px) and (max-width: 1024px)', width: '1024' },
+          { media: '(min-width: 1024px)', width: '1920' },
+        ];
+        column.innerHTML = '';
+        column.append(createOptimizedPicture(img.src, `slide ${col}`, true, imgSizes));
+        $slide.append(column);
+      }
+    }
+    // decorate content
+    if (col === 1) {
+      // cta buttons
+      const cta = column.querySelector('a');
+      if (cta) cta.classList.add('button');
+
+      // create top content from h2 elements
+      const h2s = column.querySelectorAll('h2');
+      if (h2s.length !== 0) {
+        const $top = div({ class: 'content top' });
+        h2s.forEach((h2) => {
+          const $p = p();
+          $p.innerHTML = h2.innerHTML.replace(/<br>/g, '');
+          $top.append($p);
+          h2.remove();
+        });
+        $slide.append($top);
+      }
+
+      // creat bottom content
+      const $bottom = div({ class: 'content bottom' });
+      $bottom.innerHTML = column.innerHTML.replace(/<br>/g, '');
+
+      $slide.append($bottom);
+      column.remove();
+    }
+  });
+  return $slide;
+}
+
+export default async function decorate(block) {
+  const autoClass = block.className.split(' ').find((className) => className.startsWith('auto-'));
+
+  // get duration from auto- block class
   if (autoClass) {
     auto = true;
-    // get auto duration from block class
     [autoDuration] = autoClass.match(/\d+/);
   }
 
@@ -107,20 +136,18 @@ export default async function decorate(block) {
 
   let $slideBtns;
   if (!isSingle) {
+    block.dataset.activeSlide = 0;
     const $prev = button({ class: 'prev', 'aria-label': 'Previous Slide' });
     $prev.addEventListener('click', () => showSlide(block, -1));
     const $next = button({ class: 'next', 'aria-label': 'Previous Slide' });
     $next.addEventListener('click', () => showSlide(block, 1));
-    $slideBtns = div({ class: 'buttons' }, $prev, $next);
-
-    block.dataset.activeSlide = 0;
+    $slideBtns = div({ class: 'btns' }, $prev, $next);
   }
 
   const $container = div({ class: 'slides-container' },
     $slides,
     $slideBtns,
   );
-
   block.prepend($container);
 
   // auto slide functionality
