@@ -73,8 +73,6 @@
   text-align: center;
   padding: 0 10px;
   margin: auto;
-  position: relative;
-  bottom: -25%;
 }
 
 .banner .spotlight-circle-holder {
@@ -90,6 +88,9 @@
   margin: auto;
   border: 10px solid white;
   transform: translateY(-15%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .banner .mobile-bannertext-holder {
@@ -155,7 +156,7 @@
 
 }
 
-@media (width >=1000px) {
+@media (min-width: 1000px) {
   .banner .spotlight-circle {
     width: 440px;
   }
@@ -169,7 +170,7 @@
   }
 }
 
-@media (width >=1200px) {
+@media (min-width: 1200px) {
   .banner .spotlight-circle {
     width: 540px;
   }
