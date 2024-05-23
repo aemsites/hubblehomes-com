@@ -70,6 +70,8 @@
 
 .models .model-card-image-holder .model-card-image-picture picture img {
   aspect-ratio: 4 / 3;
+  min-height: 216px;
+  min-width: 288px;
 }
 
 .models .model-card-image-overlay {
