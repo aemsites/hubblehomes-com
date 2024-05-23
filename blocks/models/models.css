@@ -11,7 +11,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(278px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
   grid-gap: 16px;
 }
 
@@ -68,7 +68,7 @@
 
 }
 
-.models .model-card-image-holder .model-card-image-picture img {
+.models .model-card-image-holder .model-card-image-picture picture img {
   aspect-ratio: 4 / 3;
 }
 
@@ -80,6 +80,9 @@
   padding: 2px 10px;
   box-sizing: border-box;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .models .model-card-image-overlay .share {
@@ -98,29 +101,20 @@
   padding-left: 5px;
   padding-right: 5px;
   height: 22px;
-  display: flex;
+  display: inherit;
   align-items: center;
   justify-content: center;
 }
 
 .models .model-card-image-overlay .favorite {
   max-width: 40px;
-  float: right;
-}
-
-.models .model-card-image-overlay > div:nth-child(1) {
-  width: 25%;
-  float: left;
 }
 
 .models .model-card-image-overlay > div:nth-child(2) {
   width: 50%;
-  float: left;
 }
 
 .models .model-card-tagline {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
   background-color: var(--dark-blue);
   color: #ffffff;
   padding: 5px;
@@ -128,9 +122,38 @@
   align-items: center;
 }
 
+.models.inventory .model-card-tagline,
+.models.featured .model-card-tagline,
+.models.home-plans .model-card-tagline {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.models.community .model-card-tagline {
+  grid-template-columns: 1fr;
+}
+
+.models.community .model-card-tagline .model-card-tagline-price {
+  color: #fcd700;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.models .model-card-tagline .model-card-tagline-type {
+  font-size: 12px;
+  padding-top: 3px;
+}
+
+
+.models.home-plans .model-card-details small {
+  font-size: 85%;
+}
+
 .models .model-card-tagline-price-container {
   display: flex;
+  justify-content: start;
   align-items: center;
+  font-size: 16px;
 }
 
 .models .model-card-tagline-price {
@@ -151,8 +174,6 @@
   border-bottom: 5px solid #3c763d;
 }
 
-
-
 .models .model-card-tagline-price-per-month {
   font-weight: bold;
 }
@@ -165,7 +186,10 @@
 .models .model-card-tagline-monthly-container {
   text-align: right;
   color: var(--yellow);
-  font-size: 15px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  font-size: 16px;
 }
 
 /* The following is the CSS for the beds, baths, sq cars */
@@ -202,7 +226,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr; /* Two equal columns */
     grid-gap: 3px;
-    padding: 0 3px;
+    padding: 3px;
   }
 
   .grid-item {
@@ -210,6 +234,19 @@
     font-weight: normal;
     color: grey;
     padding: 3px;
+  }
+
+  .grid-item-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+  }
+
+  .grid-item.span2 {
+    grid-column-end: span 2;
+    padding: 0;
   }
 
   .grid-item.phone a {
@@ -306,11 +343,27 @@
 
 }
 
-.btn-community{
-  font-size: 13px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.pull-left {
+  text-align: left;
+}
+
+.btn-action {
+  font-size: 10px;
+  color: #383838;
+  font-weight: 600;
+}
+
+.btn-block {
+  display: block;
+}
+
+.communitysmallbutton {
+  padding: 5px 9px;
+  font-size: 12px;
+}
+
+.communitylargebutton {
+  padding: 6px 12px;
 }
 
 .models .btn-primary {
@@ -327,4 +380,14 @@
   background-color: #003264;
   border-color: #003264;
   transition: all 0.3s ease-in-out;
+}
+
+.itemincentives {
+  background-color: #003264;
+  font-size: 12px;
+  padding: 5px;
+  border-radius: 0 0 10px 10px;
+  color: #fcd700;
+  font-weight: normal;
+  margin: 0 16%;
 }

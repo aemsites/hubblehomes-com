@@ -97,3 +97,4 @@ export function nav(...items) { return domEl('nav', ...items); }
 export function aside(...items) { return domEl('aside', ...items); }
 export function meta(...items) { return domEl('meta', ...items); }
 export function picture(...items) { return domEl('picture', ...items); }
+export function small(...items) { return domEl('small', ...items); }

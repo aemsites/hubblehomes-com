@@ -1,12 +1,17 @@
 import {
-  createOptimizedPicture,
   readBlockConfig
 } from '../../scripts/aem.js';
-import {div, h3, picture, img, li, span} from '../../scripts/dom-helpers.js'
+import {div, li } from '../../scripts/dom-helpers.js'
+import CardFactory from "./CardFactory.js";
 
-async function loadModels(path) {
-  const url = new URL(path);
-  const resp = await fetch(url.pathname);
+/**
+ * Fetch the models from the given url.
+ * @param url the url to load the models json from.
+ * @returns {Promise<*>} the promise that resolves to the models json.
+ */
+async function loadModels(url) {
+  const path = new URL(url);
+  const resp = await fetch(path.pathname);
 
   if (resp.ok) {
     const modelJson = await resp.json();
@@ -14,240 +19,38 @@ async function loadModels(path) {
   }
 }
 
-function createCardImage(model) {
-  const breakpoints = [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }];
-  const cardImage = picture();
-
-  breakpoints.forEach((breakpoint) => {
-    const source = document.createElement('source');
-
-    if (model.media) {
-      source.setAttribute('media', model.media);
-    }
-    source.setAttribute('type', 'image/jpeg');
-    source.setAttribute('srcset', `${model.image}?w=${breakpoint.width}`);
-
-    cardImage.appendChild(source);
-  });
-
-  const image = img();
-  image.setAttribute('alt', model.title);
-  image.className = 'model-card-image';
-  cardImage.appendChild(image);
-  return cardImage;
-}
-
-function modelGridDetails(model) {
-  const grid = div();
-  grid.classList.add("model-grid-details");
-
-  const beds = div("Beds");
-  beds.classList.add("model-grid-details-item");
-  const baths = div("Baths");
-  baths.classList.add("model-grid-details-item");
-  const sqft = div("SQ FT");
-  sqft.classList.add("model-grid-details-item");
-  const cars = div("Cars");
-  cars.classList.add("model-grid-details-item");
-
-  grid.appendChild(beds);
-  grid.appendChild(baths);
-  grid.appendChild(sqft);
-  grid.appendChild(cars);
-
-  const bedsValue = div(model.beds);
-  bedsValue.classList.add("model-grid-details-value");
-  const bathsValue = div(model.baths);
-  bathsValue.classList.add("model-grid-details-value");
-  const sqftValue = div(model.sqft);
-  sqftValue.classList.add("model-grid-details-value");
-  const carsValue = div(model.cars);
-  carsValue.classList.add("model-grid-details-value");
-
-  grid.appendChild(bedsValue);
-  grid.appendChild(bathsValue);
-  grid.appendChild(sqftValue);
-  grid.appendChild(carsValue);
-
-  return grid;
-}
-
-function createTagLine(model, isFeatured) {
-  const tagline = div();
-  tagline.classList.add('model-card-tagline');
-
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    narrowSymbol: true,
-    minimumFractionDigits: 0
-  });
-
-  const priceContainer = div();
-  priceContainer.className = 'model-card-tagline-price-container';
-
-  let price;
-  if (isFeatured) {
-    price = span(`From ${formatter.format(model.price)}`);
-  } else {
-    price = span(`${formatter.format(model.price)}`);
-  }
-  price.className = 'model-card-tagline-price';
-  priceContainer.appendChild(price);
-
-  if (!isFeatured && model['previous price']) {
-    const increaseIcon = span();
-    increaseIcon.className = 'model-card-tagline-price-increase-icon';
-
-    priceContainer.appendChild(increaseIcon);
-
-    const priceInc = span(formatter.format(model['previous price']))
-    priceInc.className = 'model-card-tagline-price-increase';
-    priceContainer.appendChild(priceInc);
-  }
-
-  tagline.appendChild(priceContainer);
-
-  const monthlyRate = div();
-  monthlyRate.classList.add('model-card-tagline-monthly-container')
-
-  const monthly = span('* ' + formatter.format(model.monthly));
-  monthly.classList.add('model-card-tagline-price-per-month');
-
-  const perMonth = span( '/mo');
-  perMonth.classList.add('model-card-tagline-monthly-per-month');
-
-  monthlyRate.appendChild(monthly);
-  monthlyRate.appendChild(perMonth);
-  tagline.appendChild(monthlyRate)
-
-  return tagline;
-}
-
-function createBottomDetails(model) {
-  const bottomDetails = div();
-  bottomDetails.classList.add('model-card-bottom-details');
-
-  bottomDetails.innerHTML = `<div class="grid-container">
-      <div class="grid-item stories">${model.story} Story</div>
-      <a href="https://contradovip.com/hubble-homes/amethyst?touch=1" class="grid-item interactive">Interactive Plan</a>
-      <div class="grid-item grey-button"><a href="https://www.google.com">Choose Your Lot</a></div>
-      <div class="grid-item black-button"><a href="#">Request a Tour</a></div>
-      <div class="grid-item phone"><a href="tel:2086495529">208-649-5529</a></div>
-      
-      <div class="grid-item getmoreinfo">
-          <a class="btn-primary2 btn-community" href="#">Get Info</a>
-          <a class="btn-primary btn-community" href="#">More</a>
-      </div>
-      <a class="grid-item communityspecs3padding directions">Directions</a>
-
-      <div class="grid-item communityspecs3padding photosandcompare">
-          <a href="/new-homes/idaho/boise-metro/caldwell/mason-creek/spruce#groupSS-1" target="_blank">
-            <i class="fas fa-images"></i> Photos
-          </a>
-          <form>
-            <input type="checkbox" name="CompareItem" id="CompareItem"  onchange="this.form.submit()">
-            <label for="CompareItem">
-                <strong>Compare</strong>
-            </label>
-          </form>
-      </div>
-  </div>`
-
-  return bottomDetails;
-}
-
-function createCardDetails(model, isFeatured) {
-  const cardDetails = div();
-  cardDetails.classList.add('model-card-details');
-
-  const pic = createOptimizedPicture(model.image, model.title, true, [{ media: '(min-width: 600px)', width: '400' }, { width: '750' }]);
-
-  cardDetails.innerHTML = `
-  <div>
-    <div class="model-card-header">
-      <div class="model-name">
-          <h3>${model.title}</h3>
-          ${!isFeatured ? `
-            <a href="http://www.hubblehomes.com/new-homes/idaho/boise-metro/caldwell/windsor-creek-east" aria-label="Visit Community Page">
-               <h4 class="model-address">${model.address}</h4>
-            </a>` : ''}
-      </div>
-    </div>
-
-    <div class="model-card-image-holder">
-        <div class="model-card-image-picture">
-          <a href="/new-homes/idaho/boise-metro/meridian/canyons-at-prescott-ridge/bradshaw/6135-w-fireline-ct/999"
-              class="gtm-inventorydetail">
-              ${pic.outerHTML}
-          </a>
-		</div>
-		
-        <div class="model-card-image-overlay">
-			<div class="col-xs-3 text-left">
-				<div class="share">
-				    <a href="" class="itemsharebutton" data-toggle="modal" data-target="#myModal_1" aria-label="Share">
-                      <img src="https://hubblehomes.imgix.net/share.png" alt="share"
-                        onmouseover="this.src='https://hubblehomes.imgix.net/share_over.png'"
-                        onmouseout="this.src='https://hubblehomes.imgix.net/share.png'">
-                      </a>
-                  </div>
-			</div>
-			<div class="status">
-			    <small>${model.status}</small>
-			</div>
-			<div>
-				<div class="favorite">
-                  <a
-                    href="/my-favorites/favorites-add/canyons-at-prescott-ridge/bradshaw/6135-w-fireline-ct/999"
-                    class="gtm-communitylistfavorites" aria-label="Add Bradshaw to My Favorites"><img
-                    src="https://hubblehomes.imgix.net/save.png" alt="save" class="img-responsive"
-                    onmouseover="this.src='https://hubblehomes.imgix.net/save_over.png'"
-                    onmouseout="this.src='https://hubblehomes.imgix.net/save.png'"></a></div>
-			</div>
-		</div>
-    </div>`
-
-
-
-  return cardDetails;
-}
-
-function createModelCard(model, isFeatured) {
-  const modelCard = li();
-
-  const details = createCardDetails(model, isFeatured);
-  const tagline = createTagLine(model, isFeatured);
-  const grid = modelGridDetails(model);
-  const bottomDetails = createBottomDetails(model);
-
-  modelCard.appendChild(details);
-  modelCard.appendChild(tagline);
-  modelCard.appendChild(grid);
-  modelCard.appendChild(bottomDetails);
-
-  return modelCard;
-}
-
 export default function decorate(block) {
   const {
-    models,
+    models: modelData,
     title,
   } = readBlockConfig(block);
 
-  const isFeatured = block.classList.contains("featured");
+  // if the block does not contain the model class then we don't process anything
+  const isModel = block.classList.contains("models");
+  if (!isModel) {
+    return;
+  }
 
-  block.textContent = '';
+  const classTokenList = block.classList;
 
-  const titleEl = div(title);
-  titleEl.classList.add('grey-divider');
+  block.innerHTML = '';
 
+  // Create the title bar that identifies the block
+  const titleEl = div({class: 'grey-divider'}, title);
   block.appendChild(titleEl);
 
-  loadModels(models).then((models) => {
+  // load the json that's associated with the models and iterate over each home
+  // and create a card for each home
+
+  loadModels(modelData).then((models) => {
     const ul = document.createElement('ul');
+
     models.forEach((model) => {
-      ul.appendChild(createModelCard(model, isFeatured));
+      const li = document.createElement('li');
+      const card = CardFactory.createCard(classTokenList);
+      card.setModel(model);
+      li.appendChild(card.render());
+      ul.append(li);
     });
 
     block.appendChild(ul);
