@@ -68,12 +68,6 @@
   max-height: 30px;
 }
 
-.banner .spotlight-text {
-  text-align: center;
-  padding: 0 10px;
-  margin: auto;
-}
-
 .banner .spotlight-circle-holder {
   max-height: 375px;
   box-sizing: border-box;
@@ -90,6 +84,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.banner .spotlight-text {
+  text-align: center;
+  padding: 0 10px;
+  margin: auto;
 }
 
 .banner .mobile-bannertext-holder {

@@ -13,11 +13,11 @@ function createLinkElement(hrefValue, innerHTML) {
 
 function createButton(hrefValue) {
   const spotlightButton = button({ class: 'spotlight-button' });
-
   spotlightButton.textContent = 'LEARN MORE';
   spotlightButton.addEventListener('click', () => {
     window.location.href = hrefValue;
   });
+
   return spotlightButton;
 }
 
@@ -32,6 +32,10 @@ function createBannerText(block) {
   const titleLink = createLinkElement(hrefValue, spotlightTitle.innerHTML);
   const subtitleLink = createLinkElement(hrefValue, spotlightSubtitle.innerHTML);
 
+  spotlightTitle.remove();
+  spotlightSubtitle.remove();
+  spotlightLink.remove();
+
   // style the hyperlinks
   const heading = h2(titleLink);
   const subheading = h3(subtitleLink);
@@ -40,13 +44,6 @@ function createBannerText(block) {
 
   // create the button
   const spotlightButton = createButton(hrefValue);
-
-  const textDiv = div();
-  textDiv.classList.add('spotlight-text');
-
-  textDiv.appendChild(heading);
-  textDiv.appendChild(subheading);
-  textDiv.appendChild(spotlightButton);
 
   // create the form element
   const spotlightForm = form({ class: 'spotlight-form' });
@@ -57,11 +54,13 @@ function createBannerText(block) {
   spotlightFormButton.textContent = 'SUBMIT';
   spotlightForm.appendChild(spotlightFormButton);
 
+  const textDiv = div();
+  textDiv.classList.add('spotlight-text');
+  textDiv.appendChild(heading);
+  textDiv.appendChild(subheading);
+  textDiv.appendChild(spotlightButton);
   textDiv.appendChild(spotlightForm);
 
-  spotlightTitle.remove();
-  spotlightSubtitle.remove();
-  spotlightLink.remove();
   return textDiv;
 }
 
