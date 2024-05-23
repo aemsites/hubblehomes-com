@@ -1,4 +1,12 @@
-import {a, div, h3, img, span} from "../../../scripts/dom-helpers.js";
+import {
+    a,
+    div,
+    form,
+    h3,
+    img,
+    label,
+    span
+} from "../../../scripts/dom-helpers.js";
 import {createOptimizedPicture} from "../../../scripts/aem.js";
 
 class BaseCard {
@@ -59,14 +67,14 @@ class BaseCard {
     }
 
     renderButtonActions(gridContainer) {
-        this.renderLeftButtons(gridContainer);
-        this.renderRightButtons(gridContainer);
+        this.renderLeftActionButtons(gridContainer);
+        this.renderRightActionButtons(gridContainer);
     }
 
-    renderLeftButtons(gridContainer) {
+    renderLeftActionButtons(gridContainer) {
         const link = a({
             target: '_blank',
-            class: 'btn-action',
+            class: 'btn-action btn-icons btn-directions',
             href: "#"
         }, "Directions");
 
@@ -75,25 +83,26 @@ class BaseCard {
         gridContainer.appendChild(actionContainer);
     }
 
-    renderRightButtons(gridContainer) {
-        const photoLink = a({class: 'btn-action', href: "#"}, "Photos");
+    renderRightActionButtons(gridContainer) {
+        // create a svg element using the photos.svg file
+        const photoLink = a({class: 'btn-action btn-icons btn-photos', href: "#"}, "Photos");
         const photoDiv = div(photoLink);
 
-        const form = document.createElement('form');
+
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.name = 'CompareItem_' + this.model.id
         checkbox.id = 'CompareItem_' + this.model.id;
-        checkbox.onchange = () => form.submit();
+        checkbox.onchange = () => console.log('click');
 
-        const label = document.createElement('label');
-        label.htmlFor = 'CompareItem_' + this.model.id;
-        label.innerHTML = '<strong> Compare</strong>';
+        const labelEl = label({
+            class: 'btn-action',
+            htmlFor: 'CompareItem_' + this.model.id,
+        }, " Compare");
 
-        form.appendChild(checkbox);
-        form.appendChild(label);
+        const formEl = form(checkbox, labelEl);
 
-        const actionContainer = div({class: 'grid-item grid-item-2col'}, photoDiv, form);
+        const actionContainer = div({class: 'grid-item grid-item-2col'}, photoDiv, formEl);
         gridContainer.appendChild(actionContainer);
     }
 
@@ -176,38 +185,15 @@ class BaseCard {
      * @returns {Element}
      */
     renderGridDetails() {
-        const grid = div();
-        grid.classList.add("model-grid-details");
-
-        const beds = div("Beds");
-        beds.classList.add("model-grid-details-item");
-        const baths = div("Baths");
-        baths.classList.add("model-grid-details-item");
-        const sqft = div("SQ FT");
-        sqft.classList.add("model-grid-details-item");
-        const cars = div("Cars");
-        cars.classList.add("model-grid-details-item");
-
-        grid.appendChild(beds);
-        grid.appendChild(baths);
-        grid.appendChild(sqft);
-        grid.appendChild(cars);
-
-        const bedsValue = div(this.model.beds);
-        bedsValue.classList.add("model-grid-details-value");
-        const bathsValue = div(this.model.baths);
-        bathsValue.classList.add("model-grid-details-value");
-        const sqftValue = div(this.model.sqft);
-        sqftValue.classList.add("model-grid-details-value");
-        const carsValue = div(this.model.cars);
-        carsValue.classList.add("model-grid-details-value");
-
-        grid.appendChild(bedsValue);
-        grid.appendChild(bathsValue);
-        grid.appendChild(sqftValue);
-        grid.appendChild(carsValue);
-
-        return grid;
+        return div({class: "model-grid-details"},
+            div("Beds"),
+            div("Baths"),
+            div("SQ FT"),
+            div("Cars"),
+            div(this.model.beds),
+            div(this.model.baths),
+            div(this.model.sqft),
+            div(this.model.cars));
     }
 
     /**
@@ -281,9 +267,13 @@ class BaseCard {
         return div({class: 'model-card-image-holder'}, imagePicture);
     }
 
-
+    /**
+     * Generate a Picture element that has contains the model's image.
+     * @param model the model to generate the image for.  Using the model's image property and title.
+     * @returns {Element}
+     */
     createModelImage(model) {
-        return createOptimizedPicture(model.image, model.title, true, [{ media: '(min-width: 600px)', width: '400' }, { width: '750' }]);
+        return createOptimizedPicture(model.image, model.title);
     }
 }
 
