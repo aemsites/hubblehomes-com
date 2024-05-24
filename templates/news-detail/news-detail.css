@@ -5,6 +5,12 @@
   margin: 0;
 }
 
+.hero-carousel {
+  max-width: 1920px;
+  aspect-ratio: 1920 / 800;
+  margin: 0 auto;
+}
+
 .news-detail h1 {
   text-align: center;
   box-sizing: border-box;
