@@ -195,7 +195,7 @@ export default async function decorate(block) {
       showSlide(block, -1);
       if (isAuto) resetAuto(block);
     });
-    const $next = button({ class: 'next', 'aria-label': 'Previous Slide' });
+    const $next = button({ class: 'next', 'aria-label': 'Next Slide' });
     $next.addEventListener('click', () => {
       showSlide(block, 1);
       if (isAuto) resetAuto(block);
