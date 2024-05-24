@@ -5,10 +5,6 @@
   margin: 0;
 }
 
-.hero-carousel {
-  height: 800px;
-}
-
 .news-detail h1 {
   text-align: center;
   box-sizing: border-box;
@@ -30,7 +26,7 @@
   margin-bottom: 10px;
 }
 
-.news-detail main .section img {
+.news-detail main .content img {
   min-height: 500px
 }
 
