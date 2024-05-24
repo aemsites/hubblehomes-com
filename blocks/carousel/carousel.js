@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define, object-curly-newline, function-paren-newline */
-import { div, ul, li, button, p } from '../../scripts/dom-helpers.js';
+import { div, ul, li, button } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
 let isAuto;
