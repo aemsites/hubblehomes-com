@@ -170,8 +170,10 @@
   opacity: .5;
   transition: opacity 200ms;
 }
-.carousel .btns button:hover::after { opacity: 1 }
 .carousel .btns button:focus::after { opacity: .5 }
+.carousel .btns button:hover::after, .carousel .btns button:focus:hover::after { opacity: 1 }
+
+
 
 .carousel .btns button.next::after {
   transform: rotate(180deg);
