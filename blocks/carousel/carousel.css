@@ -195,7 +195,7 @@
 
   .carousel .content {
     position: relative;
-    width: 100vw;
+    width: 100%;
     padding: 14px 0;
   }
 
@@ -203,7 +203,7 @@
     top: auto; 
     background: var(--dark-blue); 
   }
-  
+
   .carousel .content.top p { 
     font-size: 18px;
   }
