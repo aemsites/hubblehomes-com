@@ -32,7 +32,7 @@ function createBannerText(block) {
   spotlightSubtitle.remove();
   spotlightLink.remove();
 
-  const heading = h2( titleLink);
+  const heading = h2(titleLink);
   const subheading = h3(subtitleLink);
 
   // create the button
@@ -51,7 +51,7 @@ function createBannerText(block) {
 }
 
 export default function decorate(block) {
-  const spotlightText = createBannerText(block);
+  const spotlightTextContainer = createBannerText(block);
 
   // extract the background image for bannerPicture
   const pictureElement = block.querySelector('picture');
@@ -61,13 +61,13 @@ export default function decorate(block) {
   block.innerHTML = '';
 
   // desktop version
-  const spotlightCircle = div({ class: 'spotlight-circle' }, spotlightText);
+  const spotlightCircle = div({ class: 'spotlight-circle' }, spotlightTextContainer);
   const spotlightCircleContainer = div({ class: 'spotlight-circle-container' }, spotlightCircle);
   const bannerPicture = div({ class: 'banner-picture' }, spotlightCircleContainer);
   bannerPicture.style.backgroundImage = `url(${src})`;
 
   // mobile version
-  const mobileSpotlightText = spotlightText.cloneNode(true);
+  const mobileSpotlightText = spotlightTextContainer.cloneNode(true);
   const mobileBannerTextContainer = div({ class: 'mobile-bannertext-container' }, mobileSpotlightText);
 
   const bannerElement = div({ class: 'banner-element' }, bannerPicture, mobileBannerTextContainer);
