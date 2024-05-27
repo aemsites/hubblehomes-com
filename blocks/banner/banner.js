@@ -32,9 +32,8 @@ function createBannerText(block) {
   spotlightSubtitle.remove();
   spotlightLink.remove();
 
-  // style the hyperlinks
-  const heading = h2({ class: 'spotlight-text title' }, titleLink);
-  const subheading = h3({ class: 'spotlight-text subtitle' }, subtitleLink);
+  const heading = h2( titleLink);
+  const subheading = h3(subtitleLink);
 
   // create the button
   const spotlightButton = createButton(hrefValue);
@@ -45,7 +44,7 @@ function createBannerText(block) {
   const spotlightForm = form({ class: 'spotlight-form' }, spotlightInput, spotlightFormButton);
 
   const textDiv = div({
-    class: 'spotlight-text',
+    class: 'spotlight-text-container',
   }, heading, subheading, spotlightButton, spotlightForm);
 
   return textDiv;
@@ -63,14 +62,14 @@ export default function decorate(block) {
 
   // desktop version
   const spotlightCircle = div({ class: 'spotlight-circle' }, spotlightText);
-  const spotlightHolder = div({ class: 'spotlight-circle-holder' }, spotlightCircle);
-  const bannerPicture = div({ class: 'banner-picture' }, spotlightHolder);
+  const spotlightCircleContainer = div({ class: 'spotlight-circle-container' }, spotlightCircle);
+  const bannerPicture = div({ class: 'banner-picture' }, spotlightCircleContainer);
   bannerPicture.style.backgroundImage = `url(${src})`;
 
   // mobile version
   const mobileSpotlightText = spotlightText.cloneNode(true);
-  const mobileBannerTextHolder = div({ class: 'mobile-bannertext-holder' }, mobileSpotlightText);
+  const mobileBannerTextContainer = div({ class: 'mobile-bannertext-container' }, mobileSpotlightText);
 
-  const bannerElement = div({ class: 'banner-element' }, bannerPicture, mobileBannerTextHolder);
+  const bannerElement = div({ class: 'banner-element' }, bannerPicture, mobileBannerTextContainer);
   block.appendChild(bannerElement);
 }

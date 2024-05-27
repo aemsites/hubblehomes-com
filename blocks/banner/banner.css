@@ -17,7 +17,7 @@
   color: inherit;
 }
 
-.banner .spotlight-text .title {
+.banner .spotlight-text-container h2 {
   font-size: 42px;
   font-weight: 900;
   line-height: 1em;
@@ -25,7 +25,7 @@
   font-family: var(--heading-font-family);
 }
 
-.banner .spotlight-text .subtitle {
+.banner .spotlight-text-container h3 {
   font-size: 36px;
   font-weight: 900;
   line-height: 1em;
@@ -68,14 +68,14 @@
   max-height: 30px;
 }
 
-.banner .spotlight-circle-holder {
+.banner .spotlight-circle-container {
   max-height: 375px;
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
 }
 
-.banner .spotlight-circle-holder .spotlight-circle {
+.banner .spotlight-circle-container .spotlight-circle {
   border-radius: 288px;
   height: 530px;
   margin: auto;
@@ -86,66 +86,66 @@
   justify-content: center;
 }
 
-.banner .spotlight-text {
+.banner .spotlight-text-container {
   text-align: center;
-  padding: 0 10px;
+  padding: 0 15px;
   margin: auto;
 }
 
-.banner .mobile-bannertext-holder {
+.banner .mobile-bannertext-container {
   padding: 20px;
 }
 
-.banner-wrapper:nth-child(odd) .spotlight-text .title {
+.banner-wrapper:nth-child(odd) .spotlight-text-container h2 {
   color: var(--link-color);
 }
 
-.banner-wrapper:nth-child(even) .spotlight-text .title {
+.banner-wrapper:nth-child(even) .spotlight-text-container h2 {
   color: var(--background-color);
 }
 
-.banner-wrapper:nth-child(odd) .spotlight-text .subtitle {
+.banner-wrapper:nth-child(odd) .spotlight-text-container h3 {
   color: var(--dark-blue);
 }
 
-.banner-wrapper:nth-child(even) .spotlight-text .subtitle {
+.banner-wrapper:nth-child(even) .spotlight-text-container h3 {
   color: var(--yellow);
 }
 
-.banner-wrapper:nth-child(odd) .spotlight-circle-holder {
+.banner-wrapper:nth-child(odd) .spotlight-circle-container {
   margin-left: 50%;
 }
 
-.banner-wrapper:nth-child(even) .spotlight-circle-holder {
+.banner-wrapper:nth-child(even) .spotlight-circle-container {
   margin-right: 50%;
 }
 
 /* white translucent */
-.banner-wrapper:nth-child(odd) .spotlight-circle-holder .spotlight-circle {
+.banner-wrapper:nth-child(odd) .spotlight-circle-container .spotlight-circle {
   background: rgba(255 255 255 / 50%);
 }
 
 /* blue translucent */
-.banner-wrapper:nth-child(even) .spotlight-circle-holder .spotlight-circle {
+.banner-wrapper:nth-child(even) .spotlight-circle-container .spotlight-circle {
   background: rgba(0 50 100 / 50%);
 }
 
 /* white solid */
-.banner-wrapper:nth-child(odd) .mobile-bannertext-holder {
+.banner-wrapper:nth-child(odd) .mobile-bannertext-container {
   background: rgba(240 240 240 / 100%);
 }
 
 /* blue solid */
-.banner-wrapper:nth-child(even) .mobile-bannertext-holder {
+.banner-wrapper:nth-child(even) .mobile-bannertext-container {
   background: rgba(0 50 100 / 100%);
 }
 
 @media (width < 1000px) {
-  .banner .spotlight-circle-holder .spotlight-circle {
+  .banner .spotlight-circle-container .spotlight-circle {
     display: none;
   }
 
-  .banner .mobile-bannertext-holder {
+  .banner .mobile-bannertext-container {
     display: block;
   }
 
@@ -160,7 +160,7 @@
     width: 440px;
   }
 
-  .banner .mobile-bannertext-holder {
+  .banner .mobile-bannertext-container {
     display: none;
   }
 
