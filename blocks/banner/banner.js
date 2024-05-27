@@ -2,21 +2,6 @@ import {
   div, button, h2, h3, form, input, a,
 } from '../../scripts/dom-helpers.js';
 
-function createLinkElement(hrefValue, innerHTML) {
-  const link = a({ class: 'spotlight-link', href: hrefValue }, innerHTML);
-
-  return link;
-}
-
-function createButton(hrefValue) {
-  const spotlightButton = button({
-    class: 'spotlight-button',
-    onclick: () => { window.location.href = hrefValue; },
-  }, 'LEARN MORE');
-
-  return spotlightButton;
-}
-
 function createBannerText(block) {
   // extract text values from block elements
   const spotlightTitle = block.querySelector('h2');
@@ -25,8 +10,8 @@ function createBannerText(block) {
   // create hyperlinks with the text values
   const spotlightLink = block.querySelector('a');
   const hrefValue = spotlightLink ? spotlightLink.href : '#';
-  const titleLink = createLinkElement(hrefValue, spotlightTitle.innerHTML);
-  const subtitleLink = createLinkElement(hrefValue, spotlightSubtitle.innerHTML);
+  const titleLink = a({ class: 'spotlight-link', href: hrefValue }, spotlightTitle.innerHTML);
+  const subtitleLink = a({ class: 'spotlight-link', href: hrefValue }, spotlightSubtitle.innerHTML);
 
   spotlightTitle.remove();
   spotlightSubtitle.remove();
@@ -36,7 +21,10 @@ function createBannerText(block) {
   const subheading = h3(subtitleLink);
 
   // create the button
-  const spotlightButton = createButton(hrefValue);
+  const spotlightButton = button({
+    class: 'spotlight-button',
+    onclick: () => { window.location.href = hrefValue; },
+  }, 'LEARN MORE');
 
   // create the form element
   const spotlightInput = input({ class: 'spotlight-input', placeholder: 'Enter Email' });
