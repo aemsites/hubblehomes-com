@@ -1,4 +1,6 @@
-import { a, div, form, h3, img, label, span, } from '../../../scripts/dom-helpers.js';
+import {
+  a, div, form, h3, img, label, span,
+} from '../../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../../scripts/aem.js';
 
 class BaseCard {
@@ -86,7 +88,8 @@ class BaseCard {
     const shareImage = img({
       alt: 'share',
       src: '/icons/share.png',
-      class: 'share-icon',
+      width: '36px',
+      height: '32px',
       onmouseover: () => shareImage.setAttribute('src', '/icons/share_over.png'),
       onmouseout: () => shareImage.setAttribute('src', '/icons/share.png'),
     });
@@ -115,7 +118,8 @@ class BaseCard {
     const favoriteLink = img({
       alt: 'favorite',
       src: '/icons/save.png',
-      class: 'favorite-icon',
+      width: '40px',
+      height: '32px',
       onmouseover: () => favoriteLink.setAttribute('src', '/icons/save_over.png'),
       onmouseout: () => favoriteLink.setAttribute('src', '/icons/save.png'),
     });
@@ -354,7 +358,10 @@ class BaseCard {
    */
   // eslint-disable-next-line class-methods-use-this
   createModelImage(model) {
-    return createOptimizedPicture(model.image, model.title, true, [{ width: '600' }]);
+    const imageUrl = new URL(model.image);
+    return createOptimizedPicture(imageUrl.pathname, model.title, false, [
+      { media: '(max-width: 767px)', width: '767' },
+      { media: '(max-width: 991px)', width: '400' }]);
   }
 }
 

@@ -20,6 +20,11 @@ async function loadModels(url) {
   throw new Error(`Failed to load models from ${url}`);
 }
 
+function createCardLoader() {
+  const loader = div({ class: 'card-loader' });
+  return div({ class: 'wrapper' }, loader);
+}
+
 export default function decorate(block) {
   const {
     models: modelData,
@@ -35,18 +40,25 @@ export default function decorate(block) {
   const classTokenList = block.classList;
 
   block.innerHTML = '';
+  // insert placeholder images for google lighthouse ...
 
   // Create the title bar that identifies the block
   const titleEl = div({ class: 'grey-divider' }, title);
   block.appendChild(titleEl);
 
+  const loaderBox = div({ class: 'grid-loader repeating-grid' });
+  for (let i = 0; i < Math.floor(Math.random() * 10) + 1; i += 1) {
+    loaderBox.appendChild(createCardLoader());
+  }
+  block.appendChild(loaderBox);
+
   // load the json that's associated with the models and iterate over each home
   // and create a card for each home
-
   loadModels(modelData).then((models) => {
-    const ulEl = ul({ class: 'repeating-grid' });
-    // const ul = document.createElement('ul');
+    // remove the card loader
+    document.querySelector('.grid-loader').remove();
 
+    const ulEl = ul({ class: 'repeating-grid' });
     models.forEach((model) => {
       const liEl = li({ class: 'model-card' });
       const card = CardFactory.createCard(classTokenList, model);
