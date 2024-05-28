@@ -22,9 +22,11 @@
   --btn-bg-color: #428bca;
   --btn-border:  #357ebd;
   --btn-bg-color-2: #3071a9;
+  --btn-bg-color-3: #4572b7;
   --btn-border-2: #285e8e;
   --dark-blue: #003264;
   --light-blue: #0055b9;
+  --input-focus-border:#66afe9;
   --yellow: #fcd700;
   --link-light-gray: #717171;
 
@@ -217,10 +219,6 @@ a:any-link {
   font-weight: 600;
 }
 
-a:hover {
-  text-decoration: underline;
-}
-
 /* buttons */
 button {
   display: inline-block;
@@ -316,10 +314,6 @@ main .section.highlight {
   background-color: var(--light-color);
 }
 
-.default-content-wrapper {
-  /* font-size: 24px; */
-}
-
 .section.yellow {
   padding: 0;
   background-color: #fcd700;
@@ -330,19 +324,6 @@ main .section.highlight {
   width: 975px;
   font-size: 16px;
   padding: 30px;
-}
-
-.block.banner {
-  position: relative;
-  overflow: hidden;
-  margin-top: 30px;
-  height: calc((100vw - 94px)/3.3);
-}
-
-@media (width >= 1235px) {
-  .block.banner {
-    height: 356px;
-  }
 }
 
 .btn-primary {
