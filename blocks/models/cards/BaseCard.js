@@ -1,5 +1,5 @@
 import {
-  a, div, form, h3, img, label, span,
+  a, div, form, h3, img, input, label, span,
 } from '../../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../../scripts/aem.js';
 
@@ -323,13 +323,14 @@ class BaseCard {
     }, 'Photos');
     const photoDiv = div(photoLink);
 
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.name = `CompareItem_${this.model.id}`;
-    checkbox.id = `CompareItem_${this.model.id}`;
-    checkbox.onchange = () => {
-      // do nothing for now
-    };
+    const checkbox = input({
+      type: 'checkbox',
+      name: `CompareItem_${this.model.id}`,
+      id: `CompareItem_${this.model.id}`,
+      onchange: () => {
+        // do nothing for now
+      },
+    });
 
     const labelEl = label({
       class: 'btn-action',
