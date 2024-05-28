@@ -8,17 +8,13 @@ export default async function decorate(doc) {
   const $mainContent = div();
   [...$page.children].forEach((child) => $mainContent.append(child));
 
-  // hero carousel
-  const $carousel = div({ class: 'hero-carousel' });
-  loadFragment('/news/news-detail/fragments/hero-carousel').then((frag) => {
-    $carousel.append(frag.firstElementChild);
-  });
+  const heroCarouselPromise = loadFragment('/news/news-detail/fragments/hero-carousel');
+  const asidePromise = loadFragment('/news/news-detail/fragments/right-sidebar');
+  const [heroCarouselFrag, asideFrag] = await Promise.all([heroCarouselPromise, asidePromise]);
 
-  // aside
-  const $aside = aside({ class: 'wip' });
-  loadFragment('/news/news-detail/fragments/right-sidebar').then((frag) => {
-    $aside.append(frag.firstElementChild.querySelector('.default-content-wrapper'));
-  });
+  const $carousel = div({ class: 'hero-carousel' },
+    heroCarouselFrag.firstElementChild,
+  );
 
   // subhead
   const $postMeta = small({ class: 'post-metadata' },
@@ -30,7 +26,6 @@ export default async function decorate(doc) {
   $h1.insertAdjacentElement('afterend', $postMeta);
 
   // breadcrumbs
-  // TODO: make breadcrumbs a common function - perhaps a block
   const $breadCrumbs = div({ class: 'breadcrumbs' },
     a({ href: '/', 'arial-lable': 'View Home Page' }, 'Home'),
     ' > ',
@@ -50,7 +45,6 @@ export default async function decorate(doc) {
   const $replyForm = div({ class: 'reply-form wip' }, '[reply form placeholder]');
 
   // social share
-  // TODO: make social share buttons a common function - perhaps a block
   const $socialShare = div({ class: 'social-share' },
     button({ class: 'facebook' }, 'Share'),
     button({ class: 'twitter' }, 'Tweet'),
@@ -67,7 +61,9 @@ export default async function decorate(doc) {
         $socialShare,
         $replyForm,
       ),
-      $aside,
+      aside({ class: 'wip' },
+        asideFrag.firstElementChild.querySelector('.default-content-wrapper')
+      ),
     ),
   );
 
