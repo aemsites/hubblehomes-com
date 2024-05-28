@@ -25,7 +25,7 @@
 
       communityTitleTop?.remove();
       communityTitleBottom?.remove();
-      
+
       const items = carousel.querySelectorAll('.item');
       items.forEach((item) => {
         const picture = item.querySelector('picture img');
@@ -247,9 +247,7 @@
   const removeUnwantedSections = (document) => {
     // Remove filters section
     const filtersSection = document.querySelector('.well small');
-    if (filtersSection) {
-        filtersSection.parentElement.remove();
-    }
+    filtersSection?.parentElement.remove();
 
     // Remove specific .container elements but not the ones containing home specialists
     const containers = document.querySelectorAll('.container');

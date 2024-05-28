@@ -16,8 +16,8 @@ const createCarouselBlock = (document) => {
       const title = item.querySelector('.carousel-caption .carousel-header div')?.textContent || '';
       const description = item.querySelector('.carousel-caption .carousel-copy div')?.textContent || '';
 
-      let content = `${imgElement}<h3>${title}</h3><p>${description}</p>`;
-      
+      const content = `${imgElement}<h3>${title}</h3><p>${description}</p>`;
+
       cells.push([content]); // Add the concatenated content as a new row with HTML
 
       // Check for a PDF link
@@ -177,7 +177,7 @@ export default {
 
     removeUnwantedSections(document);
     createAboutColumnBlock(document);
-    //createCarouselBlock(document);
+    // createCarouselBlock(document);
     createVideoBlock(document);
     createMetadata(main, document, url);
 
