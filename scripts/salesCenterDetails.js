@@ -18,7 +18,6 @@ async function loadSalesCenterData(url) {
     return null;
   }
 }
-
 /**
  * Extracts the slug from a given URL.
  * @param {string} url - The URL to extract the slug from.
@@ -48,20 +47,17 @@ async function getSalesCenterDetailsForModel(url) {
   if (!salesOfficeDetails) {
     return null;
   }
-
-  
-
-  const area = salesOfficeDetails.area;
+  const { area } = salesOfficeDetails;
   let specialists = [];
 
   if (area) {
-   specialists = salesSpecialists.filter((specialist) => {
-    const officeLocations = Object.keys(specialist).filter((key) => key.startsWith('office location'));
-    return officeLocations.some(
-      (officeLocation) => specialist[officeLocation].toLowerCase() === area.toLowerCase(),
-    );
-  });
-}
+    specialists = salesSpecialists.filter((specialist) => {
+      const officeLocations = Object.keys(specialist).filter((key) => key.startsWith('office location'));
+      return officeLocations.some(
+        (officeLocation) => specialist[officeLocation].toLowerCase() === area.toLowerCase(),
+      );
+    });
+  }
 
   return {
     sales_center: {
