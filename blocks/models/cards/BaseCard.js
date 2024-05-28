@@ -1,12 +1,4 @@
-import {
-  a,
-  div,
-  form,
-  h3,
-  img,
-  label,
-  span,
-} from '../../../scripts/dom-helpers.js';
+import { a, div, form, h3, img, label, span, } from '../../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../../scripts/aem.js';
 
 class BaseCard {
@@ -360,7 +352,7 @@ class BaseCard {
    */
   // eslint-disable-next-line class-methods-use-this
   createModelImage(model) {
-    return createOptimizedPicture(model.image, model.title, false);
+    return createOptimizedPicture(model.image, model.title, false, [{ width: '600' }]);
   }
 }
 
