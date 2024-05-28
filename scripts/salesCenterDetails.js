@@ -45,18 +45,23 @@ async function getSalesCenterDetailsForModel(url) {
   const urlSlug = getUrlSlug(url);
   const salesOfficeDetails = salesOffice.find((office) => office['url-slug'] === urlSlug);
 
-  if (!salesOfficeDetails || !salesOfficeDetails.area) {
+  if (!salesOfficeDetails) {
     return null;
   }
 
-  const area = salesOfficeDetails.area.toLowerCase();
+  
 
-  const specialists = salesSpecialists.filter((specialist) => {
+  const area = salesOfficeDetails.area;
+  let specialists = [];
+
+  if (area) {
+   specialists = salesSpecialists.filter((specialist) => {
     const officeLocations = Object.keys(specialist).filter((key) => key.startsWith('office location'));
     return officeLocations.some(
-      (officeLocation) => specialist[officeLocation].toLowerCase() === area,
+      (officeLocation) => specialist[officeLocation].toLowerCase() === area.toLowerCase(),
     );
   });
+}
 
   return {
     sales_center: {
@@ -88,7 +93,8 @@ async function fetchAndLogSalesCenterDetails(urls) {
   try {
     const results = await Promise.all(urls.map((url) => getSalesCenterDetailsForModel(url)));
     results.forEach((result, index) => {
-      console.log(`Result for URL ${urls[index]}:`, result);
+      console.log(`Result for URL ${urls[index]}:`);
+      console.table(result);
     });
   } catch (error) {
     console.error('Error:', error);
