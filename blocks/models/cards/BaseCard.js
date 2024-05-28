@@ -352,7 +352,7 @@ class BaseCard {
    */
   // eslint-disable-next-line class-methods-use-this
   createModelImage(model) {
-    return createOptimizedPicture(model.image, model.title, false, [{ width: '600' }]);
+    return createOptimizedPicture(model.image, model.title, true, [{ width: '600' }]);
   }
 }
 
