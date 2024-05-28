@@ -86,6 +86,7 @@ class BaseCard {
     const shareImage = img({
       alt: 'share',
       src: '/icons/share.png',
+      class: 'share-icon',
       onmouseover: () => shareImage.setAttribute('src', '/icons/share_over.png'),
       onmouseout: () => shareImage.setAttribute('src', '/icons/share.png'),
     });
@@ -114,6 +115,7 @@ class BaseCard {
     const favoriteLink = img({
       alt: 'favorite',
       src: '/icons/save.png',
+      class: 'favorite-icon',
       onmouseover: () => favoriteLink.setAttribute('src', '/icons/save_over.png'),
       onmouseout: () => favoriteLink.setAttribute('src', '/icons/save.png'),
     });

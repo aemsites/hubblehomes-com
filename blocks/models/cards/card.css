@@ -109,10 +109,10 @@
         place-items: center center;
         grid-template-columns: 50px 1fr 50px;
 
-        .share,
-        .favorite {
+        .share-icon,
+        .favorite-icon {
           width: 40px;
-          height: 34px;
+          height: auto;
         }
 
         .status {
