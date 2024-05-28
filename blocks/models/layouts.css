@@ -14,7 +14,7 @@
     :root {
         --layout-fluid-min: 225px;
         --layout-default-repeat: 4;
-        --layout-default-gap: 20px;
+        --layout-default-gap: 16px;
     }
 
     .models {
