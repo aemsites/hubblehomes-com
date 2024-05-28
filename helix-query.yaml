@@ -2,7 +2,7 @@ version: 1
 indices:
   models:
     include:
-      - '/new-homes/*/*/*/*/*/*'
+      - '/new-homes/*/*/*/*/*'
     target: /model-query-index.json
     properties:
       state:
