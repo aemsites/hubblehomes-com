@@ -62,7 +62,7 @@ export default async function decorate(doc) {
         $replyForm,
       ),
       aside({ class: 'wip' },
-        asideFrag.firstElementChild.querySelector('.default-content-wrapper')
+        asideFrag.firstElementChild.querySelector('.default-content-wrapper'),
       ),
     ),
   );
