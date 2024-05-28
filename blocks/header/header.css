@@ -115,22 +115,22 @@ input[type="text"]::placeholder {
 }
 
 /* nav */
-nav {
+header nav {
   position: absolute;
   bottom: 0;
   left: 260px;
   user-select: none;
 }
 
-nav a { display: block }
+header nav a { display: block }
 
-nav ul {
+header nav ul {
   list-style: none;
   position: relative;
 }
 
 /* top level */
-nav>div>ul>li {
+header nav>div>ul>li {
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
@@ -144,14 +144,14 @@ nav>div>ul>li {
   float: left;
 }
 
-nav>div>ul>li:hover,
-nav>div>ul>li.on {
+header nav>div>ul>li:hover,
+header nav>div>ul>li.on {
   background: var(--dark-blue);
   color: #fff;
 }
 
 /* dropdown menus */
-nav>div>ul>li>ul {
+header nav>div>ul>li>ul {
   display: none;
   position: absolute;
   top: 50px;
@@ -160,9 +160,9 @@ nav>div>ul>li>ul {
   background: var(--dark-blue);
   box-shadow: 0 6px 12px rgb(0 0 0 / 17%);
 }
-nav>div>ul>li.on>ul { display: block }
+header nav>div>ul>li.on>ul { display: block }
 
-nav>div>ul>li>ul>li {
+header nav>div>ul>li>ul>li {
   text-transform: none;
   padding: 4px 0 0;
   font-size: .85em;
@@ -171,31 +171,31 @@ nav>div>ul>li>ul>li {
 }
 
 /* drowdown (left col) */
-nav>div>ul>li:nth-child(1)>ul>li { width: 230px }
-nav>div>ul>li:nth-child(2)>ul>li { width: 153px }
+header nav>div>ul>li:nth-child(1)>ul>li { width: 230px }
+header nav>div>ul>li:nth-child(2)>ul>li { width: 153px }
 
 /* drowdown (right col) = left-col [+] right-col (260px) */
-nav>div>ul>li:nth-child(1)>ul { width: 490px }
-nav>div>ul>li:nth-child(2)>ul { width: 413px }
+header nav>div>ul>li:nth-child(1)>ul { width: 490px }
+header nav>div>ul>li:nth-child(2)>ul { width: 413px }
 
-nav>div>ul>li>ul>li a {
+header nav>div>ul>li>ul>li a {
   padding: 0 12px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
   color: #fff;
 }
-nav>div>ul>li>ul>li a:hover { background: var(--light-blue) }
+header nav>div>ul>li>ul>li a:hover { background: var(--light-blue) }
 
 /* headings */
-nav>div>ul>li>ul>li>a {
+header nav>div>ul>li>ul>li>a {
   font-size: 1.1em;
   font-weight: 600;
   color: var(--yellow);
   text-wrap: nowrap;
 }
 
-nav>div>ul>li>ul>li>ul>li>a, /* all 3rd level links */
-nav>div>ul>li>ul>li:not(:has(> ul)) >a /* headings w/out children */
+header nav>div>ul>li>ul>li>ul>li>a, /* all 3rd level links */
+header nav>div>ul>li>ul>li:not(:has(> ul)) >a /* headings w/out children */
 { 
   padding-left: 15px; 
   font-weight: 400 !important;
@@ -203,7 +203,7 @@ nav>div>ul>li>ul>li:not(:has(> ul)) >a /* headings w/out children */
 }
 
 /* right column */
-nav .r-col {
+header nav .r-col {
   position: absolute;
   top: 0;
   right: 0;
@@ -213,9 +213,9 @@ nav .r-col {
   color: #000;
 }
 
-nav .r-col .section { padding: 10px }
+header nav .r-col .section { padding: 10px }
 
-nav .r-col p {
+header nav .r-col p {
   text-transform: none;
   font-family: var(--body-font-family);
   font-size: 14px;
@@ -223,10 +223,10 @@ nav .r-col p {
   color: var(--link-light-gray);
 }
 
-nav .r-col p.button-container { float: right }
+header nav .r-col p.button-container { float: right }
 
 /* TODO: button style could be moved to styles.css */
-nav .r-col .button {
+header nav .r-col .button {
   display: inline-block;
   padding: 6px 12px;
   font-size: 14px;
@@ -243,9 +243,9 @@ nav .r-col .button {
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
-nav .r-col .button:hover { color: #fff; background: var(--dark-blue); }
+header nav .r-col .button:hover { color: #fff; background: var(--dark-blue); }
 
-nav .r-col p:not(:first-child) picture img { margin-top: 30px }
+header nav .r-col p:not(:first-child) picture img { margin-top: 30px }
 
 /* hamburger button */
 .bgr-btn {
@@ -285,7 +285,7 @@ nav .r-col p:not(:first-child) picture img { margin-top: 30px }
     left: 0;
   }
   
-  nav>div {
+  header nav>div {
     position: absolute; 
     inset: 0;
     height: 0;
@@ -299,12 +299,12 @@ nav .r-col p:not(:first-child) picture img { margin-top: 30px }
   .mobile-nav-open nav>div { height: 100vh }
   .mobile-nav-open.done nav>div { overflow: auto }
 
-  nav>div>ul { 
+  header nav>div>ul { 
     height: 840px; /* max height with items expanded - revisit to make fluid */ 
   }
 
   /* top level */
-  nav>div>ul>li {
+  header nav>div>ul>li {
     clear: left;
     height: auto;
     padding: 10px 0 10px 14px;
@@ -312,12 +312,12 @@ nav .r-col p:not(:first-child) picture img { margin-top: 30px }
     border-top: 1px solid #fff;
   }
 
-  nav>div>ul>li.on {
+  header nav>div>ul>li.on {
     padding-bottom: 0;
   }
 
   /* dropdown menus */
-  nav>div>ul>li>ul {
+  header nav>div>ul>li>ul {
     position: relative;
     top: auto !important;
     padding: 10px 0;
@@ -325,21 +325,21 @@ nav .r-col p:not(:first-child) picture img { margin-top: 30px }
     box-shadow: none;
   }
 
-  nav>div>ul>li.on>ul {
+  header nav>div>ul>li.on>ul {
     border-top: 1px solid #fff;
     margin-top: 10px;
   }
 
-  nav>div>ul>li>ul>li { width: auto !important }
-  nav>div>ul>li:nth-child(2)>ul { min-height: 420px }
+  header nav>div>ul>li>ul>li { width: auto !important }
+  header nav>div>ul>li:nth-child(2)>ul { min-height: 420px }
 }
 
 @media (width <= 540px) {
-  nav .r-col { 
+  header nav .r-col { 
     position: relative;
     margin: 10px 10px 0;
     width: auto;
   }
 
-  nav .r-col picture { margin-left: calc((100vw - 300px) * .5) }
+  header nav .r-col picture { margin-left: calc((100vw - 300px) * .5) }
 }

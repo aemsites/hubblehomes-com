@@ -314,10 +314,6 @@ main .section.highlight {
   background-color: var(--light-color);
 }
 
-.default-content-wrapper {
-  /* font-size: 24px; */
-}
-
 .section.yellow {
   padding: 0;
   background-color: #fcd700;
