@@ -46,8 +46,8 @@ indices:
       - '/new-homes/**'
     target: /inventory-query-index.json
     properties:
-      State:
-        select: head > meta[name="State"]
+      state:
+        select: head > meta[name="state"]
         value: attribute(el, 'content')
       Metro:
         select: head > meta[name="Metro"]
