@@ -43,7 +43,7 @@ indices:
         value: attribute(el, 'content')
   inventory:
     include:
-      - '/new-homes/**'
+      - '/new-homes/**/*'
     target: /inventory-query-index.json
     properties:
       state:
