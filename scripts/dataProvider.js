@@ -87,3 +87,4 @@ async function getSalesCenterDetails(url) {
   };
 }
 
+export default { getSalesCenterDetails };
