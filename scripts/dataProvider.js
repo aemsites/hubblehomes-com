@@ -18,7 +18,7 @@ async function loadSalesCenterData(url) {
     throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
   }
 
-  return await response.json();
+  return response.json();
 }
 
 /**
@@ -27,7 +27,7 @@ async function loadSalesCenterData(url) {
  * @returns {string} The extracted last segment.
  */
 function getLastUrlSegment(url) {
-  const pathname = new URL(url).pathname;
+  const { pathname } = new URL(url);
   const sanitizedPathname = pathname.replace(/\/+$/, '');
   const parts = sanitizedPathname.split('/');
   return parts.pop();
@@ -36,7 +36,8 @@ function getLastUrlSegment(url) {
 /**
  * Fetch the sales center details for a given model URL.
  * @param {string} url - The model URL.
- * @returns {Promise<Object>} A promise that resolves to the sales center details or an empty object if no data is found.
+ * @returns {Promise<Object>} A promise that resolves to the sales center details
+ * or an empty object if no data is found.
  */
 async function getSalesCenterDetails(url) {
   const data = await loadSalesCenterData('https://main--hubblehomes-com--aemsites.hlx.live/data/sales-office-and-specialists.json');
@@ -59,7 +60,7 @@ async function getSalesCenterDetails(url) {
     ? salesSpecialists.filter((specialist) => {
       const officeLocationFields = Object.keys(specialist).filter((key) => key.startsWith('office location'));
       return officeLocationFields.some(
-        (officeLocationField) => specialist[officeLocationField] === area
+        (officeLocationField) => specialist[officeLocationField] === area,
       );
     })
     : [];
@@ -85,3 +86,4 @@ async function getSalesCenterDetails(url) {
     },
   };
 }
+
