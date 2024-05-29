@@ -2,42 +2,113 @@ version: 1
 indices:
   models:
     include:
-      - '/drafts/bhellema/homes/**'
+      - '/new-homes/*/*/*/*/*'
     target: /model-query-index.json
     properties:
-      price:
-        select: head > meta[name="price"]
+      state:
+        select: head > meta[name="state"]
         value: attribute(el, 'content')
-      square-feet:
-        select: head > meta[name="square-feet"]
+      metro:
+        select: head > meta[name="metro"]
+        value: attribute(el, 'content')
+      area:
+        select: head > meta[name="area"]
+        value: attribute(el, 'content')
+      community:
+        select: head > meta[name="community"]
+        value: attribute(el, 'content')
+      template:
+        select: head > meta[name="template"]
+        value: attribute(el, 'content')
+      pdflink:
+        select: head > meta[name="pdflink"]
+        value: attribute(el, 'content')
+      pricing:
+        select: head > meta[name="pricing"]
+        value: attribute(el, 'content')
+      squarefeet:
+        select: head > meta[name="squarefeet"]
         value: attribute(el, 'content')
       beds:
         select: head > meta[name="beds"]
         value: attribute(el, 'content')
+      baths:
+        select: head > meta[name="baths"]
+        value: attribute(el, 'content')
       cars:
         select: head > meta[name="cars"]
-        value:  attribute(el, 'content')
-      primary-bed:
-        select: head > meta[name="primary-bed"]
-        value:  attribute(el, 'content')
-      full-bed-on-first:
-        select: head > meta[name="full-bed-on-first"]
         value: attribute(el, 'content')
-      full-bath-main:
-        select: head > meta[name="full-bath-main"]
+      primarybed:
+        select: head > meta[name="primarybed"]
         value: attribute(el, 'content')
-      home-style:
-        select: head > meta[name="home-style"]
+      homestyle:
+        select: head > meta[name="homestyle"]
         value: attribute(el, 'content')
-      status:
-        select: head > meta[name="status"]
+      virtualtourimages:
+        select: head > meta[name="virtualtourimages"]
         value: attribute(el, 'content')
-      monthly-price:
-        select: head > meta[name="monthly-price"]
+  inventory:
+    include:
+      - '/new-homes/*/*/*/*/*/*/*'
+    target: /inventory-query-index.json
+    properties:
+      state:
+        select: head > meta[name="state"]
+        value: attribute(el, 'content')
+      metro:
+        select: head > meta[name="metro"]
+        value: attribute(el, 'content')
+      area:
+        select: head > meta[name="area"]
+        value: attribute(el, 'content')
+      community:
+        select: head > meta[name="community"]
+        value: attribute(el, 'content')
+      template:
+        select: head > meta[name="template"]
+        value: attribute(el, 'content')
+      pdflink:
+        select: head > meta[name="pdflink"]
+        value: attribute(el, 'content')
+      address:
+        select: head > meta[name="address"]
         value: attribute(el, 'content')
       mls:
         select: head > meta[name="mls"]
         value: attribute(el, 'content')
-      address:
-        select: head > meta[name="address"]
+      estimatedmonthlypayment:
+        select: head > meta[name="estimatedmonthlypayment"]
+        value: attribute(el, 'content')
+      pricing:
+        select: head > meta[name="pricing"]
+        value: attribute(el, 'content')
+      squarefeet:
+        select: head > meta[name="squarefeet"]
+        value: attribute(el, 'content')
+      beds:
+        select: head > meta[name="beds"]
+        value: attribute(el, 'content')
+      baths:
+        select: head > meta[name="baths"]
+        value: attribute(el, 'content')
+      cars:
+        select: head > meta[name="cars"]
+        value: attribute(el, 'content')
+      primarybed:
+        select: head > meta[name="primarybed"]
+        value: attribute(el, 'content')
+      fullbedonfirst:
+        select: head > meta[name="fullbedonfirst"]
+        value: attribute(el, 'content')
+      fullbathmain:
+        select: head > meta[name="fullbathmain"]
+        value: attribute(el, 'content')
+      homestyle:
+        select: head > meta[name="homestyle"]
+        value: attribute(el, 'content')
+      status:
+        select: head > meta[name="status"]
+        value: attribute(el, 'content')
+      virtualtourimages:
+        select: head > meta[name="virtualtourimages"]
         value: attribute(el, 'content')
