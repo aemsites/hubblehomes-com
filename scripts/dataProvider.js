@@ -40,7 +40,7 @@ function getLastUrlSegment(url) {
  * or an empty object if no data is found.
  */
 async function getSalesCenterDetails(url) {
-  const data = await loadSalesCenterData('https://main--hubblehomes-com--aemsites.hlx.live/data/sales-office-and-specialists.json');
+  const data = await loadSalesCenterData('/data/sales-office-and-specialists.json');
 
   if (!data || !url) {
     return {};
@@ -57,12 +57,7 @@ async function getSalesCenterDetails(url) {
 
   const { area } = salesOfficeDetails;
   const specialists = area
-    ? salesSpecialists.filter((specialist) => {
-      const officeLocationFields = Object.keys(specialist).filter((key) => key.startsWith('office location'));
-      return officeLocationFields.some(
-        (officeLocationField) => specialist[officeLocationField] === area,
-      );
-    })
+    ? salesSpecialists.filter((specialist) => Object.keys(specialist).some((key) => key.startsWith('office location') && specialist[key] === area))
     : [];
 
   return {
