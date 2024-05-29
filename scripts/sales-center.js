@@ -1,5 +1,5 @@
 /**
- * dataProvider.js
+ * sales-center.js
  *
  * This script contains functions to fetch and process data for page templates.
  * The `loadSalesCenterData` function fetches sales center data.
