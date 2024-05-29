@@ -1,0 +1,42 @@
+.specialists-wrapper {
+  flex: 0;
+
+  .specialist {
+    width: 220px;
+
+    .specialist-info {
+      .email::after, .phone::after {
+        content: "";
+        display: inline;
+        padding-left: 20px;
+        background: var(--link-color);
+        mask-position: center !important;
+        mask-repeat: no-repeat !important;
+      }
+
+      .email::after {
+        mask: url('/icons/email-agent.svg');
+      }
+
+      .phone::after {
+        mask: url('/icons/phone.svg');
+      }
+    }
+
+    .specialist-image-container {
+      img {
+        border: 1px solid #e9eae9;
+        border-radius: 50%;
+        width: 95px;
+
+        @media (width >= 768px) {
+          width: 125px;
+        }
+
+        @media (width >= 992px) {
+          width: 195px;
+        }
+      }
+    }
+  }
+}

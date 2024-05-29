@@ -99,3 +99,6 @@ export function nav(...items) { return domEl('nav', ...items); }
 export function aside(...items) { return domEl('aside', ...items); }
 export function meta(...items) { return domEl('meta', ...items); }
 export function picture(...items) { return domEl('picture', ...items); }
+export function br() { return domEl('br'); }
+export function select(...items) { return domEl('select', ...items); }
+export function option(...items) { return domEl('option', ...items); }

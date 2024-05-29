@@ -6,10 +6,10 @@ class HomePlansCard extends BaseCard {
   renderTaglineItems(taglineContainer) {
     const from = span('From *');
 
-    const price = span(formatPrice(this.model.price));
+    const price = span(formatPrice(this.model.pricing));
     const priceContainer = div(from, price);
 
-    const monthly = span(formatPrice(this.model.monthly));
+    const monthly = span(formatPrice(this.model.estimatedmonthlypayment));
     const perMonth = span({ class: 'model-card-tagline-monthly' }, '/mo');
     const monthlyRate = div(
       { class: 'model-card-tagline-monthly-container' },

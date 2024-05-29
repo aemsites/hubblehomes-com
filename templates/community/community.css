@@ -1,0 +1,111 @@
+.community {
+  .section.inventory {
+    padding-bottom: 15px;
+  }
+
+  .action-bar {
+    height: 70px;
+    display: flex;
+    justify-content: right;
+    padding-right: 20px;
+    align-items: center;
+
+    a.btn {
+      position: relative;
+      color: #fff;
+      height: 50px;
+      width: 50px;
+      font-size: 0;
+      margin-right: 20px;
+      cursor: pointer;
+      border-radius: 30px;
+      background: var(--light-blue);
+      transition: all 160ms ease-in;
+      &:hover { background: var(--dark-blue) }
+      &:last-child {margin: 0 }
+
+      &::after {
+        position: absolute;
+        content: '';
+        width: inherit;
+        height: inherit;
+        background: #fff;
+        transition: all 160ms ease-in;
+        mask-position: center !important;
+        mask-repeat: no-repeat !important;
+      }
+
+      &.share::after {
+        mask: url('/icons/sharethis.svg');
+        mask-size: 60%;
+        left: -3px;
+      }
+
+      &.save::after {
+        mask: url('/icons/heart.svg');
+        mask-size: 60%;
+      }
+    }
+  }
+
+  .promotions {
+    border: 0 solid #dfdfdf;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #f3f3f3;
+    border-radius: 0;
+    box-shadow: none;
+    background-image: none;
+    white-space: normal;
+    font-size: 13px;
+
+    a {
+      color: #383838;
+      font-weight: 600;
+      display: block;
+    }
+  }
+
+  #plans {
+    scroll-margin-top: 80px;
+  }
+
+  .filter-form {
+    text-align: center;
+
+    a {
+      color: #383838;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    form {
+      padding-bottom: 10px;
+      padding-top: 30px;
+      display: flex;
+      justify-content: center;
+
+      select {
+        background: #fcd700;
+        width: 160px;
+        height: 34px;
+        border-radius: 4px;
+        display: inline-block;
+        padding: 6px 12px;
+        font-size: 14px;
+        margin-left: 15px;
+        margin-right: 15px;
+        border: 2px solid #ccc;
+      }
+    }
+  }
+
+  .specialists.fluid-flex {
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--link-color);
+    margin: 20px 0;
+  }
+
+}
