@@ -316,6 +316,20 @@ footer {
       }
 
       ul { margin-left: 8% }
+
+      .col-2 {
+        padding-bottom: 200px;
+        form.subscribe {
+          text-align: center;
+          small { white-space: wrap }
+          input {
+            margin: 4px 0;
+            &.firstname, &.lastname, &.email { width: 100% }
+            &.email, &.submit { border-radius: 4px }
+            &.submit { min-width: 100px }
+          }
+        }
+      }
     }
     
     .bottom {
@@ -345,13 +359,6 @@ footer {
         &:empty { display: none }
       }
       .col-1, .col-2, .col-3 { width: auto }
-      .col-2 form.subscribe {
-        small { padding: 0 30px; white-space: wrap }
-        input {
-          &.email { width: 68% }
-          &.submit { width: calc(32% - 2px) }
-        }
-      }
     }
   }
 }
