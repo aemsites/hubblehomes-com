@@ -138,7 +138,7 @@ footer {
           vertical-align: middle;
           outline: none;
           transition: all ease-in-out .15s;
-          &::placeholder { color: #555 }
+          &::placeholder { color: #999 }
           &.email { 
             width: 70%;
             border-radius: 4px 0 0 4px;
@@ -187,9 +187,7 @@ footer {
       padding: 20px 0;
       margin: 10px 0;
 
-      .logo { 
-        margin-right: 40px;
-      }
+      .logo { margin-right: 40px }
 
       a.btn {
         display: inline-block;
