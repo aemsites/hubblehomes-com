@@ -2,15 +2,16 @@ import {
   a, div, form, h3, img, input, label, span,
 } from '../../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../../scripts/aem.js';
+import { getHomePlanImage } from '../../../scripts/home-plans-data.js';
 
 class BaseCard {
   constructor(model) {
     this.model = model;
   }
 
-  render() {
+  async render() {
     const header = this.renderHeaderArea();
-    const imageBox = this.renderModelImage();
+    const imageBox = await this.renderModelImage();
     const topActionsBar = this.renderTopActionBar();
     imageBox.appendChild(topActionsBar);
 
@@ -42,7 +43,7 @@ class BaseCard {
    * @returns {Element}
    */
   renderTitle() {
-    return h3(this.model.title);
+    return h3(this.model.modelname || '');
   }
 
   /**
@@ -59,8 +60,10 @@ class BaseCard {
    * Render the model image.
    * @returns {Element}
    */
-  renderModelImage() {
-    const imageLink = a({ href: this.model.href }, this.createModelImage(this.model));
+  async renderModelImage() {
+    const imageUrl = await getHomePlanImage(this.model.modelname);
+    const image = this.createModelImage(imageUrl, this.model.modelname);
+    const imageLink = a({ href: this.model.href }, image);
     const imagePicture = div(imageLink);
     return div({ class: 'model-card-image-container' }, imagePicture);
   }
@@ -160,7 +163,7 @@ class BaseCard {
       div('Cars'),
       div(this.model.beds),
       div(this.model.baths),
-      div(this.model.sqft),
+      div(this.model.squarefeet),
       div(this.model.cars),
     );
   }
@@ -201,7 +204,7 @@ class BaseCard {
    * @param gridContainer
    */
   renderTopRowOfDetailsContainer_left(gridContainer) {
-    const topLeft = div({ class: 'stories' }, `${this.model.story} Story`);
+    const topLeft = div({ class: 'stories' }, `${this.model.homestyle}`);
     gridContainer.appendChild(topLeft);
   }
 
@@ -354,13 +357,16 @@ class BaseCard {
 
   /**
    * Generate a Picture element that has contains the model's image.
-   * @param model the model to generate the image for. Using the model's image property and title.
    * @returns {Element}
    */
   // eslint-disable-next-line class-methods-use-this
-  createModelImage(model) {
-    const imageUrl = new URL(model.image);
-    return createOptimizedPicture(imageUrl.pathname, model.title, false, [
+  createModelImage(url, title) {
+    if (!url) {
+      return undefined;
+    }
+
+    const imageUrl = new URL(url);
+    return createOptimizedPicture(imageUrl.pathname, title, false, [
       { media: '(max-width: 767px)', width: '767' },
       { media: '(max-width: 991px)', width: '400' }]);
   }
