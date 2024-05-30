@@ -91,6 +91,7 @@
         aspect-ratio: 4 / 3;
         min-width: 288px;
         height: auto;
+        width: 100%;
       }
 
       position: relative;

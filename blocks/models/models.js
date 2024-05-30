@@ -27,7 +27,7 @@ function createCardLoader() {
 
 export default function decorate(block) {
   const {
-    models: modelData,
+    models: modelUrl,
     title,
   } = readBlockConfig(block);
 
@@ -54,19 +54,20 @@ export default function decorate(block) {
 
   // load the json that's associated with the models and iterate over each home
   // and create a card for each home
-  loadModels(modelData).then((models) => {
-    // remove the card loader
-    document.querySelector('.grid-loader').remove();
+  const models = window.hh?.inventory || loadModels(modelUrl);
 
-    const ulEl = ul({ class: 'repeating-grid' });
-    models.forEach((model) => {
-      const liEl = li({ class: 'model-card' });
-      const card = CardFactory.createCard(classTokenList, model);
+  const loader = document.querySelector('.grid-loader');
+  if (loader) {
+    loader.remove();
+  }
 
-      liEl.appendChild(card.render());
-      ulEl.append(liEl);
-    });
-
-    block.appendChild(ulEl);
+  const ulEl = ul({ class: 'repeating-grid' });
+  models.forEach(async (model) => {
+    const liEl = li({ class: 'model-card' });
+    const card = CardFactory.createCard(classTokenList, model);
+    const rendered = await card.render();
+    liEl.appendChild(rendered);
+    ulEl.append(liEl);
   });
+  block.appendChild(ulEl);
 }

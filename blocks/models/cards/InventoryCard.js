@@ -13,11 +13,11 @@ class InventoryCard extends BaseCard {
   }
 
   renderTaglineItems(taglineContainer) {
-    const price = span(formatPrice(this.model.price));
+    const price = span(formatPrice(this.model.pricing));
     const priceContainer = div(price);
     const monthly = span(
       { class: 'model-card-tagline-price-per-month' },
-      `*${formatPrice(this.model.monthly)}`,
+      `*${formatPrice(this.model.estimatedmonthlypayment)}`,
     );
     const perMonth = span({ class: 'model-card-tagline-monthly' }, '/mo');
     const monthlyRate = div({ class: 'model-card-tagline-monthly-container' }, monthly, perMonth);
