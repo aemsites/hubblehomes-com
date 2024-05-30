@@ -280,7 +280,7 @@ header nav .r-col p:not(:first-child) picture img { margin-top: 30px }
 
   .bgr-btn { display: block }
 
-  nav {
+  header nav {
     top: var(--nav-height);
     left: 0;
   }
