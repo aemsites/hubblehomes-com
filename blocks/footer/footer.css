@@ -324,9 +324,9 @@ footer {
           small { white-space: wrap }
           input {
             margin: 4px 0;
-            &.firstname, &.lastname { width: 100% }
-            &.email { width: 100%; border-radius: 4px; }
-            &.submit { border-radius: 4px; }
+            &.firstname, &.lastname, &.email { width: 100% }
+            &.email, &.submit { border-radius: 4px }
+            &.submit { min-width: 100px }
           }
         }
       }
