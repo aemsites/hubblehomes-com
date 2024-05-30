@@ -121,6 +121,7 @@ footer {
           text-align: center;
           padding: 4px 0;
           font-size: .7em;
+          font-weight: 600;
           white-space: nowrap;
         }
         input {
@@ -150,7 +151,8 @@ footer {
           &.submit { 
             width: calc(30% - 2px);
             border-radius: 0 4px 4px 0;
-            padding: 0 10px;
+            padding: 0;
+            text-align: center;
             margin-left: 0;
             cursor: pointer;
             color: var(--dark-blue);
@@ -347,7 +349,7 @@ footer {
         small { padding: 0 30px; white-space: wrap }
         input {
           &.email { width: 68% }
-          &.submit { width: calc(32% - 2px); padding: 0 1px }
+          &.submit { width: calc(32% - 2px) }
         }
       }
     }
