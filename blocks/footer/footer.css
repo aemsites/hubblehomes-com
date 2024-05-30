@@ -15,7 +15,9 @@ footer {
       font-weight: normal;
       transition: all 0.3s ease-in-out;
       &:hover { color: var(--yellow) }
+      strong & { font-weight: 700 }
     }
+
 
     h4 {
       font-size: 1.1em;
