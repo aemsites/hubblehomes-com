@@ -45,33 +45,25 @@ export default async function decorate(block) {
     const $bottom = div({ class: 'bottom' }, $iconRow);
 
     // define sections and map to them
-    const sections = ['col-1', 'col-2', 'col-3', 'bottom'];
+    const sections = ['col-1', 'col-2', 'col-3', 'terms'];
     const sectionsHTML = Array.from(doc.body.children);
 
     sections.forEach((section, row) => {
       const html = sectionsHTML[row];
+      html.classList.add(section);
 
       if (html) {
         // top 3 rows
         if (row >= 0 && row <= 2) {
-          html.classList.add(section);
-
           // decorate buttons
           html.querySelectorAll('p > a').forEach((btn) => btn.classList.add('btn'));
-
           // 2nd row
-          if (row === 1) {
-            html.append($form);
-          }
-
+          if (row === 1) html.append($form);
           $top.firstChild.append(html);
         }
 
         // bottom row
-        if (row === 3) {
-          html.classList.add('terms');
-          $bottom.append(html);
-        }
+        if (row === 3) $bottom.append(html);
       } else {
         // eslint-disable-next-line no-console
         console.log('Section not found for index', row);
