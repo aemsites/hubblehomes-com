@@ -3,6 +3,7 @@ import {
 } from '../../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../../scripts/aem.js';
 import { getHomePlanImage } from '../../../scripts/home-plans-data.js';
+import formatPhoneNumber from '../../../scripts/phone-formatter.js';
 
 class BaseCard {
   constructor(model) {
@@ -247,7 +248,8 @@ class BaseCard {
    */
   // eslint-disable-next-line class-methods-use-this
   renderBottomRowOfDetailsContainer_left(gridContainer) {
-    const link = a({ href: 'tel:2086495529' }, '208-649-5529');
+    const { phone } = window.hh.current.sale_center;
+    const link = a({ href: `tel:${phone}` }, formatPhoneNumber(phone));
     const middleLeft = div({ class: 'phone-number' }, link);
     gridContainer.appendChild(middleLeft);
   }
