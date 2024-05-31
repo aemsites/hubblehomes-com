@@ -93,9 +93,9 @@ export default async function decorate(block) {
 
   const $phone = a({ id: 'phone', href: 'tel:208-620-2607' }, '208-620-2607');
 
-  const $chat = div({ id: 'chat', class: 'livechat_button', 'data-id': 'TeyAs9pDGZ1' }, a({ href: '#' },
+  const $chat = div({ class: 'chat livechat_button', 'data-id': 'TeyAs9pDGZ1' },
     img({ src: '/icons/lets-chat.png', width: '81', height: '38', alt: 'Let\'s chat with Hubble Homes and get all the info you need for your next new home.' }),
-  ));
+  );
 
   const $bgrBtn = div({ class: 'bgr-btn' }, span(), span(), span());
   $bgrBtn.addEventListener('click', () => {
