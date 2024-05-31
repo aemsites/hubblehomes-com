@@ -1,1 +1,51 @@
 /* add global styles that can be loaded post LCP here */
+.two-column {
+  display: flex;
+}
+
+aside {
+  flex: 0 0 25%;
+}
+
+/* sidebar */
+aside > div {
+  padding: 40px 20px 0;
+  font-size: 1em;
+}
+
+aside h3 {
+  border-top: 1px solid #383838;
+  margin: 20px 0 0;
+  padding: 20px 0 0;
+}
+
+aside h3:first-of-type {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+aside h4 {
+  font-size: 18px;
+  margin: 20px 0 0;
+  margin-bottom: 2px;
+  font-weight: 400;
+}
+
+aside ul {
+  list-style: none;
+  color: #383838;
+  margin: 0;
+  padding: 0;
+  line-height: 1.3;
+}
+aside h4:first-of-type { margin: 0 }
+
+aside a {
+  color: #383838;
+  text-decoration: none !important;
+}
+
+aside a:hover {
+  color: #0055b9;
+}

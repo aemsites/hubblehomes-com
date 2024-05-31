@@ -1,4 +1,5 @@
-const hh = window.hh || {};
+window.hh = window.hh || {};
+const { hh } = window;
 
 async function loadHomePlans() {
   if (hh.homeplans) {
@@ -13,14 +14,22 @@ async function loadHomePlans() {
   throw new Error('Failed to load inventory data');
 }
 
-// eslint-disable-next-line no-unused-vars
+/**
+ * Return all the home plans.
+ * @returns {Promise<Awaited<*>|*|undefined>}
+ */
 async function getHomePlans() {
   return loadHomePlans();
 }
 
+/**
+ * Get the image for the given home plan model.
+ * @param modelName
+ * @returns {Promise<undefined|boolean|string|*>}
+ */
 async function getHomePlanImage(modelName) {
   if (!modelName) {
-    return undefined; // this could be an image placeholder
+    return undefined;
   }
 
   const plans = await loadHomePlans();

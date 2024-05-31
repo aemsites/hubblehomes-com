@@ -1,18 +1,33 @@
-const hh = window.hh || {};
-hh.inventory = hh.inventory || {};
+window.hh = window.hh || {};
+const { hh } = window;
 
 async function loadInventory() {
   const response = await fetch('/inventory-query-index.json');
   if (response.ok) {
     const inventory = await response.json();
-    hh.inventory = inventory.data;
-    return inventory.data;
+
+    // load the inventory and create a map of communities to homes
+    const communityMap = new Map();
+
+    inventory.data.forEach((home) => {
+      const { community } = home;
+      if (!communityMap.has(community)) {
+        communityMap.set(community, []);
+      }
+      communityMap.get(community).push(home);
+    });
+    hh.inventory = communityMap;
+    return hh.inventory;
   }
   throw new Error('Failed to load inventory data');
 }
 
 // eslint-disable-next-line no-unused-vars
-export async function getInventoryHomes(community) {
+async function getInventoryHomes(community) {
   const inventory = await loadInventory();
-  return inventory.filter((home) => home.community === community);
+  return inventory.get(community);
 }
+
+export {
+  getInventoryHomes,
+};
