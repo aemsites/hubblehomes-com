@@ -107,7 +107,7 @@ input[type="text"]::placeholder {
 }
 
 /* chat */
-#chat {
+.chat {
   position: absolute;
   top: 4px;
   right: 183px;
@@ -274,7 +274,7 @@ header nav .r-col p:not(:first-child) picture img { margin-top: 30px }
 
 @media (width <= 1170px) {
 
-  #promo, #search, #phone, #chat { display: none }
+  #promo, #search, #phone, .chat { display: none }
 
   #logo { left: 34px }
 
