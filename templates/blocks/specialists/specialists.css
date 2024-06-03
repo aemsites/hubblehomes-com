@@ -1,0 +1,30 @@
+.specialist {
+  .specialist-info {
+    .email::before {
+      content: "";
+      display: inline;
+      height: 15px;
+      width: 15px;
+      background-repeat: no-repeat;
+      background-size: contain;
+      padding-right: 20px;
+      background-image: url("/icons/email-agent.svg");
+    }
+  }
+
+  .specialist-image-container {
+    img {
+      border: 1px solid #e9eae9;
+      border-radius: 50%;
+      width: 95px;
+
+      @media (width >= 768px) {
+        width: 125px;
+      }
+
+      @media (width >= 992px) {
+        width: 195px;
+      }
+    }
+  }
+}

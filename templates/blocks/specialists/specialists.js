@@ -11,10 +11,10 @@ export default function decorate(block) {
   } = readBlockConfig(block);
 
   const agent = div(
-    { class: 'agent' },
-    div({ class: 'agent-image' }, createOptimizedPicture(photo, name)),
+    { class: 'specialist' },
+    div({ class: 'specialist-image-container' }, createOptimizedPicture(photo, name)),
     div(
-      { class: 'agent-info' },
+      { class: 'specialist-info' },
       div({ class: 'name' }, name),
       div({ class: 'email' }, email),
       div({ class: 'phone' }, formatPhoneNumber(phone)),
