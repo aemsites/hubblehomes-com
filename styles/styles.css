@@ -251,7 +251,7 @@ main img.search-by-map {
 
 /* sections */
 main .section {
-  padding: 64px 16px;
+  /*padding: 64px 16px;*/
 }
 
 /**
@@ -339,3 +339,4 @@ main .section.highlight {
   background-color: var(--btn-bg-color);
   border-color: var(--btn-border);
 }
+

@@ -1,8 +1,8 @@
 import {
-  buildBlock, decorateBlock, getMetadata, loadBlock,
+  buildBlock, decorateBlock, loadBlock,
 } from '../../scripts/aem.js';
 import {
-  a, aside, div, small, strong,
+  a, aside, div,
 } from '../../scripts/dom-helpers.js';
 import { getInventoryHomes } from '../../scripts/inventory-data.js';
 import { getHomePlans } from '../../scripts/home-plans-data.js';
@@ -12,7 +12,6 @@ import {
 } from '../../scripts/sales-center.js';
 import getLastUrlSegment from '../../scripts/url-utils.js';
 import { loadTemplateBlock } from '../../scripts/template-scripts.js';
-import { loadFragment } from '../../blocks/fragment/fragment.js';
 
 /**
  * Builds the inventory homes block.
@@ -72,14 +71,14 @@ async function createSpecialists(specialists) {
 
   specialists.forEach((specialist) => {
     const content = [];
-    content.push(['name', `- ${specialist.name}`]);
+    content.push(['name', specialist.name]);
     content.push(['phone', specialist.phone]);
     content.push(['photo', specialist.headshotImage]);
     content.push(['email', specialist.email]);
 
     const specialistsBlock = buildBlock('specialists', content);
     specialistsBlock.classList.add('agents');
-    const blockWrapper = div({ class: 'section' }, specialistsBlock);
+    const blockWrapper = div(specialistsBlock);
     decorateBlock(specialistsBlock);
     promises.push(loadTemplateBlock(specialistsBlock));
     agents.push(blockWrapper);
@@ -87,6 +86,18 @@ async function createSpecialists(specialists) {
 
   Promise.all(promises).then(() => deferred.resolve(agents));
   return deferred.promise;
+}
+
+function buildBreadCrumbs($page) {
+  const $h1 = $page.querySelector('h1');
+  return div(
+    { class: 'breadcrumbs' },
+    a({ href: '/', 'arial-label': 'View Home Page' }, 'Home'),
+    ' > ',
+    a({ href: '/foo', 'arial-label': 'View News Page' }, 'CommunityName'),
+    ' > ',
+    $h1.textContent,
+  );
 }
 
 export default async function decorate(doc) {
@@ -100,53 +111,41 @@ export default async function decorate(doc) {
   const carousel = doc.querySelector('.carousel-wrapper');
   $main.prepend(carousel);
 
-  const $h1 = $page.querySelector('h1');
-  const $breadCrumbs = div(
-    { class: 'breadcrumbs' },
-    a({ href: '/', 'arial-label': 'View Home Page' }, 'Home'),
-    ' > ',
-    a({ href: '/foo', 'arial-label': 'View News Page' }, 'CommunityName'),
-    ' > ',
-    $h1.textContent,
-  );
+  const $breadCrumbs = buildBreadCrumbs($page);
 
   const tabs = div({ class: 'tabs' }, 'tabs');
   const description = doc.querySelector('.default-content-wrapper');
 
   const twoCols = div({ class: 'repeating-grid' }, div({ class: 'left' }, description), div({ class: 'right' }, 'right'));
 
-
   const inventory = await buildInventoryHomes();
 
-  const mainPageContent = div({ class: 'section' }, $breadCrumbs,
-    div({ class: 'content-wrapper' },
-      div(
-        { class: 'content' },
-        tabs,
-        twoCols,
-      ),
-      aside(
-        { class: 'wip' },
-        div('hello side wall'),
-      ),
-    ));
+  const mainPageContent = div({ class: 'section' }, $breadCrumbs, div(
+    { class: 'content-wrapper' },
+    div(
+      { class: 'content' },
+      tabs,
+      twoCols,
+    ),
+    aside(
+      { class: 'wip' },
+      div('hello side wall'),
+    ),
+  ));
 
-  const inventoryEl = div({ class: 'section' }, inventory);
+  const inventoryEl = div({ class: 'section inventory' }, inventory);
   $page.replaceWith(carousel, mainPageContent, inventoryEl);
 
+  const communityName = getSalesCenterNameFromUrl(window.location);
+  //
+  const banner = div({ class: 'grey-divider' }, `${communityName} New Home Specialists`);
+  $main.append(banner);
 
-  // mainContent.appendChild(inventory);
-  //
-  // const communityName = getSalesCenterNameFromUrl(window.location);
-  //
-  // const banner = div({ class: 'grey-divider' }, `${communityName} New Home Specialists`);
-  //
-  // const specialistsSection = div({ class: 'section specialists' });
-  //
-  // const specialistEl = await createSpecialists(salesCenter.specialists);
-  // specialistEl.forEach((el) => {
-  //   specialistsSection.appendChild(el);
-  // });
+  const specialistsSection = div({ class: 'specialists' });
+  const specialistEl = await createSpecialists(salesCenter.specialists);
+  specialistEl.forEach((el) => {
+    specialistsSection.appendChild(el);
+  });
 
-  // $page.replaceWith($newPage);
+  $main.append(specialistsSection);
 }
