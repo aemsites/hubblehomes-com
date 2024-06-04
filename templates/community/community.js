@@ -2,16 +2,16 @@ import {
   buildBlock, decorateBlock, loadBlock,
 } from '../../scripts/aem.js';
 import {
-  a, aside, div,
+  a, aside, br, div, h2, h3,
 } from '../../scripts/dom-helpers.js';
 import { getInventoryHomes } from '../../scripts/inventory-data.js';
 import { getHomePlans } from '../../scripts/home-plans-data.js';
 import {
-  getSalesCenterNameFromUrl,
+  getSalesCenterCommunityNameFromUrl,
   getSalesCenters,
 } from '../../scripts/sales-center.js';
 import getLastUrlSegment from '../../scripts/url-utils.js';
-import { loadTemplateBlock } from '../../scripts/template-scripts.js';
+import { loadTemplateBlock } from '../../scripts/template-block.js';
 
 /**
  * Builds the inventory homes block.
@@ -77,7 +77,6 @@ async function createSpecialists(specialists) {
     content.push(['email', specialist.email]);
 
     const specialistsBlock = buildBlock('specialists', content);
-    specialistsBlock.classList.add('agents');
     const blockWrapper = div(specialistsBlock);
     decorateBlock(specialistsBlock);
     promises.push(loadTemplateBlock(specialistsBlock));
@@ -100,6 +99,55 @@ function buildBreadCrumbs($page) {
   );
 }
 
+function createRightAside() {
+  // phone number and links
+  const phone = '(208) 649-5529';
+  const alsoAvailableAt = [
+    'Adams Ridge',
+    'Brittany Heights at Windsor Creek',
+    'Franklin Village North',
+    'Greendale Grove',
+    'Mason Creek',
+    'Sera Sol',
+    'Southern Ridge',
+    'Sunnyvale',
+    'Waterford',
+  ];
+
+  const links = [
+    'Virtual Tour',
+    'Floor Plan Handout',
+    'Community Map & Directions',
+    'Interactive Sitemap',
+    'Static Sitemap PDF',
+    'Static Sitemap Image',
+    'Energy Efficiency',
+  ];
+
+  // The third column of the description box
+  const heading = h2('(123) 123-1234');
+  const subheading = h3('Also Available At:');
+
+  const locationList = div();
+  alsoAvailableAt.map((location) => {
+    const divElement = document.createElement('div');
+    divElement.textContent = location;
+    divElement.appendChild(br());
+    locationList.appendChild(divElement);
+  });
+
+  const linksList = div('Links:');
+  links.map((link) => {
+    const linkElement = a({ href: '#' }, link);
+    const divElement = document.createElement('div');
+    divElement.appendChild(linkElement);
+    divElement.appendChild(br());
+    linksList.appendChild(divElement);
+  });
+
+  return div({ class: 'item' }, heading, br(), subheading, locationList, br(), linksList);
+}
+
 export default async function decorate(doc) {
   const {
     salesCenter,
@@ -113,35 +161,60 @@ export default async function decorate(doc) {
 
   const $breadCrumbs = buildBreadCrumbs($page);
 
-  const tabs = div({ class: 'tabs' }, 'tabs');
+  const tabs = div({ class: 'tabs' });
   const description = doc.querySelector('.default-content-wrapper');
 
-  const twoCols = div({ class: 'repeating-grid' }, div({ class: 'left' }, description), div({ class: 'right' }, 'right'));
+  const rightContent = `<dl>
+    <dt>From</dt>
+    <dd> $ 381,990</dd>
+    <dt>Square Feet</dt>
+    <dd>1,700 </dd>
+    <dt>Beds</dt><dd>3  - 4</dd>
+    <dt>Baths</dt><dd>2.5</dd>
+    <dt>Cars</dt><dd>2</dd><dt>Primary Bed</dt>
+    <dd>Up</dd><dt>Home Style</dt>
+    <dd>2 Story</dd>
+  </dl>`;
+
+  const rightCol = div();
+  rightCol.innerHTML = rightContent;
+
+  const twoCols = div(
+    { class: 'repeating-grid' },
+    div({ class: 'left' }, description),
+    div({ class: 'right' }, rightCol),
+  );
 
   const inventory = await buildInventoryHomes();
 
-  const mainPageContent = div({ class: 'section' }, $breadCrumbs, div(
+  const actions = div(
+    { class: 'action-bar' },
+    a({ class: 'share btn' }, 'Share'),
+    a({ class: 'save btn' }, 'Save'),
+  );
+
+  const rightAside = createRightAside();
+
+  const mainPageContent = div({ class: 'section' }, $breadCrumbs, actions, tabs, div(
     { class: 'content-wrapper' },
     div(
       { class: 'content' },
-      tabs,
       twoCols,
     ),
     aside(
-      { class: 'wip' },
-      div('hello side wall'),
+      div('right').innerHTML = rightAside,
     ),
   ));
 
   const inventoryEl = div({ class: 'section inventory' }, inventory);
   $page.replaceWith(carousel, mainPageContent, inventoryEl);
 
-  const communityName = getSalesCenterNameFromUrl(window.location);
-  //
+  const communityName = getSalesCenterCommunityNameFromUrl(window.location);
+
   const banner = div({ class: 'grey-divider' }, `${communityName} New Home Specialists`);
   $main.append(banner);
 
-  const specialistsSection = div({ class: 'specialists' });
+  const specialistsSection = div({ class: 'specialists fluid-flex' });
   const specialistEl = await createSpecialists(salesCenter.specialists);
   specialistEl.forEach((el) => {
     specialistsSection.appendChild(el);
