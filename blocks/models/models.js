@@ -25,9 +25,16 @@ function createCardLoader() {
   return div({ class: 'wrapper' }, loader);
 }
 
-export default function decorate(block) {
+/**
+ * Render a list of models given a title for the section block.
+ * The code will attempt to inspect the window.hh.models object for a list of models to use
+ * as the data source for the cards. If the window.hh.models object is not available then the
+ * code will attempt to load the models from the given models url that was specified in the block.
+ * @param block
+ */
+export default async function decorate(block) {
   const {
-    models: modelData,
+    models: modelUrl,
     title,
   } = readBlockConfig(block);
 
@@ -43,8 +50,10 @@ export default function decorate(block) {
   // insert placeholder images for google lighthouse ...
 
   // Create the title bar that identifies the block
-  const titleEl = div({ class: 'grey-divider' }, title);
-  block.appendChild(titleEl);
+  if (title) {
+    const titleEl = div({ class: 'grey-divider' }, title);
+    block.appendChild(titleEl);
+  }
 
   const loaderBox = div({ class: 'grid-loader repeating-grid' });
   for (let i = 0; i < Math.floor(Math.random() * 10) + 1; i += 1) {
@@ -52,21 +61,23 @@ export default function decorate(block) {
   }
   block.appendChild(loaderBox);
 
-  // load the json that's associated with the models and iterate over each home
-  // and create a card for each home
-  loadModels(modelData).then((models) => {
-    // remove the card loader
-    document.querySelector('.grid-loader').remove();
+  const models = window.hh.current.models || await loadModels(modelUrl);
 
-    const ulEl = ul({ class: 'repeating-grid' });
-    models.forEach((model) => {
-      const liEl = li({ class: 'model-card' });
-      const card = CardFactory.createCard(classTokenList, model);
+  const loader = document.querySelector('.grid-loader');
+  if (loader) {
+    loader.remove();
+  }
 
-      liEl.appendChild(card.render());
-      ulEl.append(liEl);
-    });
+  const ulEl = ul({ class: 'repeating-grid' });
 
-    block.appendChild(ulEl);
+  const promises = models.map(async (model) => {
+    const liEl = li({ class: 'model-card' });
+    const card = CardFactory.createCard(classTokenList, model);
+    const rendered = await card.render();
+    liEl.appendChild(rendered);
+    ulEl.append(liEl);
   });
+  await Promise.all(promises);
+
+  block.appendChild(ulEl);
 }

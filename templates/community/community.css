@@ -1,0 +1,54 @@
+.community {
+  .action-bar {
+    height: 70px;
+    display: flex;
+    justify-content: right;
+    padding-right: 20px;
+    align-items: center;
+
+    a.btn {
+      position: relative;
+      color: #fff;
+      height: 50px;
+      width: 50px;
+      font-size: 0;
+      margin-right: 20px;
+      cursor: pointer;
+      border-radius: 30px;
+      background: var(--light-blue);
+      transition: all 160ms ease-in;
+      &:hover { background: var(--dark-blue) }
+      &:last-child {margin: 0 }
+      &::after {
+        position: absolute;
+        content: '';
+        width: inherit;
+        height: inherit;
+        background: #fff;
+        transition: all 160ms ease-in;
+        mask-position: center !important;
+        mask-repeat: no-repeat !important;
+      }
+
+      &.share::after {
+        mask: url('/icons/sharethis.svg');
+        mask-size: 60%;
+        left: -3px;
+      }
+
+      &.save::after {
+        mask: url('/icons/heart.svg');
+        mask-size: 60%;
+      }
+    }
+  }
+
+  .specialists.fluid-flex {
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--link-color);
+    margin: 20px 0;
+  }
+
+}

@@ -53,15 +53,14 @@ export default async function decorate(doc) {
     button({ class: 'sharethis' }, 'Share'),
   );
 
-  const $newPage = div({ class: 'section' },
+  const $newPage = div({ class: 'section' }, $breadCrumbs,
     div({ class: 'content-wrapper' },
       div({ class: 'content' },
-        $breadCrumbs,
         $mainContent,
         $socialShare,
         $replyForm,
       ),
-      aside({ class: 'wip' },
+      aside(
         asideFrag.firstElementChild.querySelector('.default-content-wrapper'),
       ),
     ),

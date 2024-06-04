@@ -1,3 +1,8 @@
+import getLastUrlSegment from './url-utils.js';
+
+window.hh = window.hh || {};
+const { hh } = window;
+
 /**
  * sales-center.js
  *
@@ -12,25 +17,16 @@
  * @throws Will throw an error if the network request fails.
  */
 async function loadSalesCenterData(url) {
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+  if (hh.salescenters) {
+    return hh.salescenters;
   }
-
-  return response.json();
-}
-
-/**
- * Extract the last segment from a given URL.
- * @param {string} url - The URL to extract the last segment from.
- * @returns {string} The extracted last segment.
- */
-function getLastUrlSegment(url) {
-  const { pathname } = new URL(url);
-  const sanitizedPathname = pathname.replace(/\/+$/, '');
-  const parts = sanitizedPathname.split('/');
-  return parts.pop();
+  const response = await fetch(url);
+  if (response.ok) {
+    const salesCenters = await response.json();
+    hh.salescenters = salesCenters;
+    return salesCenters;
+  }
+  throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
 }
 
 /**
@@ -39,16 +35,15 @@ function getLastUrlSegment(url) {
  * @returns {Promise<Object>} A promise that resolves to the sales center details
  * or an empty object if no data is found.
  */
-async function getSalesCenterDetails(url) {
-  const data = await loadSalesCenterData('/data/sales-office-and-specialists.json');
+async function getSalesCenters(url) {
+  const saleCenters = await loadSalesCenterData('/data/sales-office-and-specialists.json');
 
-  if (!data || !url) {
+  if (!saleCenters || !url) {
     return {};
   }
 
-  const { 'sales-office': { data: salesOffices }, specialists: { data: salesSpecialists } } = data;
+  const { 'sales-office': { data: salesOffices }, specialists: { data: salesSpecialists } } = saleCenters;
   const urlSlug = getLastUrlSegment(url);
-
   const salesOfficeDetails = salesOffices.find((office) => office['url-slug'] === urlSlug);
 
   if (!salesOfficeDetails) {
@@ -82,4 +77,19 @@ async function getSalesCenterDetails(url) {
   };
 }
 
-export default { getSalesCenterDetails };
+function getSalesCenterCommunityNameFromUrl(url) {
+  const saleCenters = hh.salescenters;
+  if (!saleCenters) {
+    return '';
+  }
+
+  const { 'sales-office': { data: salesOffices } } = saleCenters;
+  const urlSlug = getLastUrlSegment(url);
+  const salesOfficeDetails = salesOffices.find((office) => office['url-slug'] === urlSlug);
+  return salesOfficeDetails ? salesOfficeDetails.community : '';
+}
+
+export {
+  getSalesCenters,
+  getSalesCenterCommunityNameFromUrl,
+};
