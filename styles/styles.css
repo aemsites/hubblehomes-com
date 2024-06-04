@@ -1,4 +1,4 @@
-@import url('buttons.css');
+@import url("/styles/layouts.css");
 
 /*
  * Copyright 2020 Adobe. All rights reserved.
@@ -75,34 +75,6 @@
   }
 }
 
-  /* TODO: remove .wip before go-live
-    helper class used for debugging or to highlight "Work In Progress" blocks
-  */
-.wip {
-  position: relative;
-  outline: 1px solid rgba(255 0 255 / 20%);
-  background: rgba(255 255 0 / 5%);
-}
-
-.wip:hover {
-  outline: 1px solid rgba(255 0 255 / 100%);
-  background-color: rgba(255 255 0 / 50%);
-}
-
-.wip:hover::after {
-  content: "THIS IS A WORK IN PROGRESS";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 14px;
-  background: #f0f0f0;
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  white-space: nowrap;
-  color: #000;
-}
 
 body {
   font-size: var(--body-font-size-m);
@@ -250,8 +222,8 @@ main img.search-by-map {
 }
 
 /* sections */
-main .section {
-  /*padding: 64px 16px;*/
+main > .section > * {
+  max-width: 1200px;
 }
 
 /**
@@ -267,32 +239,11 @@ main .section {
   margin-top: 20px;
 }
 
-
-/* breadcrumbs */
-
-/* TODO: temporary style for now - used in default template for breadcrumbs - consider removing padding from section */
-.section.nopad {padding: 0}
-
-.breadcrumbs {
-  font-size: .8em;
-  line-height: 3em;
-  color: #c8c8c8;
-  text-align: left;
-  user-select: none;
-
-  a { 
-    color: #aaa; 
-    text-decoration: none;
-    &:hover { color: #0055b9 }
-  }
-}
-
-
-@media (width >= 600px) {
-  main .section {
-    padding: 64px 32px;
-  }
-}
+/*@media (width >= 600px) {*/
+/*  main .section {*/
+/*    padding: 64px 32px;*/
+/*  }*/
+/*}*/
 
 @media (width >= 900px) {
   .section > div {

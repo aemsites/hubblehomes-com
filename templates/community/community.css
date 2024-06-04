@@ -1,88 +1,54 @@
-@import url("/styles/layouts.css");
+.community {
+  .action-bar {
+    height: 70px;
+    display: flex;
+    justify-content: right;
+    padding-right: 20px;
+    align-items: center;
 
-.specialists {
-  display: grid;
-  grid-template-columns: 250px 250px;
-  justify-content: center;
-  text-align: center;
-  font-weight: 600;
-  font-size: 13px;
-  color: var(--link-color);
-  margin: 20px 0;
-}
+    a.btn {
+      position: relative;
+      color: #fff;
+      height: 50px;
+      width: 50px;
+      font-size: 0;
+      margin-right: 20px;
+      cursor: pointer;
+      border-radius: 30px;
+      background: var(--light-blue);
+      transition: all 160ms ease-in;
+      &:hover { background: var(--dark-blue) }
+      &:last-child {margin: 0 }
+      &::after {
+        position: absolute;
+        content: '';
+        width: inherit;
+        height: inherit;
+        background: #fff;
+        transition: all 160ms ease-in;
+        mask-position: center !important;
+        mask-repeat: no-repeat !important;
+      }
 
-.wip {
-  background-color: lightgray;
-}
+      &.share::after {
+        mask: url('/icons/sharethis.svg');
+        mask-size: 60%;
+        left: -3px;
+      }
 
-.content-wrapper {
-  display: flex;
-
-  .content {
-    flex: 0 0 75%;
-  }
-
-  aside {
-    flex: 0 0 25%;
-  }
-
-  .repeating-grid {
-    --grid-repeat: 2;
-
-    grid-template-columns: auto 292px;
-
-    > div:nth-child(1) {
-      background-color: lightyellow;
+      &.save::after {
+        mask: url('/icons/heart.svg');
+        mask-size: 60%;
+      }
     }
-
-    > div:nth-child(2) {
-      background-color: lightcyan;
-    }
   }
-}
 
-.community .carousel-wrapper {
-  max-width: 1920px;
-  aspect-ratio: 1920 / 800;
-  margin: 0 auto;
-}
+  .specialists.fluid-flex {
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--link-color);
+    margin: 20px 0;
+  }
 
-.community main .section {
-  background-color: white;
-}
-
-.block {
-  display: block;
-}
-
-.community main .content-wrapper {
-  background-color: lightblue;
-}
-
-.community main .content-wrapper .tabs {
-  background-color: lightgreen;
-  height: 30px;
-  width: 100%;
-}
-
-/* breadcrumbs */
-.breadcrumbs {
-  font-size: .8em;
-  color: #c8c8c8;
-  padding: 8px 0;
-  margin-bottom: 10px;
-  user-select: none;
-}
-
-.breadcrumbs a {
-  color: #aaa;
-  text-decoration: none;
-}
-
-.breadcrumbs a:hover {
-  color: #0055b9;
-}
-
-@media (width <= 800px) {
-  .content-wrapper { display: block }
 }

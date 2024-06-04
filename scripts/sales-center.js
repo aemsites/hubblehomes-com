@@ -77,7 +77,7 @@ async function getSalesCenters(url) {
   };
 }
 
-function getSalesCenterNameFromUrl(url) {
+function getSalesCenterCommunityNameFromUrl(url) {
   const saleCenters = hh.salescenters;
   if (!saleCenters) {
     return '';
@@ -91,5 +91,5 @@ function getSalesCenterNameFromUrl(url) {
 
 export {
   getSalesCenters,
-  getSalesCenterNameFromUrl,
+  getSalesCenterCommunityNameFromUrl,
 };
