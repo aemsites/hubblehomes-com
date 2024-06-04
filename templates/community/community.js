@@ -176,7 +176,7 @@ export default async function decorate(doc) {
     <dd>2 Story</dd>
   </dl>`;
 
-  const rightCol = div();
+  const rightCol = div({class: 'details'});
   rightCol.innerHTML = rightContent;
 
   const twoCols = div(

@@ -191,27 +191,30 @@
         }
 
         > div:nth-child(2) {
-          /* right side */
-          margin: 0 15px;
           padding: 0 15px;
-          min-height: 250px;
-          box-shadow: 6px 6px 5px 0 rgba(0, 0, 0, 0.1);
-          box-sizing: border-box;
-          font-size: var(--body-font-size-m);
-          font-family: var(--body-font-family);
-          color: var(--link-color);
 
-          dd {
-            color: var(--btn-bg-color-3);
-            margin-left: 0;
-          }
+          .details {
+            margin: 0 15px;
+            padding: 20px;
+            min-height: 250px;
+            box-shadow: 6px 6px 5px 0 rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            font-size: var(--body-font-size-m);
+            font-family: var(--body-font-family);
+            color: var(--link-color);
 
-          dt {
-            font-weight: 700;
-          }
+            dd {
+              color: var(--btn-bg-color-3);
+              margin-left: 0;
+            }
 
-          dt, dd {
-            line-height: 1.4em;
+            dt {
+              font-weight: 700;
+            }
+
+            dt, dd {
+              line-height: 1.4em;
+            }
           }
         }
       }
