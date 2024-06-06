@@ -114,7 +114,6 @@
 
 @layer templates {
   body[class*="-template"] {
-
     --template-left-width: 80%;
     --template-right-width: 20%;
 
@@ -145,6 +144,47 @@
       /* bring the aside below the content */
       @media (width <= 991px) {
         display: block;
+      }
+
+      .repeating-grid {
+        --p-right-width: var(--right-col-width, var(--template-right-width));
+        --p-left-width: var(--left-col-width, var(--template-left-width));
+        --grid-repeat: 2;
+
+        /* override the aside width in custom template */
+        grid-template-columns: var(--p-left-width) var(--p-right-width);
+
+        > div:nth-child(1) {
+          /* left side */
+        }
+
+        > div:nth-child(2) {
+          padding: 0 15px;
+
+          .details {
+            margin: 0 15px;
+            padding: 20px;
+            min-height: 250px;
+            box-shadow: 6px 6px 5px 0 rgb(0 0 0 / 10%);
+            box-sizing: border-box;
+            font-size: var(--body-font-size-m);
+            font-family: var(--body-font-family);
+            color: var(--link-color);
+
+            dd {
+              color: var(--btn-bg-color-3);
+              margin-left: 0;
+            }
+
+            dt {
+              font-weight: 700;
+            }
+
+            dt, dd {
+              line-height: 1.4em;
+            }
+          }
+        }
       }
 
       .content {
@@ -178,46 +218,7 @@
         background-color: rgba(255 255 0 / 50%);
       }
 
-      .repeating-grid {
-        --p-right-width: var(--right-col-width, var(--template-right-width));
-        --p-left-width: var(--left-col-width, var(--template-left-width));
-        --grid-repeat: 2;
 
-        /* override the aside width in custom template */
-        grid-template-columns: var(--p-left-width) var(--p-right-width);
-
-        > div:nth-child(1) {
-          /* left side */
-        }
-
-        > div:nth-child(2) {
-          padding: 0 15px;
-
-          .details {
-            margin: 0 15px;
-            padding: 20px;
-            min-height: 250px;
-            box-shadow: 6px 6px 5px 0 rgba(0, 0, 0, 0.1);
-            box-sizing: border-box;
-            font-size: var(--body-font-size-m);
-            font-family: var(--body-font-family);
-            color: var(--link-color);
-
-            dd {
-              color: var(--btn-bg-color-3);
-              margin-left: 0;
-            }
-
-            dt {
-              font-weight: 700;
-            }
-
-            dt, dd {
-              line-height: 1.4em;
-            }
-          }
-        }
-      }
     }
   }
 

@@ -1,7 +1,9 @@
 import {
   readBlockConfig,
 } from '../../scripts/aem.js';
-import { div, li, p, ul } from '../../scripts/dom-helpers.js';
+import {
+  div, li, p, ul,
+} from '../../scripts/dom-helpers.js';
 import CardFactory from './CardFactory.js';
 
 /**
@@ -34,7 +36,7 @@ function createCardLoader() {
  */
 export default async function decorate(block) {
   const {
-    models: modelUrl
+    models: modelUrl,
   } = readBlockConfig(block);
 
   // if the block does not contain the model class then we don't process anything
@@ -46,9 +48,6 @@ export default async function decorate(block) {
   const classTokenList = block.classList;
 
   block.innerHTML = '';
-  // insert placeholder images for google lighthouse ...
-
-
 
   const models = window.hh.current.models || await loadModels(modelUrl);
 

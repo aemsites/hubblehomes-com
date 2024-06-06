@@ -2,12 +2,12 @@ import {
   buildBlock, decorateBlock, loadBlock,
 } from '../../scripts/aem.js';
 import {
-  a, aside, br, div, form, h2, h3, option, p, select,
+  a, aside, br, div, form, h2, h3, option, select,
 } from '../../scripts/dom-helpers.js';
 import {
   getInventoryHomes,
   filters,
-  getHeaderTitleForFilter
+  getHeaderTitleForFilter,
 } from '../../scripts/inventory-data.js';
 import { getHomePlans } from '../../scripts/home-plans-data.js';
 import {
@@ -90,14 +90,13 @@ async function createSpecialists(specialists) {
 }
 
 function buildBreadCrumbs($page) {
-  const $h1 = $page.querySelector('h1');
   return div(
     { class: 'breadcrumbs' },
     a({ href: '/', 'arial-label': 'View Home Page' }, 'Home'),
     ' > ',
     a({ href: '/foo', 'arial-label': 'View News Page' }, 'CommunityName'),
     ' > ',
-    $h1.textContent,
+    'XXX',
   );
 }
 
@@ -150,7 +149,6 @@ function createRightAside() {
 }
 
 function buildFilterForm(filterByValue) {
-
   function buildOptions(allFilters) {
     const optionEls = [];
 

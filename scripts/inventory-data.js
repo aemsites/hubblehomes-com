@@ -45,49 +45,51 @@ const filters = [
     filter: 'sortBy',
     value: 'pricesasc',
     label: 'Price - Low to High',
-    rule: (models) => models.sort((a, b) => parseInt(a.pricing) - parseInt(b.pricing)),
+    rule: (models) => models.sort((a, b) => parseInt(a.pricing, 10) - parseInt(b.pricing, 10)),
   },
   {
     filter: 'sortBy',
     value: 'pricedesc',
     label: 'Price - High to Low',
-    rule: (models) => models.sort((a, b) => parseInt(b.pricing) - parseInt(a.pricing)),
+    rule: (models) => models.sort((a, b) => parseInt(b.pricing, 10) - parseInt(a.pricing, 10)),
   },
   {
     filter: 'sortBy',
     value: 'totalsquarefeetasc',
     label: 'Sq Ft - Low to High',
-    rule: (models) => models.sort((a, b) => parseInt(a.squarefeet) - parseInt(b.squarefeet)),
+    // eslint-disable-next-line max-len
+    rule: (models) => models.sort((a, b) => parseInt(a.squarefeet, 10) - parseInt(b.squarefeet, 10)),
   },
   {
     filter: 'sortBy',
     value: 'totalsquarefeetdesc',
     label: 'Sq Ft - High to Low',
-    rule: (models) => models.sort((a, b) => parseInt(b.squarefeet) - parseInt(a.squarefeet)),
+    // eslint-disable-next-line max-len
+    rule: (models) => models.sort((a, b) => parseInt(b.squarefeet, 10) - parseInt(a.squarefeet, 10)),
   },
   {
     filter: 'sortBy',
     value: 'bedsasc',
     label: 'Beds - Low to High',
-    rule: (models) => models.sort((a, b) => parseInt(a.beds) - parseInt(b.beds)),
+    rule: (models) => models.sort((a, b) => parseInt(a.beds, 10) - parseInt(b.beds, 10)),
   },
   {
     filter: 'sortBy',
     value: 'bedsdesc',
     label: 'Beds - High to Low',
-    rule: (models) => models.sort((a, b) => parseInt(b.beds) - parseInt(a.beds)),
+    rule: (models) => models.sort((a, b) => parseInt(b.beds, 10) - parseInt(a.beds, 10)),
   },
   {
     filter: 'sortBy',
     value: 'bathsasc',
     label: 'Baths - Low to High',
-    rule: (models) => models.sort((a, b) => parseInt(a.baths) - parseInt(b.baths)),
+    rule: (models) => models.sort((a, b) => parseInt(a.baths, 10) - parseInt(b.baths, 10)),
   },
   {
     filter: 'sortBy',
     value: 'bathsdesc',
     label: 'Baths - High to Low',
-    rule: (models) => models.sort((a, b) => parseInt(b.baths) - parseInt(a.baths)),
+    rule: (models) => models.sort((a, b) => parseInt(b.baths, 10) - parseInt(a.baths, 10)),
   },
   {
     filter: 'filterBy',
@@ -98,61 +100,65 @@ const filters = [
     filter: 'filterBy',
     value: 'beds-3',
     label: '3+ beds',
-    rule: (models) => models.filter((model) => parseInt(model.beds) >= 3),
+    rule: (models) => models.filter((model) => parseInt(model.beds, 10) >= 3),
   },
   {
     filter: 'filterBy',
     value: 'beds-4',
     label: '4+ beds',
-    rule: (models) => models.filter((model) => parseInt(model.beds) >= 4),
+    rule: (models) => models.filter((model) => parseInt(model.beds, 10) >= 4),
   },
   {
     filter: 'filterBy',
     value: 'beds-5',
     label: '5+ beds',
-    rule: (models) => models.filter((model) => parseInt(model.beds) >= 5),
+    rule: (models) => models.filter((model) => parseInt(model.beds, 10) >= 5),
   },
   {
     filter: 'filterBy',
     value: 'beds-6',
     label: '6+ beds',
-    rule: (models) => models.filter((model) => parseInt(model.beds) >= 6),
+    rule: (models) => models.filter((model) => parseInt(model.beds, 10) >= 6),
   },
   {
     filter: 'filterBy',
     value: 'squarefeet-1',
     label: 'Under 1500 sq ft',
-    rule: (models) => models.filter((model) => parseInt(model.squarefeet) <= 1500),
+    rule: (models) => models.filter((model) => parseInt(model.squarefeet, 10) <= 1500),
   },
   {
     filter: 'filterBy',
     value: 'squarefeet-2',
     label: '1501 - 2000 sq ft',
-    rule: (models) => models.filter((model) => parseInt(model.squarefeet) > 1500 && parseInt(model.squarefeet) <= 2000),
+    // eslint-disable-next-line max-len
+    rule: (models) => models.filter((model) => parseInt(model.squarefeet, 10) > 1500 && parseInt(model.squarefeet, 10) <= 2000),
   },
   {
     filter: 'filterBy',
     value: 'squarefeet-3',
     label: '2001 - 2500 sq ft',
-    rule: (models) => models.filter((model) => parseInt(model.squarefeet) > 2000 && parseInt(model.squarefeet) <= 2500),
+    // eslint-disable-next-line max-len
+    rule: (models) => models.filter((model) => parseInt(model.squarefeet, 10) > 2000 && parseInt(model.squarefeet, 10) <= 2500),
   },
   {
     filter: 'filterBy',
     value: 'squarefeet-4',
     label: '2501 - 3000 sq ft',
-    rule: (models) => models.filter((model) => parseInt(model.squarefeet) > 2500 && parseInt(model.squarefeet) <= 3000),
+    // eslint-disable-next-line max-len
+    rule: (models) => models.filter((model) => parseInt(model.squarefeet, 10) > 2500 && parseInt(model.squarefeet, 10) <= 3000),
   },
   {
     filter: 'filterBy',
     value: 'squarefeet-5',
     label: '3001 - 3500 sq ft',
-    rule: (models) => models.filter((model) => parseInt(model.squarefeet) > 3000 && parseInt(model.squarefeet) <= 3500),
+    // eslint-disable-next-line max-len
+    rule: (models) => models.filter((model) => parseInt(model.squarefeet, 10) > 3000 && parseInt(model.squarefeet, 10) <= 3500),
   },
   {
     filter: 'filterBy',
     value: 'squarefeet-6',
     label: 'Over 3500 sq ft',
-    rule: (models) => models.filter((model) => parseInt(model.squarefeet) > 3500),
+    rule: (models) => models.filter((model) => parseInt(model.squarefeet, 10) > 3500),
   },
 ];
 
