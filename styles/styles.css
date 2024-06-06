@@ -19,12 +19,13 @@
   --background-color: white;
   --light-color: #eee;
   --dark-color: #ccc;
-  --text-color: black;
+  --text-color: #383838;
   --color-grey: #333;
   --btn-bg-color: #428bca;
   --btn-border:  #357ebd;
   --btn-bg-color-2: #3071a9;
   --btn-bg-color-3: #4572b7;
+  --btn-bg-dark-grey: #423c36;
   --btn-border-2: #285e8e;
   --dark-blue: #003264;
   --light-blue: #0055b9;
