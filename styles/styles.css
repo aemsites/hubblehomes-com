@@ -182,7 +182,6 @@ main pre {
 a:any-link {
   text-decoration: none;
   font-weight: 600;
-  color: var(--link-color)
 }
 
 a:hover {

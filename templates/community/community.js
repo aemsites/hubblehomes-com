@@ -20,7 +20,6 @@ import { loadTemplateBlock } from '../../scripts/template-block.js';
 /**
  * Builds the inventory homes block.
  *
- * @param {string} filterByValue The filter value to use when fetching inventory homes.
  * @returns {Promise<Element>} The inventory homes block wrapped in a div.
  */
 async function buildInventoryHomes() {
@@ -89,7 +88,7 @@ async function createSpecialists(specialists) {
   return deferred.promise;
 }
 
-function buildBreadCrumbs($page) {
+function buildBreadCrumbs() {
   return div(
     { class: 'breadcrumbs' },
     a({ href: '/', 'arial-label': 'View Home Page' }, 'Home'),
@@ -196,24 +195,18 @@ function buildFilterForm(filterByValue) {
   return div({ class: 'section' }, div({ class: 'filter-form' }, form(allListingSelect, sortBySelect, filterBySelect), resetEl));
 }
 
-function createPromos() {
-  const promos = `
-      <h3>Current Promotions</h3>
-       <a href="/promotions/promotions-detail/quick-move-ins" class="gtm-promotionsdetailcommunitypage" aria-label="View $25K Your Way on Quick Move-Ins Promotion Page">
-            $25K Your Way on Quick Move-Ins *
-       </a>
-       <a href="/promotions/promotions-detail/new-builds" class="gtm-promotionsdetailcommunitypage" aria-label="View $15K Your Way on New Builds Promotion Page">
-            $15K Your Way on New Builds *
-       </a>
-       <a href="/promotions/promotions-detail/Hubble-Homes-for-Heroes" class="gtm-promotionsdetailcommunitypage" aria-label="View Hubble Homes for Heroes Promotion Page">
-          Hubble Homes for Heroes *
-       </a>
-      <br>
-      <small>* click for more details</small>
-     `;
-  const promosEl = div({ class: 'promotions' }, promos);
-  promosEl.innerHTML = promos;
-  return promosEl;
+function createRightContent() {
+  return `<dl>
+    <dt>From</dt>
+    <dd>$381,990</dd>
+    <dt>Square Feet</dt>
+    <dd>1,700 </dd>
+    <dt>Beds</dt><dd>3 - 4</dd>
+    <dt>Baths</dt><dd>2.5</dd>
+    <dt>Cars</dt><dd>2</dd><dt>Primary Bed</dt>
+    <dd>Up</dd><dt>Home Style</dt>
+    <dd>2 Story</dd>
+  </dl>`;
 }
 
 export default async function decorate(doc) {
@@ -225,42 +218,24 @@ export default async function decorate(doc) {
     salesCenter,
   } = await fetchRequiredPageData(filter);
 
-  const $main = doc.querySelector('main');
-  const $page = doc.querySelector('main .section');
+  const mainEl = doc.querySelector('main');
+  const breadCrumbsEl = buildBreadCrumbs();
+  const tabsWrapper = document.querySelector('.tabs-wrapper');
+  const tabsEl = div({ class: 'tabs' }, tabsWrapper);
 
-  const carousel = doc.querySelector('.carousel-wrapper');
-  $main.prepend(carousel);
-
-  const $breadCrumbs = buildBreadCrumbs($page);
-
-  const tabs = div({ class: 'tabs' });
   const description = doc.querySelector('.default-content-wrapper');
-
-  const rightContent = `<dl>
-    <dt>From</dt>
-    <dd>$381,990</dd>
-    <dt>Square Feet</dt>
-    <dd>1,700 </dd>
-    <dt>Beds</dt><dd>3 - 4</dd>
-    <dt>Baths</dt><dd>2.5</dd>
-    <dt>Cars</dt><dd>2</dd><dt>Primary Bed</dt>
-    <dd>Up</dd><dt>Home Style</dt>
-    <dd>2 Story</dd>
-  </dl>`;
-
   const rightCol = div({ class: 'details' });
-  rightCol.innerHTML = rightContent;
+  rightCol.innerHTML = createRightContent();
 
-  const promos = createPromos();
+  const promotionsEl = document.querySelector('.promotion-wrapper');
 
   const twoCols = div(
     { class: 'repeating-grid' },
     div({ class: 'left' }, description),
-    div({ class: 'right' }, rightCol, promos),
+    div({ class: 'right' }, rightCol, promotionsEl),
   );
 
-  const title = getHeaderTitleForFilter(filter);
-  const titleEl = div({ class: 'grey-divider' }, title);
+  const titleEl = div({ class: 'grey-divider' }, getHeaderTitleForFilter(filter));
   const inventory = await buildInventoryHomes();
 
   const actions = div(
@@ -270,8 +245,21 @@ export default async function decorate(doc) {
   );
 
   const rightAside = createRightAside();
+  const modelFilter = buildFilterForm(filter);
 
-  const mainPageContent = div({ class: 'section' }, $breadCrumbs, actions, tabs, div(
+  // create a link so that a filter change will drop the user back down the page
+  const plansAnchor = a({ id: 'plans' }, '');
+  const inventoryEl = div({ class: 'section inventory' }, inventory);
+  const communityName = getSalesCenterCommunityNameFromUrl(window.location);
+
+  const banner = div({ class: 'grey-divider' }, `${communityName} New Home Specialists`);
+  const specialistsSection = div({ class: 'specialists fluid-flex' });
+  const specialistEl = await createSpecialists(salesCenter.specialists);
+  specialistEl.forEach((el) => {
+    specialistsSection.appendChild(el);
+  });
+
+  const mainPageContent = div({ class: 'section' }, breadCrumbsEl, actions, tabsEl, div(
     { class: 'content-wrapper' },
     div(
       { class: 'content' },
@@ -282,23 +270,7 @@ export default async function decorate(doc) {
     ),
   ));
 
-  const modelFilter = buildFilterForm(filter);
-  // create a link so that a filter change will drop the user back down the page
-  const plansAnchor = a({ id: 'plans' }, '');
-
-  const inventoryEl = div({ class: 'section inventory' }, inventory);
-  $page.replaceWith(carousel, mainPageContent, plansAnchor, modelFilter, titleEl, inventoryEl);
-
-  const communityName = getSalesCenterCommunityNameFromUrl(window.location);
-
-  const banner = div({ class: 'grey-divider' }, `${communityName} New Home Specialists`);
-  $main.append(banner);
-
-  const specialistsSection = div({ class: 'specialists fluid-flex' });
-  const specialistEl = await createSpecialists(salesCenter.specialists);
-  specialistEl.forEach((el) => {
-    specialistsSection.appendChild(el);
-  });
-
-  $main.append(specialistsSection);
+  mainEl.append(mainPageContent, plansAnchor, modelFilter, titleEl, inventoryEl);
+  mainEl.append(banner);
+  mainEl.append(specialistsSection);
 }

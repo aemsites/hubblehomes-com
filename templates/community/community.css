@@ -3,6 +3,10 @@
     padding-bottom: 15px;
   }
 
+  .tabs-wrapper {
+    display: none;
+  }
+
   .action-bar {
     height: 70px;
     display: flex;

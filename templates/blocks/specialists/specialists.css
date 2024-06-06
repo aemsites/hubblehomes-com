@@ -5,6 +5,10 @@
     width: 220px;
 
     .specialist-info {
+      a {
+        color: var(--link-color);
+      }
+
       .email::after, .phone::after {
         content: "";
         display: inline;
