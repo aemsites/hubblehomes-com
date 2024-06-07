@@ -310,59 +310,66 @@
       mask-size: 60%;
     }
   }
-}
-
-.strike-through {
-  text-decoration: line-through;
-}
-
-button.fancy {
-  display: inline-block;
-  white-space: nowrap;
-  vertical-align: middle;
-  transform: translateY(-2px);
-  cursor: pointer;
-  user-select: none;
-  font-family: minion-pro, serif;
-  font-size: 18px;
-  line-height: 1.5;
-  font-weight: 400;
-  font-style: italic;
-  border-radius: 5px;
-  padding: 4px 8px;
-  text-shadow: 0 -1px 0 rgba(251 112 112 / 2%);
-  box-shadow: inset 0 1px 0 rgba(255 255 255 / 15%), 0 2px 2px rgba(0 0 0 / 40%);
-  transition: all 0.3s ease-in-out;
-
-}
-
-button.fancy.yellow {
-  color: var(--dark-blue);
-  background-color: var(--yellow);
-}
-button.fancy.yellow:hover, button.fancy.yellow:focus {
-  background-color: #265a88;
-  color: #fff;
-}
 
 
-button.fancy.dark-grey {
-  background-color: var(--btn-bg-dark-grey);
-  color: #fff;
-}
-button.fancy.dark-grey:hover, button.fancy.dark-grey:focus {
-  background-color: #181614;
-}
+  .strike-through {
+    text-decoration: line-through;
+  }
 
-button.fancy.blue {
-  color: #fff;
-  background-color: #003264;
-  transition: all 0.3s ease-in-out;
-}
-button.fancy.blue:hover, button.fancy.blue:focus {
-  background-color: #005589;
-}
+  button.fancy {
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: middle;
+    transform: translateY(-2px);
+    cursor: pointer;
+    user-select: none;
+    font-family: minion-pro, serif;
+    font-size: 18px;
+    line-height: 1.5;
+    font-weight: 400;
+    font-style: italic;
+    border-radius: 5px;
+    padding: 4px 8px;
+    text-shadow: 0 -1px 0 rgba(251 112 112 / 2%);
+    box-shadow: inset 0 1px 0 rgba(255 255 255 / 15%), 0 2px 2px rgba(0 0 0 / 40%);
+    transition: all 0.3s ease-in-out;
 
-a {
-  color: var(--light-blue);
+  }
+
+  button.fancy.yellow {
+    color: var(--dark-blue);
+    background-color: var(--yellow);
+  }
+
+  button.fancy.yellow:hover,
+  button.fancy.yellow:focus {
+    background-color: #265a88;
+    color: #fff;
+  }
+
+
+  button.fancy.dark-grey {
+    background-color: var(--btn-bg-dark-grey);
+    color: #fff;
+  }
+
+  button.fancy.dark-grey:hover,
+  button.fancy.dark-grey:focus {
+    background-color: #181614;
+  }
+
+  button.fancy.blue {
+    color: #fff;
+    background-color: #003264;
+    transition: all 0.3s ease-in-out;
+  }
+
+  button.fancy.blue:hover,
+  button.fancy.blue:focus {
+    background-color: #005589;
+  }
+
+  a {
+    color: var(--light-blue);
+  }
 }

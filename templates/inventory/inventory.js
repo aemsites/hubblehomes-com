@@ -1,9 +1,25 @@
 /* eslint-disable function-call-argument-newline, object-curly-newline, function-paren-newline */
-import { aside, div, a, button, strong, small, img, ul, h1, h2, h3, h4, h5, br, span } from '../../scripts/dom-helpers.js';
-import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
+import { aside, div, a, button, strong, small, ul, h1, h2, h3, h4, h5, br, span, img } from '../../scripts/dom-helpers.js';
+import { getMetadata } from '../../scripts/aem.js';
+
+// Function to fetch and embed SVG content
+async function loadSVG(url, className = '') {
+  const response = await fetch(url);
+  const svgText = await response.text();
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = svgText.trim();
+  const svgElement = tempDiv.firstElementChild;
+  svgElement.classList.add('icon');
+    // Add additional class(es) if provided
+    if (className) {
+      className.split(' ').forEach(name => {
+        if (name) svgElement.classList.add(name);
+      });
+    }
+  return svgElement;
+}
 
 function createAlsoAvailableAtAside() {
-  // phone number and links
   const phone = '(208) 649-5529';
   const alsoAvailableAt = [
     'Adams Ridge',
@@ -27,12 +43,11 @@ function createAlsoAvailableAtAside() {
     'Energy Efficiency',
   ];
 
-  // The third column of the description box
-  const heading = h2('(123) 123-1234');
+  const heading = h2(phone);
   const subheading = h3('Also Available At:');
 
   const locationList = div();
-  alsoAvailableAt.map((location) => {
+  alsoAvailableAt.forEach((location) => {
     const divElement = document.createElement('div');
     divElement.textContent = location;
     divElement.appendChild(br());
@@ -40,7 +55,7 @@ function createAlsoAvailableAtAside() {
   });
 
   const linksList = div('Links:');
-  links.map((link) => {
+  links.forEach((link) => {
     const linkElement = a({ href: '#' }, link);
     const divElement = document.createElement('div');
     divElement.appendChild(linkElement);
@@ -51,120 +66,111 @@ function createAlsoAvailableAtAside() {
   return div({ class: 'item' }, heading, br(), subheading, locationList, br(), linksList);
 }
 
-function createPriceCell(price, previousPrice) {
-  // previousPrice = null;
-  const priceHeading = h3(price);
+async function createPriceCell(price, previousPrice) {
+  // price = '30';
+  let symbolElement = null;
+  let previouslyPriced = div();
+
   if (previousPrice) {
-    if (price > previousPrice) {
-      var symbol = div({ class: 'fa-caret-up' });
+    const numericPrice = parseFloat(price.replace(/[^\d.-]/g, ''));
+    const numericPreviousPrice = parseFloat(previousPrice.replace(/[^\d.-]/g, ''));
+    if (numericPrice > numericPreviousPrice) {
+      symbolElement = await loadSVG('/icons/caret-up.svg', 'up-caret');
     }
 
-    var previouslyPriced = div(
-      small("Previously"),
-      br(),
-      strong({ class: 'strike-through' }, previousPrice));
-  } else {
-    var previouslyPriced = div();
+    previouslyPriced = div(
+      div(
+        small("Previously"),
+        br(),
+        strong({ class: 'strike-through' }, previousPrice)
+      )
+    );
   }
 
+  const priceHeading = h3(price, symbolElement);
   const buyNowButton = div(button({ class: 'fancy yellow' }, 'Buy Now'));
-
-  const priceCell = div({ class: 'cell price-cell' }, priceHeading, previouslyPriced, buyNowButton);
+  const priceCell = div({ class: 'cell border-right' }, priceHeading, previouslyPriced, buyNowButton);
 
   return priceCell;
 }
 
 function createEstimatedPaymentCell() {
   const estimatedCost = '$2,552';
-
-  // estimated cost per month
   const perMonthText = span({ class: 'per-month' }, '/mo*');
   const estimatedCostHeadingText = h3(strong(estimatedCost), perMonthText);
 
-  // estimated payment text
   const estimatedPayment = 'Estimated<br>Payment';
   const estimatedText = small();
   estimatedText.innerHTML = estimatedPayment;
 
-  // prequalify button
   const prequalifyButton = div(button({ class: 'fancy dark-grey' }, 'Pre-Qualify'));
-
-  const estimatedCostCell = div({ class: 'cell' }, estimatedCostHeadingText, estimatedText, prequalifyButton);
+  const estimatedCostCell = div({ class: 'cell' }, estimatedCostHeadingText, div(estimatedText), prequalifyButton);
 
   return estimatedCostCell;
 }
 
-
 function buildBreadCrumbs() {
   return div(
     { class: 'breadcrumbs' },
-    a({ href: '/', 'arial-label': 'View Home Page' }, 'Home'),
+    a({ href: '/', 'aria-label': 'View Home Page' }, 'Home'),
     ' > ',
-    a({ href: '/foo', 'arial-label': 'View News Page' }, 'CommunityName'),
+    a({ href: '/foo', 'aria-label': 'View News Page' }, 'CommunityName'),
     ' > ',
-    'The Birch',
+    'The Birch'
   );
 }
 
 export default async function decorate(doc) {
   const $page = doc.querySelector('main .section');
-
-  // create a new page
   const $newPage = div();
 
-  // carousel
   const $carouselWrapper = doc.querySelector('.carousel-wrapper');
   $newPage.appendChild($carouselWrapper);
 
-  // actions
   const actions = div(
     { class: 'action-bar' },
     a({ class: 'share btn' }, 'Share'),
-    a({ class: 'save btn' }, 'Save'),
+    a({ class: 'save btn' }, 'Save')
   );
 
-  // breadcrumbs
   const $breadCrumbs = buildBreadCrumbs();
-
-  // tabs
   const tabs = div({ class: 'tabs' }, 'tabs');
 
-  // Also Available At aside
   const alsoAvailableAtAside = createAlsoAvailableAtAside();
 
-  const homeDetailsBoxContent = `<dl>
-    <dt>Price</dt>
-    <dd> $381,990</dd>
-    <dt>Square Feet</dt>
-    <dd>1,700 </dd>
-    <dt>Beds</dt><dd>3  - 4</dd>
-    <dt>Baths</dt><dd>2.5</dd>
-    <dt>Cars</dt><dd>2</dd><dt>Primary Bed</dt>
-    <dd>Up</dd><dt>Home Style</dt>
-    <dd>2 Story</dd>
-  </dl>`;
+  const homeDetailsBoxContent = `
+    <dl>
+      <dt>Price</dt>
+      <dd>$381,990</dd>
+      <dt>Square Feet</dt>
+      <dd>1,700</dd>
+      <dt>Beds</dt>
+      <dd>3 - 4</dd>
+      <dt>Baths</dt>
+      <dd>2.5</dd>
+      <dt>Cars</dt>
+      <dd>2</dd>
+      <dt>Primary Bed</dt>
+      <dd>Up</dd>
+      <dt>Home Style</dt>
+      <dd>2 Story</dd>
+    </dl>`;
   const homeDetailsBox = div({ class: 'details' });
   homeDetailsBox.innerHTML = homeDetailsBoxContent;
 
-
-
-  // Name, Address, MLS
   const name = h2('The Birch');
-  const address = a({ href: '#', class: 'address-container' },
-    h4('10883-beechcraft-st')
-  );
+  const svgElement = await loadSVG('/icons/directions.svg', 'icon');
+  const address = a({ href: '#', class: 'address-container' }, h4('10883-beechcraft-st', ' ', svgElement));
   const mls = h5('MLS# 98907516');
-  const homeIdentitiy = div( name, address, mls);
+  const homeIdentity = div(name, address, mls);
 
-  // Pricing block 
-  let price = getMetadata('pricing');
-  let previousPrice = getMetadata("previous-price");
-  const priceCell = createPriceCell(price, previousPrice);
+  const price = getMetadata('pricing');
+  const previousPrice = getMetadata('previous-price');
+  const priceCell = await createPriceCell(price, previousPrice);
   const estimatedCostCell = createEstimatedPaymentCell();
-  const priceBlock = div({ class: 'price-container' }, priceCell, estimatedCostCell);
+  const priceBlock = div({ class: 'pricing-information' }, priceCell, estimatedCostCell);
 
-
-  const listingHeader = div({ class: 'listing-header' }, homeIdentitiy, priceBlock);
+  const listingHeader = div({ class: 'listing-header' }, homeIdentity, priceBlock);
   const descriptionText = doc.querySelector('.default-content-wrapper p').textContent;
   const buttonContainer = div({ class: 'button-container' },
     button({ class: 'fancy dark-grey' }, 'Request Information'),
@@ -172,27 +178,22 @@ export default async function decorate(doc) {
   );
 
   const fullDescription = div({ class: 'full-description' }, listingHeader, br(), descriptionText, buttonContainer);
-
   const twoCols = div(
     { class: 'repeating-grid' },
     div({ class: 'left' }, fullDescription),
-    div({ class: 'right' }, homeDetailsBox),
+    div({ class: 'right' }, homeDetailsBox)
   );
 
   const mainPageContent = div({ class: 'section' }, $breadCrumbs, actions, tabs, div(
     { class: 'content-wrapper' },
     div(
       { class: 'content' },
-      twoCols,
+      twoCols
     ),
-    aside(
-      div('right').innerHTML = alsoAvailableAtAside,
-    ),
+    aside(alsoAvailableAtAside)
   ));
 
   $newPage.appendChild(mainPageContent);
-
   const $parent = $page.parentNode;
   $parent.replaceChild($newPage, $page);
 }
-
