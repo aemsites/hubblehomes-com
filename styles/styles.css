@@ -1,3 +1,5 @@
+@import url('buttons.css');
+
 /*
  * Copyright 2020 Adobe. All rights reserved.
  * This file is licensed to you under the Apache License, Version 2.0 (the "License");
@@ -19,13 +21,12 @@
   --dark-color: #ccc;
   --text-color: black;
   --color-grey: #333;
-  --btn-bg-color: #428bca;
-  --btn-border:  #357ebd;
-  --btn-bg-color-2: #3071a9;
-  --btn-bg-color-3: #4572b7;
-  --btn-border-2: #285e8e;
   --dark-blue: #003264;
-  --light-blue: #0055b9;
+  --light-blue: #0055b9; /* TODO: duplicat of blue - cleanup */
+  --blue: #0055b9;
+  --blue-2: #005589;
+  --gray: #423c36;
+  --dark-gray: #181614;
   --input-focus-border:#66afe9;
   --yellow: #fcd700;
   --link-light-gray: #717171;
@@ -144,7 +145,9 @@ h1 em {
 
 h1 {
   font-weight: 900;
-  font-size: var(--heading-font-size-xxl)
+  font-size: var(--heading-font-size-xxl);
+  color: var(--light-blue);
+  padding: 30px;
 }
 h2 { font-size: var(--heading-font-size-xl) }
 h3 { font-size: var(--heading-font-size-l) }
@@ -224,55 +227,6 @@ a:hover {
   text-decoration: none;
 }
 
-/* buttons */
-button {
-  display: inline-block;
-  padding: 6px 12px;
-  margin-bottom: 0;
-  font-size: var(--body-font-size-s);
-  line-height: 1.4286;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  touch-action: manipulation;
-  cursor: pointer;
-  user-select: none;
-  background-image: none;
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
-
-a.button:focus, button:focus  {
-  outline: thin dotted;
-  outline: 5px auto;
-  outline-offset: -2px;
-}
-
-a.button:hover, button:hover {
-  color: var(--color-grey);
-  text-decoration: none;
-}
-
-button:active {
-  background-image: none;
-  outline: 0;
-  box-shadow: inset 0 3px 5px rgb(0 0 0 / 12.5%);
-}
-
-button:disabled, button:disabled:hover {
-  background-color: var(--light-color);
-  pointer-events: none;
-  cursor: not-allowed;
-  box-shadow: none;
-  opacity: .65;
-}
-
-a.button.secondary, button.secondary {
-  background-color: unset;
-  border: 2px solid currentcolor;
-  color: var(--text-color);
-}
-
 main img {
   max-width: 100%;
   width: auto;
@@ -312,6 +266,26 @@ main .section {
   font-weight: 700;
   margin-top: 20px;
 }
+
+
+/* breadcrumbs */
+/* TODO: temporary style for now - used in default template for breadcrumbs - consider removing padding from section */
+.section.nopad {padding: 0}
+
+.breadcrumbs {
+  font-size: .8em;
+  line-height: 3em;
+  color: #c8c8c8;
+  text-align: left;
+  user-select: none;
+
+  a { 
+    color: #aaa; 
+    text-decoration: none;
+    &:hover { color: #0055b9 }
+  }
+}
+
 
 @media (width >= 600px) {
   main .section {
