@@ -259,8 +259,8 @@ class BaseCard {
    * @param gridContainer
    */
   renderMiddleRowOfDetailsContainer_right(gridContainer) {
-    const link = a({ href: this.model.href }, 'Request a Tour');
-    const middleLeft = div({ class: 'black-button' }, link);
+    const link = a({ href: this.model.href, class: 'btn dark-gray square' }, 'Request a Tour');
+    const middleLeft = div(link);
     gridContainer.appendChild(middleLeft);
   }
 
@@ -269,8 +269,8 @@ class BaseCard {
    * @param gridContainer
    */
   renderMiddleRowOfDetailsContainer_left(gridContainer) {
-    const link = a({ href: this.model.href }, 'Choose Your Lot');
-    const middleLeft = div({ class: 'grey-button' }, link);
+    const link = a({ href: this.model.href, class: 'btn gray square' }, 'Choose Your Lot');
+    const middleLeft = div(link);
     gridContainer.appendChild(middleLeft);
   }
 
@@ -280,11 +280,11 @@ class BaseCard {
    */
   renderBottomRowOfDetailsContainer_right(gridContainer) {
     const link1 = a({
-      class: 'btn-primary2 btn-small',
+      class: 'btn light-blue square small',
       href: this.model.href,
     }, 'Get Info');
     const link2 = a({
-      class: 'btn-primary btn-small',
+      class: 'btn yellow square small',
       href: this.model.href,
     }, 'More');
     const actions = div({ class: 'repeating-grid getmoreinfo' }, link1, link2);

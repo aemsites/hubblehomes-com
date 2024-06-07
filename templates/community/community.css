@@ -52,6 +52,29 @@
     }
   }
 
+  .directions {
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: var(--light-blue);
+    margin-bottom: 30px;
+
+    h1 {
+      font-size: 30px;
+    }
+
+    h4::after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 22px;
+      background: var(--light-blue);
+      mask: url("/icons/directions.svg") no-repeat center;
+      margin-left: 8px;
+    }
+
+  }
+
   .promotions {
     border: 0 solid #dfdfdf;
     padding: 10px;

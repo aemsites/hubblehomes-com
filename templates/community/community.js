@@ -1,8 +1,8 @@
 import {
-  buildBlock, decorateBlock, loadBlock,
+  buildBlock, decorateBlock, getMetadata, loadBlock,
 } from '../../scripts/aem.js';
 import {
-  a, aside, br, div, form, h2, h3, option, select,
+  a, aside, br, div, form, h1, h2, h3, h4, option, p, select,
 } from '../../scripts/dom-helpers.js';
 import {
   getInventoryHomes,
@@ -213,6 +213,8 @@ export default async function decorate(doc) {
   const url = new URL(window.location);
   const params = url.searchParams;
   const filter = params.get('filter');
+  const communityName = getMetadata('name', doc);
+  const areaName = getMetadata('area', doc);
 
   const {
     salesCenter,
@@ -220,8 +222,8 @@ export default async function decorate(doc) {
 
   const mainEl = doc.querySelector('main');
   const breadCrumbsEl = buildBreadCrumbs();
-  const tabsWrapper = document.querySelector('.tabs-wrapper');
-  const tabsEl = div({ class: 'tabs' }, tabsWrapper);
+  const tabsWrapper = document.querySelector('.subnav-wrapper');
+  // const subNavEl = div({ class: 'subnav' }, tabsWrapper);
 
   const description = doc.querySelector('.default-content-wrapper');
   const rightCol = div({ class: 'details' });
@@ -229,9 +231,10 @@ export default async function decorate(doc) {
 
   const promotionsEl = document.querySelector('.promotion-wrapper');
 
+  const modelNameAddr = div(h1(communityName), a({ class: 'directions', href: `${window.location.pathname}/driving-directions` }, h4(areaName)));
   const twoCols = div(
     { class: 'repeating-grid' },
-    div({ class: 'left' }, description),
+    div({ class: 'left' }, modelNameAddr, description),
     div({ class: 'right' }, rightCol, promotionsEl),
   );
 
@@ -250,7 +253,6 @@ export default async function decorate(doc) {
   // create a link so that a filter change will drop the user back down the page
   const plansAnchor = a({ id: 'plans' }, '');
   const inventoryEl = div({ class: 'section inventory' }, inventory);
-  const communityName = getSalesCenterCommunityNameFromUrl(window.location);
 
   const banner = div({ class: 'grey-divider' }, `${communityName} New Home Specialists`);
   const specialistsSection = div({ class: 'specialists fluid-flex' });
@@ -259,7 +261,7 @@ export default async function decorate(doc) {
     specialistsSection.appendChild(el);
   });
 
-  const mainPageContent = div({ class: 'section' }, breadCrumbsEl, actions, tabsEl, div(
+  const mainPageContent = div({ class: 'section' }, breadCrumbsEl, actions, tabsWrapper, div(
     { class: 'content-wrapper' },
     div(
       { class: 'content' },
