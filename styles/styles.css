@@ -269,6 +269,7 @@ main .section {
 
 
 /* breadcrumbs */
+
 /* TODO: temporary style for now - used in default template for breadcrumbs - consider removing padding from section */
 .section.nopad {padding: 0}
 
