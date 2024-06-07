@@ -44,19 +44,15 @@
   --fixed-font-family: 'Roboto Mono', menlo, consolas, 'Liberation Mono', monospace;
 
   /* body sizes */
-  --body-font-size-xl: 22px;
-  --body-font-size-l: 18px;
-  --body-font-size-m: 16px;
-  --body-font-size-s: 14px;
-  --body-font-size-xs: 12px;
+  --heading-font-size-xxl: 36px;
+  --heading-font-size-xl: 30px;
+  --heading-font-size-l: 24px;
+  --heading-font-size-m: 18px;
+  --heading-font-size-s: 14px;
+  --heading-font-size-xs: 12px;
 
   /* heading sizes */
-  --heading-font-size-xxl: 48px;
-  --heading-font-size-xl: 40px;
-  --heading-font-size-l: 32px;
-  --heading-font-size-m: 24px;
-  --heading-font-size-s: 20px;
-  --heading-font-size-xs: 18px;
+ 
 
   /* sizes */
   --nav-height: 90px;
@@ -68,17 +64,6 @@
   size-adjust: 100.06%;
   ascent-override: 95%;
   src: local('Arial');
-}
-
-@media (width >= 900px) {
-  :root {
-    --heading-font-size-xxl: 36px;
-    --heading-font-size-xl: 30px;
-    --heading-font-size-l: 24px;
-    --heading-font-size-m: 18px;
-    --heading-font-size-s: 14px;
-    --heading-font-size-xs: 12px;
-  }
 }
 
 

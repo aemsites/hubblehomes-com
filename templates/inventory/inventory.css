@@ -1,24 +1,9 @@
-.inventory .price-container {
-  display: flex;
-  justify-content: space-between;
-
-  * {
-    flex: 1 1 50%;
-  }
-}
-
-@media (max-width: 991px) {
-  .inventory .price-container {
-    flex-direction: column;
-  }
-}
-
 .inventory .full-description .listing-header {
   display: flex;
   justify-content: space-between;
 
-  * {
-    flex: 1 1 50%;
+  >* {
+    flex: 0 0 50%;
   }
 }
 
@@ -28,115 +13,105 @@
   }
 }
 
-.inventory button.fancy {
-  width: calc(100% - 10px);
-}
-
-.inventory .per-month {
-  font-size: 14px;
-  font-weight: normal;
-}
-
-.inventory .cell {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  > * {
-    margin: 0 5px 5px 5px;
-  }
-}
-
-.inventory .cell > :first-child {
-  min-height: 40px;
-}
-.inventory .cell > :nth-child(2) {
-  min-height: 41px;
-  line-height: 1em;
-}
-.inventory .cell > :nth-child(3) {
-  min-height: 39px;
-  width: 100%;
-}
-
-@media (max-width: 1200px) {
-  .inventory .cell > :first-child {
-    height: 63px;
-  }
-}
-
-.inventory .price-cell {
-  border-right: 1px solid #cccccc;
-}
-
-.inventory .property-info-left-cell {
+.inventory .listing-header .property-info-left-cell {
   h5 {
     margin: 10px 0;
     color: var(--link-color);
   }
 }
 
-.fa-caret-up:before {
-  content: "\f0d8";
-  color: #3c763d;
+.inventory .property-info-left-cell .address-container {
+  display: flex;
+  align-items: center;
 }
 
-@media (min-width: 1200px) {
-  .row {
-    width: 1170px;
+.inventory .pricing-information {
+  display: flex;
+  *> {
+    flex: 0 0 50%;
   }
 }
 
-@media (min-width: 992px) {
-  .row {
-    width: 970px;
+@media (max-width: 991px) {
+  .inventory .pricing-information {
+    flex-direction: column;
   }
 }
 
-@media (min-width: 992px) and (max-width: 1199px) {
-  .row {
-    width: 970px;
+.inventory .pricing-information .cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  >* {
+    margin: 0 5px 5px 5px;
+    display: flex;
+  }
+}
+/* Cell Heading */
+.inventory .pricing-information .cell> :first-child {
+  min-height: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Cell middle text*/
+.inventory .pricing-information .cell> :nth-child(2) {
+  min-height: 41px;
+  line-height: 1em;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* Cell Button */
+.inventory .pricing-information .cell> :nth-child(3) {
+  min-height: 39px;
+  width: 100%;
+  padding: 0 5px 5px 5px;
+  align-content: center;
+}
+
+@media (max-width: 1199px) {
+  .inventory .pricing-information .cell> :first-child {
+    height: 63px;
   }
 }
 
-@media (min-width: 768px) and (max-width: 991px) {
-  .row {
-    width: 750px;
-  }
+/* Styling of cell components */
+.inventory .pricing-information .cell .border-right {
+  border-right: 1px solid #cccccc;
 }
 
+.inventory .pricing-information .cell h3 {
+  display: inline-flex;
+  align-items: baseline;
+  line-height: 1;
+}
 
-/* 
-.inventory button.fancy.dark-grey {
-  width: calc(100% - 10px);
-  margin: 5px;
-  margin-top: auto;
-} 
+.inventory .pricing-information .cell .per-month {
+  font-size: 14px;
+  font-weight: normal;
+}
 
- .inventory button.fancy.blue {
-  width: calc(100% - 10px);
-  margin: 5px;
-} */
+.inventory .icon {
+  height: 1em;
+  width: 1em;
+  fill: currentColor;
+  vertical-align: middle;
+}
+
+.inventory .icon.up-caret {
+  fill: #3c763d;
+  height: 15px;
+  width: 24px;
+}
+
+.inventory button.fancy {
+  width: calc(100%);
+}
 
 .inventory .button-container {
   display: flex;
   gap: 15px;
   padding: 30px 0;
-}
-
-.inventory .button-container button {
-  flex: 1;
-  /* Ensures buttons are equally sized */
-  box-sizing: border-box;
-  /* Includes padding and border in the element's total width and height */
-}
-
-.inventory .address-container {
-  display: flex;
-  align-items: center;
-}
-
-.address-container img {
-  display: inline-block;
-  height: 1em;
 }
