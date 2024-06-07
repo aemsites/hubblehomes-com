@@ -1,0 +1,31 @@
+.read-more {
+  > div {
+    position: relative;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    
+    &.expanded {
+      -webkit-line-clamp: initial !important;
+      overflow: visible;
+    }
+  }
+
+  .more {
+    color: var(--link-color);
+
+    strong {
+      cursor: pointer;
+      padding-right: 20px;
+
+      &::after {
+        position: absolute;
+        content: '\25BA';
+        margin-left: 1px;
+        scale: .8;
+        transform: rotate(90deg);
+      }
+    }
+    &.less strong::after { transform: rotate(-90deg) }
+  }
+}
