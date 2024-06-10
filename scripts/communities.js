@@ -31,5 +31,6 @@ async function getCommunityDetails(url) {
 }
 
 export {
+  // eslint-disable-next-line import/prefer-default-export
   getCommunityDetails,
 };
