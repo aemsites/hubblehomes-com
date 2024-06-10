@@ -87,7 +87,7 @@ async function createPriceCell(price, previousPrice) {
   }
 
   const priceHeading = h3(price, div(symbolElement));
-  const buyNowButton = div(button({ class: 'fancy yellow' }, 'Buy Now'));
+  const buyNowButton = div(button({ class: 'fancy yellow', onclick: () => window.location.href = 'https://www.hubblehomes.com/buy-now' }, 'Buy Now'));
   const priceCell = div({ class: 'cell border-right' }, priceHeading, previouslyPriced, buyNowButton);
 
   return priceCell;
@@ -102,7 +102,7 @@ function createEstimatedPaymentCell() {
   const estimatedText = small();
   estimatedText.innerHTML = estimatedPayment;
 
-  const prequalifyButton = div(button({ class: 'fancy' }, 'Pre-Qualify'));
+  const prequalifyButton = div(button({ class: 'fancy', onclick: () => window.location.href = 'https://www.hubblehomes.com/contact-us/get-pre-qualified' }, 'Pre-Qualify'));
   const estimatedCostCell = div({ class: 'cell' }, estimatedCostHeadingText, div(estimatedText), prequalifyButton);
 
   return estimatedCostCell;
@@ -126,10 +126,14 @@ export default async function decorate(doc) {
   const $carouselWrapper = doc.querySelector('.carousel-wrapper');
   $newPage.appendChild($carouselWrapper);
 
+  const disclaimer = doc.querySelector('.fragment-wrapper');
+
+
   const actions = div(
     { class: 'action-bar' },
-    a({ class: 'share btn' }, 'Share'),
-    a({ class: 'save btn' }, 'Save'),
+    a({ class: 'share' }, 'Share'),
+    a({ class: 'save' }, 'Save'),
+    a({ class: 'compare' }, 'Compare'),
   );
 
   const $breadCrumbs = buildBreadCrumbs();
@@ -190,6 +194,7 @@ export default async function decorate(doc) {
       twoCols,
     ),
     aside(alsoAvailableAtAside),
+    div({class:'section disclaimer', disclaimer}),
   ));
 
   $newPage.appendChild(mainPageContent);

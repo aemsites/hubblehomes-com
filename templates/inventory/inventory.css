@@ -1,4 +1,6 @@
-@import url("/styles/buttons.css");
+@import url("layouts.css");
+@import url("buttons.css");
+
 
 .inventory .full-description .listing-header {
   display: flex;
@@ -66,8 +68,8 @@
 
 /* Cell heading */
 @media (min-width: 1200px) {
-.inventory .pricing-information .cell> :first-child {
-  max-height: 40px;
+  .inventory .pricing-information .cell> :first-child {
+    height: 30px;
   }
 }
 
@@ -99,15 +101,12 @@
   align-content: center;
 }
 
-
-
 /* Styling of cell components */
 @media (min-width: 1200px) {
   .inventory .pricing-information .cell {
     padding: 0 10px;
+  }
 }
-}
-
 
 .inventory .pricing-information .cell h3 {
   display: inline-flex;

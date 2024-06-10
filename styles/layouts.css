@@ -242,6 +242,14 @@
     }
   }
 
+  .strike-through {
+    text-decoration: line-through;
+  }
+
+  a {
+    color: var(--light-blue);
+  }
+
   /* breadcrumbs should be moved to a breadcrumb template block */
   .breadcrumbs {
     font-size: .8em;
@@ -266,56 +274,51 @@
     padding-right: 20px;
     align-items: center;
 
-  }
-
-  a.btn {
-    position: relative;
-    color: #fff;
-    height: 50px;
-    width: 50px;
-    font-size: 0;
-    margin-right: 20px;
-    cursor: pointer;
-    border-radius: 30px;
-    background: var(--light-blue);
-    transition: all 160ms ease-in;
-
-    &:hover {
-      background: var(--dark-blue)
-    }
-
-    &:last-child {
-      margin: 0
-    }
-
-    &::after {
-      position: absolute;
-      content: '';
-      width: inherit;
-      height: inherit;
-      background: #fff;
+    a {
+      position: relative;
+      color: #fff;
+      height: 50px;
+      width: 50px;
+      font-size: 0;
+      margin-right: 20px;
+      cursor: pointer;
+      border-radius: 30px;
+      background: var(--light-blue);
       transition: all 160ms ease-in;
-      mask-position: center !important;
-      mask-repeat: no-repeat !important;
+      &:hover { background: var(--dark-blue) }
+      &:last-child {margin: 0 }
+
+      &::after {
+        position: absolute;
+        content: '';
+        width: inherit;
+        height: inherit;
+        background: #fff;
+        transition: all 160ms ease-in;
+        mask-position: center !important;
+        mask-repeat: no-repeat !important;
+      }
+
+      &.share::after {
+        mask: url('/icons/sharethis.svg');
+        mask-size: 65%;
+        left: -3px;
+        top: 0;
+      }
+
+      &.save::after {
+        mask: url('/icons/heart.svg');
+        mask-size: 60%;
+        left: 0;
+        top: 0;
+      }
+
+      &.compare::after {
+        mask: url('/icons/compare.svg');
+        mask-size: 60%;
+        left: 0;
+        top: 0;
+      
     }
-
-    &.share::after {
-      mask: url('/icons/sharethis.svg');
-      mask-size: 60%;
-      left: -3px;
-    }
-
-    &.save::after {
-      mask: url('/icons/heart.svg');
-      mask-size: 60%;
-    }
-  }
-
-  .strike-through {
-    text-decoration: line-through;
-  }
-
-  a {
-    color: var(--light-blue);
   }
 }
