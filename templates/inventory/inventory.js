@@ -1,5 +1,5 @@
 /* eslint-disable function-call-argument-newline, object-curly-newline, function-paren-newline */
-import { aside, div, a, button, strong, small, ul, h1, h2, h3, h4, h5, br, span, img } from '../../scripts/dom-helpers.js';
+import { aside, div, a, button, strong, small, h2, h3, h4, h5, br, span } from '../../scripts/dom-helpers.js';
 import { getMetadata } from '../../scripts/aem.js';
 
 // Function to fetch and embed SVG content
@@ -10,12 +10,12 @@ async function loadSVG(url, className = '') {
   tempDiv.innerHTML = svgText.trim();
   const svgElement = tempDiv.firstElementChild;
   svgElement.classList.add('icon');
-    // Add additional class(es) if provided
-    if (className) {
-      className.split(' ').forEach(name => {
-        if (name) svgElement.classList.add(name);
-      });
-    }
+  // Add additional class(es) if provided
+  if (className) {
+    className.split(' ').forEach((name) => {
+      if (name) svgElement.classList.add(name);
+    });
+  }
   return svgElement;
 }
 
@@ -67,7 +67,6 @@ function createAlsoAvailableAtAside() {
 }
 
 async function createPriceCell(price, previousPrice) {
-  // price = '30';
   let symbolElement = null;
   let previouslyPriced = div();
 
@@ -130,7 +129,7 @@ export default async function decorate(doc) {
   const actions = div(
     { class: 'action-bar' },
     a({ class: 'share btn' }, 'Share'),
-    a({ class: 'save btn' }, 'Save')
+    a({ class: 'save btn' }, 'Save'),
   );
 
   const $breadCrumbs = buildBreadCrumbs();
@@ -174,23 +173,23 @@ export default async function decorate(doc) {
   const descriptionText = doc.querySelector('.default-content-wrapper p').textContent;
   const buttonContainer = div({ class: 'button-container' },
     button({ class: 'fancy dark-grey' }, 'Request Information'),
-    button({ class: 'fancy blue' }, 'Request a Tour')
+    button({ class: 'fancy blue' }, 'Request a Tour'),
   );
 
   const fullDescription = div({ class: 'full-description' }, listingHeader, br(), descriptionText, buttonContainer);
   const twoCols = div(
     { class: 'repeating-grid' },
     div({ class: 'left' }, fullDescription),
-    div({ class: 'right' }, homeDetailsBox)
+    div({ class: 'right' }, homeDetailsBox),
   );
 
   const mainPageContent = div({ class: 'section' }, $breadCrumbs, actions, tabs, div(
     { class: 'content-wrapper' },
     div(
       { class: 'content' },
-      twoCols
+      twoCols,
     ),
-    aside(alsoAvailableAtAside)
+    aside(alsoAvailableAtAside),
   ));
 
   $newPage.appendChild(mainPageContent);
