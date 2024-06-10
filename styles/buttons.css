@@ -34,7 +34,7 @@
   background: var(--btn);
   border: 1px solid var(--btn);
   border-radius: 5px;
-  font-weight: normal;
+  font-weight: 400 !important;
   font-size: 18px;
   transition: all 0.3s ease-in-out;
 

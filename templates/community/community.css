@@ -96,6 +96,10 @@
     }
   }
 
+  .request-btns.fluid-flex {
+    padding: 20px 0;
+  }
+
   #plans {
     scroll-margin-top: 80px;
   }

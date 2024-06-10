@@ -43,13 +43,6 @@
           font-weight: inherit;
         }
       }
-
-      .model-card-bottom-details {
-        /*.btn-primary2 {*/
-        /*  padding: 3px 12px;*/
-        /*  display: block;*/
-        /*}*/
-      }
     }
   }
 
@@ -79,6 +72,7 @@
 
   .model-card {
     div > h3 {
+      text-transform: uppercase;
       font-weight: 400;
       color: var(--link-color);
       padding-bottom: 5px;

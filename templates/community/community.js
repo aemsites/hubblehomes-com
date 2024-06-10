@@ -231,9 +231,17 @@ export default async function decorate(doc) {
   const promotionsEl = document.querySelector('.promotion-wrapper');
 
   const modelNameAddr = div(h1(communityName), a({ class: 'directions', href: `${window.location.pathname}/driving-directions` }, h4(areaName)));
+  const requestButtons = div({ class: 'request-btns fluid-flex' }, a({
+    class: 'btn gray fancy',
+    href: `/contact-us/sales-info?communityid=${communityName}`,
+  }, 'Request Information'), a({
+    class: 'btn fancy',
+    href: `/schedule-a-tour?communityid=${communityName}`,
+  }, 'Request a Tour'));
+
   const twoCols = div(
     { class: 'repeating-grid' },
-    div({ class: 'left' }, modelNameAddr, description),
+    div({ class: 'left' }, modelNameAddr, description, requestButtons),
     div({ class: 'right' }, rightCol, promotionsEl),
   );
 
