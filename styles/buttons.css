@@ -20,8 +20,8 @@
   --btn-gray-hover: var(--dark-gray);
   --btn-light-gray: #e9eae8;
   --btn-light-gray-hover: var(--dark-blue);
-  --btn-dark-gray: var(--btn-blue);
-  --btn-dark-gray-hover: var(--blue);
+  --btn-dark-gray: var(--gray);
+  --btn-dark-gray-hover: var(--dark-gray);
 
   display: inline-block;
   text-decoration: none;

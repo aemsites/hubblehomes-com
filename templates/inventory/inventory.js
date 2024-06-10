@@ -102,7 +102,7 @@ function createEstimatedPaymentCell() {
   const estimatedText = small();
   estimatedText.innerHTML = estimatedPayment;
 
-  const prequalifyButton = div(button({ class: 'fancy dark-grey' }, 'Pre-Qualify'));
+  const prequalifyButton = div(button({ class: 'fancy' }, 'Pre-Qualify'));
   const estimatedCostCell = div({ class: 'cell' }, estimatedCostHeadingText, div(estimatedText), prequalifyButton);
 
   return estimatedCostCell;
@@ -172,8 +172,8 @@ export default async function decorate(doc) {
   const listingHeader = div({ class: 'listing-header' }, homeIdentity, priceBlock);
   const descriptionText = doc.querySelector('.default-content-wrapper p').textContent;
   const buttonContainer = div({ class: 'button-container' },
-    button({ class: 'fancy dark-grey' }, 'Request Information'),
-    button({ class: 'fancy blue' }, 'Request a Tour'),
+    button({ class: 'fancy dark-gray' }, 'Request Information'),
+    button({ class: 'fancy' }, 'Request a Tour'),
   );
 
   const fullDescription = div({ class: 'full-description' }, listingHeader, br(), descriptionText, buttonContainer);
