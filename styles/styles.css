@@ -31,6 +31,7 @@
   --light-blue: #0055b9; /* TODO: duplicat of blue - cleanup */
   --blue: #0055b9;
   --blue-2: #005589;
+  --blue-3: #4572b7;
   --gray: #423c36;
   --dark-gray: #181614;
   --input-focus-border:#66afe9;
@@ -327,5 +328,14 @@ main .section.highlight {
 .btn-primary.disabled,.btn-primary[disabled],.btn-primary.disabled:hover,.btn-primary[disabled]:hover {
   background-color: var(--btn-bg-color);
   border-color: var(--btn-border);
+}
+
+.disclaimer {
+  font-size: 12px;
+  text-align: center;
+  font-weight: 400;
+  color: var(--link-color);
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 
