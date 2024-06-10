@@ -1,4 +1,5 @@
-@import url("/styles/layouts.css");
+@import url("layouts.css");
+@import url('buttons.css');
 
 /*
  * Copyright 2020 Adobe. All rights reserved.
@@ -21,14 +22,12 @@
   --dark-color: #ccc;
   --text-color: #383838;
   --color-grey: #333;
-  --btn-bg-color: #428bca;
-  --btn-border:  #357ebd;
-  --btn-bg-color-2: #3071a9;
-  --btn-bg-color-3: #4572b7;
-  --btn-bg-dark-grey: #423c36;
-  --btn-border-2: #285e8e;
   --dark-blue: #003264;
-  --light-blue: #0055b9;
+  --light-blue: #0055b9; /* TODO: duplicat of blue - cleanup */
+  --blue: #0055b9;
+  --blue-2: #005589;
+  --gray: #423c36;
+  --dark-gray: #181614;
   --input-focus-border:#66afe9;
   --yellow: #fcd700;
   --link-light-gray: #717171;
@@ -206,11 +205,6 @@ a.button:focus, button:focus  {
   outline: thin dotted;
   outline: 5px auto;
   outline-offset: -2px;
-}
-
-a.button:hover, button:hover {
-  color: var(--color-grey);
-  text-decoration: none;
 }
 
 button:active {
