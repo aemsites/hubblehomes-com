@@ -41,13 +41,16 @@
 
       &.share::after {
         mask: url('/icons/sharethis.svg');
-        mask-size: 60%;
+        mask-size: 65%;
         left: -3px;
+        top: 0;
       }
 
       &.save::after {
         mask: url('/icons/heart.svg');
         mask-size: 60%;
+        left: 0;
+        top: 0;
       }
     }
   }

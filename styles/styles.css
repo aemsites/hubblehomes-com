@@ -89,6 +89,10 @@ header {
 
 helix-sidekick[pushdown] ~ header { top: 49px }
 
+strong {
+  font-weight: 600;
+}
+
 h1, h2, h3,
 h4, h5, h6 {
   font-family: var(--heading-font-family);
@@ -290,5 +294,14 @@ main .section.highlight {
 .btn-primary.disabled,.btn-primary[disabled],.btn-primary.disabled:hover,.btn-primary[disabled]:hover {
   background-color: var(--btn-bg-color);
   border-color: var(--btn-border);
+}
+
+.disclaimer {
+  font-size: 12px;
+  text-align: center;
+  font-weight: 400;
+  color: var(--link-color);
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 

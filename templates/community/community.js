@@ -222,10 +222,10 @@ export default async function decorate(doc) {
 
   const mainEl = doc.querySelector('main');
   const breadCrumbsEl = buildBreadCrumbs();
-  const tabsWrapper = document.querySelector('.subnav-wrapper');
-  // const subNavEl = div({ class: 'subnav' }, tabsWrapper);
-
+  const subNav = doc.querySelector('.subnav-wrapper');
   const description = doc.querySelector('.default-content-wrapper');
+  const disclaimer = doc.querySelector('.fragment-wrapper');
+
   const rightCol = div({ class: 'details' });
   rightCol.innerHTML = createRightContent();
 
@@ -261,7 +261,7 @@ export default async function decorate(doc) {
     specialistsSection.appendChild(el);
   });
 
-  const mainPageContent = div({ class: 'section' }, breadCrumbsEl, actions, tabsWrapper, div(
+  const mainPageContent = div({ class: 'section' }, breadCrumbsEl, actions, subNav, div(
     { class: 'content-wrapper' },
     div(
       { class: 'content' },
@@ -275,4 +275,5 @@ export default async function decorate(doc) {
   mainEl.append(mainPageContent, plansAnchor, modelFilter, titleEl, inventoryEl);
   mainEl.append(banner);
   mainEl.append(specialistsSection);
+  mainEl.append(div({ class: 'section disclaimer' }, disclaimer));
 }
