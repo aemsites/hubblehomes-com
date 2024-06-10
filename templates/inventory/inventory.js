@@ -86,7 +86,7 @@ async function createPriceCell(price, previousPrice) {
     );
   }
 
-  const priceHeading = h3(price, div(symbolElement));
+  const priceHeading = h3(price, symbolElement ? div(symbolElement) : div());
   const buyNowButton = div(button({ class: 'fancy yellow', onclick: () => window.location.href = 'https://www.hubblehomes.com/buy-now' }, 'Buy Now'));
   const priceCell = div({ class: 'cell border-right' }, priceHeading, previouslyPriced, buyNowButton);
 
@@ -167,7 +167,7 @@ export default async function decorate(doc) {
   const mls = h5('MLS# 98907516');
   const homeIdentity = div(name, address, mls);
 
-  const price = getMetadata('pricing');
+  const price = getMetadata('price');
   const previousPrice = getMetadata('previous-price');
   const priceCell = await createPriceCell(price, previousPrice);
   const estimatedCostCell = createEstimatedPaymentCell();
@@ -194,7 +194,7 @@ export default async function decorate(doc) {
       twoCols,
     ),
     aside(alsoAvailableAtAside),
-    div({class:'section disclaimer', disclaimer}),
+    div({ class: 'section disclaimer', disclaimer }),
   ));
 
   $newPage.appendChild(mainPageContent);

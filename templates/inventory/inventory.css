@@ -1,5 +1,5 @@
-@import url("layouts.css");
-@import url("buttons.css");
+@import url("/styles/layouts.css");
+@import url("/styles/buttons.css");
 
 
 .inventory .full-description .listing-header {
