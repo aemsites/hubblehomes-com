@@ -27,6 +27,7 @@
 
 .inventory .pricing-information {
   display: flex;
+
   *> {
     flex: 0 0 50%;
   }
@@ -35,6 +36,12 @@
 @media (max-width: 991px) {
   .inventory .pricing-information {
     flex-direction: column;
+  }
+}
+
+@media (min-width: 992px) {
+  .inventory .pricing-information .cell.border-right {
+    border-right: 1px solid #cccccc;
   }
 }
 
@@ -48,16 +55,35 @@
     display: flex;
   }
 }
-/* Cell Heading */
+
+.inventory .price-row {
+  display: flex;
+  align-items: center;
+}
+
+
+/* Cell heading */
+@media (min-width: 1200px) {
 .inventory .pricing-information .cell> :first-child {
-  min-height: 40px;
-  flex-wrap: wrap;
-  justify-content: center;
+  max-height: 40px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .inventory .pricing-information .cell> :first-child {
+    height: 63px;
+  }
+
+  .inventory .pricing-information .cell.border-right> :first-child {
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 
 /* Cell middle text*/
 .inventory .pricing-information .cell> :nth-child(2) {
-  min-height: 41px;
+  height: 41px;
   line-height: 1em;
   flex-direction: column;
   justify-content: flex-end;
@@ -65,22 +91,21 @@
 
 /* Cell Button */
 .inventory .pricing-information .cell> :nth-child(3) {
-  min-height: 39px;
+  height: 39px;
   width: 100%;
   padding: 0 5px 5px 5px;
   align-content: center;
 }
 
-@media (max-width: 1199px) {
-  .inventory .pricing-information .cell> :first-child {
-    height: 63px;
-  }
-}
+
 
 /* Styling of cell components */
-.inventory .pricing-information .cell .border-right {
-  border-right: 1px solid #cccccc;
+@media (min-width: 1200px) {
+  .inventory .pricing-information .cell {
+    padding: 0 10px;
 }
+}
+
 
 .inventory .pricing-information .cell h3 {
   display: inline-flex;
@@ -100,10 +125,11 @@
   vertical-align: middle;
 }
 
-.inventory .icon.up-caret {
+.inventory .icon.caret-up {
   fill: #3c763d;
-  height: 15px;
-  width: 24px;
+  height: 24px;
+  width: 20px;
+  padding-left: 5px;
 }
 
 .inventory button.fancy {

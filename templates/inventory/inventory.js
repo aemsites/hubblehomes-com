@@ -75,19 +75,19 @@ async function createPriceCell(price, previousPrice) {
     const numericPrice = parseFloat(price.replace(/[^\d.-]/g, ''));
     const numericPreviousPrice = parseFloat(previousPrice.replace(/[^\d.-]/g, ''));
     if (numericPrice > numericPreviousPrice) {
-      symbolElement = await loadSVG('/icons/caret-up.svg', 'up-caret');
+      symbolElement = await loadSVG('/icons/caret-up.svg', 'caret-up');
     }
 
     previouslyPriced = div(
       div(
-        small("Previously"),
+        small('Previously'),
         br(),
-        strong({ class: 'strike-through' }, previousPrice)
-      )
+        strong({ class: 'strike-through' }, previousPrice),
+      ),
     );
   }
 
-  const priceHeading = h3(price, symbolElement);
+  const priceHeading = h3(price, div(symbolElement));
   const buyNowButton = div(button({ class: 'fancy yellow' }, 'Buy Now'));
   const priceCell = div({ class: 'cell border-right' }, priceHeading, previouslyPriced, buyNowButton);
 
@@ -116,7 +116,7 @@ function buildBreadCrumbs() {
     ' > ',
     a({ href: '/foo', 'aria-label': 'View News Page' }, 'CommunityName'),
     ' > ',
-    'The Birch'
+    'The Birch',
   );
 }
 
