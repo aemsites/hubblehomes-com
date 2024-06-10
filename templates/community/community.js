@@ -2,7 +2,7 @@ import {
   buildBlock, decorateBlock, getMetadata, loadBlock,
 } from '../../scripts/aem.js';
 import {
-  a, aside, br, div, form, h1, h2, h3, h4, option, p, select,
+  a, aside, br, div, form, h1, h2, h3, h4, option, select,
 } from '../../scripts/dom-helpers.js';
 import {
   getInventoryHomes,
@@ -11,7 +11,6 @@ import {
 } from '../../scripts/inventory-data.js';
 import { getHomePlans } from '../../scripts/home-plans-data.js';
 import {
-  getSalesCenterCommunityNameFromUrl,
   getSalesCenters,
 } from '../../scripts/sales-center.js';
 import getLastUrlSegment from '../../scripts/url-utils.js';

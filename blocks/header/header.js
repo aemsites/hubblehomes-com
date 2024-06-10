@@ -56,10 +56,10 @@ async function buildNav() {
 
               $rColContent.querySelectorAll('a')
                 .forEach(
-                  (a) => {
-                    a.classList.remove('fancy');
-                    a.classList.add('yellow');
-                    a.classList.add('btn');
+                  (aEl) => {
+                    aEl.classList.remove('fancy');
+                    aEl.classList.add('yellow');
+                    aEl.classList.add('btn');
                   });
 
               $rCol.append($rColContent);
