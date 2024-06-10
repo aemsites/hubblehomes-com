@@ -36,13 +36,13 @@ async function loadSalesCenterData(url) {
  * or an empty object if no data is found.
  */
 async function getSalesCenters(url) {
-  const saleCenters = await loadSalesCenterData('/data/sales-office-and-specialists.json');
+  const salesAndStaff = await loadSalesCenterData('/data/hubblehomes.json?sheet=sales-offices&sheet=staff');
 
-  if (!saleCenters || !url) {
+  if (!salesAndStaff || !url) {
     return {};
   }
 
-  const { 'sales-office': { data: salesOffices }, specialists: { data: salesSpecialists } } = saleCenters;
+  const { 'sales-offices': { data: salesOffices }, staff: { data: salesSpecialists } } = salesAndStaff;
   const urlSlug = getLastUrlSegment(url);
   const salesOfficeDetails = salesOffices.find((office) => office['url-slug'] === urlSlug);
 
@@ -50,23 +50,24 @@ async function getSalesCenters(url) {
     return {};
   }
 
-  const { area } = salesOfficeDetails;
-  const specialists = area
-    ? salesSpecialists.filter((specialist) => Object.keys(specialist).some((key) => key.startsWith('office location') && specialist[key] === area))
+  const { community } = salesOfficeDetails;
+  const specialists = community
+    ? salesSpecialists.filter((specialist) => Object.keys(specialist).some((key) => key.startsWith('office location') && specialist[key] === community))
     : [];
 
   return {
     sales_center: {
       phone: salesOfficeDetails['phone-number'],
-      name: salesOfficeDetails['sc-name'],
+      name: salesOfficeDetails['sales-center-model'],
       community: salesOfficeDetails.community,
       address: salesOfficeDetails.address,
-      city: salesOfficeDetails['sc-city'],
-      state: salesOfficeDetails['sc-state'],
-      zip: salesOfficeDetails['sc-zipcode'],
-      model: salesOfficeDetails.model,
-      latitude: salesOfficeDetails['sc-latitude'],
-      longitude: salesOfficeDetails['sc-longitude'],
+      city: salesOfficeDetails.city,
+      state: salesOfficeDetails.state,
+      zip: salesOfficeDetails.zipcode,
+      zipCodeAbbr: salesOfficeDetails['zip-code-abbr'],
+      model: salesOfficeDetails.models,
+      latitude: salesOfficeDetails.latitude,
+      longitude: salesOfficeDetails.longitude,
       specialists: specialists.map((specialist) => ({
         name: specialist.name,
         email: specialist.email,

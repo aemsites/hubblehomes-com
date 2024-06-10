@@ -4,7 +4,7 @@ import { formatPrice } from '../../../scripts/currency-formatter.js';
 
 class FeaturedCard extends BaseCard {
   renderTaglineItems(taglineContainer) {
-    const price = span(`From ${formatPrice(this.model.pricing)}`);
+    const price = span(`From ${formatPrice(this.model.price)}`);
     const priceContainer = div(price);
     const monthly = span(
       { class: 'model-card-tagline-price-per-month' },

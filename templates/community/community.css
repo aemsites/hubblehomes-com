@@ -1,4 +1,14 @@
 .community {
+  .content-wrapper {
+    h1 {
+      font-size: 30px;
+      color: var(--link-color);
+      margin-bottom: 0;
+      font-family: inherit;
+      font-weight: 500;
+    }
+  }
+
   .section.inventory {
     padding-bottom: 15px;
   }
@@ -74,6 +84,7 @@
       background: var(--light-blue);
       mask: url("/icons/directions.svg") no-repeat center;
       margin-left: 8px;
+      top: 1px;
     }
 
   }

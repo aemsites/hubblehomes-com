@@ -13,7 +13,7 @@ class InventoryCard extends BaseCard {
   }
 
   renderTaglineItems(taglineContainer) {
-    const price = span(formatPrice(this.model.pricing));
+    const price = span(formatPrice(this.model.price));
     const priceContainer = div(price);
     const monthly = span(
       { class: 'model-card-tagline-price-per-month' },

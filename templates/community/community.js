@@ -2,19 +2,27 @@ import {
   buildBlock, decorateBlock, getMetadata, loadBlock,
 } from '../../scripts/aem.js';
 import {
-  a, aside, br, div, form, h1, h2, h3, h4, option, select,
+  a,
+  aside,
+  br,
+  div,
+  form,
+  h1,
+  h2,
+  h3,
+  h4,
+  option,
+  select,
 } from '../../scripts/dom-helpers.js';
 import {
-  getInventoryHomes,
   filters,
   getHeaderTitleForFilter,
-} from '../../scripts/inventory-data.js';
-import { getHomePlans } from '../../scripts/home-plans-data.js';
-import {
-  getSalesCenters,
-} from '../../scripts/sales-center.js';
-import getLastUrlSegment from '../../scripts/url-utils.js';
+  getInventoryHomes,
+} from '../../scripts/inventory.js';
+// import { getHomePlans } from '../../scripts/home-plans-data.js';
+import { getSalesCenters } from '../../scripts/sales-center.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
+import { getCommunityDetails } from '../../scripts/communities.js';
 
 /**
  * Builds the inventory homes block.
@@ -31,25 +39,21 @@ async function buildInventoryHomes() {
 }
 
 async function fetchRequiredPageData(filter) {
-  // prime the home plans so that model images can be looked up
-  // the community page doesn't use the value but the models does
-  await getHomePlans();
-
-  // get the sales center and inventory homes
+  // These three calls could be done differently, but for now, we will keep them separate.
+  // It might be nice to have a factory that takes the results of these calls and builds the
+  // required data for the page.
+  // For example this page could ask for the 3 sheets at once and then build the required data.
   const salesCenterData = await getSalesCenters(window.location);
-  const community = getLastUrlSegment(window.location);
-
-  const homes = await getInventoryHomes(community, filter);
+  const community = await getCommunityDetails(window.location.pathname);
+  const homes = await getInventoryHomes(community.name, filter);
 
   window.hh = window.hh || {};
   window.hh.current = {};
   window.hh.current.models = homes;
   window.hh.current.sale_center = salesCenterData.sales_center;
-
   return {
     salesCenter: salesCenterData.sales_center,
     community,
-    homes,
   };
 }
 
@@ -83,16 +87,23 @@ async function createSpecialists(specialists) {
     agents.push(blockWrapper);
   });
 
-  Promise.all(promises).then(() => deferred.resolve(agents));
+  Promise.all(promises)
+    .then(() => deferred.resolve(agents));
   return deferred.promise;
 }
 
 function buildBreadCrumbs() {
   return div(
     { class: 'breadcrumbs' },
-    a({ href: '/', 'arial-label': 'View Home Page' }, 'Home'),
+    a({
+      href: '/',
+      'arial-label': 'View Home Page',
+    }, 'Home'),
     ' > ',
-    a({ href: '/foo', 'arial-label': 'View News Page' }, 'CommunityName'),
+    a({
+      href: '/foo',
+      'arial-label': 'View News Page',
+    }, 'CommunityName'),
     ' > ',
     'XXX',
   );
@@ -151,7 +162,8 @@ function buildFilterForm(filterByValue) {
     const optionEls = [];
 
     // eslint-disable-next-line max-len
-    const selectedItem = allFilters.find((filter) => filter.value === filterByValue) || allFilters[0];
+    const selectedItem = allFilters.find((filter) => filter.value === filterByValue)
+      || allFilters[0];
     selectedItem.selected = true;
 
     allFilters.forEach((filter) => {
@@ -191,7 +203,10 @@ function buildFilterForm(filterByValue) {
     }, 'Reset');
   }
 
-  return div({ class: 'section' }, div({ class: 'filter-form' }, form(allListingSelect, sortBySelect, filterBySelect), resetEl));
+  return div(
+    { class: 'section' },
+    div({ class: 'filter-form' }, form(allListingSelect, sortBySelect, filterBySelect), resetEl),
+  );
 }
 
 function createRightContent() {
@@ -205,6 +220,8 @@ function createRightContent() {
     <dt>Cars</dt><dd>2</dd><dt>Primary Bed</dt>
     <dd>Up</dd><dt>Home Style</dt>
     <dd>2 Story</dd>
+    <dt>This is not live data</dt>
+    <dd>yet...</dd>
   </dl>`;
 }
 
@@ -212,11 +229,12 @@ export default async function decorate(doc) {
   const url = new URL(window.location);
   const params = url.searchParams;
   const filter = params.get('filter');
-  const communityName = getMetadata('name', doc);
+  // const communityName = getMetadata('name', doc);
   const areaName = getMetadata('area', doc);
 
   const {
     salesCenter,
+    community,
   } = await fetchRequiredPageData(filter);
 
   const mainEl = doc.querySelector('main');
@@ -229,14 +247,18 @@ export default async function decorate(doc) {
   rightCol.innerHTML = createRightContent();
 
   const promotionsEl = document.querySelector('.promotion-wrapper');
+  const modelNameAddr = div(h1(community.name), a({
+    class: 'directions',
+    href: `https://www.google.com/maps/dir/Current+Location/${salesCenter.latitude},${salesCenter.longitude}`,
+    target: '_blank',
+  }, h4(`${areaName}, ${community['zip-code-abbr']}`)));
 
-  const modelNameAddr = div(h1(communityName), a({ class: 'directions', href: `${window.location.pathname}/driving-directions` }, h4(areaName)));
   const requestButtons = div({ class: 'request-btns fluid-flex' }, a({
     class: 'btn gray fancy',
-    href: `/contact-us/sales-info?communityid=${communityName}`,
+    href: `/contact-us/sales-info?communityid=${community.name}`,
   }, 'Request Information'), a({
     class: 'btn fancy',
-    href: `/schedule-a-tour?communityid=${communityName}`,
+    href: `/schedule-a-tour?communityid=${community.name}`,
   }, 'Request a Tour'));
 
   const twoCols = div(
@@ -261,7 +283,7 @@ export default async function decorate(doc) {
   const plansAnchor = a({ id: 'plans' }, '');
   const inventoryEl = div({ class: 'section inventory' }, inventory);
 
-  const banner = div({ class: 'grey-divider' }, `${communityName} New Home Specialists`);
+  const banner = div({ class: 'grey-divider' }, `${community.name} New Home Specialists`);
   const specialistsSection = div({ class: 'specialists fluid-flex' });
   const specialistEl = await createSpecialists(salesCenter.specialists);
   specialistEl.forEach((el) => {

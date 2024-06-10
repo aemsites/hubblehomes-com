@@ -1,3 +1,5 @@
+import { getModels } from './models.js';
+
 window.hh = window.hh || {};
 const { hh } = window;
 
@@ -163,7 +165,9 @@ const filters = [
 ];
 
 async function loadInventory() {
-  const response = await fetch('/inventory-query-index.json');
+  const response = await fetch('/data/hubblehomes.json?sheet=inventory');
+  const models = await getModels();
+
   if (response.ok) {
     const inventory = await response.json();
 
@@ -171,6 +175,12 @@ async function loadInventory() {
     const communityMap = new Map();
 
     inventory.data.forEach((home) => {
+      // inject the model image into the inventory home
+      const { image } = models.find((model) => model.name === home.name);
+      if (image) {
+        home.image = image;
+      }
+
       const { community } = home;
       if (!communityMap.has(community)) {
         communityMap.set(community, []);

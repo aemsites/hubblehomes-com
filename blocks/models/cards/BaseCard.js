@@ -2,7 +2,6 @@ import {
   a, div, form, h3, img, input, label, span,
 } from '../../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../../scripts/aem.js';
-import { getHomePlanImage } from '../../../scripts/home-plans-data.js';
 import formatPhoneNumber from '../../../scripts/phone-formatter.js';
 
 class BaseCard {
@@ -44,7 +43,7 @@ class BaseCard {
    * @returns {Element}
    */
   renderTitle() {
-    return h3(this.model.modelname || '');
+    return h3(this.model.name || '');
   }
 
   /**
@@ -62,8 +61,7 @@ class BaseCard {
    * @returns {Element}
    */
   async renderModelImage() {
-    const imageUrl = await getHomePlanImage(this.model.modelname);
-    const image = this.createModelImage(imageUrl, this.model.modelname);
+    const image = this.createModelImage(this.model.image, this.model.modelname);
     const imageLink = a({ href: this.model.href }, image);
     const imagePicture = div(imageLink);
     return div({ class: 'model-card-image-container' }, imagePicture);
@@ -164,7 +162,7 @@ class BaseCard {
       div('Cars'),
       div(this.model.beds),
       div(this.model.baths),
-      div(this.model.squarefeet),
+      div(this.model['square feet']),
       div(this.model.cars),
     );
   }
@@ -205,7 +203,7 @@ class BaseCard {
    * @param gridContainer
    */
   renderTopRowOfDetailsContainer_left(gridContainer) {
-    const topLeft = div({ class: 'stories' }, `${this.model.homestyle}`);
+    const topLeft = div({ class: 'stories' }, `${this.model['home style']}`);
     gridContainer.appendChild(topLeft);
   }
 

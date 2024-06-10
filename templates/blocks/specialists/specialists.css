@@ -3,6 +3,7 @@
 
   .specialist {
     width: 220px;
+    text-align: center;
 
     .specialist-info {
       a {
