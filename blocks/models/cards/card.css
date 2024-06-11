@@ -43,13 +43,6 @@
           font-weight: inherit;
         }
       }
-
-      .model-card-bottom-details {
-        .btn-primary2 {
-          padding: 3px 12px;
-          display: block;
-        }
-      }
     }
   }
 
@@ -79,6 +72,7 @@
 
   .model-card {
     div > h3 {
+      text-transform: uppercase;
       font-weight: 400;
       color: var(--link-color);
       padding-bottom: 5px;
@@ -91,6 +85,7 @@
         aspect-ratio: 4 / 3;
         min-width: 288px;
         height: auto;
+        width: 100%;
       }
 
       position: relative;
@@ -196,43 +191,14 @@
         align-items: center;
       }
 
-      .grey-button {
-        background-color: #847b75;
-        border-color: #847b75;
+      .btn {
         font-size: 15px;
         font-weight: normal;
-        color: grey;
-        padding: 3px;
-        transition: all 0.3s ease-in-out;
+        width: 100%;
 
-        a {
-          color: #fff;
-        }
-
-        &:hover {
-          background-color: #69625d;
-          border-color: #69625d;
-          transition: all 0.3s ease-in-out;
-        }
-      }
-
-      .black-button {
-        background-color: #423c36;
-        border-color: #423c36;
-        font-size: 15px;
-        font-weight: normal;
-        color: grey;
-        padding: 3px;
-        transition: all 0.3s ease-in-out;
-
-        a {
-          color: #fff;
-        }
-
-        &:hover {
-          background-color: #181614;
-          border-color: #181614;
-          transition: all 0.3s ease-in-out;
+        &.small {
+          padding: 5px 9px;
+          font-size: 12px;
         }
       }
 
@@ -244,11 +210,6 @@
       .phone-number a {
         font-weight: 400;
         color: var(--text-color);
-      }
-
-      .btn-small {
-        padding: 5px 9px;
-        font-size: 12px;
       }
 
       .btn-primary {

@@ -1,0 +1,47 @@
+.specialists-wrapper {
+  flex: 0;
+
+  .specialist {
+    width: 220px;
+    text-align: center;
+
+    .specialist-image-container {
+      img {
+        border: 1px solid #e9eae9;
+        border-radius: 50%;
+        width: 95px;
+
+        @media (width >= 768px) {
+          width: 125px;
+        }
+
+        @media (width >= 992px) {
+          width: 195px;
+        }
+      }
+    }
+
+    .specialist-info {
+      .phone, .email {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .phone img {
+        width: 30px;
+        height: 15px;
+        transform: scaleX(-1);
+      }
+
+      .email img {
+          width: 30px;
+          height: 19px;
+      }
+
+      a {
+        color: var(--link-color);
+      }
+    }
+  }
+}

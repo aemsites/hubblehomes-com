@@ -1,3 +1,8 @@
+import getLastUrlSegment from './url-utils.js';
+
+window.hh = window.hh || {};
+const { hh } = window;
+
 /**
  * sales-center.js
  *
@@ -12,25 +17,16 @@
  * @throws Will throw an error if the network request fails.
  */
 async function loadSalesCenterData(url) {
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+  if (hh.salescenters) {
+    return hh.salescenters;
   }
-
-  return response.json();
-}
-
-/**
- * Extract the last segment from a given URL.
- * @param {string} url - The URL to extract the last segment from.
- * @returns {string} The extracted last segment.
- */
-function getLastUrlSegment(url) {
-  const { pathname } = new URL(url);
-  const sanitizedPathname = pathname.replace(/\/+$/, '');
-  const parts = sanitizedPathname.split('/');
-  return parts.pop();
+  const response = await fetch(url);
+  if (response.ok) {
+    const salesCenters = await response.json();
+    hh.salescenters = salesCenters;
+    return salesCenters;
+  }
+  throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
 }
 
 /**
@@ -39,39 +35,39 @@ function getLastUrlSegment(url) {
  * @returns {Promise<Object>} A promise that resolves to the sales center details
  * or an empty object if no data is found.
  */
-async function getSalesCenterDetails(url) {
-  const data = await loadSalesCenterData('/data/sales-office-and-specialists.json');
+async function getSalesCenters(url) {
+  const salesAndStaff = await loadSalesCenterData('/data/hubblehomes.json?sheet=sales-offices&sheet=staff');
 
-  if (!data || !url) {
+  if (!salesAndStaff || !url) {
     return {};
   }
 
-  const { 'sales-office': { data: salesOffices }, specialists: { data: salesSpecialists } } = data;
+  const { 'sales-offices': { data: salesOffices }, staff: { data: salesSpecialists } } = salesAndStaff;
   const urlSlug = getLastUrlSegment(url);
-
   const salesOfficeDetails = salesOffices.find((office) => office['url-slug'] === urlSlug);
 
   if (!salesOfficeDetails) {
     return {};
   }
 
-  const { area } = salesOfficeDetails;
-  const specialists = area
-    ? salesSpecialists.filter((specialist) => Object.keys(specialist).some((key) => key.startsWith('office location') && specialist[key] === area))
+  const { community } = salesOfficeDetails;
+  const specialists = community
+    ? salesSpecialists.filter((specialist) => Object.keys(specialist).some((key) => key.startsWith('office location') && specialist[key] === community))
     : [];
 
   return {
     sales_center: {
       phone: salesOfficeDetails['phone-number'],
-      name: salesOfficeDetails['sc-name'],
+      name: salesOfficeDetails['sales-center-model'],
       community: salesOfficeDetails.community,
       address: salesOfficeDetails.address,
-      city: salesOfficeDetails['sc-city'],
-      state: salesOfficeDetails['sc-state'],
-      zip: salesOfficeDetails['sc-zipcode'],
-      model: salesOfficeDetails.model,
-      latitude: salesOfficeDetails['sc-latitude'],
-      longitude: salesOfficeDetails['sc-longitude'],
+      city: salesOfficeDetails.city,
+      state: salesOfficeDetails.state,
+      zip: salesOfficeDetails.zipcode,
+      zipCodeAbbr: salesOfficeDetails['zip-code-abbr'],
+      model: salesOfficeDetails.models,
+      latitude: salesOfficeDetails.latitude,
+      longitude: salesOfficeDetails.longitude,
       specialists: specialists.map((specialist) => ({
         name: specialist.name,
         email: specialist.email,
@@ -82,4 +78,19 @@ async function getSalesCenterDetails(url) {
   };
 }
 
-export default { getSalesCenterDetails };
+function getSalesCenterCommunityNameFromUrl(url) {
+  const saleCenters = hh.salescenters;
+  if (!saleCenters) {
+    return '';
+  }
+
+  const { 'sales-office': { data: salesOffices } } = saleCenters;
+  const urlSlug = getLastUrlSegment(url);
+  const salesOfficeDetails = salesOffices.find((office) => office['url-slug'] === urlSlug);
+  return salesOfficeDetails ? salesOfficeDetails.community : '';
+}
+
+export {
+  getSalesCenters,
+  getSalesCenterCommunityNameFromUrl,
+};
