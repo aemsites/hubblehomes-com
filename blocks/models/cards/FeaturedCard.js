@@ -1,5 +1,5 @@
 import BaseCard from './BaseCard.js';
-import { div, span } from '../../../scripts/dom-helpers.js';
+import { a, div, span } from '../../../scripts/dom-helpers.js';
 import { formatPrice } from '../../../scripts/currency-formatter.js';
 
 class FeaturedCard extends BaseCard {
@@ -14,6 +14,22 @@ class FeaturedCard extends BaseCard {
     const monthlyRate = div({ class: 'model-card-tagline-monthly-container' }, monthly, perMonth);
     taglineContainer.appendChild(priceContainer);
     taglineContainer.appendChild(monthlyRate);
+  }
+
+  /**
+   * Render the sales center driving directions.
+   * @param gridContainer
+   */
+  // eslint-disable-next-line class-methods-use-this
+  renderButtonActionsOfDetailsContainer_left(gridContainer) {
+    const link = a({
+      target: '_blank',
+      class: 'btn-action btn-icons btn-directions',
+      href: `https://www.google.com/maps/dir/Current+Location/${window.hh.current.community.latitude},${window.hh.current.community.longitude}`,
+    }, 'Directions');
+
+    const actionContainer = div(link);
+    gridContainer.appendChild(actionContainer);
   }
 
   /**

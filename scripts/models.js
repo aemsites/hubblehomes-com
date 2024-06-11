@@ -15,6 +15,11 @@ async function getModels() {
   throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
 }
 
+async function getModelsByCommunity(communityName) {
+  const models = await getModels();
+  return models.filter((model) => model.community === communityName);
+}
+
 async function getModelImage(modelName) {
   const models = await getModels();
   return models.find((model) => model.name === modelName).image;
@@ -22,5 +27,6 @@ async function getModelImage(modelName) {
 
 export {
   getModels,
+  getModelsByCommunity,
   getModelImage,
 };
