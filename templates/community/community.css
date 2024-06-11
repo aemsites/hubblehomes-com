@@ -13,58 +13,6 @@
     padding-bottom: 15px;
   }
 
-  .tabs-wrapper {
-    display: none;
-  }
-
-  .action-bar {
-    height: 70px;
-    display: flex;
-    justify-content: right;
-    padding-right: 20px;
-    align-items: center;
-
-    a.btn {
-      position: relative;
-      color: #fff;
-      height: 50px;
-      width: 50px;
-      font-size: 0;
-      margin-right: 20px;
-      cursor: pointer;
-      border-radius: 30px;
-      background: var(--light-blue);
-      transition: all 160ms ease-in;
-      &:hover { background: var(--dark-blue) }
-      &:last-child {margin: 0 }
-
-      &::after {
-        position: absolute;
-        content: '';
-        width: inherit;
-        height: inherit;
-        background: #fff;
-        transition: all 160ms ease-in;
-        mask-position: center !important;
-        mask-repeat: no-repeat !important;
-      }
-
-      &.share::after {
-        mask: url('/icons/sharethis.svg');
-        mask-size: 65%;
-        left: -3px;
-        top: 0;
-      }
-
-      &.save::after {
-        mask: url('/icons/heart.svg');
-        mask-size: 60%;
-        left: 0;
-        top: 0;
-      }
-    }
-  }
-
   .directions {
     position: relative;
     display: flex;

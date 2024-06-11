@@ -23,6 +23,7 @@ import {
 import { getSalesCenters } from '../../scripts/sales-center.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
 import { getCommunityDetails } from '../../scripts/communities.js';
+import { createActionBar } from '../../scripts/block-helper.js';
 
 /**
  * Builds the inventory homes block.
@@ -270,12 +271,7 @@ export default async function decorate(doc) {
   const titleEl = div({ class: 'grey-divider' }, getHeaderTitleForFilter(filter));
   const inventory = await buildInventoryHomes();
 
-  const actions = div(
-    { class: 'action-bar' },
-    a({ class: 'share btn' }, 'Share'),
-    a({ class: 'save btn' }, 'Save'),
-  );
-
+  const actions = await createActionBar(['save', 'share']);
   const rightAside = createRightAside();
   const modelFilter = buildFilterForm(filter);
 
