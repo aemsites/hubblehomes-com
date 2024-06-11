@@ -24,6 +24,7 @@ import { getSalesCenters } from '../../scripts/sales-center.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
 import { getCommunityDetails } from '../../scripts/communities.js';
 import { createActionBar } from '../../scripts/block-helper.js';
+import { getModelsByCommunity } from '../../scripts/models.js';
 
 /**
  * Builds the inventory homes block.
@@ -33,6 +34,16 @@ import { createActionBar } from '../../scripts/block-helper.js';
 async function buildInventoryHomes() {
   const modelsBlock = buildBlock('models', []);
   modelsBlock.classList.add('inventory');
+  const blockWrapper = div(modelsBlock);
+  decorateBlock(modelsBlock);
+  await loadBlock(modelsBlock);
+  return blockWrapper;
+}
+
+async function buildFeaturedPlans(communityName) {
+  window.hh.current.models = await getModelsByCommunity(communityName);
+  const modelsBlock = buildBlock('models', []);
+  modelsBlock.classList.add('featured');
   const blockWrapper = div(modelsBlock);
   decorateBlock(modelsBlock);
   await loadBlock(modelsBlock);
@@ -52,6 +63,8 @@ async function fetchRequiredPageData(filter) {
   window.hh.current = {};
   window.hh.current.models = homes;
   window.hh.current.sale_center = salesCenterData.sales_center;
+  window.hh.current.community = community;
+
   return {
     salesCenter: salesCenterData.sales_center,
     community,
@@ -271,6 +284,10 @@ export default async function decorate(doc) {
   const titleEl = div({ class: 'grey-divider' }, getHeaderTitleForFilter(filter));
   const inventory = await buildInventoryHomes();
 
+  const featuredPlansTitle = div({ class: 'grey-divider' }, 'Featured Plans');
+  const models = await buildFeaturedPlans(community.name);
+  const featuredPlansEl = div({ class: 'section inventory' }, models);
+
   const actions = await createActionBar(['share', 'save']);
   const rightAside = createRightAside();
   const modelFilter = buildFilterForm(filter);
@@ -297,7 +314,15 @@ export default async function decorate(doc) {
     ),
   ));
 
-  mainEl.append(mainPageContent, plansAnchor, modelFilter, titleEl, inventoryEl);
+  mainEl.append(
+    mainPageContent,
+    plansAnchor,
+    modelFilter,
+    titleEl,
+    inventoryEl,
+    featuredPlansTitle,
+    featuredPlansEl,
+  );
   mainEl.append(banner);
   mainEl.append(specialistsSection);
   mainEl.append(div({ class: 'section disclaimer' }, disclaimer));
