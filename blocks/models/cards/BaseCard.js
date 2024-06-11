@@ -307,7 +307,7 @@ class BaseCard {
     const link = a({
       target: '_blank',
       class: 'btn-action btn-icons btn-directions',
-      href: '#',
+      href: `https://www.google.com/maps/dir/Current+Location/${this.model.latitude},${this.model.longitude}`,
     }, 'Directions');
 
     const actionContainer = div(link);
