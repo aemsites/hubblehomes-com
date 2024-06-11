@@ -10,18 +10,18 @@
   --btn-hover: var(--blue-2);
   --btn-blue: var(--dark-blue);
   --btn-blue-hover: var(--gray);
-  --btn-light-blue: var(--blue);
-  --btn-light-blue-hover: var(--blue);
+  --btn-light-blue: var(--light-blue);
+  --btn-light-blue-hover: var(--dark-slate-blue);
   --btn-dark-blue: var(--blue);
   --btn-dark-blue-hover: var(--dark-blue);
   --btn-yellow: var(--yellow);
   --btn-yellow-hover: var(--dark-blue);
   --btn-gray: var(--gray);
   --btn-gray-hover: var(--dark-gray);
-  --btn-light-gray: #e9eae8;
-  --btn-light-gray-hover: var(--dark-blue);
-  --btn-dark-gray: var(--btn-blue);
-  --btn-dark-gray-hover: var(--blue);
+  --btn-light-gray: var(--light-gray);
+  --btn-light-gray-hover: var(--light-gray-dark);
+  --btn-dark-gray: var(--gray);
+  --btn-dark-gray-hover: var(--dark-gray);
 
   display: inline-block;
   text-decoration: none;

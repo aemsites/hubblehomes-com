@@ -267,7 +267,7 @@ class BaseCard {
    * @param gridContainer
    */
   renderMiddleRowOfDetailsContainer_left(gridContainer) {
-    const link = a({ href: this.model.href, class: 'btn gray square' }, 'Choose Your Lot');
+    const link = a({ href: this.model.href, class: 'btn light-gray square' }, 'Choose Your Lot');
     const middleLeft = div(link);
     gridContainer.appendChild(middleLeft);
   }

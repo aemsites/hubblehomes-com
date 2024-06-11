@@ -22,7 +22,8 @@
   --text-color: black;
   --color-grey: #333;
   --dark-blue: #003264;
-  --light-blue: #0055b9; /* TODO: duplicat of blue - cleanup */
+  --dark-slate-blue: #303a4a;
+  --light-blue: #4572b7;
   --blue: #0055b9;
   --blue-2: #005589;
   --gray: #423c36;
@@ -31,6 +32,10 @@
   --yellow: #fcd700;
   --link-light-gray: #717171;
   --grey-bar: #e9eae9;
+  --light-gray: #847b75;
+  --light-gray-dark: #69625d;
+
+
 
   /* fonts */
   --body-font-family: lato, lato-fallback;
