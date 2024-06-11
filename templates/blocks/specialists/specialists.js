@@ -1,4 +1,4 @@
-import { a, div } from '../../../scripts/dom-helpers.js';
+import { a, div, img } from '../../../scripts/dom-helpers.js';
 import { createOptimizedPicture, readBlockConfig } from '../../../scripts/aem.js';
 import formatPhoneNumber from '../../../scripts/phone-formatter.js';
 
@@ -16,8 +16,8 @@ export default function decorate(block) {
     div(
       { class: 'specialist-info' },
       div({ class: 'name' }, name),
-      div({ class: 'email' }, a({ href: `mailto:${email}` }, email)),
-      div({ class: 'phone' }, a({ href: `tel:${phone}` }, formatPhoneNumber(phone))),
+      div({ class: 'email' }, a({ href: `mailto:${email}` }, email), img({ src: '/icons/email.svg' })),
+      div({ class: 'phone' }, a({ href: `tel:${phone}` }, formatPhoneNumber(phone)), img({ src: '/icons/phone.svg' })),
     ),
   );
 

@@ -5,29 +5,6 @@
     width: 220px;
     text-align: center;
 
-    .specialist-info {
-      a {
-        color: var(--link-color);
-      }
-
-      .email::after, .phone::after {
-        content: "";
-        display: inline;
-        padding-left: 20px;
-        background: var(--link-color);
-        mask-position: center !important;
-        mask-repeat: no-repeat !important;
-      }
-
-      .email::after {
-        mask: url('/icons/email-agent.svg');
-      }
-
-      .phone::after {
-        mask: url('/icons/phone.svg');
-      }
-    }
-
     .specialist-image-container {
       img {
         border: 1px solid #e9eae9;
@@ -41,6 +18,29 @@
         @media (width >= 992px) {
           width: 195px;
         }
+      }
+    }
+
+    .specialist-info {
+      .phone, .email {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .phone img {
+        width: 30px;
+        height: 15px;
+        transform: scaleX(-1);
+      }
+
+      .email img {
+          width: 30px;
+          height: 19px;
+      }
+
+      a {
+        color: var(--link-color);
       }
     }
   }

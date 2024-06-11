@@ -271,7 +271,7 @@ export default async function decorate(doc) {
   const titleEl = div({ class: 'grey-divider' }, getHeaderTitleForFilter(filter));
   const inventory = await buildInventoryHomes();
 
-  const actions = await createActionBar(['save', 'share']);
+  const actions = await createActionBar(['share', 'save']);
   const rightAside = createRightAside();
   const modelFilter = buildFilterForm(filter);
 
