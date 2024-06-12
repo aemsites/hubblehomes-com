@@ -174,19 +174,19 @@ async function loadInventory() {
     // load the inventory and create a map of communities to homes
     const communityMap = new Map();
 
-    inventory.data.forEach((home) => {
+    inventory.data.forEach((inventoryHome) => {
       // inject the model image into the inventory home
-      const { image } = models.find((model) => model.name === home.name);
+      const { image } = models.find((model) => model['model name'] === inventoryHome['model name']);
       if (image) {
-        home.image = image;
+        inventoryHome.image = image;
       }
 
-      const { community } = home;
+      const { community } = inventoryHome;
       if (!communityMap.has(community)) {
         communityMap.set(community, []);
       }
       communityMap.get(community)
-        .push(home);
+        .push(inventoryHome);
     });
 
     hh.inventory = communityMap;

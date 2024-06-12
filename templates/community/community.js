@@ -19,12 +19,12 @@ import {
   getHeaderTitleForFilter,
   getInventoryHomes,
 } from '../../scripts/inventory.js';
-// import { getHomePlans } from '../../scripts/home-plans-data.js';
 import { getSalesCenters } from '../../scripts/sales-center.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
 import { getCommunityDetails } from '../../scripts/communities.js';
 import { createActionBar } from '../../scripts/block-helper.js';
 import { getModelsByCommunity } from '../../scripts/models.js';
+import { fetchRates } from '../../scripts/mortgage.js';
 
 /**
  * Builds the inventory homes block.
@@ -55,6 +55,7 @@ async function fetchRequiredPageData(filter) {
   // It might be nice to have a factory that takes the results of these calls and builds the
   // required data for the page.
   // For example this page could ask for the 3 sheets at once and then build the required data.
+  await fetchRates();
   const salesCenterData = await getSalesCenters(window.location);
   const community = await getCommunityDetails(window.location.pathname);
   const homes = await getInventoryHomes(community.name, filter);

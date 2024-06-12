@@ -1,5 +1,5 @@
 import {
-  a, div, form, h3, img, input, label, span,
+  a, div, h3, img, span,
 } from '../../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../../scripts/aem.js';
 import formatPhoneNumber from '../../../scripts/phone-formatter.js';
@@ -43,13 +43,12 @@ class BaseCard {
    * @returns {Element}
    */
   renderTitle() {
-    return h3(this.model.name || '');
+    return h3(this.model['model name'] || '');
   }
 
   /**
    * Render the address of the model.  Sub-cards must override this if they
    * want to display an address.
-   * @returns {undefined}
    */
   // eslint-disable-next-line class-methods-use-this
   renderAddress() {
@@ -179,10 +178,6 @@ class BaseCard {
     // render the 3 rows of the details container
     this.renderTopRowOfDetailsContainer(gridContainer);
     this.renderMiddleRowOfDetailsContainer(gridContainer);
-    this.renderBottomRowOfDetailsContainer(gridContainer);
-
-    // render the action buttons
-    this.renderButtonActionsOfDetailsContainer(gridContainer);
 
     bottomContainer.appendChild(gridContainer);
     return bottomContainer;
@@ -202,22 +197,30 @@ class BaseCard {
    * Render the top left section of the detail's container.
    * @param gridContainer
    */
+  // eslint-disable-next-line class-methods-use-this
   renderTopRowOfDetailsContainer_left(gridContainer) {
-    const topLeft = div({ class: 'stories' }, `${this.model['home style']}`);
-    gridContainer.appendChild(topLeft);
+    const link = a({
+      class: 'btn light-blue square',
+      // eslint-disable-next-line no-alert
+      onclick: () => alert('Get Info'),
+    }, 'Get Info');
+
+    gridContainer.appendChild(link);
   }
 
   /**
    * Render the top right section of the detail's container.
    * @param gridContainer
    */
+  // eslint-disable-next-line class-methods-use-this
   renderTopRowOfDetailsContainer_right(gridContainer) {
-    const topRight = a({
-      class: 'interactive',
-      href: this.model.href,
-    }, 'Interactive Plan');
-
-    gridContainer.appendChild(topRight);
+    const link = a({
+      class: 'btn light-gray square',
+      // eslint-disable-next-line no-alert
+      onclick: () => alert('Photos'),
+    }, 'Photos');
+    const middleLeft = div(link);
+    gridContainer.appendChild(middleLeft);
   }
 
   /**
@@ -231,119 +234,29 @@ class BaseCard {
   }
 
   /**
-   * Render the bottom row of the detail's container, which contains the bottom left and bottom
-   * right sections.
-   * @param gridContainer
-   */
-  renderBottomRowOfDetailsContainer(gridContainer) {
-    this.renderBottomRowOfDetailsContainer_left(gridContainer);
-    this.renderBottomRowOfDetailsContainer_right(gridContainer);
-  }
-
-  /**
    * Render the bottom left section of the detail's container.
    * @param gridContainer
    */
   // eslint-disable-next-line class-methods-use-this
-  renderBottomRowOfDetailsContainer_left(gridContainer) {
-    const { phone } = window.hh.current.sale_center;
-    const link = a({ href: `tel:${phone}` }, formatPhoneNumber(phone));
-    const middleLeft = div({ class: 'phone-number' }, link);
-    gridContainer.appendChild(middleLeft);
-  }
-
-  /**
-   * Render the middle right section of the detail's container.
-   * @param gridContainer
-   */
-  renderMiddleRowOfDetailsContainer_right(gridContainer) {
-    const link = a({ href: this.model.href, class: 'btn dark-gray square' }, 'Request a Tour');
-    const middleLeft = div(link);
-    gridContainer.appendChild(middleLeft);
-  }
-
-  /**
-   * Render the middle left section of the detail's container.
-   * @param gridContainer
-   */
   renderMiddleRowOfDetailsContainer_left(gridContainer) {
-    const link = a({ href: this.model.href, class: 'btn light-gray square' }, 'Choose Your Lot');
-    const middleLeft = div(link);
-    gridContainer.appendChild(middleLeft);
+    const { phone } = window.hh.current.sale_center;
+    const link = a({ class: 'btn yellow square', href: `tel:${phone}` }, formatPhoneNumber(phone));
+    gridContainer.appendChild(link);
   }
 
   /**
    * Render the bottom right section of the detail's container.
    * @param gridContainer
    */
-  renderBottomRowOfDetailsContainer_right(gridContainer) {
-    const link1 = a({
-      class: 'btn light-blue square small',
-      href: this.model.href,
-    }, 'Get Info');
-    const link2 = a({
-      class: 'btn yellow square small',
-      href: this.model.href,
-    }, 'More');
-    const actions = div({ class: 'repeating-grid getmoreinfo' }, link1, link2);
-    gridContainer.appendChild(actions);
-  }
-
-  /**
-   * Render the button actions on the bottom of the model card.
-   * @param gridContainer
-   */
-  renderButtonActionsOfDetailsContainer(gridContainer) {
-    this.renderButtonActionsOfDetailsContainer_left(gridContainer);
-    this.renderButtonActionsOfDetailsContainer_right(gridContainer);
-  }
-
-  /**
-   * Render the left action buttons on the bottom of the model card.
-   * @param gridContainer
-   */
-  // eslint-disable-next-line class-methods-use-this
-  renderButtonActionsOfDetailsContainer_left(gridContainer) {
+  renderMiddleRowOfDetailsContainer_right(gridContainer) {
     const link = a({
       target: '_blank',
-      class: 'btn-action btn-icons btn-directions',
+      class: 'btn dark-gray square',
       href: `https://www.google.com/maps/dir/Current+Location/${this.model.latitude},${this.model.longitude}`,
     }, 'Directions');
 
-    const actionContainer = div(link);
-    gridContainer.appendChild(actionContainer);
-  }
-
-  /**
-   * Render the right action buttons on the bottom of the model card.
-   * @param gridContainer
-   */
-  renderButtonActionsOfDetailsContainer_right(gridContainer) {
-    // create a svg element using the photos.svg file
-    const photoLink = a({
-      class: 'btn-action btn-icons btn-photos',
-      href: '#',
-    }, 'Photos');
-    const photoDiv = div(photoLink);
-
-    const checkbox = input({
-      type: 'checkbox',
-      name: `CompareItem_${this.model.id}`,
-      id: `CompareItem_${this.model.id}`,
-      onchange: () => {
-        // do nothing for now
-      },
-    });
-
-    const labelEl = label({
-      class: 'btn-action',
-      htmlFor: `CompareItem_${this.model.id}`,
-    }, ' Compare');
-
-    const formEl = form(checkbox, labelEl);
-
-    const actionContainer = div({ class: 'repeating-grid' }, photoDiv, formEl);
-    gridContainer.appendChild(actionContainer);
+    const middleLeft = div(link);
+    gridContainer.appendChild(middleLeft);
   }
 
   /**
