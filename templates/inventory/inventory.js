@@ -1,6 +1,6 @@
 /* eslint-disable function-call-argument-newline, object-curly-newline, function-paren-newline */
 import { aside, div, a, button, strong, small, h2, h3, h4, h5, br, span } from '../../scripts/dom-helpers.js';
-import { getMetadata} from '../../scripts/aem.js';
+import { getMetadata } from '../../scripts/aem.js';
 import { createActionBar } from '../../scripts/block-helper.js';
 
 // Function to fetch and embed SVG content
