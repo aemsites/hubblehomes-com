@@ -91,7 +91,7 @@ function createEstimatedPaymentCell() {
   estimatedText.innerHTML = estimatedPayment;
 
   const prequalifyButton = div(button({
-    class: 'fancy',
+    class: 'fancy dark-gray',
     onclick: () => {
       window.location.href = 'https://www.hubblehomes.com/contact-us/get-pre-qualified';
     },
