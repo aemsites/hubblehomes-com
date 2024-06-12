@@ -237,4 +237,8 @@
   .breadcrumbs a:hover {
     color: #0055b9;
   }
+
+  .strike-through {
+    text-decoration: line-through;
+  }
 }
