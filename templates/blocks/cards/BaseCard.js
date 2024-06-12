@@ -5,8 +5,8 @@ import { createOptimizedPicture } from '../../../scripts/aem.js';
 import formatPhoneNumber from '../../../scripts/phone-formatter.js';
 
 class BaseCard {
-  constructor(model) {
-    this.model = model;
+  constructor(data) {
+    this.cardData = data;
   }
 
   async render() {
@@ -43,7 +43,7 @@ class BaseCard {
    * @returns {Element}
    */
   renderTitle() {
-    return h3(this.model['model name'] || '');
+    return h3(this.cardData['model name'] || '');
   }
 
   /**
@@ -60,8 +60,8 @@ class BaseCard {
    * @returns {Element}
    */
   async renderModelImage() {
-    const image = this.createModelImage(this.model.image, this.model.modelname);
-    const imageLink = a({ href: this.model.href }, image);
+    const image = this.createModelImage(this.cardData.image, this.cardData.modelname);
+    const imageLink = a({ href: this.cardData.href }, image);
     const imagePicture = div(imageLink);
     return div({ class: 'model-card-image-container' }, imagePicture);
   }
@@ -107,7 +107,7 @@ class BaseCard {
    * @returns {Element}
    */
   renderTopBarStatus() {
-    return div({ class: 'status' }, span(this.model.status));
+    return div({ class: 'status' }, span(this.cardData.status));
   }
 
   /**
@@ -134,7 +134,7 @@ class BaseCard {
    * @returns {Element}
    */
   renderTaglineContainer() {
-    const container = div({ class: 'model-card-tagline' });
+    const container = div({ class: 'card-tagline' });
     this.renderTaglineItems(container);
     return container;
   }
@@ -149,20 +149,20 @@ class BaseCard {
   }
 
   /**
-   * Render the details of the model, including beds, baths, sqft, and cars.
+   * Render the details for beds, baths, sqft, and cars.
    * @returns {Element}
    */
   renderGridDetails() {
     return div(
-      { class: 'model-card-grid-details repeating-grid' },
+      { class: 'card-grid-details repeating-grid' },
       div('Beds'),
       div('Baths'),
       div('SQ FT'),
       div('Cars'),
-      div(this.model.beds),
-      div(this.model.baths),
-      div(this.model['square feet']),
-      div(this.model.cars),
+      div(this.cardData.beds),
+      div(this.cardData.baths),
+      div(this.cardData['square feet']),
+      div(this.cardData.cars),
     );
   }
 
@@ -172,7 +172,7 @@ class BaseCard {
    * Each area can be overridden by the extending class if needed.
    */
   renderDetailsContainer() {
-    const bottomContainer = div({ class: 'model-card-bottom-details' });
+    const bottomContainer = div({ class: 'card-bottom-details' });
     const gridContainer = div({ class: 'repeating-grid' });
 
     // render the 3 rows of the details container
@@ -252,7 +252,7 @@ class BaseCard {
     const link = a({
       target: '_blank',
       class: 'btn dark-gray square',
-      href: `https://www.google.com/maps/dir/Current+Location/${this.model.latitude},${this.model.longitude}`,
+      href: `https://www.google.com/maps/dir/Current+Location/${this.cardData.latitude},${this.cardData.longitude}`,
     }, 'Directions');
 
     const middleLeft = div(link);
