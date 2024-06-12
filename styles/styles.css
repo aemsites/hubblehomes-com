@@ -19,13 +19,14 @@
   --background-color: white;
   --light-color: #eee;
   --dark-color: #ccc;
-  --text-color: black;
+  --text-color: #383838;
   --color-grey: #333;
   --dark-blue: #003264;
   --dark-slate-blue: #303a4a;
   --light-blue: #4572b7;
   --blue: #0055b9;
   --blue-2: #005589;
+  --blue-3: #4572b7;
   --gray: #423c36;
   --dark-gray: #181614;
   --input-focus-border:#66afe9;
