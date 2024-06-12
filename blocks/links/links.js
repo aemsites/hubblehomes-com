@@ -3,7 +3,7 @@ import { br, strong, div } from '../../scripts/dom-helpers.js';
 export default function decorate(block) {
   const links = block.querySelectorAll('a');
   block.innerHTML = '';
-  const linksDiv = div(strong('Links:'), br());
+  const linksDiv = div('Links:', br());
   links.forEach((link) => {
     link.setAttribute('target', '_blank');
     linksDiv.appendChild(link);
