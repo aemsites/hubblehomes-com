@@ -227,11 +227,13 @@ header nav .r-col p {
   color: var(--link-light-gray);
 }
 
-.btn.yellow {
-  float: right;
-  font-size: 14px;
-  font-weight: 400;
-  padding: 6px 12px;
+header {
+  .btn.yellow {
+    float: right;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 6px 12px;
+  }
 }
 
 header nav .r-col p.button-container { float: right }

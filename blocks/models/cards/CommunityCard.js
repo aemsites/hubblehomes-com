@@ -19,11 +19,6 @@ class CommunityCard extends BaseCard {
     const middleLeft = div({ class: 'grid-col-span-2' }, link);
     gridContainer.appendChild(middleLeft);
   }
-
-  // eslint-disable-next-line class-methods-use-this
-  renderButtonActionsOfDetailsContainer() {
-    // do not render any
-  }
 }
 
 export default CommunityCard;

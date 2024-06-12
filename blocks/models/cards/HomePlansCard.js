@@ -1,6 +1,7 @@
 import BaseCard from './BaseCard.js';
 import { a, div, span } from '../../../scripts/dom-helpers.js';
 import { formatPrice } from '../../../scripts/currency-formatter.js';
+import calculateMonthlyPayment from '../../../scripts/mortgage.js';
 
 class HomePlansCard extends BaseCard {
   renderTaglineItems(taglineContainer) {
@@ -9,7 +10,7 @@ class HomePlansCard extends BaseCard {
     const price = span(formatPrice(this.model.price));
     const priceContainer = div(from, price);
 
-    const monthly = span(formatPrice(this.model.estimatedmonthlypayment));
+    const monthly = span(`*${formatPrice(calculateMonthlyPayment(this.model.price))}`);
     const perMonth = span({ class: 'model-card-tagline-monthly' }, '/mo');
     const monthlyRate = div(
       { class: 'model-card-tagline-monthly-container' },

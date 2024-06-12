@@ -3,6 +3,7 @@ import {
   a, div, h4, span,
 } from '../../../scripts/dom-helpers.js';
 import { formatPrice } from '../../../scripts/currency-formatter.js';
+import calculateMonthlyPayment from '../../../scripts/mortgage.js';
 
 class InventoryCard extends BaseCard {
   renderAddress() {
@@ -17,7 +18,7 @@ class InventoryCard extends BaseCard {
     const priceContainer = div(price);
     const monthly = span(
       { class: 'model-card-tagline-price-per-month' },
-      `*${formatPrice(this.model.estimatedmonthlypayment)}`,
+      `* ${formatPrice(calculateMonthlyPayment(this.model.price))}`,
     );
     const perMonth = span({ class: 'model-card-tagline-monthly' }, '/mo');
     const monthlyRate = div({ class: 'model-card-tagline-monthly-container' }, monthly, perMonth);
