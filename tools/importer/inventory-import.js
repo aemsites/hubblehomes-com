@@ -398,6 +398,11 @@ const removeUnwantedSections = (document) => {
   );
   detailAccordionThirdColumn?.remove();
 
+  const subnav = document.querySelector(
+    '.container > .row > .col-sm-12 > .btn-group',
+  );
+  subnav?.remove();
+
   const rowElement = document.querySelector(
     '.row .col-sm-6 .row, .row .col-sm-6 .gtm-getdrivingdirectionsinventory, .row .col-sm-6 h4, .row .col-sm-6 h5, .row .col-sm-6 .rightdivider, .row .col-sm-6 .padding-0',
   );
@@ -438,7 +443,6 @@ export default {
       'noscript',
       '#communities',
       '.homesearchform',
-      '.container > .row > .col-sm-12 > .btn-group',
       '.container > .row > .col-sm-12 > small > a',
       '.container > .row > .col-sm-6 > small > a',
       '.modal',

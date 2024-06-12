@@ -373,7 +373,6 @@ const createMetadata = (main, document, url, html) => {
     nameElement.remove();
   }
 
-  // nameElement
   const homeStyleElement = document.querySelector('.col-sm-6 h4');
   if (homeStyleElement) {
     meta.Homestyle = homeStyleElement.textContent.trim();
@@ -403,6 +402,11 @@ const removeUnwantedSections = (document) => {
   // const detailAccordion = document.querySelector('.detailaccordioncontent');
   // detailAccordion?.remove();
 
+  const subnav = document.querySelector(
+    '.container > .row > .col-sm-12 > .btn-group',
+  );
+  subnav?.remove();
+
   const detailAccordionThirdColumn = document.querySelector(
     '.detailthirdcolumncontent',
   );
@@ -430,7 +434,7 @@ export default {
       '.footerrow',
       '.subfooter',
       '.breadcrumb',
-      '.sidebar',
+      `.sidebar`,
       '.sharethis-inline-share-buttons',
       'form',
       '#chat-widget-container',
@@ -441,7 +445,6 @@ export default {
       'noscript',
       '#communities',
       '.homesearchform',
-      '.container > .row > .col-sm-12 > .btn-group',
       '.container > .row > .col-sm-12 > small > a',
       '.modal',
       '.graydivider',

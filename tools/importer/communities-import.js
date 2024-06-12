@@ -297,6 +297,11 @@ const removeUnwantedSections = (document) => {
     '.detailthirdcolumncontent',
   );
   detailAccordionThirdColumn?.remove();
+
+  const subnav = document.querySelector(
+    '.container > .row > .col-sm-12 > .btn-group',
+  );
+  subnav?.remove();
 };
 
 export default {
@@ -330,7 +335,6 @@ export default {
       '.container.topbuffer .row .col-sm-12 h2',
       '.btn-primary',
       '.btn-fancy',
-      '.container .row .col-sm-12 .btn-group',
       '.col-sm-6 h4',
       '.col-sm-6 br',
     ]);
