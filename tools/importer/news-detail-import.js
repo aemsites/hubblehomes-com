@@ -1,49 +1,26 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-/** Create Carousel block */
-const createCarouselBlock = (document) => {
-  const carousel = document.querySelector('#myCarousel');
-  if (carousel) {
-    const cells = [['Carousel']]; // Title row
-
-    const items = carousel.querySelectorAll('.item');
-    items.forEach((item) => {
-      const picture = item.querySelector('picture img');
-      const imgSrc = picture ? picture.src : '';
-      const imgElement = `<img src="${imgSrc}" alt="${picture.alt}">`;
-
-      const title = item.querySelector('.carousel-caption .carousel-header div')?.textContent || '';
-      const description = item.querySelector('.carousel-caption .carousel-copy div')?.textContent || '';
-
-      const content = `${imgElement}<h3>${title}</h3><p>${description}</p>`;
-
-      cells.push([content]); // Add the concatenated content as a new row with HTML
-
-      // Check for a PDF link
-      const btnLink = item.querySelector('.carousel-button a');
-      if (btnLink) {
-        const btnUrl = btnLink.href;
-        const btnLabel = btnLink.textContent.trim();
-        cells.push(['url', btnUrl]); // Add the PDF link as a new row
-      }
-    });
-
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    carousel.replaceWith(table); // Replace the original carousel section with the new table
-  }
-};
-
-/** Create Video block */
-const createVideoBlock = (document) => {
+/** Create Embed block */
+const createEmbedBlock = (document) => {
   const videoContainer = document.querySelector('.video-container');
   if (videoContainer) {
     const iframe = videoContainer.querySelector('iframe');
     if (iframe) {
       const videoUrl = iframe.src;
-      const videoType = iframe.getAttribute('type') || 'video';
+      let source = '';
 
-      const cells = [['Video'], ['URL', videoUrl], ['Type', videoType]];
+      if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+        source = 'YouTube';
+      } else if (videoUrl.includes('canva.com')) {
+        source = 'Canva';
+      } else if (videoUrl.includes('aws')) {
+        source = 'AWS';
+      } else {
+        source = 'Unknown';
+      }
+
+      const cells = [[`Embed (${source})`], ['URL', videoUrl]];
 
       const table = WebImporter.DOMUtils.createTable(cells, document);
       videoContainer.replaceWith(table);
@@ -87,11 +64,6 @@ const createMetadata = (main, document, url) => {
     const el = document.createElement('img');
     el.src = img.content;
     meta.Image = el;
-  }
-
-  // Template
-  if (url.includes('/news/')) {
-    meta.Template = 'news';
   }
 
   // Published Date
@@ -177,8 +149,7 @@ export default {
 
     removeUnwantedSections(document);
     createAboutColumnBlock(document);
-    // createCarouselBlock(document);
-    createVideoBlock(document);
+    createEmbedBlock(document);
     createMetadata(main, document, url);
 
     return main;
