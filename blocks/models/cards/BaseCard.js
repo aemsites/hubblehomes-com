@@ -43,7 +43,7 @@ class BaseCard {
    * @returns {Element}
    */
   renderTitle() {
-    return h3(this.model.name || '');
+    return h3(this.model['model name'] || '');
   }
 
   /**

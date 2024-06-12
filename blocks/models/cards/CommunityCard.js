@@ -1,7 +1,11 @@
 import BaseCard from './BaseCard.js';
-import { a, div } from '../../../scripts/dom-helpers.js';
+import { a, div, h3 } from '../../../scripts/dom-helpers.js';
 
 class CommunityCard extends BaseCard {
+  renderTitle() {
+    return h3(this.model.name || '');
+  }
+
   // eslint-disable-next-line class-methods-use-this
   renderTaglineItems(taglineContainer) {
     const taglinePrice = div('Sold Out. Ask about Brittany Heights');
