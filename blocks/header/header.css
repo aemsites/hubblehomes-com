@@ -184,6 +184,7 @@ header nav>div>ul>li>ul>li a {
   transition: all 0.3s ease-in-out;
   color: #fff;
 }
+
 header nav>div>ul>li>ul>li a:hover { background: var(--light-blue) }
 
 /* headings */
@@ -196,8 +197,8 @@ header nav>div>ul>li>ul>li>a {
 
 header nav>div>ul>li>ul>li>ul>li>a, /* all 3rd level links */
 header nav>div>ul>li>ul>li:not(:has(> ul)) >a /* headings w/out children */
-{ 
-  padding-left: 15px; 
+{
+  padding-left: 15px;
   font-weight: 400 !important;
   color: #fff;
 }
@@ -213,7 +214,10 @@ header nav .r-col {
   color: #000;
 }
 
-header nav .r-col .section { padding: 10px }
+header nav .r-col .section {
+  padding: 10px;
+  text-align: left;
+}
 
 header nav .r-col p {
   text-transform: none;
@@ -221,6 +225,15 @@ header nav .r-col p {
   font-size: 14px;
   line-height: 1.4em;
   color: var(--link-light-gray);
+}
+
+header {
+  .btn.yellow {
+    float: right;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 6px 12px;
+  }
 }
 
 header nav .r-col p.button-container { float: right }
@@ -284,9 +297,9 @@ header nav .r-col p:not(:first-child) picture img { margin-top: 30px }
     top: var(--nav-height);
     left: 0;
   }
-  
+
   header nav>div {
-    position: absolute; 
+    position: absolute;
     inset: 0;
     height: 0;
     width: 100vw;
@@ -299,8 +312,8 @@ header nav .r-col p:not(:first-child) picture img { margin-top: 30px }
   .mobile-nav-open nav>div { height: 100vh }
   .mobile-nav-open.done nav>div { overflow: auto }
 
-  header nav>div>ul { 
-    height: 840px; /* max height with items expanded - revisit to make fluid */ 
+  header nav>div>ul {
+    height: 840px; /* max height with items expanded - revisit to make fluid */
   }
 
   /* top level */
@@ -335,7 +348,7 @@ header nav .r-col p:not(:first-child) picture img { margin-top: 30px }
 }
 
 @media (width <= 540px) {
-  header nav .r-col { 
+  header nav .r-col {
     position: relative;
     margin: 10px 10px 0;
     width: auto;

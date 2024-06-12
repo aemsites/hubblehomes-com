@@ -1,5 +1,5 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { nav, div, span, a, img, form, label, input } from '../../scripts/dom-helpers.js';
+import { a, div, form, img, input, label, nav, span } from '../../scripts/dom-helpers.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
@@ -47,11 +47,20 @@ async function buildNav() {
               const $rColContent = rColFrag.firstElementChild;
 
               // optimize pic
-              $rColContent.querySelectorAll('picture').forEach((pic) => {
-                const image = pic.querySelector('img');
-                const opt = createOptimizedPicture(image.src, 'alt', true, [{ width: '240' }]);
-                pic.replaceWith(opt);
-              });
+              $rColContent.querySelectorAll('picture')
+                .forEach((pic) => {
+                  const image = pic.querySelector('img');
+                  const opt = createOptimizedPicture(image.src, 'alt', true, [{ width: '240' }]);
+                  pic.replaceWith(opt);
+                });
+
+              $rColContent.querySelectorAll('a')
+                .forEach(
+                  (aEl) => {
+                    aEl.classList.remove('fancy');
+                    aEl.classList.add('yellow');
+                    aEl.classList.add('btn');
+                  });
 
               $rCol.append($rColContent);
             }
@@ -72,29 +81,59 @@ async function buildNav() {
 export default async function decorate(block) {
   block.innerHTML = '';
 
-  const $logo = a({ id: 'logo', href: '/', 'aria-label': 'Visit Home Page' }, img({
+  const $logo = a({
+    id: 'logo',
+    href: '/',
+    'aria-label': 'Visit Home Page',
+  }, img({
     src: '/icons/hubble-homes-logo.svg',
     width: '110',
     height: '56',
     alt: 'Hubble Homes, LLC',
   }));
 
-  const $promo = a({ id: 'promo', href: '/promotions/promotions-detail/quick-move-ins' },
-    '$25K Your Way | Quick Move-Ins',
-    span('Get Details'),
+  const $promo = a({
+    id: 'promo',
+    href: '/promotions/promotions-detail/quick-move-ins',
+  },
+  '$25K Your Way | Quick Move-Ins',
+  span('Get Details'),
   );
 
   // TODO: add autocomplete
   const $search = form({ id: 'search' },
-    label({ class: 'sr-only', for: 'navSearch' }, 'Type plan, city, zip, community, phrase or MLS'),
-    div({ class: 'search-icon' }, img({ src: '/icons/search.svg', height: 17, width: 17, alt: 'search' })),
-    input({ type: 'text', name: 'navSearch', placeholder: 'Type plan, city, zip, community, phrase or MLS#' }),
+    label({
+      class: 'sr-only',
+      for: 'navSearch',
+    }, 'Type plan, city, zip, community, phrase or MLS'),
+    div({ class: 'search-icon' }, img({
+      src: '/icons/search.svg',
+      height: 17,
+      width: 17,
+      alt: 'search',
+    })),
+    input({
+      type: 'text',
+      name: 'navSearch',
+      placeholder: 'Type plan, city, zip, community, phrase or MLS#',
+    }),
   );
 
-  const $phone = a({ id: 'phone', href: 'tel:208-620-2607' }, '208-620-2607');
+  const $phone = a({
+    id: 'phone',
+    href: 'tel:208-620-2607',
+  }, '208-620-2607');
 
-  const $chat = div({ class: 'chat livechat_button', 'data-id': 'TeyAs9pDGZ1' },
-    img({ src: '/icons/lets-chat.png', width: '81', height: '38', alt: 'Let\'s chat with Hubble Homes and get all the info you need for your next new home.' }),
+  const $chat = div({
+    class: 'chat livechat_button',
+    'data-id': 'TeyAs9pDGZ1',
+  },
+  img({
+    src: '/icons/lets-chat.png',
+    width: '81',
+    height: '38',
+    alt: 'Let\'s chat with Hubble Homes and get all the info you need for your next new home.',
+  }),
   );
 
   const $bgrBtn = div({ class: 'bgr-btn' }, span(), span(), span());

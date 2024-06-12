@@ -6,7 +6,7 @@
       .model-card-tagline {
         display: grid;
         grid-template-columns: auto auto;
-        padding: 5px;
+        padding: 5px 10px;
 
         div:nth-child(1) {
           text-align: left;
@@ -43,13 +43,6 @@
           font-weight: inherit;
         }
       }
-
-      .model-card-bottom-details {
-        .btn-primary2 {
-          padding: 3px 12px;
-          display: block;
-        }
-      }
     }
   }
 
@@ -79,6 +72,7 @@
 
   .model-card {
     div > h3 {
+      text-transform: uppercase;
       font-weight: 400;
       color: var(--link-color);
       padding-bottom: 5px;
@@ -88,9 +82,11 @@
 
     .model-card-image-container {
       picture img {
+        border-radius: 10px 10px 0 0;
         aspect-ratio: 4 / 3;
         min-width: 288px;
         height: auto;
+        width: 100%;
       }
 
       position: relative;
@@ -103,7 +99,7 @@
         position: absolute;
         top: 5px;
         width: 100%;
-        padding: 2px 10px;
+        padding: 10px;
         box-sizing: border-box;
         display: grid;
         place-items: center center;
@@ -191,48 +187,19 @@
 
       .repeating-grid {
         --grid-repeat: 2;
-        --grid-gap: 3px;
+        --grid-gap: 5px;
 
         align-items: center;
       }
 
-      .grey-button {
-        background-color: #847b75;
-        border-color: #847b75;
+      .btn {
         font-size: 15px;
         font-weight: normal;
-        color: grey;
-        padding: 3px;
-        transition: all 0.3s ease-in-out;
+        width: 100%;
 
-        a {
-          color: #fff;
-        }
-
-        &:hover {
-          background-color: #69625d;
-          border-color: #69625d;
-          transition: all 0.3s ease-in-out;
-        }
-      }
-
-      .black-button {
-        background-color: #423c36;
-        border-color: #423c36;
-        font-size: 15px;
-        font-weight: normal;
-        color: grey;
-        padding: 3px;
-        transition: all 0.3s ease-in-out;
-
-        a {
-          color: #fff;
-        }
-
-        &:hover {
-          background-color: #181614;
-          border-color: #181614;
-          transition: all 0.3s ease-in-out;
+        &.small {
+          padding: 5px 9px;
+          font-size: 12px;
         }
       }
 
@@ -244,11 +211,6 @@
       .phone-number a {
         font-weight: 400;
         color: var(--text-color);
-      }
-
-      .btn-small {
-        padding: 5px 9px;
-        font-size: 12px;
       }
 
       .btn-primary {

@@ -1,16 +1,17 @@
 import {
-  a, div, form, h3, img, input, label, span,
+  a, div, h3, img, span,
 } from '../../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../../scripts/aem.js';
+import formatPhoneNumber from '../../../scripts/phone-formatter.js';
 
 class BaseCard {
   constructor(model) {
     this.model = model;
   }
 
-  render() {
+  async render() {
     const header = this.renderHeaderArea();
-    const imageBox = this.renderModelImage();
+    const imageBox = await this.renderModelImage();
     const topActionsBar = this.renderTopActionBar();
     imageBox.appendChild(topActionsBar);
 
@@ -42,13 +43,12 @@ class BaseCard {
    * @returns {Element}
    */
   renderTitle() {
-    return h3(this.model.title);
+    return h3(this.model['model name'] || '');
   }
 
   /**
    * Render the address of the model.  Sub-cards must override this if they
    * want to display an address.
-   * @returns {undefined}
    */
   // eslint-disable-next-line class-methods-use-this
   renderAddress() {
@@ -59,8 +59,9 @@ class BaseCard {
    * Render the model image.
    * @returns {Element}
    */
-  renderModelImage() {
-    const imageLink = a({ href: this.model.href }, this.createModelImage(this.model));
+  async renderModelImage() {
+    const image = this.createModelImage(this.model.image, this.model.modelname);
+    const imageLink = a({ href: this.model.href }, image);
     const imagePicture = div(imageLink);
     return div({ class: 'model-card-image-container' }, imagePicture);
   }
@@ -160,7 +161,7 @@ class BaseCard {
       div('Cars'),
       div(this.model.beds),
       div(this.model.baths),
-      div(this.model.sqft),
+      div(this.model['square feet']),
       div(this.model.cars),
     );
   }
@@ -177,10 +178,6 @@ class BaseCard {
     // render the 3 rows of the details container
     this.renderTopRowOfDetailsContainer(gridContainer);
     this.renderMiddleRowOfDetailsContainer(gridContainer);
-    this.renderBottomRowOfDetailsContainer(gridContainer);
-
-    // render the action buttons
-    this.renderButtonActionsOfDetailsContainer(gridContainer);
 
     bottomContainer.appendChild(gridContainer);
     return bottomContainer;
@@ -200,22 +197,30 @@ class BaseCard {
    * Render the top left section of the detail's container.
    * @param gridContainer
    */
+  // eslint-disable-next-line class-methods-use-this
   renderTopRowOfDetailsContainer_left(gridContainer) {
-    const topLeft = div({ class: 'stories' }, `${this.model.story} Story`);
-    gridContainer.appendChild(topLeft);
+    const link = a({
+      class: 'btn light-blue square',
+      // eslint-disable-next-line no-alert
+      onclick: () => alert('Get Info'),
+    }, 'Get Info');
+
+    gridContainer.appendChild(link);
   }
 
   /**
    * Render the top right section of the detail's container.
    * @param gridContainer
    */
+  // eslint-disable-next-line class-methods-use-this
   renderTopRowOfDetailsContainer_right(gridContainer) {
-    const topRight = a({
-      class: 'interactive',
-      href: this.model.href,
-    }, 'Interactive Plan');
-
-    gridContainer.appendChild(topRight);
+    const link = a({
+      class: 'btn light-gray square',
+      // eslint-disable-next-line no-alert
+      onclick: () => alert('Photos'),
+    }, 'Photos');
+    const middleLeft = div(link);
+    gridContainer.appendChild(middleLeft);
   }
 
   /**
@@ -229,118 +234,29 @@ class BaseCard {
   }
 
   /**
-   * Render the bottom row of the detail's container, which contains the bottom left and bottom
-   * right sections.
-   * @param gridContainer
-   */
-  renderBottomRowOfDetailsContainer(gridContainer) {
-    this.renderBottomRowOfDetailsContainer_left(gridContainer);
-    this.renderBottomRowOfDetailsContainer_right(gridContainer);
-  }
-
-  /**
    * Render the bottom left section of the detail's container.
    * @param gridContainer
    */
   // eslint-disable-next-line class-methods-use-this
-  renderBottomRowOfDetailsContainer_left(gridContainer) {
-    const link = a({ href: 'tel:2086495529' }, '208-649-5529');
-    const middleLeft = div({ class: 'phone-number' }, link);
-    gridContainer.appendChild(middleLeft);
-  }
-
-  /**
-   * Render the middle right section of the detail's container.
-   * @param gridContainer
-   */
-  renderMiddleRowOfDetailsContainer_right(gridContainer) {
-    const link = a({ href: this.model.href }, 'Request a Tour');
-    const middleLeft = div({ class: 'black-button' }, link);
-    gridContainer.appendChild(middleLeft);
-  }
-
-  /**
-   * Render the middle left section of the detail's container.
-   * @param gridContainer
-   */
   renderMiddleRowOfDetailsContainer_left(gridContainer) {
-    const link = a({ href: this.model.href }, 'Choose Your Lot');
-    const middleLeft = div({ class: 'grey-button' }, link);
-    gridContainer.appendChild(middleLeft);
+    const { phone } = window.hh.current.sale_center;
+    const link = a({ class: 'btn yellow square', href: `tel:${phone}` }, formatPhoneNumber(phone));
+    gridContainer.appendChild(link);
   }
 
   /**
    * Render the bottom right section of the detail's container.
    * @param gridContainer
    */
-  renderBottomRowOfDetailsContainer_right(gridContainer) {
-    const link1 = a({
-      class: 'btn-primary2 btn-small',
-      href: this.model.href,
-    }, 'Get Info');
-    const link2 = a({
-      class: 'btn-primary btn-small',
-      href: this.model.href,
-    }, 'More');
-    const actions = div({ class: 'repeating-grid getmoreinfo' }, link1, link2);
-    gridContainer.appendChild(actions);
-  }
-
-  /**
-   * Render the button actions on the bottom of the model card.
-   * @param gridContainer
-   */
-  renderButtonActionsOfDetailsContainer(gridContainer) {
-    this.renderButtonActionsOfDetailsContainer_left(gridContainer);
-    this.renderButtonActionsOfDetailsContainer_right(gridContainer);
-  }
-
-  /**
-   * Render the left action buttons on the bottom of the model card.
-   * @param gridContainer
-   */
-  // eslint-disable-next-line class-methods-use-this
-  renderButtonActionsOfDetailsContainer_left(gridContainer) {
+  renderMiddleRowOfDetailsContainer_right(gridContainer) {
     const link = a({
       target: '_blank',
-      class: 'btn-action btn-icons btn-directions',
-      href: '#',
+      class: 'btn dark-gray square',
+      href: `https://www.google.com/maps/dir/Current+Location/${this.model.latitude},${this.model.longitude}`,
     }, 'Directions');
 
-    const actionContainer = div(link);
-    gridContainer.appendChild(actionContainer);
-  }
-
-  /**
-   * Render the right action buttons on the bottom of the model card.
-   * @param gridContainer
-   */
-  renderButtonActionsOfDetailsContainer_right(gridContainer) {
-    // create a svg element using the photos.svg file
-    const photoLink = a({
-      class: 'btn-action btn-icons btn-photos',
-      href: '#',
-    }, 'Photos');
-    const photoDiv = div(photoLink);
-
-    const checkbox = input({
-      type: 'checkbox',
-      name: `CompareItem_${this.model.id}`,
-      id: `CompareItem_${this.model.id}`,
-      onchange: () => {
-        // do nothing for now
-      },
-    });
-
-    const labelEl = label({
-      class: 'btn-action',
-      htmlFor: `CompareItem_${this.model.id}`,
-    }, ' Compare');
-
-    const formEl = form(checkbox, labelEl);
-
-    const actionContainer = div({ class: 'repeating-grid' }, photoDiv, formEl);
-    gridContainer.appendChild(actionContainer);
+    const middleLeft = div(link);
+    gridContainer.appendChild(middleLeft);
   }
 
   /**
@@ -354,13 +270,16 @@ class BaseCard {
 
   /**
    * Generate a Picture element that has contains the model's image.
-   * @param model the model to generate the image for. Using the model's image property and title.
    * @returns {Element}
    */
   // eslint-disable-next-line class-methods-use-this
-  createModelImage(model) {
-    const imageUrl = new URL(model.image);
-    return createOptimizedPicture(imageUrl.pathname, model.title, false, [
+  createModelImage(url, title) {
+    if (!url) {
+      return undefined;
+    }
+
+    const imageUrl = new URL(url);
+    return createOptimizedPicture(imageUrl.pathname, title, false, [
       { media: '(max-width: 767px)', width: '767' },
       { media: '(max-width: 991px)', width: '400' }]);
   }

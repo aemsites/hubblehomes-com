@@ -2,12 +2,12 @@
 @import url("./layouts.css");
 @import url("./cards/card.css");
 
-/* Section title grey divider */
-.models .grey-divider {
-  margin-bottom: 30px;
-}
-
 .models {
+  .no-results {
+    padding: 20px;
+    text-align: center;
+  }
+
   > .loader.repeating-grid,
   > ul.repeating-grid {
     --grid-repeat: 1;

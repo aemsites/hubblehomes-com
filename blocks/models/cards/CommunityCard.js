@@ -1,7 +1,11 @@
 import BaseCard from './BaseCard.js';
-import { a, div } from '../../../scripts/dom-helpers.js';
+import { a, div, h3 } from '../../../scripts/dom-helpers.js';
 
 class CommunityCard extends BaseCard {
+  renderTitle() {
+    return h3(this.model.name || '');
+  }
+
   // eslint-disable-next-line class-methods-use-this
   renderTaglineItems(taglineContainer) {
     const taglinePrice = div('Sold Out. Ask about Brittany Heights');
@@ -18,11 +22,6 @@ class CommunityCard extends BaseCard {
     }, 'View Monarch');
     const middleLeft = div({ class: 'grid-col-span-2' }, link);
     gridContainer.appendChild(middleLeft);
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  renderButtonActionsOfDetailsContainer() {
-    // do not render any
   }
 }
 
