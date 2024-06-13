@@ -1,3 +1,41 @@
-.tabs {
-  /* eslint-disable */
+.subnav {
+  .subnav-container {
+    height: 300px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .subnav-container-item {
+    position: absolute;
+    opacity: 0;
+    bottom: -100%;
+    height : 100%;
+    width : 100%;
+    transition: all 0.2s, transform 0.2s;
+
+    &.active {
+      position: absolute;
+      bottom: 0;
+      opacity: 1;
+    }
+
+  }
+
+  .btn {
+    flex: 0 0 auto;
+  }
+
+  /* list style */
+  dd {
+    color: var(--link-color);
+    margin-left: 0;
+  }
+
+  dt {
+    font-weight: 600;
+  }
+
+  dt, dd {
+    line-height: 1.4em;
+  }
 }

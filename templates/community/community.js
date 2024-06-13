@@ -25,6 +25,7 @@ import { getCommunityDetails } from '../../scripts/communities.js';
 import { createActionBar } from '../../scripts/block-helper.js';
 import { getModelsByCommunity } from '../../scripts/models.js';
 import { fetchRates } from '../../scripts/mortgage.js';
+import DeferredPromise from '../../scripts/deferred.js';
 
 /**
  * Builds the inventory homes block.
@@ -69,17 +70,6 @@ async function fetchRequiredPageData() {
     salesCenter: salesCenterData.sales_center,
     community,
   };
-}
-
-function DeferredPromise() {
-  const deferred = {};
-
-  deferred.promise = new Promise((resolve, reject) => {
-    deferred.resolve = resolve;
-    deferred.reject = reject;
-  });
-
-  return deferred;
 }
 
 async function createSpecialists(specialists) {

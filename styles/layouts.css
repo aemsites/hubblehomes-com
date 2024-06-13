@@ -169,19 +169,6 @@
             font-size: var(--body-font-size-m);
             font-family: var(--body-font-family);
             color: var(--link-color);
-
-            dd {
-              color: var(--btn-bg-color-3);
-              margin-left: 0;
-            }
-
-            dt {
-              font-weight: 700;
-            }
-
-            dt, dd {
-              line-height: 1.4em;
-            }
           }
         }
       }
