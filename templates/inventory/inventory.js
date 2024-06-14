@@ -130,6 +130,7 @@ export default async function decorate(doc) {
   const svgElement = await loadSVG('/icons/directions.svg', 'icon');
   const address = a({
     href: `https://www.google.com/maps/dir/Current+Location/${homeDetails.latitude},${homeDetails.longitude}`,
+    target: '_blank',
     class: 'address-container',
   }, h4(homeDetails.address, ' ', svgElement));
 
