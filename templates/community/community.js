@@ -19,10 +19,10 @@ import {
   getHeaderTitleForFilter,
   getInventoryHomes,
 } from '../../scripts/inventory.js';
-import { getSalesCenters } from '../../scripts/sales-center.js';
+import { getSalesCentersForCommunityUrl } from '../../scripts/sales-center.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
-import { getCommunityDetails } from '../../scripts/communities.js';
-import { createActionBar } from '../../scripts/block-helper.js';
+import { getCommunityDetailsForUrl } from '../../scripts/communities.js';
+import { createTemplateBlock } from '../../scripts/block-helper.js';
 import { getModelsByCommunity } from '../../scripts/models.js';
 import { fetchRates } from '../../scripts/mortgage.js';
 
@@ -56,8 +56,8 @@ async function fetchRequiredPageData(filter) {
   // required data for the page.
   // For example this page could ask for the 3 sheets at once and then build the required data.
   await fetchRates();
-  const salesCenterData = await getSalesCenters(window.location);
-  const community = await getCommunityDetails(window.location.pathname);
+  const salesCenterData = await getSalesCentersForCommunityUrl(window.location);
+  const community = await getCommunityDetailsForUrl(window.location.pathname);
   const homes = await getInventoryHomes(community.name, filter);
 
   window.hh = window.hh || {};

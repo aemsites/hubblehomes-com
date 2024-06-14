@@ -164,8 +164,31 @@ const filters = [
   },
 ];
 
-async function loadInventory() {
-  const response = await fetch('/data/hubblehomes.json?sheet=inventory');
+/**
+ * Loads inventory data from the server.
+ * @returns {Promise<Array>} The inventory data.
+ * @throws {Error} If the fetch request fails.
+ */
+async function loadInventoryData() {
+  try {
+    const response = await fetch('/data/hubblehomes.json?sheet=inventory');
+    if (response.ok) {
+      const inventory = await response.json();
+      return inventory.data;
+    }
+    throw new Error(`Failed to fetch inventory data: ${response.statusText}`);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+/**
+ * Maps community to inventory homes
+ * @returns {Promise<Map>} A map of communities to their respective homes.
+ * @throws {Error} If the fetch request fails or data processing fails.
+ */
+async function createCommunityInventoryMap() {
   const models = await getModels();
 
   if (response.ok) {
@@ -208,8 +231,14 @@ function getHeaderTitleForFilter(filterStr) {
   return filter.headerTitle || filters[0].headerTitle;
 }
 
+/**
+ * Retrieves the inventory homes for a specific community and filter.
+ * @param {string} community - The name of the community.
+ * @param {string} filterStr - The filter string.
+ * @returns {Promise<Array>} The filtered inventory homes for the community.
+ */
 async function getInventoryHomes(community, filterStr) {
-  const inventory = await loadInventory();
+  const inventory = await createCommunityInventoryMap();
   if (filterStr) {
     const filter = filters.find((f) => f.value === filterStr);
     return filter.rule(inventory.get(community));
@@ -218,8 +247,25 @@ async function getInventoryHomes(community, filterStr) {
   return inventory.get(community);
 }
 
+/**
+ * Retrieves an inventory home by its path.
+ * @param {string} path - The path of the home.
+ * @returns {Promise<Object>} The inventory home.
+ * @throws {Error} If the fetch request fails.
+ */
+async function getInventoryHomeByPath(path) {
+  try {
+    const inventory = await loadInventoryData();
+    return inventory.find((home) => home.path === path);
+  } catch (error) {
+    console.error('Error fetching inventory home by path:', error);
+    return {};
+  }
+}
+
 export {
   getInventoryHomes,
+  getInventoryHomeByPath,
   getHeaderTitleForFilter,
   filters,
 };
