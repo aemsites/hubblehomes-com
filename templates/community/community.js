@@ -299,10 +299,4 @@ export default async function decorate(doc) {
   mainEl.append(banner);
   mainEl.append(specialistsSection);
   mainEl.append(div({ class: 'section disclaimer' }, disclaimer));
-
-  // setTimeout(() => {
-  //   const subNavItemContainer = doc.querySelector('.subnav-item-container');
-  //   subNavItemContainer.style.visibility = 'visible';
-  //   document.querySelector('.details').appendChild(subNavItemContainer);
-  // }, 100);
 }

@@ -17,10 +17,7 @@ function makeActive(event) {
 
   const nextContainer = document.querySelector(`.subnav-container-item[data-container-index="${nextIndex}"]`);
   if (nextContainer) {
-    const next = `[data-btn-index="${nextIndex}"]`;
-    const current = `[data-btn-index="${currentActiveIndex}"]`;
-    document.querySelector(current).classList.remove('active');
-    document.querySelector(next).classList.add('active');
+    currentActive.classList.remove('active');
     nextContainer.classList.add('active');
   }
 }
@@ -130,9 +127,10 @@ export default async function decorate(block) {
   ));
 
   let index = 0;
-  const styles = ['subnav-container-item'];
+
   blocks.forEach((b) => {
     // the index will map to the button that was clicked, which allows us to control the display
+    const styles = ['subnav-container-item'];
     if (index === 0) { styles.push('active'); }
     itemContainer.append(div({ class: styles, 'data-container-index': index }, b));
     index += 1;
@@ -147,8 +145,6 @@ export default async function decorate(block) {
   block.innerHTML = '';
 
   block.append(div({ class: 'fluid-flex' }, ...buttons));
-  // container.querySelector('.subnav-container-item').classList.add('active');
-  // block.append(container);
 
   const container = document.querySelector('.subnav-detail-container');
   if (!container) {
