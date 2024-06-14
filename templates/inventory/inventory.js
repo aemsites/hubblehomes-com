@@ -1,6 +1,6 @@
 /* eslint-disable function-call-argument-newline, object-curly-newline, function-paren-newline */
 import { aside, div, a, button, strong, small, h2, h3, h4, h5, br, span } from '../../scripts/dom-helpers.js';
-import { createActionBar, createTemplateBlock } from '../../scripts/block-helper.js';
+import { createTemplateBlock } from '../../scripts/block-helper.js';
 import { getInventoryHomeByPath } from '../../scripts/inventory.js';
 import { fetchRates, calculateMonthlyPayment } from '../../scripts/mortgage.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
@@ -29,7 +29,7 @@ async function loadSVG(url, className = '') {
   const svgElement = tempDiv.firstElementChild;
   svgElement.classList.add('icon');
   if (className) {
-    className.split(' ').forEach(name => {
+    className.split(' ').forEach((name) => {
       if (name) svgElement.classList.add(name);
     });
   }
@@ -37,7 +37,7 @@ async function loadSVG(url, className = '') {
 }
 
 async function createPriceCell(homeDetails) {
-  const price = homeDetails.price;
+  const { price } = homeDetails;
   const previousPrice = homeDetails['previous-price'];
   const numericPrice = price ? parseFloat(price.replace(/[^\d.-]/g, '')) : null;
   const numericPreviousPrice = previousPrice ? parseFloat(previousPrice.replace(/[^\d.-]/g, '')) : null;
@@ -122,8 +122,7 @@ export default async function decorate(doc) {
   const availableAt = await createTemplateBlock('available-at-locations', [[modelName]]);
   const alsoAvailableAtAside = div({ class: 'item' }, heading, br(), availableAt, br(), linksBlock);
 
-
-  // Temporary code to display home details
+  // Temporary for showing home details
   const homeDetailsBoxContent = `
     <dl>
       <dt>Price</dt>
@@ -148,9 +147,10 @@ export default async function decorate(doc) {
   const svgElement = await loadSVG('/icons/directions.svg', 'icon');
   const address = a({
     href: `https://www.google.com/maps/dir/Current+Location/${homeDetails.latitude},${homeDetails.longitude}`,
-    class: 'address-container'
+    class: 'address-container',
   }, h4(homeDetails.address, ' ', svgElement));
-  const mls = h5('MLS# ' + homeDetails.mls);
+
+  const mls = h5(`MLS #${homeDetails['mls number']}`);
   const homeIdentity = div(name, address, mls);
 
   const priceCell = await createPriceCell(homeDetails);

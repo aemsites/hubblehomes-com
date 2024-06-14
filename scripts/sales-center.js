@@ -94,12 +94,12 @@ function getSalesCenterCommunityNameFromUrl(url) {
  * Fetches the sales center details for a given community.
  *
  * @param {string} community - The name of the community.
- * @returns {Promise<Object>} The sales office details for the community, or an empty object if not found.
+ * @returns {Promise<Object>} The sales office details for the community,
+ * or an empty object if not found.
  * @throws {Error} If the data fetching process fails.
  */
 async function getSalesCenterForCommunity(community) {
   if (!community) {
-    console.error('Community name is required');
     return {};
   }
 
@@ -109,7 +109,6 @@ async function getSalesCenterForCommunity(community) {
 
     // Check if the data was loaded successfully
     if (!salesAndStaff) {
-      console.error('Failed to load sales and staff data');
       return {};
     }
 
@@ -117,7 +116,6 @@ async function getSalesCenterForCommunity(community) {
 
     // Check if sales centers are available
     if (!salesCenter) {
-      console.error('Sales centers data not available');
       return {};
     }
 
@@ -127,7 +125,6 @@ async function getSalesCenterForCommunity(community) {
     const salesOffice = salesOffices.find((office) => office.community === community);
     return salesOffice || {};
   } catch (error) {
-    console.error('Error fetching sales center data:', error);
     return {};
   }
 }

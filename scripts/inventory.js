@@ -170,17 +170,12 @@ const filters = [
  * @throws {Error} If the fetch request fails.
  */
 async function loadInventoryData() {
-  try {
-    const response = await fetch('/data/hubblehomes.json?sheet=inventory');
-    if (response.ok) {
-      const inventory = await response.json();
-      return inventory.data;
-    }
-    throw new Error(`Failed to fetch inventory data: ${response.statusText}`);
-  } catch (error) {
-    console.error(error);
-    throw error;
+  const response = await fetch('/data/hubblehomes.json?sheet=inventory');
+  if (response.ok) {
+    const inventory = await response.json();
+    return inventory.data;
   }
+  throw new Error(`Failed to fetch inventory data: ${response.statusText}`);
 }
 
 /**
@@ -189,6 +184,7 @@ async function loadInventoryData() {
  * @throws {Error} If the fetch request fails or data processing fails.
  */
 async function createCommunityInventoryMap() {
+  const response = await fetch('/data/hubblehomes.json?sheet=inventory');
   const models = await getModels();
 
   if (response.ok) {
@@ -258,7 +254,6 @@ async function getInventoryHomeByPath(path) {
     const inventory = await loadInventoryData();
     return inventory.find((home) => home.path === path);
   } catch (error) {
-    console.error('Error fetching inventory home by path:', error);
     return {};
   }
 }

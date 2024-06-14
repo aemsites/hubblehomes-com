@@ -1,5 +1,5 @@
 import {
-  a, div, form, img, input,
+  a, div, img,
 } from '../../../scripts/dom-helpers.js';
 
 const Action = {
@@ -19,7 +19,6 @@ const Action = {
     link: '#',
   },
 };
-
 
 export default function decorate(block) {
   const items = [];

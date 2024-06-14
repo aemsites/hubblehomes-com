@@ -41,8 +41,8 @@ async function getModelsByCommunity(communityName) {
  */
 async function getModelImage(modelName) {
   const models = await getModels();
-  const model = models.find((model) => model.name === modelName);
-  return model ? model.image : null;
+  const desiredModel = models.find((model) => model.name === modelName);
+  return desiredModel ? desiredModel.image : null;
 }
 
 /**
@@ -56,8 +56,8 @@ async function getCommunitiesForModel(modelName) {
 
   // Filter models by the given modelName and extract community names.
   const communityNames = models
-    .filter(model => model['model name'].trim().toLowerCase() === modelName.trim().toLowerCase())
-    .map(model => model.community)
+    .filter((model) => model['model name'].trim().toLowerCase() === modelName.trim().toLowerCase())
+    .map((model) => model.community)
     .filter((community, index, self) => self.indexOf(community) === index); // Remove duplicates
 
   return communityNames;

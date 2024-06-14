@@ -1,7 +1,6 @@
 @layer reset, theme, layout, templates;
 
 @layer reset {
-
   *,
   *::before,
   *::after {
@@ -24,7 +23,6 @@
 }
 
 @layer layout {
-
   /* grid container with three equally sized columns that take up one fraction (1fr) of the available space with a gap */
   .repeating-grid {
     --p-grid-span: var(--grid-span, --layout-grid-span);

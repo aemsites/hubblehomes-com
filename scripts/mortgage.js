@@ -6,9 +6,9 @@
 async function fetchRates() {
   // Check if the rates are already in session storage
   if (
-    sessionStorage.getItem('hh.rates.rate') !== null &&
-    sessionStorage.getItem('hh.rates.percent') !== null &&
-    sessionStorage.getItem('hh.rates.term') !== null
+    sessionStorage.getItem('hh.rates.rate') !== null
+    && sessionStorage.getItem('hh.rates.percent') !== null
+    && sessionStorage.getItem('hh.rates.term') !== null
   ) {
     return;
   }
@@ -19,7 +19,6 @@ async function fetchRates() {
   if (response.ok) {
     const jsonObject = await response.json();
     const { rate, percent, term } = jsonObject.data[0];
-    
     // Store the fetched rates in session storage
     sessionStorage.setItem('hh.rates.rate', rate);
     sessionStorage.setItem('hh.rates.percent', percent);
@@ -54,5 +53,5 @@ function calculateMonthlyPayment(housePrice) {
 
 export {
   calculateMonthlyPayment,
-  fetchRates
+  fetchRates,
 };
