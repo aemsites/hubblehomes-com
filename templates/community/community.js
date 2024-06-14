@@ -280,6 +280,7 @@ export default async function decorate(doc) {
     div(
       { class: 'content' },
       twoCols,
+
     ),
     aside(
       div('right').innerHTML = rightAside,
