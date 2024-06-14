@@ -3,7 +3,7 @@ import { a, div, h3 } from '../../../scripts/dom-helpers.js';
 
 class CommunityCard extends BaseCard {
   renderTitle() {
-    return h3(this.model.name || '');
+    return h3(this.cardData.name || '');
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -18,7 +18,7 @@ class CommunityCard extends BaseCard {
   renderBottomRowOfDetailsContainer(gridContainer) {
     const link = a({
       class: 'btn-primary2',
-      href: this.model.href,
+      href: this.cardData.href,
     }, 'View Monarch');
     const middleLeft = div({ class: 'grid-col-span-2' }, link);
     gridContainer.appendChild(middleLeft);

@@ -1,5 +1,5 @@
 import {
-  buildBlock, decorateBlock, getMetadata, loadBlock,
+  buildBlock, decorateBlock, getMetadata,
 } from '../../scripts/aem.js';
 import {
   a,
@@ -31,38 +31,38 @@ import { fetchRates } from '../../scripts/mortgage.js';
  *
  * @returns {Promise<Element>} The inventory homes block wrapped in a div.
  */
-async function buildInventoryHomes() {
-  const modelsBlock = buildBlock('models', []);
+async function buildInventoryHomes(community, filter) {
+  window.hh.current.models = await getInventoryHomes(community.name, filter);
+  const modelsBlock = buildBlock('cards', []);
   modelsBlock.classList.add('inventory');
   const blockWrapper = div(modelsBlock);
   decorateBlock(modelsBlock);
-  await loadBlock(modelsBlock);
+  await loadTemplateBlock(modelsBlock);
   return blockWrapper;
 }
 
 async function buildFeaturedPlans(communityName) {
   window.hh.current.models = await getModelsByCommunity(communityName);
-  const modelsBlock = buildBlock('models', []);
+  const modelsBlock = buildBlock('cards', []);
   modelsBlock.classList.add('featured');
   const blockWrapper = div(modelsBlock);
   decorateBlock(modelsBlock);
-  await loadBlock(modelsBlock);
+  await loadTemplateBlock(modelsBlock);
   return blockWrapper;
 }
 
-async function fetchRequiredPageData(filter) {
+async function fetchRequiredPageData() {
   // These three calls could be done differently, but for now, we will keep them separate.
   // It might be nice to have a factory that takes the results of these calls and builds the
   // required data for the page.
   // For example this page could ask for the 3 sheets at once and then build the required data.
   await fetchRates();
+  
   const salesCenterData = await getSalesCentersForCommunityUrl(window.location);
   const community = await fetchCommunityDetailsForUrl(window.location.pathname);
-  const homes = await getInventoryHomes(community.name, filter);
-
+  
   window.hh = window.hh || {};
-  window.hh.current = {};
-  window.hh.current.models = homes;
+  window.hh.current = window.hh.current || {};
   window.hh.current.sale_center = salesCenterData.sales_center;
   window.hh.current.community = community;
 
@@ -244,13 +244,12 @@ export default async function decorate(doc) {
   const url = new URL(window.location);
   const params = url.searchParams;
   const filter = params.get('filter');
-  // const communityName = getMetadata('name', doc);
   const areaName = getMetadata('area', doc);
 
   const {
     salesCenter,
     community,
-  } = await fetchRequiredPageData(filter);
+  } = await fetchRequiredPageData();
 
   const mainEl = doc.querySelector('main');
   const breadCrumbsEl = buildBreadCrumbs();
@@ -283,7 +282,7 @@ export default async function decorate(doc) {
   );
 
   const titleEl = div({ class: 'grey-divider' }, getHeaderTitleForFilter(filter));
-  const inventory = await buildInventoryHomes();
+  const inventory = await buildInventoryHomes(community, filter);
 
   const featuredPlansTitle = div({ class: 'grey-divider' }, 'Featured Plans');
   const models = await buildFeaturedPlans(community.name);
