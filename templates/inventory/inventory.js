@@ -38,35 +38,18 @@ async function loadSVG(url, className = '') {
 
 async function createPriceCell(homeDetails) {
   const { price } = homeDetails;
-  const previousPrice = homeDetails['previous-price'];
   const numericPrice = price ? parseFloat(price.replace(/[^\d.-]/g, '')) : null;
-  const numericPreviousPrice = previousPrice ? parseFloat(previousPrice.replace(/[^\d.-]/g, '')) : null;
 
-  let symbolElement = null;
-  let previouslyPricedRow = div();
-
-  if (previousPrice) {
-    if (numericPrice > numericPreviousPrice) {
-      symbolElement = await loadSVG('/icons/caret-up.svg', 'caret-up');
-    }
-    previouslyPricedRow = div(
-      div(
-        small('Previously'),
-        br(),
-        strong({ class: 'strike-through' }, formatPrice(numericPreviousPrice)),
-      ),
-    );
-  }
-
-  const priceHeading = h3(formatPrice(numericPrice), symbolElement ? div(symbolElement) : div());
+  const priceHeading = h3(formatPrice(numericPrice));
   const buyNowButton = div(button({
     class: 'fancy yellow',
     onclick: () => {
-      window.location.href = 'https://www.hubblehomes.com/buy-now';
+      const { host } = window.location;
+      window.location.href = `https://${host}/buy-now`;
     },
   }, 'Buy Now'));
 
-  return div({ class: 'cell border-right' }, priceHeading, previouslyPricedRow, buyNowButton);
+  return div({ class: 'cell border-right' }, priceHeading, div(), buyNowButton);
 }
 
 function createEstimatedPaymentCell(price) {
