@@ -150,7 +150,7 @@ export default async function decorate(doc) {
     class: 'address-container',
   }, h4(homeDetails.address, ' ', svgElement));
 
-  const mls = h5(`MLS #${homeDetails['mls number']}`);
+  const mls = h5(`MLS #${homeDetails['mls']}`);
   const homeIdentity = div(name, address, mls);
 
   const priceCell = await createPriceCell(homeDetails);
