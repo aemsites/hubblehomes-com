@@ -57,10 +57,10 @@ async function fetchRequiredPageData() {
   // required data for the page.
   // For example this page could ask for the 3 sheets at once and then build the required data.
   await fetchRates();
-  
+
   const salesCenterData = await getSalesCentersForCommunityUrl(window.location);
   const community = await fetchCommunityDetailsForUrl(window.location.pathname);
-  
+
   window.hh = window.hh || {};
   window.hh.current = window.hh.current || {};
   window.hh.current.sale_center = salesCenterData.sales_center;
