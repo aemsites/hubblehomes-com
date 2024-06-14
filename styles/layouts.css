@@ -160,7 +160,7 @@
         > div:nth-child(2) {
           padding: 0 15px;
 
-          .details {
+          .subnav-detail-container {
             margin: 0 15px;
             padding: 20px;
             min-height: 250px;

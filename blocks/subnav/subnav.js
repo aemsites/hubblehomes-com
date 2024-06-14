@@ -1,28 +1,27 @@
 import { fetchPlaceholders, getMetadata, toCamelCase } from '../../scripts/aem.js';
-import buildListBlock from './code-block-resolver.js';
+import buildCodeBlockListItems from './code-block-resolver.js';
 import { a, div } from '../../scripts/dom-helpers.js';
 
 function makeActive(event) {
-  // reset all buttons and remove the active and in.
   const currentActive = document.querySelector('.subnav-container-item.active');
-  // if there's some reason we can't find the active container, just return
-  let currentIndex;
-  if (currentActive) {
-    currentIndex = currentActive.dataset.containerIndex;
-    currentActive.classList.remove('active', 'up', 'down');
-  }
-
+  const currentActiveIndex = currentActive.dataset.containerIndex;
   const nextIndex = event.target.dataset.btnIndex;
 
-  if (currentIndex === nextIndex) {
+  if (currentActiveIndex === nextIndex) {
     return;
+  }
+
+  if (currentActive) {
+    currentActive.classList.remove('active');
   }
 
   const nextContainer = document.querySelector(`.subnav-container-item[data-container-index="${nextIndex}"]`);
   if (nextContainer) {
-    setTimeout(() => {
-      nextContainer.classList.add('active');
-    }, 200);
+    const next = `[data-btn-index="${nextIndex}"]`;
+    const current = `[data-btn-index="${currentActiveIndex}"]`;
+    document.querySelector(current).classList.remove('active');
+    document.querySelector(next).classList.add('active');
+    nextContainer.classList.add('active');
   }
 }
 
@@ -62,43 +61,99 @@ function getBlockItems(els, placeholders) {
   }, {});
 }
 
-export default async function decorate(block) {
-  const template = getMetadata('template');
+async function loadSheetData(template) {
+  let sheet;
+  if (template === 'community') {
+    sheet = await fetch('/data/hubblehomes.json?sheet=communities');
+  } else if (template === 'inventory') {
+    sheet = await fetch('/data/hubblehomes.json?sheet=inventory');
+  }
 
-  // this container will be used to display the data when buttons are clicked
-  const container = div({ class: 'subnav-container' });
+  if (!sheet) {
+    return undefined;
+  }
 
+  const jsonSheetData = await sheet.json();
+  return jsonSheetData.data;
+}
+
+function buildNavButtons(block) {
   const buttonLabels = block.querySelectorAll('div > div:first-of-type > p');
 
   // for each column we need to create a button, the content will be placed
   // into a div container that will be used to display the data when buttons are clicked
   const buttons = [];
-
   let index = 0;
   buttonLabels.forEach((el) => {
-    buttons.push(a({ class: 'btn light-gray square', 'data-btn-index': index, onclick: (e) => makeActive(e) }, el.textContent));
+    const styles = ['btn', 'light-gray', 'square'];
+    if (index === 0) { styles.push('active'); }
+    buttons.push(a({ class: [...styles], 'data-btn-index': index, onclick: (e) => makeActive(e) }, el.textContent));
     index += 1;
   });
+
+  return buttons;
+}
+
+/**
+ * When using subnav, the block will look for a div with the class of subnav-detail-container to
+ * add the content into.  If no div is found, a default div will be created and appended to the
+ * block.
+ *
+ * @param block
+ * @returns {Promise<void>}
+ */
+export default async function decorate(block) {
+  const template = getMetadata('template');
+
+  const buttons = buildNavButtons(block);
 
   // the placeholders contain the labels for the columns
   const placeholders = await fetchPlaceholders();
 
   // build out the list of items that have been identified as code blocks.
   // these items need to fetch the data from the spreadsheet
-  const els = [...block.querySelectorAll('.subnav > div:has(code)')];
-  const codeBlockItems = getBlockItems(els, placeholders);
+  const codeBlockEls = [...block.querySelectorAll('.subnav > div:has(code)')];
+  const nonCodeBlocksEls = [...block.querySelectorAll('.subnav > div:not(:has(code))')];
 
-  index = 0;
-  // eslint-disable-next-line max-len
-  const blocks = await Promise.all(Object.values(codeBlockItems).map((items) => buildListBlock(template, items)));
+  block.innerHTML = '';
+
+  const codeBlockItems = getBlockItems(codeBlockEls, placeholders);
+
+  // this container will be used to display the data when buttons are clicked
+  const itemContainer = div({ class: 'subnav-item-container' });
+
+  const sheetData = await loadSheetData(template);
+
+  // for each column that has a code block, that row will be rendered as a dl - dt, dd.
+  const blocks = await Promise.all(Object.values(codeBlockItems).map(
+    (items) => buildCodeBlockListItems(sheetData, items),
+  ));
+
+  let index = 0;
+  const styles = ['subnav-container-item'];
   blocks.forEach((b) => {
-    container.append(div({ class: 'subnav-container-item', 'data-container-index': index }, b));
+    // the index will map to the button that was clicked, which allows us to control the display
+    if (index === 0) { styles.push('active'); }
+    itemContainer.append(div({ class: styles, 'data-container-index': index }, b));
+    index += 1;
+  });
+
+  nonCodeBlocksEls.forEach((el) => {
+    el.querySelector(':scope > div').remove();
+    itemContainer.append(div({ class: 'subnav-container-item', 'data-container-index': index }, el));
     index += 1;
   });
 
   block.innerHTML = '';
 
   block.append(div({ class: 'fluid-flex' }, ...buttons));
-  container.querySelector('.subnav-container-item').classList.add('active');
-  block.append(container);
+  // container.querySelector('.subnav-container-item').classList.add('active');
+  // block.append(container);
+
+  const container = document.querySelector('.subnav-detail-container');
+  if (!container) {
+    block.append(div({ class: 'subnav-detail-container' }, itemContainer));
+  } else {
+    document.querySelector('.subnav-detail-container').appendChild(itemContainer);
+  }
 }
