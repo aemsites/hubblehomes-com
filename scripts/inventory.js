@@ -213,9 +213,7 @@ async function createCommunityInventoryMap() {
     communityMap.get(community).push(inventoryHome);
   });
 
-  // Cache the community map
-  hh.communityInventory = communityMap;
-  return hh.communityInventory;
+  return communityMap;
 }
 
 /**
