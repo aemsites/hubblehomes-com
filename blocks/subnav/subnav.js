@@ -11,13 +11,19 @@ function makeActive(event) {
     return;
   }
 
+  // remove the active class from the current active button and container
+  document.querySelector(`[data-btn-index="${currentActiveIndex}"]`).classList.remove('active');
+
   if (currentActive) {
     currentActive.classList.remove('active');
   }
 
+  // update the active class for the button that was clicked
+  event.target.classList.add('active');
+
+  // update the next container to be active
   const nextContainer = document.querySelector(`.subnav-container-item[data-container-index="${nextIndex}"]`);
   if (nextContainer) {
-    currentActive.classList.remove('active');
     nextContainer.classList.add('active');
   }
 }
