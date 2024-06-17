@@ -1,5 +1,5 @@
 import {
-  a, div, form, img, input,
+  a, div, img,
 } from '../../../scripts/dom-helpers.js';
 
 const Action = {
@@ -16,18 +16,9 @@ const Action = {
   compare: {
     src: '/icons/compare.svg',
     style: 'compare',
-    onclick: () => { document.getElementById('CompareForm').submit(); },
+    link: '#',
   },
 };
-
-function buildCompareForm() {
-  // stubbing form for now, not sure what this will end up being
-  return form(
-    { action: '/new-homes/compare-item-add', id: 'CompareForm', method: 'post' },
-    input({ type: 'hidden', name: 'returnTo', value: window.location.pathname }),
-    input({ type: 'hidden', value: 'add', name: 'CompareItem' }),
-  );
-}
 
 export default function decorate(block) {
   const items = [];
@@ -46,5 +37,5 @@ export default function decorate(block) {
     });
   }
   block.innerHTML = '';
-  block.append(buildCompareForm(), ...items);
+  block.append(...items);
 }

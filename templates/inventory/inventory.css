@@ -1,0 +1,130 @@
+@import url("/styles/layouts.css");
+@import url("/styles/buttons.css");
+
+.inventory .full-description .listing-header {
+  display: flex;
+  justify-content: space-between;
+
+  >* {
+    flex: 0 0 50%;
+  }
+
+  a {
+    color: var(--blue);
+  }
+}
+
+@media (max-width: 767px) {
+  .inventory .full-description .listing-header {
+    flex-direction: column;
+  }
+
+  .pricing-information{
+    margin-top: 10px;
+  }
+}
+
+.inventory .address-container h4 {
+  display: flex;
+  align-items: center; 
+}
+
+.inventory .address-container {
+  display: flex;
+  align-items: center;
+}
+
+.inventory .pricing-information {
+  display: flex;
+
+  *> {
+    flex: 0 0 50%;
+  }
+}
+
+@media (max-width: 991px) {
+  .inventory .pricing-information {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 992px) {
+  .inventory .pricing-information .cell.border-right {
+    border-right: 1px solid #cccccc;
+  }
+}
+
+.inventory .pricing-information .cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  >* {
+    margin: 0 5px 5px 5px;
+    display: flex;
+  }
+}
+
+.inventory .price-row {
+  display: flex;
+  align-items: center;
+}
+
+
+/* Cell heading */
+@media (min-width: 1200px) {
+  .inventory .pricing-information .cell> :first-child {
+    height: 30px;
+  }
+}
+
+/* Cell middle text*/
+.inventory .pricing-information .cell> :nth-child(2) {
+  height: 35px;
+  line-height: 1em;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Cell Button */
+.inventory .pricing-information .cell> :nth-child(3) {
+  height: 39px;
+  width: 100%;
+  padding: 0 5px 5px 5px;
+  align-content: center;
+}
+
+/* Styling of cell components */
+@media (min-width: 1200px) {
+  .inventory .pricing-information .cell {
+    padding: 0 10px;
+  }
+}
+
+.inventory .pricing-information .cell h3 {
+  display: inline-flex;
+  align-items: baseline;
+  line-height: 1;
+}
+
+.inventory .pricing-information .cell .per-month {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.inventory .icon {
+  height: 1em;
+  width: 1em;
+  fill: currentColor;
+  margin-left: 3px;
+}
+
+.inventory button.fancy {
+  width: calc(100%);
+}
+
+.inventory .button-container {
+  display: flex;
+  gap: 15px;
+  padding: 30px 0;
+}

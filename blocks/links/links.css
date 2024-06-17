@@ -1,1 +1,5 @@
-/* eslint-disable */
+.links a {
+  color: var(--blue);
+  text-decoration: underline;
+  display: block;
+}

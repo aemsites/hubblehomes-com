@@ -1,19 +1,25 @@
-export async function fetchRates() {
-  // check to see if we have the rates in session storage
+/**
+ * Fetches mortgage rates from the server and stores them in session storage.
+ *
+ * @throws {Error} If the fetch request fails.
+ */
+async function fetchRates() {
+  // Check if the rates are already in session storage
   if (
-    sessionStorage.getItem('hh.rates.rate') != null
-    && sessionStorage.getItem('hh.rates.percent') != null
-    && sessionStorage.getItem('hh.rates.term') != null) {
+    sessionStorage.getItem('hh.rates.rate') !== null
+    && sessionStorage.getItem('hh.rates.percent') !== null
+    && sessionStorage.getItem('hh.rates.term') !== null
+  ) {
     return;
   }
 
-  const rates = await fetch('/data/hubblehomes.json?sheet=rates');
+  // Fetch rates from the server
+  const response = await fetch('/data/hubblehomes.json?sheet=rates');
 
-  if (rates.ok) {
-    const jsonObject = await rates.json();
-    const { rate } = jsonObject.data[0];
-    const { percent } = jsonObject.data[0];
-    const { term } = jsonObject.data[0];
+  if (response.ok) {
+    const jsonObject = await response.json();
+    const { rate, percent, term } = jsonObject.data[0];
+    // Store the fetched rates in session storage
     sessionStorage.setItem('hh.rates.rate', rate);
     sessionStorage.setItem('hh.rates.percent', percent);
     sessionStorage.setItem('hh.rates.term', term);
@@ -22,8 +28,13 @@ export async function fetchRates() {
   }
 }
 
-// eslint-disable-next-line max-len
-export default function calculateMonthlyPayment(housePrice) {
+/**
+ * Calculates the monthly payment for a house given its price.
+ *
+ * @param {number} housePrice - The price of the house.
+ * @returns {number} The monthly payment amount.
+ */
+function calculateMonthlyPayment(housePrice) {
   const rate = parseFloat(sessionStorage.getItem('hh.rates.rate'));
   const percent = parseFloat(sessionStorage.getItem('hh.rates.percent'));
   const term = parseInt(sessionStorage.getItem('hh.rates.term'), 10);
@@ -31,9 +42,16 @@ export default function calculateMonthlyPayment(housePrice) {
   const loanAmount = housePrice * (1 - percent);
   const monthlyInterestRate = rate / 100 / 12;
   const loanTermMonths = term * 12;
+
+  // Calculate the monthly payment using the loan amortization formula
   const monthlyPayment = loanAmount
     * ((monthlyInterestRate * (1 + monthlyInterestRate) ** loanTermMonths)
     / ((1 + monthlyInterestRate) ** loanTermMonths - 1));
 
   return Math.round(monthlyPayment.toFixed(2));
 }
+
+export {
+  calculateMonthlyPayment,
+  fetchRates,
+};
