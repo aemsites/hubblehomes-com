@@ -306,8 +306,9 @@ main .section.highlight {
   font-size: 12px;
   text-align: center;
   font-weight: 400;
-  color: var(--link-color);
-  margin-top: 50px;
-  margin-bottom: 50px;
+  padding-top: 30px;
+  a {
+    color: var(--link-color);
+  }
 }
 
