@@ -19,7 +19,7 @@
 
 .banner .spotlight-text-container h2 {
   font-size: 42px;
-  font-weight: 900;
+  font-weight: 900 !important;
   line-height: 1em;
   padding-bottom: 20px;
   font-family: var(--heading-font-family);
@@ -27,16 +27,15 @@
 
 .banner .spotlight-text-container h3 {
   font-size: 36px;
-  font-weight: 900;
+  font-weight: 900 !important;
   line-height: 1em;
   padding-bottom: 20px;
   font-family: var(--heading-font-family);
 }
 
 .banner .spotlight-button {
-  background-color: var(--btn-bg-color-3);
-  color: var(--background-color);
   margin-bottom: 20px;
+  padding: 8px 12px;
 }
 
 .banner .spotlight-form {
@@ -60,12 +59,12 @@
 }
 
 .banner .spotlight-form-button {
-  background-color: var(--yellow);
-  color: var(--dark-blue);
   font-size: var(--body-font-size-xs);
   box-sizing: border-box;
-  border-radius: 0 4px 4px 0;
-  max-height: 30px;
+  border-radius: 0 3px 3px 0;
+  padding: 5px 10px;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .banner .spotlight-circle-container {
@@ -155,7 +154,7 @@
 
 }
 
-@media (width >= 1000px) {
+@media (width >=1000px) {
   .banner .spotlight-circle {
     width: 440px;
   }
@@ -169,7 +168,7 @@
   }
 }
 
-@media (width >= 1200px) {
+@media (width >=1200px) {
   .banner .spotlight-circle {
     width: 540px;
   }

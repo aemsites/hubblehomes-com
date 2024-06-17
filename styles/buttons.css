@@ -123,4 +123,17 @@
       border-color: var(--btn-yellow-hover)
     }
   }
+
+  &.banner-blue {
+    background: var(--blue-3);
+    border-color: var(--blue-3);
+    font-size: var(--body-font-size-s);
+    font-weight: 400;
+
+    &:hover {
+      background: var(--dark-slate-blue);
+      border-color: var(--dark-slate-blue);
+      color: var(--background-color);
+    }
+  }
 }
