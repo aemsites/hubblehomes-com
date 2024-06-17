@@ -138,7 +138,7 @@
   background: rgba(0 50 100 / 100%);
 }
 
-@media (width < 1000px) {
+@media (max-width: 999px) {
   .banner .spotlight-circle-container .spotlight-circle {
     display: none;
   }
@@ -153,7 +153,7 @@
 
 }
 
-@media (width >=1000px) {
+@media (min-width: 1000px) {
   .banner .spotlight-circle {
     width: 440px;
   }
@@ -167,7 +167,7 @@
   }
 }
 
-@media (width >=1200px) {
+@media (min-width: 1200px) {
   .banner .spotlight-circle {
     width: 540px;
   }
