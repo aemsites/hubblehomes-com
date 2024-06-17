@@ -177,8 +177,7 @@
         >div:nth-child(2) {
           padding: 0 15px;
 
-          .details {
-            margin: 0 15px;
+          .subnav-detail-container {
             padding: 20px;
             min-height: 250px;
             box-shadow: 6px 6px 5px 0 rgb(0 0 0 / 10%);
@@ -186,20 +185,7 @@
             font-size: var(--body-font-size-m);
             font-family: var(--body-font-family);
             color: var(--link-color);
-
-            dd {
-              color: var(--btn-bg-color-3);
-              margin-left: 0;
-            }
-
-            dt {
-              font-weight: 700;
-            }
-
-            dt,
-            dd {
-              line-height: 1.4em;
-            }
+            margin: 0 15px 30px;
           }
         }
       }

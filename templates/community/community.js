@@ -25,6 +25,7 @@ import { fetchCommunityDetailsForUrl } from '../../scripts/communities.js';
 import { createActionBar } from '../../scripts/block-helper.js';
 import { getModelsByCommunity } from '../../scripts/models.js';
 import { fetchRates } from '../../scripts/mortgage.js';
+import DeferredPromise from '../../scripts/deferred.js';
 
 /**
  * Builds the inventory homes block.
@@ -70,17 +71,6 @@ async function fetchRequiredPageData() {
     salesCenter: salesCenterData.sales_center,
     community,
   };
-}
-
-function DeferredPromise() {
-  const deferred = {};
-
-  deferred.promise = new Promise((resolve, reject) => {
-    deferred.resolve = resolve;
-    deferred.reject = reject;
-  });
-
-  return deferred;
 }
 
 async function createSpecialists(specialists) {
@@ -224,27 +214,11 @@ function buildFilterForm(filterByValue) {
   );
 }
 
-function createRightContent() {
-  return `<dl>
-    <dt>From</dt>
-    <dd>$381,990</dd>
-    <dt>Square Feet</dt>
-    <dd>1,700 </dd>
-    <dt>Beds</dt><dd>3 - 4</dd>
-    <dt>Baths</dt><dd>2.5</dd>
-    <dt>Cars</dt><dd>2</dd><dt>Primary Bed</dt>
-    <dd>Up</dd><dt>Home Style</dt>
-    <dd>2 Story</dd>
-    <dt>This is not live data</dt>
-    <dd>yet...</dd>
-  </dl>`;
-}
-
 export default async function decorate(doc) {
   const url = new URL(window.location);
   const params = url.searchParams;
   const filter = params.get('filter');
-  const areaName = getMetadata('area', doc);
+  const areaName = getMetadata('city', doc);
 
   const {
     salesCenter,
@@ -254,11 +228,8 @@ export default async function decorate(doc) {
   const mainEl = doc.querySelector('main');
   const breadCrumbsEl = buildBreadCrumbs();
   const subNav = doc.querySelector('.subnav-wrapper');
-  const description = doc.querySelector('.default-content-wrapper');
+  const description = doc.querySelector('.description-wrapper');
   const disclaimer = doc.querySelector('.fragment-wrapper');
-
-  const rightCol = div({ class: 'details' });
-  rightCol.innerHTML = createRightContent();
 
   const promotionsEl = document.querySelector('.promotion-wrapper');
   const modelNameAddr = div(h1(community.name), a({
@@ -275,10 +246,12 @@ export default async function decorate(doc) {
     href: `/schedule-a-tour?communityid=${community.name}`,
   }, 'Request a Tour'));
 
+  const details = div({ class: 'subnav-detail-container' });
+
   const twoCols = div(
     { class: 'repeating-grid' },
     div({ class: 'left' }, modelNameAddr, description, requestButtons),
-    div({ class: 'right' }, rightCol, promotionsEl),
+    div({ class: 'right' }, details, promotionsEl),
   );
 
   const titleEl = div({ class: 'grey-divider' }, getHeaderTitleForFilter(filter));
@@ -308,6 +281,7 @@ export default async function decorate(doc) {
     div(
       { class: 'content' },
       twoCols,
+
     ),
     aside(
       div('right').innerHTML = rightAside,
@@ -323,6 +297,7 @@ export default async function decorate(doc) {
     featuredPlansTitle,
     featuredPlansEl,
   );
+
   mainEl.append(banner);
   mainEl.append(specialistsSection);
   mainEl.append(div({ class: 'section disclaimer' }, disclaimer));
