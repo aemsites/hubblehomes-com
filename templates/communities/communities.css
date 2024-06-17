@@ -1,4 +1,4 @@
-.community {
+.communities {
   .content-wrapper {
     h1 {
       font-size: 30px;
@@ -97,7 +97,11 @@
     font-weight: 600;
     font-size: 13px;
     color: var(--link-color);
-    margin: 20px 0;
+    margin: 40px 0;
+  }
+
+  .fragment-wrapper {
+    margin: 60px 0;
   }
 
 }

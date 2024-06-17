@@ -60,7 +60,7 @@ function getBlockItems(els, placeholders) {
 
 async function loadSheetData(template) {
   let sheet;
-  if (template === 'community') {
+  if (template === 'communities') {
     sheet = await fetch('/data/hubblehomes.json?sheet=communities');
   } else if (template === 'inventory') {
     sheet = await fetch('/data/hubblehomes.json?sheet=inventory');
@@ -74,9 +74,7 @@ async function loadSheetData(template) {
   return jsonSheetData.data;
 }
 
-function buildNavButtons(block) {
-  const buttonLabels = block.querySelectorAll('div > div:first-of-type > p');
-
+function buildNavButtons(buttonLabels) {
   // for each column we need to create a button, the content will be placed
   // into a div container that will be used to display the data when buttons are clicked
   const buttons = [];
@@ -100,20 +98,19 @@ function buildNavButtons(block) {
  * @returns {Promise<void>}
  */
 export default async function decorate(block) {
+  block.style.visibility = 'hidden';
+
   const template = getMetadata('template');
-
-  const buttons = buildNavButtons(block);
-
-  // the placeholders contain the labels for the columns
-  const placeholders = await fetchPlaceholders();
-
   // build out the list of items that have been identified as code blocks.
   // these items need to fetch the data from the spreadsheet
   const codeBlockEls = [...block.querySelectorAll('.subnav > div:has(code)')];
   const nonCodeBlocksEls = [...block.querySelectorAll('.subnav > div:not(:has(code))')];
+  const buttonLabels = block.querySelectorAll('div > div:first-of-type > p');
+  const placeholders = await fetchPlaceholders();
 
   block.innerHTML = '';
 
+  const buttons = buildNavButtons(buttonLabels);
   const codeBlockItems = getBlockItems(codeBlockEls, placeholders);
 
   // this container will be used to display the data when buttons are clicked
@@ -142,8 +139,6 @@ export default async function decorate(block) {
     index += 1;
   });
 
-  block.innerHTML = '';
-
   block.append(div({ class: 'fluid-flex' }, ...buttons));
 
   const container = document.querySelector('.subnav-detail-container');
@@ -152,4 +147,6 @@ export default async function decorate(block) {
   } else {
     document.querySelector('.subnav-detail-container').appendChild(itemContainer);
   }
+
+  block.style.visibility = 'visible';
 }
