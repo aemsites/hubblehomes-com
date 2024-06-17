@@ -170,10 +170,17 @@ const filters = [
  * @throws {Error} If the fetch request fails.
  */
 async function loadInventoryData() {
+  // Check if the data is already cached
+  if (hh.inventory) {
+    return hh.inventory;
+  }
+
   const response = await fetch('/data/hubblehomes.json?sheet=inventory');
   if (response.ok) {
     const inventory = await response.json();
-    return inventory.data;
+    // Cache the data
+    hh.inventory = inventory.data;
+    return hh.inventory;
   }
   throw new Error(`Failed to fetch inventory data: ${response.statusText}`);
 }
@@ -184,34 +191,31 @@ async function loadInventoryData() {
  * @throws {Error} If the fetch request fails or data processing fails.
  */
 async function createCommunityInventoryMap() {
-  const response = await fetch('/data/hubblehomes.json?sheet=inventory');
+  // Load inventory data using the loadInventoryData function
+  const inventoryData = await loadInventoryData();
+  
   const models = await getModels();
 
-  if (response.ok) {
-    const inventory = await response.json();
+  // Create a map of communities to homes
+  const communityMap = new Map();
 
-    // load the inventory and create a map of communities to homes
-    const communityMap = new Map();
+  inventoryData.forEach((inventoryHome) => {
+    // Inject the model image into the inventory home
+    const { image } = models.find((model) => model['model name'] === inventoryHome['model name']) || {};
+    if (image) {
+      inventoryHome.image = image;
+    }
 
-    inventory.data.forEach((inventoryHome) => {
-      // inject the model image into the inventory home
-      const { image } = models.find((model) => model['model name'] === inventoryHome['model name']);
-      if (image) {
-        inventoryHome.image = image;
-      }
+    const { community } = inventoryHome;
+    if (!communityMap.has(community)) {
+      communityMap.set(community, []);
+    }
+    communityMap.get(community).push(inventoryHome);
+  });
 
-      const { community } = inventoryHome;
-      if (!communityMap.has(community)) {
-        communityMap.set(community, []);
-      }
-      communityMap.get(community)
-        .push(inventoryHome);
-    });
-
-    hh.inventory = communityMap;
-    return hh.inventory;
-  }
-  throw new Error('Failed to load inventory data');
+  // Cache the community map
+  hh.communityInventory = communityMap;
+  return hh.communityInventory;
 }
 
 /**

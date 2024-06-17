@@ -55,12 +55,10 @@ async function getCommunitiesForModel(modelName) {
   const models = await getModels();
 
   // Filter models by the given modelName and extract community names.
-  const communityNames = models
+  return models
     .filter((model) => model['model name'].trim().toLowerCase() === modelName.trim().toLowerCase())
     .map((model) => model.community)
     .filter((community, index, self) => self.indexOf(community) === index); // Remove duplicates
-
-  return communityNames;
 }
 
 export {
