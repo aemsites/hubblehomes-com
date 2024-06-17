@@ -216,6 +216,10 @@
         }
       }
     }
+
+    .full-width {
+      max-width: 100% !important;
+    }
   }
 
   /* breadcrumbs should be moved to a breadcrumb template block */
