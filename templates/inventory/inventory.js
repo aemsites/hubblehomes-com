@@ -123,7 +123,7 @@ export default async function decorate(doc) {
       <dt>Home Style</dt>
       <dd>${homeDetails['home style'] || 'N/A'}</dd>
     </dl>`;
-  const homeDetailsBox = div({ class: 'details' });
+  const homeDetailsBox = div({ class: 'subnav-detail-container' });
   homeDetailsBox.innerHTML = homeDetailsBoxContent;
 
   const name = h2(modelName);
