@@ -1,4 +1,4 @@
-import { br, strong, div } from '../../scripts/dom-helpers.js';
+import { div } from '../../scripts/dom-helpers.js';
 
 export default function decorate(block) {
   const links = block.querySelectorAll('a');

@@ -193,7 +193,7 @@ async function loadInventoryData() {
 async function createCommunityInventoryMap() {
   // Load inventory data using the loadInventoryData function
   const inventoryData = await loadInventoryData();
-  
+
   const models = await getModels();
 
   // Create a map of communities to homes
