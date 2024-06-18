@@ -242,20 +242,6 @@ main > .section > * {
 /* TODO: temporary style for now - used in default template for breadcrumbs - consider removing padding from section */
 .section.nopad {padding: 0}
 
-.breadcrumbs {
-  font-size: .8em;
-  line-height: 3em;
-  color: #c8c8c8;
-  text-align: left;
-  user-select: none;
-
-  a {
-    color: #aaa;
-    text-decoration: none;
-    &:hover { color: #0055b9 }
-  }
-}
-
 @media (width >= 900px) {
   .section > div {
     max-width: 1200px;
@@ -307,8 +293,22 @@ main .section.highlight {
   text-align: center;
   font-weight: 400;
   padding-top: 30px;
+  
   a {
     color: var(--link-color);
   }
 }
 
+.breadcrumbs {
+  font-size: .8em;
+  line-height: 3em;
+  color: #c8c8c8;
+  text-align: left;
+  user-select: none;
+
+  a {
+    color: #aaa;
+    text-decoration: none;
+    &:hover { color: #0055b9 }
+  }
+}
