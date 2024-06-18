@@ -132,24 +132,28 @@ const createSubNavBlock = (document) => {
         tabContent = `<ul><li>${amenitiesTitle}<ul><li>${amenities}</li></ul></li></ul>`;
       } else if (tabId === 'hoa') {
         const hoaTitle = 'HOA Info';
-        const hoaInfo = Array.from(tab.querySelectorAll('.blueheader'))
-          .map((el) => el.innerHTML.split('<br>'))
-          .flat()
+        const hoaInfoElement = tab.querySelector('.blueheader');
+        const hoaInfo = hoaInfoElement.textContent
+          .split(/\n/)
           .map((info) => info.trim())
           .filter((info) => info)
           .map((info) => `<li>${info}</li>`)
           .join('');
-        const ampTitle = 'AMP (Alliance Management Partners)';
+
+        const ampTitle = `AMP (Alliance Management Partners)<br>`;
+
         const hoaContactInfo = Array.from(tab.querySelectorAll('a, small'))
           .map((el) => el.textContent.trim())
-          .join('\n');
-        tabContent = `<ul><li>${hoaTitle}<ul>${hoaInfo}</ul></li></ul>\n${ampTitle}\n${hoaContactInfo}`;
-      } else if (tabId === 'ebrochure') {
-        const eBrochureTitle = 'eBrochure';
-        const eBrochureLink = tab.querySelector('a.gtm-ebrochure')
-          ? tab.querySelector('a.gtm-ebrochure').outerHTML
-          : '';
-        tabContent = `<ul><li>${eBrochureTitle}<ul><li>${eBrochureLink}</li></ul></li></ul>`;
+          .join(`<br>`);
+        tabContent = `<ul><li>${hoaTitle}<ul>${hoaInfo}</ul></li></ul>${ampTitle}${hoaContactInfo}`;
+      } else if (tabId === 'ebrochure' || tabId === 'interactivefloorplan') {
+        const title =
+          tabId === 'ebrochure' ? 'eBrochure' : 'Interactive Floor Plan';
+        const linkClass =
+          tabId === 'ebrochure' ? 'gtm-ebrochure' : 'gtm-interactivefloorplan';
+        const linkElement = tab.querySelector(`a.${linkClass}`);
+        const linkHtml = linkElement ? linkElement.outerHTML : '';
+        tabContent = `<ul><li>${title}<ul><li>${linkHtml}</li></ul></li></ul>`;
       } else if (tabId !== 'videophotos') {
         tabContent = tab.innerHTML.trim();
       }
@@ -272,7 +276,6 @@ const createMetadata = (main, document, url, html) => {
   }
 
   meta.Path = new URL(url).pathname;
-  meta.Template = 'communities';
 
   // Create Metadata Block
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
@@ -337,6 +340,7 @@ export default {
       '.btn-fancy',
       '.col-sm-6 h4',
       '.col-sm-6 br',
+      '.container .bluedotsrow',
     ]);
 
     createCarouselBlock(document);

@@ -149,12 +149,14 @@ const createSubNavBlock = (document) => {
           .map((el) => el.textContent.trim())
           .join('\n');
         tabContent = `<ul><li>${hoaTitle}<ul>${hoaInfo}</ul></li></ul>\n${ampTitle}\n${hoaContactInfo}`;
-      } else if (tabId === 'ebrochure') {
-        const eBrochureTitle = 'eBrochure';
-        const eBrochureLink = tab.querySelector('a.gtm-ebrochure')
-          ? tab.querySelector('a.gtm-ebrochure').outerHTML
-          : '';
-        tabContent = `<ul><li>${eBrochureTitle}<ul><li>${eBrochureLink}</li></ul></li></ul>`;
+      } else if (tabId === 'ebrochure' || tabId === 'interactivefloorplan') {
+        const title =
+          tabId === 'ebrochure' ? 'eBrochure' : 'Interactive Floor Plan';
+        const linkClass =
+          tabId === 'ebrochure' ? 'gtm-ebrochure' : 'gtm-interactivefloorplan';
+        const linkElement = tab.querySelector(`a.${linkClass}`);
+        const linkHtml = linkElement ? linkElement.outerHTML : '';
+        tabContent = `<ul><li>${title}<ul><li>${linkHtml}</li></ul></li></ul>`;
       } else if (tabId !== 'videophotos') {
         tabContent = tab.innerHTML.trim();
       }
@@ -362,9 +364,6 @@ const createMetadata = (main, document, url, html) => {
   }
 
   meta.Path = new URL(url).pathname;
-
-  // Template
-  meta.Template = 'models';
 
   // nameElement
   const nameElement = document.querySelector('.col-sm-6 h2');

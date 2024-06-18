@@ -74,13 +74,26 @@ const createCarouselBlock = (document) => {
       }
     });
 
+    const imageGalleryElements =
+      document.querySelectorAll('#imagegallery2 img');
+    if (imageGalleryElements.length > 0) {
+      imageGalleryElements.forEach((img) => {
+        const imgElement = `<img src="${img.src}" alt="${img.alt}" style="display:block;">`;
+        cells.push([imgElement, '']);
+      });
+    }
+
     const table = WebImporter.DOMUtils.createTable(cells, document);
-    carousel.replaceWith(table); // Replace the original carousel section with the new table
+    carousel?.replaceWith(table); // Replace the original carousel section with the new table
+    imageGalleryElements[0].closest('.container.topbuffer')?.remove();
   }
 };
 
 const createDescriptionBlock = (document) => {
   const descriptionContainer = document.querySelector('.col-sm-6.col-xs-6');
+  const headerInfo = document.querySelector('.col-sm-6.col-xs-6 .row');
+  headerInfo.remove();
+
   const descriptionText = descriptionContainer?.innerHTML.trim();
 
   const cells = [['Description'], [descriptionText]];
@@ -154,12 +167,14 @@ const createSubNavBlock = (document) => {
           .map((el) => el.textContent.trim())
           .join('\n');
         tabContent = `<ul><li>${hoaTitle}<ul>${hoaInfo}</ul></li></ul>\n${ampTitle}\n${hoaContactInfo}`;
-      } else if (tabId === 'ebrochure') {
-        const eBrochureTitle = 'eBrochure';
-        const eBrochureLink = tab.querySelector('a.gtm-ebrochure')
-          ? tab.querySelector('a.gtm-ebrochure').outerHTML
-          : '';
-        tabContent = `<ul><li>${eBrochureTitle}<ul><li>${eBrochureLink}</li></ul></li></ul>`;
+      } else if (tabId === 'ebrochure' || tabId === 'interactivefloorplan') {
+        const title =
+          tabId === 'ebrochure' ? 'eBrochure' : 'Interactive Floor Plan';
+        const linkClass =
+          tabId === 'ebrochure' ? 'gtm-ebrochure' : 'gtm-interactivefloorplan';
+        const linkElement = tab.querySelector(`a.${linkClass}`);
+        const linkHtml = linkElement ? linkElement.outerHTML : '';
+        tabContent = `<ul><li>${title}<ul><li>${linkHtml}</li></ul></li></ul>`;
       } else if (tabId !== 'videophotos') {
         tabContent = tab.innerHTML.trim();
       }
@@ -208,19 +223,38 @@ const createGalleryBlock = (document) => {
   }
 };
 
-const createFloorplanBlock = (document) => {
-  const floorplanContainer = document.querySelector('.responsive-tabs');
-  if (floorplanContainer) {
-    const cells = [['Floorplan']];
+const createFloorplanLinksBlock = (document) => {
+  const linksContainer = document.querySelector(
+    '.container.topbuffer .row .col-sm-12.text-center',
+  );
+  if (linksContainer) {
+    const cells = [['Floorplan Links']];
+    const interactiveFloorPlanLink = linksContainer.querySelector(
+      'a.gtm-interactivefloorplan',
+    );
+    const floorPlanHandoutLink = linksContainer.querySelector(
+      'a.gtm-printablefloorplan',
+    );
 
-    // Find the correct PDF link
-    const pdfLink = document.querySelector('a.gtm-interactivefloorplan');
-    if (pdfLink) {
+    if (interactiveFloorPlanLink) {
       cells.push([
-        'pdfLink',
-        `<a href="${pdfLink.href}" target="_blank">Interactive Floor Plan</a>`,
+        'Interactive Floor Plan',
+        interactiveFloorPlanLink.outerHTML,
       ]);
     }
+    if (floorPlanHandoutLink) {
+      cells.push(['Floor Plan Handout', floorPlanHandoutLink.outerHTML]);
+    }
+
+    const table = WebImporter.DOMUtils.createTable(cells, document);
+    linksContainer.replaceWith(table);
+  }
+};
+
+const createFloorplanImagesBlock = (document) => {
+  const floorplanContainer = document.querySelector('.responsive-tabs');
+  if (floorplanContainer) {
+    const cells = [['Floorplan Images']];
 
     // Floorplan levels
     const levels = floorplanContainer.querySelectorAll('h4');
@@ -228,7 +262,8 @@ const createFloorplanBlock = (document) => {
       const img = level.nextElementSibling.querySelector('img');
       if (img) {
         cells.push([
-          `<h4>${level.textContent}</h4><img src="${img.src}" alt="${img.alt}">`,
+          `<h4>${level.textContent}</h4>`,
+          `<img src="${img.src}" alt="${img.alt}">`,
         ]);
       }
     });
@@ -244,7 +279,7 @@ const createEmbedBlock = (document) => {
   );
   const matterportSrc = matterportIframe?.src;
   if (matterportIframe) {
-    const cells = [['embed (Matterport)']];
+    const cells = [['Embed (Matterport)']];
     cells.push(['URL', matterportSrc]);
 
     const table = WebImporter.DOMUtils.createTable(cells, document);
@@ -252,6 +287,24 @@ const createEmbedBlock = (document) => {
     if (container) {
       container.replaceWith(table);
     }
+  }
+};
+
+const createLinksBlock = (document) => {
+  const linksContainer = document.querySelector('.detaillinks');
+  if (linksContainer) {
+    const links = Array.from(linksContainer.querySelectorAll('a'))
+      .map((link) => link.outerHTML)
+      .join('<br>');
+
+    const cells = [['Links'], [links]];
+
+    const table = WebImporter.DOMUtils.createTable(cells, document);
+
+    const detailAccordionThirdColumn = document.querySelector(
+      '.detailthirdcolumncontent',
+    );
+    detailAccordionThirdColumn.replaceWith(table);
   }
 };
 
@@ -283,38 +336,6 @@ const createMetadata = (main, document, url, html) => {
   if (nameElement) {
     meta.Name = nameElement.textContent.trim();
     nameElement.remove();
-  }
-
-  // Price, Previous Price, and Estimated Monthly Payment
-  const priceElement = document.querySelector('.rightdivider h3');
-  if (priceElement) {
-    meta.Price = priceElement.textContent.trim();
-  }
-
-  const previousPriceElement = document.querySelector(
-    '.rightdivider del strong',
-  );
-  if (previousPriceElement) {
-    meta.PreviousPrice = previousPriceElement.textContent.trim();
-  }
-
-  const estimatedMonthlyPaymentElement = document.querySelector(
-    '.col-md-6.padding-0 h3',
-  );
-  if (
-    estimatedMonthlyPaymentElement &&
-    !estimatedMonthlyPaymentElement.textContent.includes('$')
-  ) {
-    meta.EstimatedMonthlyPayment =
-      estimatedMonthlyPaymentElement.textContent.trim();
-  } else {
-    const estimatedMonthlyPaymentText = document.querySelector(
-      '.col-md-6.padding-0 h3 span',
-    );
-    if (estimatedMonthlyPaymentText) {
-      meta.EstimatedMonthlyPayment =
-        estimatedMonthlyPaymentText.parentNode.textContent.trim();
-    }
   }
 
   // Parsing dataLayer script from html
@@ -390,8 +411,8 @@ const removeUnwantedSections = (document) => {
     }
   });
 
-  const detailAccordion = document.querySelector('.detailaccordioncontent');
-  detailAccordion?.remove();
+  // const detailAccordion = document.querySelector('.detailaccordioncontent');
+  // detailAccordion?.remove();
 
   const detailAccordionThirdColumn = document.querySelector(
     '.detailthirdcolumncontent',
@@ -459,9 +480,11 @@ export default {
     createDescriptionBlock(document);
     createSubNavBlock(document);
     createRenderingImagesBlock(document);
-    createFloorplanBlock(document);
+    createFloorplanLinksBlock(document);
+    createFloorplanImagesBlock(document);
     createGalleryBlock(document);
     createEmbedBlock(document);
+    createLinksBlock(document);
     createMetadata(main, document, url, html);
     removeUnwantedSections(document);
 
