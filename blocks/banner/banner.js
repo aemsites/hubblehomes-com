@@ -22,13 +22,13 @@ function createBannerText(block) {
 
   // create the button
   const spotlightButton = button({
-    class: 'spotlight-button',
+    class: 'spotlight-button banner-blue',
     onclick: () => { window.location.href = hrefValue; },
   }, 'LEARN MORE');
 
   // create the form element
   const spotlightInput = input({ class: 'spotlight-input', placeholder: 'Enter Email' });
-  const spotlightFormButton = button({ class: 'spotlight-form-button' }, 'SUBMIT');
+  const spotlightFormButton = button({ class: 'yellow spotlight-form-button' }, 'SUBMIT');
   const spotlightForm = form({ class: 'spotlight-form' }, spotlightInput, spotlightFormButton);
 
   const textDiv = div({
