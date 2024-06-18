@@ -1,19 +1,19 @@
 import BaseCard from './BaseCard.js';
 import { a, div, span } from '../../../scripts/dom-helpers.js';
 import { formatPrice } from '../../../scripts/currency-formatter.js';
-import calculateMonthlyPayment from '../../../scripts/mortgage.js';
+import { calculateMonthlyPayment } from '../../../scripts/mortgage.js';
 
 class HomePlansCard extends BaseCard {
   renderTaglineItems(taglineContainer) {
     const from = span('From *');
 
-    const price = span(formatPrice(this.model.price));
+    const price = span(formatPrice(this.cardData.price));
     const priceContainer = div(from, price);
 
-    const monthly = span(`*${formatPrice(calculateMonthlyPayment(this.model.price))}`);
-    const perMonth = span({ class: 'model-card-tagline-monthly' }, '/mo');
+    const monthly = span(`*${formatPrice(calculateMonthlyPayment(this.cardData.price))}`);
+    const perMonth = span({ class: 'card-tagline-monthly' }, '/mo');
     const monthlyRate = div(
-      { class: 'model-card-tagline-monthly-container' },
+      { class: 'card-tagline-monthly-container' },
       from.cloneNode(true),
       monthly,
       perMonth,

@@ -102,3 +102,6 @@ export function picture(...items) { return domEl('picture', ...items); }
 export function br() { return domEl('br'); }
 export function select(...items) { return domEl('select', ...items); }
 export function option(...items) { return domEl('option', ...items); }
+export function dl(...items) { return domEl('dl', ...items); }
+export function dt(...items) { return domEl('dt', ...items); }
+export function dd(...items) { return domEl('dd', ...items); }
