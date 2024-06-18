@@ -100,7 +100,7 @@ const createSubNavBlock = (document) => {
         const overviewCategories = Array.from(tab.querySelectorAll('dt'))
           .map((el) => el.textContent.trim().toLowerCase())
           .join(', ');
-        tabContent = `<p>${overviewCategories}</p>`;
+        tabContent = `<code>${overviewCategories}</code>`;
       } else if (tabId === 'interactivesitemap') {
         const interactiveSitePlan = tab.querySelector(
           'a.gtm-interactivesiteplan',

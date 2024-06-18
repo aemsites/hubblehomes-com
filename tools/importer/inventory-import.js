@@ -123,7 +123,7 @@ const createSubNavBlock = (document) => {
         const overviewCategories = Array.from(tab.querySelectorAll('dt'))
           .map((el) => el.textContent.trim().toLowerCase())
           .join(', ');
-        tabContent = `<p>${overviewCategories}</p>`;
+        tabContent = `<code>${overviewCategories}</code>`;
       } else if (tabId === 'interactivesitemap') {
         const interactiveSitePlan = tab.querySelector(
           'a.gtm-interactivesiteplan',
@@ -189,12 +189,12 @@ const createSubNavBlock = (document) => {
   }
 };
 
-const createRenderingImagesBlock = (document) => {
+const createElevationGalleryBlock = (document) => {
   const renderingImagesSection = document.querySelectorAll(
     '.col-sm-3 a.fancybox',
   );
   if (renderingImagesSection?.length > 0) {
-    const cells = [['RenderingImages']];
+    const cells = [['Elevation Gallery']];
 
     renderingImagesSection.forEach((section) => {
       const sectionHtml = section.innerHTML;
@@ -205,21 +205,6 @@ const createRenderingImagesBlock = (document) => {
     renderingImagesSection[0]
       ?.closest('.container.topbuffer')
       .replaceWith(table); // Replace the original section with the new table
-  }
-};
-
-const createGalleryBlock = (document) => {
-  const imageGalleryElements = document.querySelectorAll('#imagegallery2 img');
-  if (imageGalleryElements.length > 0) {
-    const cells = [['Gallery']];
-
-    imageGalleryElements.forEach((img) => {
-      const imgElement = `<img src="${img.src}" alt="${img.alt}" style="display:block;">`;
-      cells.push([imgElement]);
-    });
-
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    imageGalleryElements[0].closest('.container.topbuffer').replaceWith(table);
   }
 };
 
@@ -479,10 +464,9 @@ export default {
     createCarouselBlock(document);
     createDescriptionBlock(document);
     createSubNavBlock(document);
-    createRenderingImagesBlock(document);
+    createElevationGalleryBlock(document);
     createFloorplanLinksBlock(document);
     createFloorplanImagesBlock(document);
-    createGalleryBlock(document);
     createEmbedBlock(document);
     createLinksBlock(document);
     createMetadata(main, document, url, html);
