@@ -164,35 +164,56 @@ const filters = [
   },
 ];
 
-async function loadInventory() {
-  const response = await fetch('/data/hubblehomes.json?sheet=inventory');
-  const models = await getModels();
-
-  if (response.ok) {
-    const inventory = await response.json();
-
-    // load the inventory and create a map of communities to homes
-    const communityMap = new Map();
-
-    inventory.data.forEach((inventoryHome) => {
-      // inject the model image into the inventory home
-      const { image } = models.find((model) => model['model name'] === inventoryHome['model name']);
-      if (image) {
-        inventoryHome.image = image;
-      }
-
-      const { community } = inventoryHome;
-      if (!communityMap.has(community)) {
-        communityMap.set(community, []);
-      }
-      communityMap.get(community)
-        .push(inventoryHome);
-    });
-
-    hh.inventory = communityMap;
+/**
+ * Loads inventory data from the server.
+ * @returns {Promise<Array>} The inventory data.
+ * @throws {Error} If the fetch request fails.
+ */
+async function loadInventoryData() {
+  // Check if the data is already cached
+  if (hh.inventory) {
     return hh.inventory;
   }
-  throw new Error('Failed to load inventory data');
+
+  const response = await fetch('/data/hubblehomes.json?sheet=inventory');
+  if (response.ok) {
+    const inventory = await response.json();
+    // Cache the data
+    hh.inventory = inventory.data;
+    return hh.inventory;
+  }
+  throw new Error(`Failed to fetch inventory data: ${response.statusText}`);
+}
+
+/**
+ * Maps community to inventory homes
+ * @returns {Promise<Map>} A map of communities to their respective homes.
+ * @throws {Error} If the fetch request fails or data processing fails.
+ */
+async function createCommunityInventoryMap() {
+  // Load inventory data using the loadInventoryData function
+  const inventoryData = await loadInventoryData();
+
+  const models = await getModels();
+
+  // Create a map of communities to homes
+  const communityMap = new Map();
+
+  inventoryData.forEach((inventoryHome) => {
+    // Inject the model image into the inventory home
+    const { image } = models.find((model) => model['model name'] === inventoryHome['model name']) || {};
+    if (image) {
+      inventoryHome.image = image;
+    }
+
+    const { community } = inventoryHome;
+    if (!communityMap.has(community)) {
+      communityMap.set(community, []);
+    }
+    communityMap.get(community).push(inventoryHome);
+  });
+
+  return communityMap;
 }
 
 /**
@@ -208,8 +229,14 @@ function getHeaderTitleForFilter(filterStr) {
   return filter.headerTitle || filters[0].headerTitle;
 }
 
+/**
+ * Retrieves the inventory homes for a specific community and filter.
+ * @param {string} community - The name of the community.
+ * @param {string} filterStr - The filter string.
+ * @returns {Promise<Array>} The filtered inventory homes for the community.
+ */
 async function getInventoryHomes(community, filterStr) {
-  const inventory = await loadInventory();
+  const inventory = await createCommunityInventoryMap();
   if (filterStr) {
     const filter = filters.find((f) => f.value === filterStr);
     return filter.rule(inventory.get(community));
@@ -218,8 +245,24 @@ async function getInventoryHomes(community, filterStr) {
   return inventory.get(community);
 }
 
+/**
+ * Retrieves an inventory home by its path.
+ * @param {string} path - The path of the home.
+ * @returns {Promise<Object>} The inventory home.
+ * @throws {Error} If the fetch request fails.
+ */
+async function getInventoryHomeByPath(path) {
+  try {
+    const inventory = await loadInventoryData();
+    return inventory.find((home) => home.path === path);
+  } catch (error) {
+    return {};
+  }
+}
+
 export {
   getInventoryHomes,
+  getInventoryHomeByPath,
   getHeaderTitleForFilter,
   filters,
 };
