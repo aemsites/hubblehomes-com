@@ -4,15 +4,14 @@ import {
 import {
   a,
   aside,
-  br,
-  div,
+  br, dd,
+  div, dl, dt,
   form,
   h1,
   h2,
-  h3,
   h4,
-  option,
-  select,
+  option, p,
+  select, span, strong,
 } from '../../scripts/dom-helpers.js';
 import {
   filters,
@@ -26,6 +25,8 @@ import { createActionBar } from '../../scripts/block-helper.js';
 import { getModelsByCommunity } from '../../scripts/models.js';
 import { fetchRates } from '../../scripts/mortgage.js';
 import DeferredPromise from '../../scripts/deferred.js';
+import formatPhoneNumber from '../../scripts/phone-formatter.js';
+import loadSVG from '../../scripts/svg-helper.js';
 
 /**
  * Builds the inventory homes block.
@@ -99,7 +100,7 @@ async function createSpecialists(specialists) {
 
 function buildBreadCrumbs() {
   return div(
-    { class: 'breadcrumbs' },
+    { class: 'breadcrumbs section' },
     a({
       href: '/',
       'arial-label': 'View Home Page',
@@ -114,34 +115,71 @@ function buildBreadCrumbs() {
   );
 }
 
-function createRightAside(doc) {
-  // phone number and links
-  const alsoAvailableAt = [
-    'Adams Ridge',
-    'Brittany Heights at Windsor Creek',
-    'Franklin Village North',
-    'Greendale Grove',
-    'Mason Creek',
-    'Sera Sol',
-    'Southern Ridge',
-    'Sunnyvale',
-    'Waterford',
-  ];
-
+async function createRightAside(doc, salesCenter) {
   // The third column of the description box
-  const heading = h2('(123) 123-1234');
-  const subheading = h3('Also Available At:');
+  const {
+    hours,
+    phone,
+    specialists,
+    latitude,
+    longitude,
+  } = salesCenter;
+  const heading = h2(formatPhoneNumber(phone));
 
-  const locationList = div();
-  alsoAvailableAt.forEach((location) => {
-    const divElement = document.createElement('div');
-    divElement.textContent = location;
-    divElement.appendChild(br());
-    locationList.appendChild(divElement);
+  const hoursEl = div({ class: 'hours' }, ...hours.split('\n')
+    .map((hour) => span(hour, br())));
+
+  const saleOfficeHours = div({ class: 'sales-office-hours' }, strong('Regular Hours'), hoursEl);
+
+  const salesModel = div({ class: 'sales-center-data' }, span({ class: 'label' }, 'Sales Center: '), span(salesCenter['sales-center-model']));
+  const salesModels = div({ class: 'sales-center-data' }, span({ class: 'label' }, 'Model: '), span(salesCenter.models));
+  const salesModelInfo = div(salesModel, salesModels);
+
+  let noteEl;
+  if (salesCenter.note) {
+    noteEl = p({ class: 'note' }, salesCenter.note);
+  }
+
+  const directionsIcon = await loadSVG('/icons/directions.svg');
+  const emailIcon = await loadSVG('/icons/email.svg');
+  const phoneIcon = await loadSVG('/icons/phone.svg');
+
+  const sEl = specialists.map((specialist) => {
+    const emailEl = emailIcon.cloneNode(true);
+    const phoneEl = phoneIcon.cloneNode(true);
+    return dd(
+      span({ class: 'specialist' }, specialist.name),
+      a({ class: 'email', href: `mailto:${specialist.email}` }, specialist.email, emailEl),
+      a({ class: 'phone', href: `tel:${specialist.phone}` }, formatPhoneNumber(specialist.phone), phoneEl),
+    );
   });
 
-  const linksEl = doc.querySelector('.links-wrapper');
-  return div({ class: 'item' }, heading, br(), subheading, locationList, br(), linksEl);
+  const salesSpecialists = div(dl({ class: 'sales-center-data' }, dt({ class: 'label' }, 'New Home Specialists: '), ...sEl));
+
+  const addressEl = div(
+    { class: 'sales-center-address' },
+    p(
+      { class: 'label' },
+      'Sales Center Location: ',
+      a({
+        href: `https://www.google.com/maps/dir/Current+Location/${latitude},${longitude}`,
+        target: '_blank',
+      }, directionsIcon),
+    ),
+    span(salesCenter.community),
+    span(salesCenter.address),
+    span(`${salesCenter.city}, ${salesCenter['zip-code-abbr']}, ${salesCenter.zipcode}`),
+  );
+
+  return div(div(
+    { class: 'sales-center-info' },
+    heading,
+    saleOfficeHours,
+    noteEl,
+    salesModelInfo,
+    salesSpecialists,
+    addressEl,
+  ), doc.querySelector('.links-wrapper'));
 }
 
 function buildFilterForm(filterByValue) {
@@ -224,7 +262,7 @@ export default async function decorate(doc) {
   const breadCrumbsEl = buildBreadCrumbs();
   const actions = await createActionBar(['share', 'save']);
   const subNav = doc.querySelector('.subnav-wrapper');
-  const rightAside = createRightAside(doc);
+  const rightAside = await createRightAside(doc, salesCenter);
   const modelFilter = buildFilterForm(filter);
 
   const plansAnchor = a({ id: 'plans' }, '');
@@ -245,7 +283,7 @@ export default async function decorate(doc) {
   const twoCols = div(
     { class: 'repeating-grid' },
     div({ class: 'left' }, modelNameAddr, doc.querySelector('.description-wrapper'), requestButtons),
-    div({ class: 'right' }, div({ class: 'subnav-detail-container' }), doc.querySelector('.promotion-wrapper')),
+    div({ class: 'right' }, div({ class: 'subnav-detail-container' })),
   );
 
   const leftRight = div({ class: 'section' }, actions, subNav, div(

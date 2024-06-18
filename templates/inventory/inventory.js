@@ -6,6 +6,7 @@ import { fetchRates, calculateMonthlyPayment } from '../../scripts/mortgage.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
 import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
+import loadSVG from '../../scripts/svg-helper.js';
 
 async function fetchRequiredPageData() {
   await fetchRates();
@@ -18,22 +19,6 @@ async function fetchRequiredPageData() {
     homeDetails,
     phoneNumber: formatPhoneNumber(salesCenterPhoneNumber),
   };
-}
-
-// Function to fetch and embed SVG content
-async function loadSVG(url, className = '') {
-  const response = await fetch(url);
-  const svgText = await response.text();
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = svgText.trim();
-  const svgElement = tempDiv.firstElementChild;
-  svgElement.classList.add('icon');
-  if (className) {
-    className.split(' ').forEach((name) => {
-      if (name) svgElement.classList.add(name);
-    });
-  }
-  return svgElement;
 }
 
 async function createPriceCell(homeDetails) {
