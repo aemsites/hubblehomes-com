@@ -114,7 +114,7 @@ function buildBreadCrumbs() {
   );
 }
 
-function createRightAside() {
+function createRightAside(doc) {
   // phone number and links
   const alsoAvailableAt = [
     'Adams Ridge',
@@ -126,16 +126,6 @@ function createRightAside() {
     'Southern Ridge',
     'Sunnyvale',
     'Waterford',
-  ];
-
-  const links = [
-    'Virtual Tour',
-    'Floor Plan Handout',
-    'Community Map & Directions',
-    'Interactive Sitemap',
-    'Static Sitemap PDF',
-    'Static Sitemap Image',
-    'Energy Efficiency',
   ];
 
   // The third column of the description box
@@ -150,16 +140,8 @@ function createRightAside() {
     locationList.appendChild(divElement);
   });
 
-  const linksList = div('Links:');
-  links.forEach((link) => {
-    const linkElement = a({ href: '#' }, link);
-    const divElement = document.createElement('div');
-    divElement.appendChild(linkElement);
-    divElement.appendChild(br());
-    linksList.appendChild(divElement);
-  });
-
-  return div({ class: 'item' }, heading, br(), subheading, locationList, br(), linksList);
+  const linksEl = doc.querySelector('.links-wrapper');
+  return div({ class: 'item' }, heading, br(), subheading, locationList, br(), linksEl);
 }
 
 function buildFilterForm(filterByValue) {
@@ -208,10 +190,7 @@ function buildFilterForm(filterByValue) {
     }, 'Reset');
   }
 
-  return div(
-    { class: 'section' },
-    div({ class: 'filter-form' }, form(allListingSelect, sortBySelect, filterBySelect), resetEl),
-  );
+  return div({ class: 'filter-form' }, form(allListingSelect, sortBySelect, filterBySelect), resetEl);
 }
 
 export default async function decorate(doc) {
@@ -225,13 +204,9 @@ export default async function decorate(doc) {
     community,
   } = await fetchRequiredPageData();
 
-  const mainEl = doc.querySelector('main');
-  const breadCrumbsEl = buildBreadCrumbs();
-  const subNav = doc.querySelector('.subnav-wrapper');
-  const description = doc.querySelector('.description-wrapper');
-  const disclaimer = doc.querySelector('.fragment-wrapper');
+  const filterSectionTitle = div({ class: 'grey-divider full-width' }, getHeaderTitleForFilter(filter));
+  const inventory = await buildInventoryHomes(community, filter);
 
-  const promotionsEl = document.querySelector('.promotion-wrapper');
   const modelNameAddr = div(h1(community.name), a({
     class: 'directions',
     href: `https://www.google.com/maps/dir/Current+Location/${salesCenter.latitude},${salesCenter.longitude}`,
@@ -246,59 +221,60 @@ export default async function decorate(doc) {
     href: `/schedule-a-tour?communityid=${community.name}`,
   }, 'Request a Tour'));
 
-  const details = div({ class: 'subnav-detail-container' });
-
-  const twoCols = div(
-    { class: 'repeating-grid' },
-    div({ class: 'left' }, modelNameAddr, description, requestButtons),
-    div({ class: 'right' }, details, promotionsEl),
-  );
-
-  const titleEl = div({ class: 'grey-divider' }, getHeaderTitleForFilter(filter));
-  const inventory = await buildInventoryHomes(community, filter);
-
-  const featuredPlansTitle = div({ class: 'grey-divider' }, 'Featured Plans');
-  const models = await buildFeaturedPlans(community.name);
-  const featuredPlansEl = div({ class: 'section inventory' }, models);
-
+  const breadCrumbsEl = buildBreadCrumbs();
   const actions = await createActionBar(['share', 'save']);
-  const rightAside = createRightAside();
+  const subNav = doc.querySelector('.subnav-wrapper');
+  const rightAside = createRightAside(doc);
   const modelFilter = buildFilterForm(filter);
 
-  // create a link so that a filter change will drop the user back down the page
   const plansAnchor = a({ id: 'plans' }, '');
   const inventoryEl = div({ class: 'section inventory' }, inventory);
+  const disclaimer = doc.querySelector('.fragment-wrapper');
+  const featuredPlansTitle = div({ class: 'grey-divider featured full-width' }, 'Featured Plans');
+  const models = await buildFeaturedPlans(community.name);
+  const featuredModels = div({ class: 'section featured' }, models);
 
-  const banner = div({ class: 'grey-divider' }, `${community.name} New Home Specialists`);
-  const specialistsSection = div({ class: 'specialists fluid-flex' });
+  const specialistBanner = div({ class: 'grey-divider full-width' }, `${community.name} New Home Specialists`);
+
+  const specialistsSection = div({ class: 'specialists fluid-flex full-width' });
   const specialistEl = await createSpecialists(salesCenter.specialists);
   specialistEl.forEach((el) => {
     specialistsSection.appendChild(el);
   });
 
-  const mainPageContent = div({ class: 'section' }, breadCrumbsEl, actions, subNav, div(
+  const twoCols = div(
+    { class: 'repeating-grid' },
+    div({ class: 'left' }, modelNameAddr, doc.querySelector('.description-wrapper'), requestButtons),
+    div({ class: 'right' }, div({ class: 'subnav-detail-container' }), doc.querySelector('.promotion-wrapper')),
+  );
+
+  const leftRight = div({ class: 'section' }, actions, subNav, div(
     { class: 'content-wrapper' },
     div(
       { class: 'content' },
       twoCols,
-
     ),
     aside(
       div('right').innerHTML = rightAside,
     ),
   ));
 
-  mainEl.append(
-    mainPageContent,
-    plansAnchor,
-    modelFilter,
-    titleEl,
-    inventoryEl,
-    featuredPlansTitle,
-    featuredPlansEl,
-  );
+  // place the left right columns after the carousel
+  doc.querySelector('.carousel-wrapper').insertAdjacentElement('afterend', leftRight);
+  // place the breadcrumbs after the carousel
+  doc.querySelector('.carousel-wrapper').insertAdjacentElement('afterend', breadCrumbsEl);
 
-  mainEl.append(banner);
-  mainEl.append(specialistsSection);
-  mainEl.append(div({ class: 'section disclaimer' }, disclaimer));
+  doc.querySelector('.content-wrapper').insertAdjacentElement('afterend', modelFilter);
+  doc.querySelector('.content-wrapper').insertAdjacentElement('afterend', plansAnchor);
+
+  // inventory homes
+  doc.querySelector('.section').insertAdjacentElement('beforeend', filterSectionTitle);
+  filterSectionTitle.insertAdjacentElement('afterend', inventoryEl);
+
+  inventoryEl.insertAdjacentElement('afterend', featuredPlansTitle);
+  featuredPlansTitle.insertAdjacentElement('afterend', featuredModels);
+
+  featuredModels.insertAdjacentElement('afterend', specialistBanner);
+  specialistBanner.insertAdjacentElement('afterend', specialistsSection);
+  specialistsSection.insertAdjacentElement('afterend', div({ class: 'section disclaimer' }, disclaimer));
 }

@@ -3,7 +3,7 @@ import {
   a, div, h4, span,
 } from '../../../scripts/dom-helpers.js';
 import { formatPrice } from '../../../scripts/currency-formatter.js';
-import calculateMonthlyPayment from '../../../scripts/mortgage.js';
+import { calculateMonthlyPayment } from '../../../scripts/mortgage.js';
 
 class InventoryCard extends BaseCard {
   renderAddress() {

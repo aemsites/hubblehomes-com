@@ -1,7 +1,7 @@
 import BaseCard from './BaseCard.js';
 import { a, div, span } from '../../../scripts/dom-helpers.js';
 import { formatPrice } from '../../../scripts/currency-formatter.js';
-import calculateMonthlyPayment from '../../../scripts/mortgage.js';
+import { calculateMonthlyPayment } from '../../../scripts/mortgage.js';
 
 class HomePlansCard extends BaseCard {
   renderTaglineItems(taglineContainer) {
