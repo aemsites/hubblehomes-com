@@ -10,7 +10,6 @@ const getDefaultEmbed = (url) => `<div style="left: 0; width: 100%; height: 0; p
     </iframe>
   </div>`;
 
-
 const loadEmbed = (block, link) => {
   if (block.classList.contains('embed-is-loaded')) {
     return;
