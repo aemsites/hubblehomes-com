@@ -140,6 +140,11 @@ export default async function decorate(block) {
   });
 
   nonCodeBlocksEls.forEach((el) => {
+    // strip all buttons from the non-code block elements
+    [...el.querySelectorAll('a.btn')].forEach((button) => {
+      button.classList.remove('btn', 'fancy');
+    });
+
     el.querySelector(':scope > div').remove();
     itemContainer.append(div({ class: 'subnav-container-item', 'data-container-index': index }, el));
     index += 1;
