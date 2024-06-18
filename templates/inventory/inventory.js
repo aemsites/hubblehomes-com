@@ -142,7 +142,7 @@ export default async function decorate(doc) {
   const pricingContainer = div({ class: 'pricing-information' }, priceCell, estimatedCostCell);
 
   const listingHeader = div({ class: 'listing-header' }, homeIdentity, pricingContainer);
-  const descriptionText = doc.querySelector('.description-wrapper p');
+  const descriptionText = doc.querySelector('.description-wrapper');
   const buttonContainer = div({ class: 'button-container' },
     button({ class: 'fancy dark-gray' }, 'Request Information'),
     button({ class: 'fancy' }, 'Request a Tour'),
