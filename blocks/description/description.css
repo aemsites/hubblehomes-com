@@ -1,0 +1,28 @@
+
+.description h3 {
+    font-weight: 400;
+    color: var(--text-color);
+}
+
+.description p strong {
+    /* styles for <p> tags inside .description */
+    font-weight: 700;
+}
+
+.description p a {
+    /* styles for <a> tags inside .description */
+    color: var(--text-color);
+}   
+
+.description p em {    
+    /* styles for <em> tags inside .description */
+    font-style: italic;
+    color: var(--text-color);
+}
+
+.description p em::after {   
+    content:"\a";
+    white-space: pre;    
+}
+
+  
