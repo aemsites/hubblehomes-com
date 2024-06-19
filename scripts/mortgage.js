@@ -1,9 +1,11 @@
+import { getRatesSheet } from './workbook.js';
+
 /**
- * Fetches mortgage rates from the server and stores them in session storage.
+ * Load the mortgage rates from the server and stores them in session storage.
  *
  * @throws {Error} If the fetch request fails.
  */
-async function fetchRates() {
+async function loadRates() {
   // Check if the rates are already in session storage
   if (
     sessionStorage.getItem('hh.rates.rate') !== null
@@ -14,18 +16,13 @@ async function fetchRates() {
   }
 
   // Fetch rates from the server
-  const response = await fetch('/data/hubblehomes.json?sheet=rates');
+  const rates = await getRatesSheet('data');
+  const { rate, percent, term } = rates[0];
 
-  if (response.ok) {
-    const jsonObject = await response.json();
-    const { rate, percent, term } = jsonObject.data[0];
-    // Store the fetched rates in session storage
-    sessionStorage.setItem('hh.rates.rate', rate);
-    sessionStorage.setItem('hh.rates.percent', percent);
-    sessionStorage.setItem('hh.rates.term', term);
-  } else {
-    throw new Error('Failed to fetch rates');
-  }
+  // Store the fetched rates in session storage
+  sessionStorage.setItem('hh.rates.rate', rate);
+  sessionStorage.setItem('hh.rates.percent', percent);
+  sessionStorage.setItem('hh.rates.term', term);
 }
 
 /**
@@ -53,5 +50,5 @@ function calculateMonthlyPayment(housePrice) {
 
 export {
   calculateMonthlyPayment,
-  fetchRates,
+  loadRates,
 };

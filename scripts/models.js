@@ -1,5 +1,4 @@
-window.hh = window.hh || {};
-const { hh } = window;
+import { getModelsSheet } from './workbook.js';
 
 /**
  * Fetches the models data.
@@ -8,18 +7,7 @@ const { hh } = window;
  * @throws {Error} If the fetch request fails.
  */
 async function getModels() {
-  if (hh.models) {
-    return hh.models;
-  }
-
-  const response = await fetch('/data/hubblehomes.json?sheet=models');
-  if (response.ok) {
-    const models = await response.json();
-    hh.models = models.data;
-    return models.data;
-  }
-
-  throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+  return getModelsSheet('data');
 }
 
 /**
@@ -31,18 +19,6 @@ async function getModels() {
 async function getModelsByCommunity(communityName) {
   const models = await getModels();
   return models.filter((model) => model.community === communityName);
-}
-
-/**
- * Retrieves the image URL for a specific model.
- *
- * @param {string} modelName - The name of the model.
- * @returns {Promise<string>} The image URL for the specified model.
- */
-async function getModelImage(modelName) {
-  const models = await getModels();
-  const desiredModel = models.find((model) => model.name === modelName);
-  return desiredModel ? desiredModel.image : null;
 }
 
 /**
@@ -64,6 +40,5 @@ async function getCommunitiesForModel(modelName) {
 export {
   getModels,
   getModelsByCommunity,
-  getModelImage,
   getCommunitiesForModel,
 };

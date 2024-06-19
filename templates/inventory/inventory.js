@@ -2,14 +2,16 @@
 import { aside, div, a, button, strong, small, h2, h3, h4, h5, br, span } from '../../scripts/dom-helpers.js';
 import { createTemplateBlock } from '../../scripts/block-helper.js';
 import { getInventoryHomeByPath } from '../../scripts/inventory.js';
-import { fetchRates, calculateMonthlyPayment } from '../../scripts/mortgage.js';
+import { loadRates, calculateMonthlyPayment } from '../../scripts/mortgage.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
 import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
 import loadSVG from '../../scripts/svg-helper.js';
+import { loadWorkbook } from '../../scripts/workbook.js';
 
 async function fetchRequiredPageData() {
-  await fetchRates();
+  await loadWorkbook();
+  await loadRates();
 
   const homeDetails = await getInventoryHomeByPath(window.location.pathname);
   const salesCenter = await getSalesCenterForCommunity(homeDetails.community);

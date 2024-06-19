@@ -1,24 +1,4 @@
-window.hh = window.hh || {};
-const { hh } = window;
-
-/**
- * Fetch the communities data from the server.
- * @returns {Promise<any>}
- */
-async function getCommunities() {
-  if (hh.communities) {
-    return hh.communities;
-  }
-
-  const response = await fetch('/data/hubblehomes.json?sheet=communities');
-
-  if (response.ok) {
-    hh.communities = await response.json();
-    return hh.communities;
-  }
-
-  throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
-}
+import { getCommunitiesSheet } from './workbook.js';
 
 /**
  * Given a URL, attempts to locate the associated community.
@@ -26,9 +6,9 @@ async function getCommunities() {
  * @param {string} url - The URL to search for.
  * @returns {Promise<Object|undefined>} The community object, or undefined if not found.
  */
-async function fetchCommunityDetailsForUrl(url) {
-  const communities = await getCommunities();
-  return communities.data.find((community) => url.startsWith(community.path));
+async function getCommunityForUrl(url) {
+  const communities = await getCommunitiesSheet('data');
+  return communities.find((community) => url.startsWith(community.path));
 }
 
 /**
@@ -38,11 +18,11 @@ async function fetchCommunityDetailsForUrl(url) {
  * @returns {Promise<Object|undefined>} The community object, or undefined if not found.
  */
 async function getCommunityDetailsByName(communityName) {
-  const communities = await getCommunities();
-  return communities.data.find((community) => community.name === communityName);
+  const communities = await getCommunitiesSheet('data');
+  return communities.find((community) => community.name === communityName);
 }
 
 export {
-  fetchCommunityDetailsForUrl,
+  getCommunityForUrl,
   getCommunityDetailsByName,
 };

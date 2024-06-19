@@ -1,6 +1,7 @@
 import { fetchPlaceholders, getMetadata, toCamelCase } from '../../scripts/aem.js';
 import buildCodeBlockListItems from './code-block-resolver.js';
 import { a, div } from '../../scripts/dom-helpers.js';
+import { getCommunitiesSheet, getInventorySheet } from '../../scripts/workbook.js';
 
 function makeActive(event) {
   const currentActive = document.querySelector('.subnav-container-item.active');
@@ -67,17 +68,12 @@ function getBlockItems(els, placeholders) {
 async function loadSheetData(template) {
   let sheet;
   if (template === 'communities') {
-    sheet = await fetch('/data/hubblehomes.json?sheet=communities');
+    sheet = await getCommunitiesSheet('data');
   } else if (template === 'inventory') {
-    sheet = await fetch('/data/hubblehomes.json?sheet=inventory');
+    sheet = await getInventorySheet('data');
   }
 
-  if (!sheet) {
-    return undefined;
-  }
-
-  const jsonSheetData = await sheet.json();
-  return jsonSheetData.data;
+  return sheet;
 }
 
 function buildNavButtons(buttonLabels) {
