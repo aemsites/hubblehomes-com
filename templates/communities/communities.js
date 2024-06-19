@@ -321,19 +321,22 @@ export default async function decorate(doc) {
     ),
   ));
 
-  mainSection.appendChild(breadCrumbsEl);
-  mainSection.appendChild(leftRight);
-  mainSection.appendChild(modelFilter);
-  mainSection.appendChild(plansAnchor);
-  mainSection.appendChild(filterSectionTitle);
-  mainSection.appendChild(inventoryEl);
+  mainSection.append(
+    breadCrumbsEl,
+    leftRight,
+    modelFilter,
+    plansAnchor,
+    filterSectionTitle,
+    inventoryEl,
+  );
 
   if (hasFeaturedModels) {
-    mainSection.appendChild(featuredPlansTitle);
-    mainSection.appendChild(featuredModels);
+    mainSection.append(featuredPlansTitle, featuredModels);
   }
 
-  mainSection.appendChild(specialistBanner);
-  mainSection.appendChild(specialistsSection);
-  mainSection.appendChild(div({ class: 'section disclaimer' }, disclaimer));
+  mainSection.append(
+    specialistBanner,
+    specialistsSection,
+    div({ class: 'section disclaimer' }, disclaimer),
+  );
 }
