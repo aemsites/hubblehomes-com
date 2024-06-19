@@ -57,17 +57,7 @@ async function getSalesCentersForCommunityUrl(url) {
 
   return {
     sales_center: {
-      phone: salesOfficeDetails['phone-number'],
-      name: salesOfficeDetails['sales-center-model'],
-      community: salesOfficeDetails.community,
-      address: salesOfficeDetails.address,
-      city: salesOfficeDetails.city,
-      state: salesOfficeDetails.state,
-      zip: salesOfficeDetails.zipcode,
-      zipCodeAbbr: salesOfficeDetails['zip-code-abbr'],
-      model: salesOfficeDetails.models,
-      latitude: salesOfficeDetails.latitude,
-      longitude: salesOfficeDetails.longitude,
+      ...salesOfficeDetails,
       specialists: specialists.map((specialist) => ({
         name: specialist.name,
         email: specialist.email,

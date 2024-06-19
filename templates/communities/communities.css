@@ -104,4 +104,69 @@
     margin: 60px 0;
   }
 
+  .sales-center-info {
+    dd {
+      margin: 0;
+
+      a {
+        color: #aaa;
+        font-weight: normal;
+        padding-left: 10px;
+        font-size: 13px;
+        display: block;
+
+        svg {
+          height: 15px;
+          transform: scaleX(-1);
+          fill: #aaa;
+        }
+      }
+    }
+
+    padding-bottom: 20px;
+
+    & > p.note {
+      padding: 10px 0;
+    }
+
+    & > div {
+      padding: 5px 0;
+
+      > dl {
+        margin: 0;
+      }
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .note {
+      margin-bottom: 0;
+      font-style: italic;
+    }
+
+    .sales-center-address {
+      p {
+        align-items: center;
+        display: flex;
+        margin: 0;
+      }
+
+      span:not(:first-child) {
+        display: block
+      }
+
+      svg {
+        height: 18px;
+        fill: #383838;
+      }
+    }
+
+    .label {
+      font-weight: 600;
+    }
+
+
+  }
 }
