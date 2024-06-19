@@ -285,6 +285,7 @@ export default async function decorate(doc) {
   const breadCrumbsEl = buildBreadCrumbs();
   const actions = await createActionBar(['share', 'save']);
   const subNav = doc.querySelector('.subnav-wrapper');
+  const navBar = div({ class: 'fluid-flex nav-bar' }, subNav, actions);
   const rightAside = await createRightAside(doc, salesCenter);
   const modelFilter = buildFilterForm(filter);
 
@@ -310,7 +311,7 @@ export default async function decorate(doc) {
     div({ class: 'right' }, div({ class: 'subnav-detail-container' })),
   );
 
-  const leftRight = div({ class: 'section' }, actions, subNav, div(
+  const leftRight = div({ class: 'section' }, navBar, div(
     { class: 'content-wrapper' },
     div(
       { class: 'content' },

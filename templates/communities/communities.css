@@ -1,4 +1,16 @@
 .communities {
+  .actionbar-wrapper {
+    flex: 0;
+  }
+
+  .navbar {
+    align-items: center;
+  }
+
+  .subnav-wrapper {
+    padding-top: 10px;
+  }
+
   .content-wrapper {
     h1 {
       font-size: 30px;
