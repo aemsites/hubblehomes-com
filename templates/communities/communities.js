@@ -175,7 +175,7 @@ async function createRightAside(doc, salesCenter) {
         a({ class: 'phone', href: `tel:${specialist.phone}` }, formatPhoneNumber(specialist.phone), phoneEl),
       );
     });
-    mainDiv.append(div(dl({ class: 'sales-center-data' }, dt({ class: 'label' }, 'New Home Specialists: '), ...sEl)));
+    mainDiv.append(dl({ class: 'sales-center-data' }, dt({ class: 'label' }, 'New Home Specialists: '), ...sEl));
   }
 
   if (address && community && city && zipCodeAbbr && zipcode) {
@@ -250,7 +250,7 @@ function buildFilterForm(filterByValue) {
     }, 'Reset');
   }
 
-  return div({ class: 'filter-form' }, form(allListingSelect, sortBySelect, filterBySelect), resetEl);
+  return div({ class: 'filter-form' }, form({ class: 'fluid-flex' }, allListingSelect, sortBySelect, filterBySelect), resetEl);
 }
 
 export default async function decorate(doc) {
