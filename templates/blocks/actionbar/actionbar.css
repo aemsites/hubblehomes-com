@@ -3,7 +3,6 @@ body[class*="-template"] {
     height: 70px;
     display: flex;
     justify-content: right;
-    padding-right: 20px;
     align-items: center;
 
     .actionbar-item {
@@ -24,6 +23,10 @@ body[class*="-template"] {
           background: var(--dark-blue);
           border-color: var(--dark-blue)
         }
+      }
+
+      @media (max-width: 480px) {
+        transform: scale(70%);
       }
 
       img {
