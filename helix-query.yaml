@@ -112,3 +112,23 @@ indices:
       virtualtourimages:
         select: head > meta[name="virtualtourimages"]
         value: attribute(el, 'content')
+  news:
+    include:
+      - '/news/news-detail/*'
+    target: /news/news-index.json
+    properties:
+      title:
+        select: head > title
+        value: textContent(el)
+      description:
+        select: head > meta[name="description"]
+        value: attribute(el, 'content')
+      image:
+        select: head > meta[property="og:image"]
+        value: match(attribute(el, "content"), "https:\/\/[^/]+(/.*)")
+      publisheddate:
+        select: head > meta[name="publisheddate"]
+        value: attribute(el, "content")
+      categories:
+        select: head > meta[name="categories"]
+        value: attribute(el, "content")
