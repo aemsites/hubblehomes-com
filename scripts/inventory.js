@@ -242,7 +242,7 @@ async function getInventoryHomes(community, filterStr) {
     return filter.rule(inventory.get(community));
   }
 
-  return inventory.get(community);
+  return inventory.get(community) || [];
 }
 
 /**

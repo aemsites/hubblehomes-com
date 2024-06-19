@@ -3,7 +3,6 @@ body[class*="-template"] {
     height: 70px;
     display: flex;
     justify-content: right;
-    padding-right: 20px;
     align-items: center;
 
     .actionbar-item {

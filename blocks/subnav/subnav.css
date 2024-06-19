@@ -52,7 +52,16 @@
   }
 
   a:any-link {
-    font-weight: normal;
+    word-break: break-all;
+
+    &[href^="mailto:"] {
+      color: var(--link-color);
+      font-weight: normal;
+    }
+
+    &:hover {
+      color: #2a6496;
+    }
   }
 
 }
