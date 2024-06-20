@@ -14,12 +14,20 @@ import {
   h1,
 } from '../../scripts/dom-helpers.js';
 import { createActionBar, createTemplateBlock } from '../../scripts/block-helper.js';
-import { getInventoryHomeByPath } from '../../scripts/inventory.js';
+import {
+  getInventoryHomeByPath,
+  getInventoryHomesByCommunities,
+  getInventoryHomesForCommunity,
+} from '../../scripts/inventory.js';
 import { loadRates, calculateMonthlyPayment } from '../../scripts/mortgage.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
 import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
 import { loadWorkbook } from '../../scripts/workbook.js';
+import {
+  buildBlock, decorateBlock, loadBlock, toCamelCase,
+} from '../../scripts/aem.js';
+import { loadTemplateBlock } from '../../scripts/template-block.js';
 
 async function fetchRequiredPageData() {
   await loadWorkbook();
@@ -79,10 +87,42 @@ function buildBreadCrumbs() {
   );
 }
 
+async function buildInventoryCards(inventoryHomes, community) {
+  window.hh = window.hh || {};
+  window.hh.current = window.hh.current || {};
+  window.hh.current.models = inventoryHomes;
+  window.hh.current.sale_center = await getSalesCenterForCommunity(community);
+  const modelsBlock = buildBlock('cards', []);
+  modelsBlock.classList.add('inventory');
+  const blockWrapper = div(modelsBlock);
+  decorateBlock(modelsBlock);
+  await loadTemplateBlock(modelsBlock);
+  return blockWrapper;
+}
+
+async function buildAccordion(model) {
+  const homesByCommunity = await getInventoryHomesByCommunities(model);
+  const content = [];
+
+  const communityName = Object.keys(homesByCommunity);
+
+  await Promise.all(communityName.map(async (community) => {
+    const models = await buildInventoryCards(homesByCommunity[community], community);
+    content.push([`View All ${model} Quick-Delivery Homes in ${community}`, models]);
+  }));
+
+  const block = buildBlock('accordion', content);
+  const wrapper = div(block);
+  wrapper.classList.add('section');
+  decorateBlock(block);
+  await loadTemplateBlock(block);
+  return wrapper;
+}
+
 async function createRightAside(doc, homeDetails, phoneNumber) {
   const modelName = homeDetails['model name'];
   const headingEl = h2(phoneNumber);
-  const availableAt = await createTemplateBlock('available-at-locations', [[modelName]]);
+  const availableAt = await createTemplateBlock('available-at-locations', [['model', modelName]]);
   return div(headingEl, br(), availableAt, br(), doc.querySelector('.links-wrapper'));
 }
 
@@ -105,6 +145,8 @@ export default async function decorate(doc) {
   const descriptionWrapper = doc.querySelector('.description-wrapper');
   const floorplanLinks = doc.querySelector('.floorplan-links-wrapper');
   const tabs = doc.querySelector('.tabs-wrapper');
+
+  const accordion = await buildAccordion(homeDetails['model name']);
 
   const navBar = div({ class: 'fluid-flex nav-bar' }, subNav, actions);
   const address = div({ class: 'directions' }, h1(homeDetails['model name']), a({
@@ -142,6 +184,7 @@ export default async function decorate(doc) {
     floorplanLinks,
     tabs,
     doc.querySelector('.embed-wrapper'),
+    accordion,
     div({ class: 'section disclaimer' }, disclaimer),
   );
 }

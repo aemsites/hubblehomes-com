@@ -5,13 +5,18 @@ import {
 }
   from '../../../scripts/dom-helpers.js';
 import { getCommunitiesForModel } from '../../../scripts/models.js';
+import { readBlockConfig } from '../../../scripts/aem.js';
 
 export default async function decorate(block) {
-  const modelName = block.querySelector('p').textContent;
+  const {
+    model,
+  } = readBlockConfig(block);
+
   block.innerHTML = '';
 
-  const communities = await getCommunitiesForModel(modelName);
+  const communities = await getCommunitiesForModel(model);
   const locationList = div();
+
   communities.forEach((community) => locationList.append(
     a({ href: community.path }, community.name),
   ));

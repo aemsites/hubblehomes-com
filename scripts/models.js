@@ -23,6 +23,17 @@ async function getModelsByCommunity(communityName) {
 }
 
 /**
+ * Given the name of a model, retrieves the image associated with the model.
+ * @param modelName
+ * @returns {Promise<boolean|string|*|string>}
+ */
+async function getModelImage(modelName) {
+  const models = await getModels();
+  const m = models.find((model) => model.name === modelName);
+  return m ? m.image : '';
+}
+
+/**
  * Retrieves the list of communities where a specific model is available.
  *
  * @param {string} modelName - The name of the model.
@@ -42,6 +53,7 @@ async function getCommunitiesForModel(modelName) {
 
 export {
   getModels,
+  getModelImage,
   getModelsByCommunity,
   getCommunitiesForModel,
 };
