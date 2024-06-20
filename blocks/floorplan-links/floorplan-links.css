@@ -1,0 +1,12 @@
+.floorplan-links {
+  padding-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+
+  a {
+    flex: 0;
+    font-size: 14px;
+    padding: 10px 25px;
+  }
+}

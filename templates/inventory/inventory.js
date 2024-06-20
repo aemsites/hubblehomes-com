@@ -1,4 +1,3 @@
-/* eslint-disable function-call-argument-newline, object-curly-newline, function-paren-newline */
 import {
   aside,
   div,
@@ -20,7 +19,6 @@ import { loadRates, calculateMonthlyPayment } from '../../scripts/mortgage.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
 import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
-import loadSVG from '../../scripts/svg-helper.js';
 import { loadWorkbook } from '../../scripts/workbook.js';
 
 async function fetchRequiredPageData() {
@@ -105,6 +103,8 @@ export default async function decorate(doc) {
   const disclaimer = doc.querySelector('.fragment-wrapper');
   const subNav = doc.querySelector('.subnav-wrapper');
   const descriptionWrapper = doc.querySelector('.description-wrapper');
+  const floorplanLinks = doc.querySelector('.floorplan-links-wrapper');
+  const tabs = doc.querySelector('.tabs-wrapper');
 
   const navBar = div({ class: 'fluid-flex nav-bar' }, subNav, actions);
   const address = div({ class: 'directions' }, h1(homeDetails['model name']), a({
@@ -113,27 +113,19 @@ export default async function decorate(doc) {
   }, h4(homeDetails.address)), h5(`MLS #${homeDetails.mls}`));
 
   const pricingContainer = await createPricingInformation(homeDetails);
-
   const listingHeader = div({ class: 'fluid-grid inventory-details' }, address, pricingContainer);
 
-  const buttons = div({ class: 'button-container' },
+  const buttons = div(
+    { class: 'button-container' },
     button({ class: 'fancy dark-gray' }, 'Request Information'),
     button({ class: 'fancy' }, 'Request a Tour'),
   );
 
-  // const fullDescription = div({ class: 'full-description' }, listingHeader, br(), descriptionText, buttonContainer);
   const twoCols = div(
     { class: 'repeating-grid' },
     div({ class: 'left' }, listingHeader, descriptionWrapper, buttons),
     div({ class: 'right' }, div({ class: 'subnav-detail-container' })),
   );
-
-  // const floorplan = $page.querySelector('.floor-plan-images-wrapper');
-  // const embed = $page.querySelector('.embed-wrapper');
-  // const disclaimer = $page.querySelector('.fragment-wrapper');
-  // if (disclaimer) {
-  //   disclaimer.classList.add('disclaimer');
-  // }
 
   const leftRight = div({ class: 'section' }, navBar, div(
     { class: 'content-wrapper' },
@@ -147,7 +139,8 @@ export default async function decorate(doc) {
   mainSectionEl.append(
     breadCrumbsEl,
     leftRight,
-    doc.querySelector('.floorplan-wrapper'),
+    floorplanLinks,
+    tabs,
     doc.querySelector('.embed-wrapper'),
     div({ class: 'section disclaimer' }, disclaimer),
   );
