@@ -17,7 +17,6 @@ import { createActionBar, createTemplateBlock } from '../../scripts/block-helper
 import {
   getInventoryHomeByPath,
   getInventoryHomesByCommunities,
-  getInventoryHomesForCommunity,
 } from '../../scripts/inventory.js';
 import { loadRates, calculateMonthlyPayment } from '../../scripts/mortgage.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
@@ -25,7 +24,7 @@ import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
 import { loadWorkbook } from '../../scripts/workbook.js';
 import {
-  buildBlock, decorateBlock, loadBlock, toCamelCase,
+  buildBlock, decorateBlock,
 } from '../../scripts/aem.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
 
