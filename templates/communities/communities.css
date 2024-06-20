@@ -29,7 +29,7 @@
     position: relative;
     display: flex;
     align-items: center;
-    color: var(--light-blue);
+    color: var(--blue);
     margin-bottom: 30px;
 
     h1 {
@@ -41,7 +41,7 @@
       position: absolute;
       width: 18px;
       height: 22px;
-      background: var(--light-blue);
+      background: var(--blue);
       mask: url("/icons/directions.svg") no-repeat center;
       margin-left: 8px;
       top: 1px;
