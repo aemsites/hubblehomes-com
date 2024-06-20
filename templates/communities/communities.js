@@ -16,17 +16,18 @@ import {
 import {
   filters,
   getHeaderTitleForFilter,
-  getInventoryHomes,
+  getInventoryHomesForCommunity,
 } from '../../scripts/inventory.js';
 import { getSalesCentersForCommunityUrl } from '../../scripts/sales-center.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
-import { fetchCommunityDetailsForUrl } from '../../scripts/communities.js';
+import { getCommunityForUrl } from '../../scripts/communities.js';
 import { createActionBar } from '../../scripts/block-helper.js';
 import { getModelsByCommunity } from '../../scripts/models.js';
-import { fetchRates } from '../../scripts/mortgage.js';
+import { loadRates } from '../../scripts/mortgage.js';
 import DeferredPromise from '../../scripts/deferred.js';
 import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import loadSVG from '../../scripts/svg-helper.js';
+import { loadWorkbook } from '../../scripts/workbook.js';
 
 /**
  * Builds the inventory homes block.
@@ -34,7 +35,7 @@ import loadSVG from '../../scripts/svg-helper.js';
  * @returns {Promise<Element>} The inventory homes block wrapped in a div.
  */
 async function buildInventoryHomes(community, filter) {
-  window.hh.current.models = await getInventoryHomes(community.name, filter);
+  window.hh.current.models = await getInventoryHomesForCommunity(community.name, filter);
   const modelsBlock = buildBlock('cards', []);
   modelsBlock.classList.add('inventory');
   const blockWrapper = div(modelsBlock);
@@ -54,22 +55,21 @@ async function buildFeaturedPlans(communityName) {
 }
 
 async function fetchRequiredPageData() {
-  // These three calls could be done differently, but for now, we will keep them separate.
-  // It might be nice to have a factory that takes the results of these calls and builds the
-  // required data for the page.
-  // For example this page could ask for the 3 sheets at once and then build the required data.
-  await fetchRates();
+  await loadWorkbook();
+  await loadRates();
 
-  const salesCenterData = await getSalesCentersForCommunityUrl(window.location);
-  const community = await fetchCommunityDetailsForUrl(window.location.pathname);
+  const salesCenter = await getSalesCentersForCommunityUrl(window.location);
+  const community = await getCommunityForUrl(window.location.pathname);
 
   window.hh = window.hh || {};
+
+  // setup the data that needs to flow to additional blocks
   window.hh.current = window.hh.current || {};
-  window.hh.current.sale_center = salesCenterData.sales_center;
+  window.hh.current.sale_center = salesCenter.sales_center;
   window.hh.current.community = community;
 
   return {
-    salesCenter: salesCenterData.sales_center,
+    salesCenter: salesCenter.sales_center,
     community,
   };
 }
