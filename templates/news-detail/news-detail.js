@@ -46,11 +46,11 @@ export default async function decorate(doc) {
 
   // social share
   const $socialShare = div({ class: 'social-share' },
-    button({ class: 'facebook' }, 'Share'),
-    button({ class: 'twitter' }, 'Tweet'),
-    button({ class: 'pinterest' }, 'Pin'),
-    button({ class: 'email' }, 'Email'),
-    button({ class: 'sharethis' }, 'Share'),
+    a({ class: 'facebook' }, 'Share'),
+    a({ class: 'twitter' }, 'Tweet'),
+    a({ class: 'pinterest' }, 'Pin'),
+    a({ class: 'email' }, 'Email'),
+    a({ class: 'sharethis' }, 'Share'),
   );
 
   const $newPage = div({ class: 'section' }, $breadCrumbs,
