@@ -184,8 +184,8 @@
         flex: 0 0 75%;
 
         .repeating-grid {
-          --left-col-width: 60%;
-          --right-col-width: 40%;
+          --left-col-width: 65%;
+          --right-col-width: 35%;
           --grid-gap: 0;
         }
 
