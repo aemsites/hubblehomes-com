@@ -144,6 +144,7 @@ export default async function decorate(doc) {
   const descriptionWrapper = doc.querySelector('.description-wrapper');
   const floorplanLinks = doc.querySelector('.floorplan-links-wrapper');
   const tabs = doc.querySelector('.tabs-wrapper');
+  tabs.classList.add('section');
 
   const accordion = await buildAccordion(homeDetails['model name']);
 
