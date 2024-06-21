@@ -178,14 +178,6 @@
 
         /* override the aside width in custom template */
         grid-template-columns: var(--p-left-width) var(--p-right-width);
-
-        >div:nth-child(1) {
-          /* left side */
-        }
-
-        >div:nth-child(2) {
-          padding: 0 15px;
-        }
       }
 
       .content {

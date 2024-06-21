@@ -131,8 +131,7 @@ export default async function decorate(doc) {
 
   const buttons = div(
     { class: 'button-container' },
-    button({ class: 'fancy dark-gray' }, 'Request Information'),
-    button({ class: 'fancy' }, 'Request a Tour'),
+    button({ class: 'fancy yellow' }, 'Request Information'),
   );
 
   const twoCols = div(
