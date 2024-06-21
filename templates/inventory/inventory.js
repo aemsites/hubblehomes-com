@@ -77,7 +77,7 @@ function createEstimatedPaymentCell(price) {
 
 function buildBreadCrumbs() {
   return div(
-    { class: 'breadcrumbs' },
+    { class: 'breadcrumbs section' },
     a({ href: '/', 'aria-label': 'View Home Page' }, 'Home'),
     ' > ',
     a({ href: '/foo', 'aria-label': 'View News Page' }, 'CommunityName'),
@@ -142,7 +142,9 @@ export default async function decorate(doc) {
   const disclaimer = doc.querySelector('.fragment-wrapper');
   const subNav = doc.querySelector('.subnav-wrapper');
   const descriptionWrapper = doc.querySelector('.description-wrapper');
+  descriptionWrapper.classList.add('section');
   const floorplanLinks = doc.querySelector('.floorplan-links-wrapper');
+  floorplanLinks.classList.add('section');
   const tabs = doc.querySelector('.tabs-wrapper');
   tabs.classList.add('section');
 

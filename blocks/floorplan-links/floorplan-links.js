@@ -6,4 +6,6 @@ export default function decorate(block) {
     link.classList.add('light-gray');
     block.appendChild(link);
   });
+
+  block.classList.add('fluid-flex');
 }
