@@ -3,11 +3,16 @@ import {
 } from '../../scripts/dom-helpers.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
 
+function parseToNumber(str) {
+  const number = Number(str.replace(/\$,/g, ''));
+  return Number.isNaN(number) ? Number.NaN : number;
+}
+
 const ColumnFormatter = {
   price: (value) => formatPrice(value),
   'square feet': (value) => {
     const formatter = new Intl.NumberFormat('en-US');
-    return formatter.format(value);
+    return !Number.isNaN(parseToNumber(value)) ? formatter.format(parseFloat(value)) : value;
   },
 };
 

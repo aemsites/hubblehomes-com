@@ -17,7 +17,12 @@ export default async function decorate(block) {
 
   tabs.forEach((tab, i) => {
     const id = toClassName(tab.textContent);
-    // decorate tabpanel
+
+    // throw out all styled buttons
+    [...block.querySelectorAll('a.btn')].forEach((button) => {
+      button.classList.remove('btn', 'fancy');
+    });
+
     const tabpanel = block.children[i];
     tabpanel.className = 'tabs-panel';
     tabpanel.id = `tabpanel-${id}`;

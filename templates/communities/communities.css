@@ -3,14 +3,6 @@
     flex: 0;
   }
 
-  .navbar {
-    align-items: center;
-  }
-
-  .subnav-wrapper {
-    padding-top: 10px;
-  }
-
   .content-wrapper {
     h1 {
       font-size: 30px;
@@ -19,6 +11,20 @@
       font-family: inherit;
       font-weight: 500;
     }
+
+    @media (max-width: 991px) {
+      .repeating-grid {
+        grid-template-columns: 1fr;
+
+        .tabs-wrapper {
+          grid-column: span 1;
+        }
+      }
+    }
+  }
+
+  .tabs-wrapper {
+    grid-column: span 2;
   }
 
   .section.inventory {
@@ -44,7 +50,6 @@
       background: var(--blue);
       mask: url("/icons/directions.svg") no-repeat center;
       margin-left: 8px;
-      top: 1px;
     }
 
   }
@@ -118,9 +123,14 @@
   }
 
   .sales-center-info {
+    h2 {
+      padding: 0;
+      margin: 0;
+    }
+
     @media (max-width: 768px) {
-      .sales-center-data {
-        display: none;
+      h2 {
+        font-size: 24px;
       }
     }
 
