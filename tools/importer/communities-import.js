@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
+
 /** Create Carousel block */
 const createCarouselBlock = (document) => {
   const carousel = document.querySelector('#myCarousel');
@@ -15,20 +14,16 @@ const createCarouselBlock = (document) => {
       (optional)`;
 
     let title1Html = communityTitleTop
-      ? `<h2>${
-          communityTitleTop.querySelector('#communitytitle-1')?.innerHTML || ''
-        }</h2>${
-          communityTitleTop.querySelector('#communitytitle-2')?.innerHTML || ''
-        }`
+      ? `<h2>${communityTitleTop.querySelector('#communitytitle-1')?.innerHTML || ''
+      }</h2>${communityTitleTop.querySelector('#communitytitle-2')?.innerHTML || ''
+      }`
       : '';
     let title2Html = communityTitleBottom
-      ? `<h2>${
-          communityTitleBottom.querySelector('#communitytitle-3')?.innerHTML ||
-          ''
-        }</h2>${
-          communityTitleBottom.querySelector('#communitytitle-4')?.innerHTML ||
-          ''
-        }`
+      ? `<h2>${communityTitleBottom.querySelector('#communitytitle-3')?.innerHTML ||
+      ''
+      }</h2>${communityTitleBottom.querySelector('#communitytitle-4')?.innerHTML ||
+      ''
+      }`
       : '';
 
     if (title1Html || title2Html) {
@@ -140,12 +135,25 @@ const createSubNavBlock = (document) => {
           .map((info) => `<li>${info}</li>`)
           .join('');
 
-        const ampTitle = `AMP (Alliance Management Partners)<br>`;
+        const ampTitle = tab.querySelector(".blueheader + strong").textContent.trim();
 
-        const hoaContactInfo = Array.from(tab.querySelectorAll('a, small'))
-          .map((el) => el.textContent.trim())
-          .join(`<br>`);
-        tabContent = `<ul><li>${hoaTitle}<ul>${hoaInfo}</ul></li></ul>${ampTitle}${hoaContactInfo}`;
+        const ampTitleElement = tab.querySelector(".blueheader + strong")
+        let nextElement = ampTitleElement.nextSibling;
+        const elementsAfterAmpTitle = [];
+        while (nextElement){
+          elementsAfterAmpTitle.push(`<div>${nextElement.textContent.trim()}</div>`);
+          nextElement = nextElement.nextElementSibling;
+        }
+
+        const hoaContactInfo = elementsAfterAmpTitle.join('');
+        tabContent = `
+        <ul>
+          <li>${hoaTitle}
+            <ul>${hoaInfo}</ul>
+          </li>
+        </ul>
+        <div>${ampTitle}</div>
+        ${hoaContactInfo}`;
       } else if (tabId === 'ebrochure' || tabId === 'interactivefloorplan') {
         const title =
           tabId === 'ebrochure' ? 'eBrochure' : 'Interactive Floor Plan';
@@ -168,21 +176,11 @@ const createSubNavBlock = (document) => {
   }
 };
 
-const createPromotionBlock = (document) => {
-  const promotionElements = Array.from(document.querySelectorAll('.well > h3'));
-  const promotionElement = promotionElements.find(
-    (el) => el.textContent.trim() === 'Current Promotions',
-  );
-  if (promotionElement) {
-    let promotionContent = promotionElement.closest('.well').innerHTML.trim();
-    promotionContent = promotionContent.replace(/<br\s*\/?>/gi, '\n'); // Replace <br> with newline character
-
-    const cells = [['Promotion'], [promotionContent]];
-
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    promotionElement.closest('.well').replaceWith(table);
-  }
-};
+const createDisclaimerFragment = (document) => {
+  const cells = [['Fragment (disclaimer)'], ['https://main--hubblehomes-com--aemsites.hlx.live/fragments/disclaimer']];
+  const table = WebImporter.DOMUtils.createTable(cells, document);
+  document.querySelector('.footerrow').replaceWith(table);
+}
 
 const createLinksBlock = (document) => {
   const linksContainer = document.querySelector('.detaillinks');
@@ -224,6 +222,9 @@ const createMetadata = (main, document, url, html) => {
     el.src = img.content;
     meta.Image = el;
   }
+
+  // Template Name 
+  meta.Template = 'communities';
 
   // Community Name
   const nameElement = document.querySelector('h1.h1');
@@ -313,8 +314,8 @@ export default {
 
     WebImporter.DOMUtils.remove(main, [
       '.navholder',
+      '.well',
       '#skiptocontent',
-      '.footerrow',
       '.subfooter',
       '.breadcrumb',
       '.sidebar',
@@ -346,8 +347,8 @@ export default {
     createCarouselBlock(document);
     createDescriptionBlock(document);
     createSubNavBlock(document);
-    createPromotionBlock(document);
     createLinksBlock(document);
+    createDisclaimerFragment(document);
     createMetadata(main, document, url, html);
     removeUnwantedSections(document);
 
@@ -359,69 +360,3 @@ export default {
       new URL(url).pathname.replace(/\.html$/, '').replace(/\/$/, ''),
     ),
 };
-
-// const createSpecialistsBlock = (document) => {
-//   const specialistsSection1 = document.querySelectorAll(
-//     '.detailthirdcolumncontent .agents-right',
-//   );
-//   const specialistsSection2 = document.querySelectorAll(
-//     '.container.topbuffer .row .text-center',
-//   );
-
-//   const specialistsInfo = [];
-
-//   specialistsSection1?.forEach((specialist) => {
-//     const name = specialist.childNodes[0].textContent.trim();
-//     const email =
-//       specialist
-//         .querySelector('a[aria-label^="Send Email"]')
-//         ?.textContent.trim() || '';
-//     const phone =
-//       specialist.querySelector('a[aria-label^="Call"]')?.textContent.trim() ||
-//       '';
-//     specialistsInfo.push({ name, email, phone, photo: '' }); // Temporarily push without photo
-//   });
-
-//   specialistsSection2?.forEach((specialist, index) => {
-//     const photo = specialist.querySelector('img')?.src || '';
-//     if (specialistsInfo[index]) {
-//       specialistsInfo[index].photo = photo; // Update the corresponding specialist info with photo
-//     }
-//   });
-
-//   const tables = [];
-//   specialistsInfo.forEach((specialist) => {
-//     const cells = [
-//       ['Specialists'],
-//       ['Photo', `<img src="${specialist.photo}" alt="${specialist.name}">`],
-//       ['Name', specialist.name],
-//       ['Email', specialist.email],
-//       ['Phone', specialist.phone],
-//     ];
-
-//     const table = WebImporter.DOMUtils.createTable(cells, document);
-//     tables.push(table);
-//   });
-
-//   // Create a container to hold all the new tables
-//   const container = document.createElement('div');
-//   tables.forEach((table) => {
-//     container.appendChild(table);
-//   });
-
-//   // Append the new tables to the original specialists container
-//   const specialistsContainer = document.querySelector(
-//     '.container.topbuffer .row',
-//   );
-//   if (specialistsContainer) {
-//     specialistsContainer.append(container);
-//   }
-
-//   // Remove the original specialist elements
-//   const specialistsToRemove = document.querySelectorAll(
-//     '.container.topbuffer .row .text-center',
-//   );
-//   specialistsToRemove?.forEach((ele) => {
-//     ele.remove();
-//   });
-// };
