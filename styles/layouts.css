@@ -200,6 +200,14 @@
         }
       }
 
+      .left {
+        padding-right: 10px;
+      }
+
+      .right {
+        margin-top: 5px;
+      }
+
       aside {
         flex: 0 0 25%;
         padding: 0 15px;

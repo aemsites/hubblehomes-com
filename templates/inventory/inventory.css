@@ -46,7 +46,11 @@
 }
 
 .inventory .pricing-information {
-  flex: 0;
+  flex: 1;
+
+  @media (max-width: 992px) {
+    flex: 0;
+  }
 
   h3 {
     font-size: var(--heading-font-size-xl);
