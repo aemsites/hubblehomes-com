@@ -1,51 +1,75 @@
-import { button } from './dom-helpers.js';
+/* eslint-disable function-call-argument-newline,  max-len, function-paren-newline, object-curly-newline */
+
+/*
+Notes:
+
+Category filter functionality is depentant on fstab.yaml folder mappings
+
+fstab.yaml
+folders:
+  /news/category/: /news
+
+*/
+
+import { button, ul, li, a, small } from './dom-helpers.js';
 
 export default class DataPage {
   constructor(options) {
     const {
       jsonPath,
       articleContainer,
-      article,
-      articlesPerPage,
+      articleCard,
+      articlesPerPage = 10,
       paginationContainer,
-      paginationMaxBtns,
+      paginationMaxBtns = 7,
       categoryFilter,
     } = options;
 
     this.jsonPath = jsonPath;
     this.articleContainer = articleContainer;
-    this.article = article;
+    this.articleCard = articleCard;
     this.articlesPerPage = articlesPerPage;
     this.paginationContainer = paginationContainer;
-    this.maxBtns = paginationMaxBtns;
+    this.paginationMaxBtns = paginationMaxBtns;
     this.categoryFilter = categoryFilter;
 
     this.currentPage = 0;
     this.totalArticles = 0;
+    this.selectedCategory = null;
+    this.allArticles = []; // ADDED: Store all articles
   }
 
   async getArticles(page) {
-    const offset = page * this.articlesPerPage;
-    const response = await fetch(`${this.jsonPath}?offset=${offset}&limit=${this.articlesPerPage}`);
-    const data = await response.json();
-    const newsArticles = data.data;
+    if (this.allArticles.length === 0) { // ADDED: Fetch articles only if not already fetched
+      const response = await fetch(this.jsonPath);
+      const json = await response.json();
+      this.allArticles = json.data; // ADDED: Store fetched articles
+    }
 
-    this.totalArticles = data.total;
-    this.renderArticles(newsArticles);
+    let articles = this.allArticles;
+
+    if (this.selectedCategory) {
+      articles = articles.filter((article) => article.categories.includes(this.selectedCategory));
+      this.totalArticles = articles.length; // update article length for pagination
+    } else {
+      this.totalArticles = articles.length; // use length of all articles
+    }
+
+    this.renderArticles(articles.slice(page * this.articlesPerPage, (page + 1) * this.articlesPerPage));
     this.updatePagination();
   }
 
   renderArticles(articles) {
     this.articleContainer.innerHTML = '';
     const article = document.createDocumentFragment();
-    articles.forEach((a) => {
-      article.appendChild(this.article(a));
+    articles.forEach((card) => {
+      article.appendChild(this.articleCard(card));
     });
     this.articleContainer.appendChild(article);
   }
 
   addPageBtn(n) {
-    const $pageBtn = button({ class: n === this.currentPage ? 'active' : '' }, (n + 1).toString());
+    const $pageBtn = button({ class: n === this.currentPage ? 'active yellow' : '' }, (n + 1).toString());
     $pageBtn.addEventListener('click', () => {
       if (this.currentPage !== n) {
         this.currentPage = n;
@@ -56,6 +80,9 @@ export default class DataPage {
   }
 
   updatePagination() {
+    // ingore if paginationContainer doesn't exist
+    if (!this.paginationContainer) return;
+
     this.paginationContainer.innerHTML = '';
     const p = document.createDocumentFragment();
 
@@ -71,11 +98,11 @@ export default class DataPage {
 
     const totalPages = Math.ceil(this.totalArticles / this.articlesPerPage);
 
-    if (totalPages <= this.maxBtns + 2) {
+    if (totalPages <= this.paginationMaxBtns + 2) {
       Array.from({ length: totalPages }, (_, i) => p.appendChild(this.addPageBtn(i)));
     } else {
-      const half = Math.floor((this.maxBtns - 3) / 2); // buttons on either side of current
-      const extra = (this.maxBtns - 1) % 2; // if remainder exists
+      const half = Math.floor((this.paginationMaxBtns - 3) / 2); // buttons on either side of active
+      const extra = (this.paginationMaxBtns - 1) % 2; // remainder (if maxBtns is an even n)
       let startPage;
       let endPage;
       const $spaceBtn = button({ class: 'space' }, '...');
@@ -84,7 +111,7 @@ export default class DataPage {
       // determine start/end values
       if (this.currentPage < totalPages - half * 2 + 1 + extra) {
         startPage = Math.max(1, this.currentPage - half);
-        endPage = Math.max(this.maxBtns - 2, this.currentPage + half + extra);
+        endPage = Math.max(this.paginationMaxBtns - 2, this.currentPage + half + extra);
       } else {
         startPage = totalPages - half * 2 - 2 - extra;
         endPage = totalPages - 1;
@@ -121,15 +148,55 @@ export default class DataPage {
     this.paginationContainer.appendChild(p);
   }
 
+  generateCategoryList(data) {
+    const categories = {};
 
+    data.forEach((article) => {
+      article.categories.split(', ').forEach((category) => {
+        if (!categories[category]) {
+          categories[category] = 0;
+        }
+        categories[category] += 1;
+      });
+    });
 
-  // put category logic here
+    const $categoryList = ul({ class: 'filter' });
 
+    Object.keys(categories).forEach((category) => {
+      const $categoryItem = li(
+        a({ href: '#' },
+          `${category} `, small(`(${categories[category]})`),
+        ),
+      );
 
+      $categoryItem.querySelector('a').addEventListener('click', (event) => {
+        event.preventDefault();
+        this.selectedCategory = category;
+        this.currentPage = 0;
+        this.getArticles(this.currentPage);
+      });
 
+      $categoryList.appendChild($categoryItem);
+    });
 
-  
+    this.categoryFilter.innerHTML = '';
+    this.categoryFilter.appendChild($categoryList);
+  }
+
   async render() {
-    await this.getArticles(this.currentPage);
+    const response = await fetch(this.jsonPath);
+    const json = await response.json();
+
+    // render if categoryFilter is defined
+    if (this.categoryFilter) this.generateCategoryList(json.data);
+
+    // render if articleCard & articleContainer are defined
+    if (this.articleCard && this.articleContainer) {
+      // Todo: read page count and use article card to create skeleton loader
+
+      await this.getArticles(this.currentPage);
+    }
+
+    // todo add history and push state
   }
 }
