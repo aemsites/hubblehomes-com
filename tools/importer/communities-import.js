@@ -1,7 +1,7 @@
-/* eslint-disable max-len */
+import { createDescriptionBlock, createLinksBlock, createDisclaimerFragment, createOverviewBlock } from './common.js';
 
 /** Create Carousel block */
-const createCarouselBlock = (document) => {
+const createCarouselBlock = (document, main) => {
   const carousel = document.querySelector('#myCarousel');
   if (carousel) {
     const cells = [['Carousel (auto-2000)']]; // Title row
@@ -60,26 +60,32 @@ const createCarouselBlock = (document) => {
     });
 
     const table = WebImporter.DOMUtils.createTable(cells, document);
-    carousel.replaceWith(table); // Replace the original carousel section with the new table
+    main.append(table);
   }
 };
 
-const createDescriptionBlock = (document) => {
+const createCommunityDescriptionBlock = (document, main) => {
   const descriptionContainer = document.querySelector('.col-sm-6.col-xs-6');
+
+  descriptionContainer?.querySelector('h1')?.remove();
+  descriptionContainer?.querySelector('h4')?.remove();
+  descriptionContainer?.querySelector('.row')?.remove();
+
   const descriptionText = descriptionContainer?.innerHTML.trim();
 
   const cells = [['Description'], [descriptionText]];
 
   const table = WebImporter.DOMUtils.createTable(cells, document);
-  descriptionContainer?.replaceWith(table);
-};
+  main.append(table);
+}
 
-const createSubNavBlock = (document) => {
+
+const createMinimalTabsBlock = (document, main) => {
   const tabs = document.querySelectorAll(
     '.detailaccordioncontent > .accordion-group > .collapse',
   );
   if (tabs.length > 0) {
-    const cells = [['SubNav']];
+    const cells = [['Tabs (minimal)']];
 
     tabs.forEach((tab) => {
       const tabId = tab.id;
@@ -91,25 +97,8 @@ const createSubNavBlock = (document) => {
         : tabId;
 
       let tabContent = '';
-      if (tabId === 'overview') {
-        const overviewCategories = Array.from(tab.querySelectorAll('dt'))
-          .map((el) => el.textContent.trim().toLowerCase())
-          .join(', ');
-        tabContent = `<code>${overviewCategories}</code>`;
-      } else if (tabId === 'interactivesitemap') {
-        const interactiveSitePlan = tab.querySelector(
-          'a.gtm-interactivesiteplan',
-        )
-          ? 'interactive site plan'
-          : '';
-        const staticSitemap = tab.querySelector('a.gtm-siteplanpdf')
-          ? 'static sitemap'
-          : '';
-        const sitemapCategories = [interactiveSitePlan, staticSitemap]
-          .filter(Boolean)
-          .join(', ');
-        tabContent = `<p>${sitemapCategories}</p>`;
-      } else if (tabId === 'schools') {
+
+      if (tabId === 'schools') {
         const schoolDistrict = tab.querySelector('p')?.textContent.trim() || '';
         const schoolDetails = Array.from(tab.querySelectorAll('dl'))
           .map((dl) => {
@@ -121,10 +110,26 @@ const createSubNavBlock = (document) => {
         tabContent = `<p>${schoolDistrict}</p><ul>${schoolDetails}</ul>`;
       } else if (tabId === 'amenities') {
         const amenitiesTitle = 'Amenities';
-        const amenities = Array.from(tab.querySelectorAll('dd p'))
-          .map((el) => el.textContent.trim())
-          .join(', ');
-        tabContent = `<ul><li>${amenitiesTitle}<ul><li>${amenities}</li></ul></li></ul>`;
+
+        const ddElements = Array.from(tab.querySelectorAll('dd'));
+
+        const amenities = ddElements
+          .flatMap(dd =>
+            Array.from(dd.querySelectorAll('p'))
+              .flatMap(p => p.textContent.split('\n').map(line => line.trim()))
+          )
+          .filter(text => text.length > 0);
+
+        const amenitiesListItems = amenities.map(amenity => `<li>${amenity}</li>`).join('');
+
+        tabContent = `
+          <ul>
+            <li>${amenitiesTitle}
+              <ul>
+                ${amenitiesListItems}
+              </ul>
+            </li>
+          </ul>`;
       } else if (tabId === 'hoa') {
         const hoaTitle = 'HOA Info';
         const hoaInfoElement = tab.querySelector('.blueheader');
@@ -135,12 +140,12 @@ const createSubNavBlock = (document) => {
           .map((info) => `<li>${info}</li>`)
           .join('');
 
-        const ampTitle = tab.querySelector(".blueheader + strong").textContent.trim();
+        const ampTitle = tab.querySelector(".blueheader + br + strong").textContent.trim();
 
-        const ampTitleElement = tab.querySelector(".blueheader + strong")
+        const ampTitleElement = tab.querySelector(".blueheader + br + strong");
         let nextElement = ampTitleElement.nextSibling;
         const elementsAfterAmpTitle = [];
-        while (nextElement){
+        while (nextElement) {
           elementsAfterAmpTitle.push(`<div>${nextElement.textContent.trim()}</div>`);
           nextElement = nextElement.nextElementSibling;
         }
@@ -154,51 +159,19 @@ const createSubNavBlock = (document) => {
         </ul>
         <div>${ampTitle}</div>
         ${hoaContactInfo}`;
-      } else if (tabId === 'ebrochure' || tabId === 'interactivefloorplan') {
-        const title =
-          tabId === 'ebrochure' ? 'eBrochure' : 'Interactive Floor Plan';
-        const linkClass =
-          tabId === 'ebrochure' ? 'gtm-ebrochure' : 'gtm-interactivefloorplan';
-        const linkElement = tab.querySelector(`a.${linkClass}`);
-        const linkHtml = linkElement ? linkElement.outerHTML : '';
-        tabContent = `<ul><li>${title}<ul><li>${linkHtml}</li></ul></li></ul>`;
-      } else if (tabId !== 'videophotos') {
-        tabContent = tab.innerHTML.trim();
       }
 
-      if (tabTitle && tabId !== 'videophotos') {
+      if (tabContent) {
         cells.push([tabTitle, tabContent]);
       }
+
     });
 
     const table = WebImporter.DOMUtils.createTable(cells, document);
-    document.querySelector('.detailaccordioncontent').replaceWith(table);
+    main.append(table)
   }
 };
 
-const createDisclaimerFragment = (document) => {
-  const cells = [['Fragment (disclaimer)'], ['https://main--hubblehomes-com--aemsites.hlx.live/fragments/disclaimer']];
-  const table = WebImporter.DOMUtils.createTable(cells, document);
-  document.querySelector('.footerrow').replaceWith(table);
-}
-
-const createLinksBlock = (document) => {
-  const linksContainer = document.querySelector('.detaillinks');
-  if (linksContainer) {
-    const links = Array.from(linksContainer.querySelectorAll('a'))
-      .map((link) => link.outerHTML)
-      .join('<br>');
-
-    const cells = [['Links'], [links]];
-
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-
-    const detailAccordionThirdColumn = document.querySelector(
-      '.detailthirdcolumncontent',
-    );
-    detailAccordionThirdColumn.replaceWith(table);
-  }
-};
 
 const createMetadata = (main, document, url, html) => {
   const meta = {};
@@ -222,9 +195,6 @@ const createMetadata = (main, document, url, html) => {
     el.src = img.content;
     meta.Image = el;
   }
-
-  // Template Name 
-  meta.Template = 'communities';
 
   // Community Name
   const nameElement = document.querySelector('h1.h1');
@@ -285,72 +255,21 @@ const createMetadata = (main, document, url, html) => {
   return meta;
 };
 
-const removeUnwantedSections = (document) => {
-  // Remove specific .container elements but not the ones containing home specialists
-  const containers = document.querySelectorAll('.container');
-  containers.forEach((container) => {
-    if (container.querySelector('#models')) {
-      container.remove();
-    }
-  });
-
-  const detailAccordion = document.querySelector('.detailaccordioncontent');
-  detailAccordion?.remove();
-
-  const detailAccordionThirdColumn = document.querySelector(
-    '.detailthirdcolumncontent',
-  );
-  detailAccordionThirdColumn?.remove();
-
-  const subnav = document.querySelector(
-    '.container > .row > .col-sm-12 > .btn-group',
-  );
-  subnav?.remove();
-};
-
 export default {
   transformDOM: ({ document, url, html, params }) => {
     const main = document.body;
 
-    WebImporter.DOMUtils.remove(main, [
-      '.navholder',
-      '.well',
-      '#skiptocontent',
-      '.subfooter',
-      '.breadcrumb',
-      '.sidebar',
-      '.sharethis-inline-share-buttons',
-      'form',
-      '#chat-widget-container',
-      '.mobile-footer',
-      '.modal-footer',
-      '.cd-top',
-      '#buttonClickModal',
-      'noscript',
-      '#communities',
-      '.homesearchform',
-      '.container > .row > .col-sm-12 > small > a',
-      '.container > .row > .topbuffer',
-      '.modal',
-      '.graydivider',
-      ':scope > img',
-      '#inventoryshowhide',
-      '.container.topbuffer .row .text-center',
-      '.container.topbuffer .row .col-sm-12 h2',
-      '.btn-primary',
-      '.btn-fancy',
-      '.col-sm-6 h4',
-      '.col-sm-6 br',
-      '.container .bluedotsrow',
-    ]);
-
-    createCarouselBlock(document);
-    createDescriptionBlock(document);
-    createSubNavBlock(document);
-    createLinksBlock(document);
-    createDisclaimerFragment(document);
+    createCarouselBlock(document, main);
+    createOverviewBlock(document, main);
+    createCommunityDescriptionBlock(document, main);
+    createMinimalTabsBlock(document, main);
+    createLinksBlock(document, main);
+    createDisclaimerFragment(document, main);
     createMetadata(main, document, url, html);
-    removeUnwantedSections(document);
+
+    WebImporter.DOMUtils.remove(main, [
+      ':scope > :not(table)',
+    ]);
 
     return main;
   },

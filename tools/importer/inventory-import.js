@@ -1,8 +1,15 @@
-/* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
+import {
+  createDisclaimerFragment,
+  createLinksBlock,
+  createDescriptionBlock,
+  createOverviewBlock,
+  createActionButtonBlock,
+  createFloorplanTabsBlock,
+  createEmbedBlock
+} from './common.js';
+
 /** Create Carousel block */
-const createCarouselBlock = (document) => {
+const createCarouselBlock = (document, main) => {
   const carousel = document.querySelector('.homesearchmap');
   if (carousel) {
     const cells = [['Carousel (auto-2000)']]; // Title row
@@ -14,36 +21,7 @@ const createCarouselBlock = (document) => {
     const defaultText = `Default Slide Text
       (optional)`;
 
-    let title1Html = communityTitleTop
-      ? `<h2>${communityTitleTop.querySelector('#communitytitle-1')?.innerHTML ||
-      communityTitleTop.querySelector('.communitytitle-large')?.innerHTML ||
-      ''
-      }</h2>${communityTitleTop.querySelector('#communitytitle-2')?.innerHTML ||
-      communityTitleBottom.querySelector('.communitytitle-small')
-        ?.innerHTML ||
-      ''
-      }`
-      : '';
-
-    let title2Html = communityTitleBottom
-      ? `<h2>${communityTitleBottom.querySelector('#communitytitle-3')?.innerHTML ||
-      communityTitleBottom.querySelector('.communitytitle-large')
-        ?.innerHTML ||
-      ''
-      }</h2>${communityTitleBottom.querySelector('#communitytitle-4')?.innerHTML ||
-      communityTitleBottom.querySelector('.communitytitle-medium')
-        ?.innerHTML ||
-      ''
-      }`
-      : '';
-
-    if (title1Html || title2Html) {
-      let combinedTitleHtml = `${title1Html}<hr>${title2Html}`;
-      cells.push([defaultText, combinedTitleHtml]);
-    }
-
-    communityTitleTop?.remove();
-    communityTitleBottom?.remove();
+    cells.push([defaultText, '']);
 
     const items = carousel.querySelectorAll('.item');
     items.forEach((item) => {
@@ -80,187 +58,10 @@ const createCarouselBlock = (document) => {
     }
 
     const table = WebImporter.DOMUtils.createTable(cells, document);
-    carousel?.replaceWith(table); // Replace the original carousel section with the new table
-    imageGalleryElements[0].closest('.container.topbuffer')?.remove();
+    main.append(table);
   }
-};
+}
 
-const createDescriptionBlock = (document) => {
-  const descriptionContainer = document.querySelector('.col-sm-6.col-xs-6');
-  const headerInfo = document.querySelector('.col-sm-6.col-xs-6 .row');
-  headerInfo.remove();
-
-  const descriptionText = descriptionContainer?.innerHTML.trim();
-
-  const cells = [['Description'], [descriptionText]];
-
-  const table = WebImporter.DOMUtils.createTable(cells, document);
-  descriptionContainer?.replaceWith(table);
-};
-
-const createSubNavBlock = (document) => {
-  const tabs = document.querySelectorAll(
-    '.detailaccordioncontent > .accordion-group > .collapse',
-  );
-  if (tabs.length > 0) {
-    const cells = [['SubNav']];
-
-    tabs.forEach((tab) => {
-      const tabId = tab.id;
-      const tabTitleElement = document.querySelector(
-        `button[data-target="#${tabId}"]`,
-      );
-      const tabTitle = tabTitleElement
-        ? tabTitleElement.textContent.trim()
-        : tabId;
-
-      let tabContent = '';
-      if (tabId === 'overview') {
-        const overviewCategories = Array.from(tab.querySelectorAll('dt'))
-          .map((el) => el.textContent.trim().toLowerCase())
-          .join(', ');
-        tabContent = `<code>${overviewCategories}</code>`;
-      } else if (tabId === 'interactivesitemap') {
-        const interactiveSitePlan = tab.querySelector(
-          'a.gtm-interactivesiteplan',
-        )
-          ? 'interactive site plan'
-          : '';
-        const staticSitemap = tab.querySelector('a.gtm-siteplanpdf')
-          ? 'static sitemap'
-          : '';
-        const sitemapCategories = [interactiveSitePlan, staticSitemap]
-          .filter(Boolean)
-          .join(', ');
-        tabContent = `<p>${sitemapCategories}</p>`;
-      } else if (tabId === 'schools') {
-        const schoolDistrict = tab.querySelector('p')?.textContent.trim() || '';
-        const schoolDetails = Array.from(tab.querySelectorAll('dl'))
-          .map((dl) => {
-            const title = dl.querySelector('dt')?.textContent.trim() || '';
-            const value = dl.querySelector('dd')?.textContent.trim() || '';
-            return `<li>${title}<ul><li>${value}</li></ul></li>`;
-          })
-          .join('');
-        tabContent = `<p>${schoolDistrict}</p><ul>${schoolDetails}</ul>`;
-      } else if (tabId === 'amenities') {
-        const amenitiesTitle = 'Amenities';
-        const amenities = Array.from(tab.querySelectorAll('dd p'))
-          .map((el) => el.textContent.trim())
-          .join(', ');
-        tabContent = `<ul><li>${amenitiesTitle}<ul><li>${amenities}</li></ul></li></ul>`;
-      } else if (tabId === 'hoa') {
-        const hoaTitle = 'HOA Info';
-        const hoaInfo = Array.from(tab.querySelectorAll('.blueheader'))
-          .map((el) => el.innerHTML.split('<br>'))
-          .flat()
-          .map((info) => info.trim())
-          .filter((info) => info)
-          .map((info) => `<li>${info}</li>`)
-          .join('');
-        const ampTitle = 'AMP (Alliance Management Partners)';
-        const hoaContactInfo = Array.from(tab.querySelectorAll('a, small'))
-          .map((el) => el.textContent.trim())
-          .join('\n');
-        tabContent = `<ul><li>${hoaTitle}<ul>${hoaInfo}</ul></li></ul>\n${ampTitle}\n${hoaContactInfo}`;
-      } else if (tabId === 'ebrochure' || tabId === 'interactivefloorplan') {
-        const title =
-          tabId === 'ebrochure' ? 'eBrochure' : 'Interactive Floor Plan';
-        const linkClass =
-          tabId === 'ebrochure' ? 'gtm-ebrochure' : 'gtm-interactivefloorplan';
-        const linkElement = tab.querySelector(`a.${linkClass}`);
-        const linkHtml = linkElement ? linkElement.outerHTML : '';
-        tabContent = `<ul><li>${title}<ul><li>${linkHtml}</li></ul></li></ul>`;
-      } else if (tabId !== 'videophotos') {
-        tabContent = tab.innerHTML.trim();
-      }
-
-      if (tabTitle && tabId !== 'videophotos') {
-        cells.push([tabTitle, tabContent]);
-      }
-    });
-
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    document.querySelector('.detailaccordioncontent').replaceWith(table);
-  }
-};
-
-const createFloorplanLinksBlock = (document) => {
-  const linksContainer = document.querySelector('.container.topbuffer .row .col-sm-12.text-center');
-  if (!linksContainer) return;
-
-  // Verify all children are <br> or <a> elements
-  const isValidChild = (child) => ['BR', 'A'].includes(child.tagName);
-  if (!Array.from(linksContainer.children).every(isValidChild)) return;
-
-  // Extract and format anchor elements
-  const linksHtml = Array.from(linksContainer.children)
-    .filter((child) => child.tagName === 'A')
-    .map((link) => `<div>${link.outerHTML}</div>`)
-    .join('');
-
-  const cells = [['Floorplan Links'], [linksHtml]];
-  const table = WebImporter.DOMUtils.createTable(cells, document);
-  linksContainer.replaceWith(table);
-};
-
-const createFloorplanTabsBlock = (document) => {
-  const floorplanContainer = document.querySelector('.responsive-tabs');
-  if (floorplanContainer) {
-    const cells = [['Tabs (floorplan)']];
-
-    // Floorplan levels
-    const levels = floorplanContainer.querySelectorAll('h4');
-    levels.forEach((level) => {
-      const img = level.nextElementSibling.querySelector('img');
-      if (img) {
-        cells.push([
-          `${level.textContent}`,
-          `<img src="${img.src}" alt="${img.alt}">`,
-        ]);
-      }
-    });
-
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    floorplanContainer.replaceWith(table); // Replace the original floorplan section with the new table
-  }
-};
-
-const createEmbedBlock = (document) => {
-  const matterportIframe = document.querySelector(
-    '.embed-responsive-item[src*="matterport.com"]',
-  );
-  const matterportSrc = matterportIframe?.src;
-  if (matterportIframe) {
-    const cells = [['Embed (Matterport)']];
-    cells.push(['URL', matterportSrc]);
-
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    const container = matterportIframe.closest('.container.topbuffer');
-    if (container) {
-      container.replaceWith(table);
-    }
-  }
-};
-
-const createLinksBlock = (document) => {
-  debugger;
-  const linksContainer = document.querySelector('.detaillinks');
-  if (linksContainer) {
-    const links = Array.from(linksContainer.querySelectorAll('a'))
-      .map((link) => link.outerHTML)
-      .join('<br>');
-
-    const cells = [['Links'], [links]];
-
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-
-    const detailAccordionThirdColumn = document.querySelector(
-      '.detailthirdcolumncontent',
-    );
-    detailAccordionThirdColumn.replaceWith(table);
-  }
-};
 
 const createMetadata = (main, document, url, html) => {
   const meta = {};
@@ -270,9 +71,6 @@ const createMetadata = (main, document, url, html) => {
   if (title) {
     meta.Title = title.textContent.replace(/[\n\t]/gm, '');
   }
-
-  // Template
-  meta.template = 'inventory';
 
   // Description
   const desc = document.querySelector("[property='og:description']");
@@ -355,46 +153,6 @@ const createMetadata = (main, document, url, html) => {
   return meta;
 };
 
-const createDisclaimerFragment = (document) => {
-  const cells = [['Fragment (disclaimer)'], ['https://main--hubblehomes-com--aemsites.hlx.live/fragments/disclaimer']];
-  const table = WebImporter.DOMUtils.createTable(cells, document);
-  document.querySelector('.footerrow').replaceWith(table);
-}
-
-const removeUnwantedSections = (document) => {
-  // Remove filters section
-  const filtersSection = document.querySelector('.well small');
-  filtersSection?.parentElement.remove();
-
-  // Remove specific .container elements but not the ones containing home specialists
-  const containers = document.querySelectorAll('.container');
-  containers.forEach((container) => {
-    if (container.querySelector('.panel-group')) {
-      container.remove();
-    }
-  });
-
-  // const detailAccordion = document.querySelector('.detailaccordioncontent');
-  // detailAccordion?.remove();
-
-  const detailAccordionThirdColumn = document.querySelector(
-    '.detailthirdcolumncontent',
-  );
-  detailAccordionThirdColumn?.remove();
-
-  const subnav = document.querySelector(
-    '.container > .row > .col-sm-12 > .btn-group',
-  );
-  subnav?.remove();
-
-  const rowElement = document.querySelector(
-    '.row .col-sm-6 .row, .row .col-sm-6 .gtm-getdrivingdirectionsinventory, .row .col-sm-6 h4, .row .col-sm-6 h5, .row .col-sm-6 .rightdivider, .row .col-sm-6 .padding-0',
-  );
-  if (rowElement) {
-    rowElement.remove();
-  }
-};
-
 export default {
   /**
    * Apply DOM operations to the provided document and return
@@ -409,45 +167,20 @@ export default {
     // define the main element: the one that will be transformed to Markdown
     const main = document.body;
 
-    // use helper method to remove header, footer, etc.
-    WebImporter.DOMUtils.remove(main, [
-      '.navholder',
-      '#skiptocontent',
-      '.subfooter',
-      '.breadcrumb',
-      '.sidebar',
-      '.sharethis-inline-share-buttons',
-      'form',
-      '#chat-widget-container',
-      '.mobile-footer',
-      '.modal-footer',
-      '.cd-top',
-      '#buttonClickModal',
-      'noscript',
-      '#communities',
-      '.homesearchform',
-      '.container > .row > .col-sm-12 > small > a',
-      '.container > .row > .col-sm-6 > small > a',
-      '.modal',
-      '.graydivider',
-      ':scope > img',
-      '#inventoryshowhide',
-      '.container.topbuffer small',
-      '.btn-fancy',
-    ]);
-
     // Use helper methods to create and append various blocks to the main element
-    // Add other blocks creation calls here, e.g., createTabs(main, document);
-    createCarouselBlock(document);
-    createDescriptionBlock(document);
-    createSubNavBlock(document);
-    createEmbedBlock(document);
-    createLinksBlock(document);
-    createFloorplanLinksBlock(document);
-    createFloorplanTabsBlock(document);
-    createDisclaimerFragment(document);
+    createCarouselBlock(document, main);
+    createDescriptionBlock(document, main);
+    createOverviewBlock(document, main);
+    createLinksBlock(document, main);
+    createActionButtonBlock(document, main);
+    createFloorplanTabsBlock(document, main);
+    createEmbedBlock(document, main);
+    createDisclaimerFragment(document, main);
     createMetadata(main, document, url, html);
-    removeUnwantedSections(document);
+
+    WebImporter.DOMUtils.remove(main, [
+      ':scope > :not(table)',
+    ]);
 
     return main;
   },
