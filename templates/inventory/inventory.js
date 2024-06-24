@@ -54,9 +54,11 @@ function buildBreadCrumbs() {
 async function buildInventoryCards(inventoryHomes, community) {
   window.hh = window.hh || {};
   window.hh.current = window.hh.current || {};
-  window.hh.current.models = inventoryHomes;
-  window.hh.current.sale_center = await getSalesCenterForCommunity(community);
-  const modelsBlock = buildBlock('cards', []);
+  window.hh.current.models = window.hh.current.models || {};
+  window.hh.current.models[community] = inventoryHomes;
+  window.hh.current.sale_center = window.hh.current.sale_center || {};
+  window.hh.current.sale_center[community] = await getSalesCenterForCommunity(community);
+  const modelsBlock = buildBlock('cards', [['community', community]]);
   modelsBlock.classList.add('inventory');
   const blockWrapper = div(modelsBlock);
   decorateBlock(modelsBlock);

@@ -4,21 +4,21 @@ import InventoryCard from './InventoryCard.js';
 import CommunityCard from './CommunityCard.js';
 
 class CardFactory {
-  static createCard(classList, data) {
+  static createCard(classList, data, community) {
     if (classList.contains('featured')) {
-      return new FeaturedCard(data);
+      return new FeaturedCard(data, community);
     }
 
     if (classList.contains('home-plans')) {
-      return new HomePlansCard(data);
+      return new HomePlansCard(data, community);
     }
 
     if (classList.contains('inventory')) {
-      return new InventoryCard(data);
+      return new InventoryCard(data, community);
     }
 
     if (classList.contains('community')) {
-      return new CommunityCard(data);
+      return new CommunityCard(data, community);
     }
 
     return undefined;
