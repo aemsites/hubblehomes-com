@@ -17,7 +17,8 @@ const ColumnFormatter = {
 };
 
 /**
- * Builds a list block based on the template and items passed in.
+ * Find the associated data for the current page and build a list of key value pairs
+ * for the columns provided in the items array.
  * @param data - the data from the spreadsheet
  * @param items - the items to build the list from
  * @returns {Promise<Element>} The list of key values wrapped in a dl element.

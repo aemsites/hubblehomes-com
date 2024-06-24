@@ -11,7 +11,7 @@ import {
   span,
   h1,
 } from '../../scripts/dom-helpers.js';
-import { createTemplateBlock } from '../../scripts/block-helper.js';
+import { createTemplateBlock, safeAppend } from '../../scripts/block-helper.js';
 import {
   getInventoryHomeByPath,
   getInventoryHomesByCommunities,
@@ -111,14 +111,22 @@ export default async function decorate(doc) {
   const mainSectionEl = doc.querySelector('main > .section');
   const disclaimer = doc.querySelector('.fragment-wrapper');
   const overview = doc.querySelector('.overview-wrapper');
-  const elevations = doc.querySelector('.elevations-wrapper');
-  elevations.classList.add('section');
-
   const descriptionWrapper = doc.querySelector('.description-wrapper');
-  const floorplanLinks = doc.querySelector('.action-buttons-wrapper');
-  floorplanLinks.classList.add('section');
+
+  const elevations = doc.querySelector('.elevations-wrapper');
+  if (elevations) {
+    elevations.classList.add('section');
+  }
+
+  const actionButtons = doc.querySelector('.action-buttons-wrapper');
+  if (actionButtons) {
+    actionButtons.classList.add('section');
+  }
+
   const tabs = doc.querySelector('.tabs-wrapper');
-  tabs.classList.add('section');
+  if (tabs) {
+    tabs.classList.add('section');
+  }
 
   const accordion = await buildAccordion(homeDetails['model name']);
 
@@ -150,11 +158,12 @@ export default async function decorate(doc) {
     aside(rightAside),
   ));
 
-  mainSectionEl.append(
+  safeAppend(
+    mainSectionEl,
     breadCrumbsEl,
     leftRight,
     elevations,
-    floorplanLinks,
+    actionButtons,
     tabs,
     doc.querySelector('.embed-wrapper'),
     accordion,

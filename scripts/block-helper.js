@@ -17,7 +17,20 @@ async function createTemplateBlock(blockName, blockData) {
   return blockWrapper;
 }
 
+/**
+ * Safely appends elements to the parent element. If the element is null or undefined,
+ * it is not appended.
+ * @param parent the parent element
+ * @param elements the elements to append
+ */
+function safeAppend(parent, ...elements) {
+  elements
+    .filter((element) => element !== null && element !== undefined)
+    .forEach((element) => parent.append(element));
+}
+
 export {
   // eslint-disable-next-line import/prefer-default-export
   createTemplateBlock,
+  safeAppend,
 };

@@ -2,23 +2,17 @@ import { fetchPlaceholders, getMetadata, toCamelCase } from '../../scripts/aem.j
 import { getCommunitiesSheet, getInventorySheet } from '../../scripts/workbook.js';
 import buildCodeBlockListItems from './code-block-resolver.js';
 
-function getBlockItems(els, placeholders) {
-  return els.reduce((blocks, codeEl) => {
-    // each item here is a column with a list of keys
-    const label = codeEl.querySelector('p').textContent;
-    blocks[label] = [];
-    const code = codeEl.querySelector('code').textContent;
-    const keys = code.trim().split(',');
-
-    keys.forEach((keyItem) => {
-      blocks[label].push({
-        label: placeholders[toCamelCase(keyItem.trim())],
-        key: keyItem.trim(),
-      });
+function getBlockItems(columns, placeholders) {
+  const blocks = {};
+  columns.forEach((column) => {
+    const key = column.trim();
+    blocks[key] = [];
+    blocks[key].push({
+      label: placeholders[toCamelCase(key)],
+      key,
     });
-
-    return blocks;
-  }, {});
+  });
+  return blocks;
 }
 
 async function loadSheetData(template) {
@@ -35,10 +29,11 @@ export default async function decorate(block) {
   const template = getMetadata('template');
   const sheetData = await loadSheetData(template);
   const placeholders = await fetchPlaceholders();
-  const codeBlockEls = [...block.querySelectorAll(':scope > div:has(code)')];
-
+  const pEl = block.querySelector(':scope p');
+  const columns = pEl.textContent.split(',');
   block.innerHTML = '';
-  const codeBlockItems = getBlockItems(codeBlockEls, placeholders);
+
+  const codeBlockItems = getBlockItems(columns, placeholders);
   const blocks = await Promise.all(Object.values(codeBlockItems).map(
     (items) => buildCodeBlockListItems(sheetData, items),
   ));
