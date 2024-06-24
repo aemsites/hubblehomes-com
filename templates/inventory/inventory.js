@@ -111,9 +111,8 @@ export default async function decorate(doc) {
   const mainSectionEl = doc.querySelector('main > .section');
   const disclaimer = doc.querySelector('.fragment-wrapper');
   const overview = doc.querySelector('.overview-wrapper');
-
   const elevations = doc.querySelector('.elevations-wrapper');
-  elevations.remove();
+  elevations.classList.add('section');
 
   const descriptionWrapper = doc.querySelector('.description-wrapper');
   const floorplanLinks = doc.querySelector('.action-buttons-wrapper');
@@ -154,6 +153,7 @@ export default async function decorate(doc) {
   mainSectionEl.append(
     breadCrumbsEl,
     leftRight,
+    elevations,
     floorplanLinks,
     tabs,
     doc.querySelector('.embed-wrapper'),
