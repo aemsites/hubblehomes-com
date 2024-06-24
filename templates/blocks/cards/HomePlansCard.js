@@ -24,14 +24,33 @@ class HomePlansCard extends BaseCard {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  renderIncentives() {
-    const divEl = div({ class: 'incentive' }, '$25K Your Way on Quick Move-Ins');
+  renderTopActionBar() {
+    return div();
+  }
+
+  renderTopRowOfDetailsContainer_left(gridContainer) {
     const link = a({
-      href: '/new-homes/idaho/boise-metro/caldwell/mason-creek',
-      class: '',
-      'aria-label': 'Community Incentives Available for Mason Creek',
-    }, divEl);
-    return div({ class: 'incentive-container' }, link);
+      href: this.cardData.path,
+      class: 'btn light-blue square',
+    }, 'Get Info');
+
+    gridContainer.appendChild(link);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  // renderIncentives() {
+  //   const divEl = div({ class: 'incentive' }, '$25K Your Way on Quick Move-Ins');
+  //   const link = a({
+  //     href: '/new-homes/idaho/boise-metro/caldwell/mason-creek',
+  //     class: '',
+  //     'aria-label': 'Community Incentives Available for Mason Creek',
+  //   }, divEl);
+  //   return div({ class: 'incentive-container' }, link);
+  // }
+
+  // eslint-disable-next-line class-methods-use-this
+  renderBottomRowOfDetailsContainer() {
+    // override and do not render anything
   }
 }
 

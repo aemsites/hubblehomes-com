@@ -1,13 +1,8 @@
 import {
-  div, li, p, ul,
+  li, p, ul,
 } from '../../../scripts/dom-helpers.js';
 import CardFactory from './CardFactory.js';
 import { readBlockConfig } from '../../../scripts/aem.js';
-
-function createCardLoader() {
-  const loader = div({ class: 'card-loader' });
-  return div({ class: 'wrapper' }, loader);
-}
 
 /**
  * Render a list of models given a title for the section block.
@@ -44,17 +39,6 @@ export default async function decorate(block) {
   if (data.length === 0) {
     block.append(p({ class: 'no-results' }, 'Sorry, no homes match your criteria.'));
     return;
-  }
-
-  const loaderBox = div({ class: 'grid-loader repeating-grid' });
-  for (let i = 0; i < Math.floor(Math.random() * 10) + 1; i += 1) {
-    loaderBox.appendChild(createCardLoader());
-  }
-  block.appendChild(loaderBox);
-
-  const loader = document.querySelector('.grid-loader');
-  if (loader) {
-    loader.remove();
   }
 
   const ulEl = ul({ class: 'repeating-grid' });

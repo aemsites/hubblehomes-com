@@ -3,32 +3,16 @@
     flex: 0;
   }
 
-  .content-wrapper {
-    h1 {
-      font-size: 30px;
-      color: var(--link-color);
-      margin-bottom: 0;
-      font-family: inherit;
-      font-weight: 500;
-    }
-
-    @media (max-width: 991px) {
-      .repeating-grid {
-        grid-template-columns: 1fr;
-
-        .tabs-wrapper {
-          grid-column: span 1;
-        }
-      }
-    }
-  }
-
   .tabs-wrapper {
     grid-column: span 2;
   }
 
-  .section.inventory {
-    padding-bottom: 15px;
+  @media (min-width: 992px) {
+    .overview {
+      dl {
+        grid-template-columns: 40% 60%;
+      }
+    }
   }
 
   .directions {
@@ -72,8 +56,14 @@
     }
   }
 
-  .request-btns.fluid-flex {
-    padding: 20px 0;
+  .request-btns {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+
+    a {
+      padding: 3px 40px;
+    }
   }
 
   #plans {
@@ -115,11 +105,7 @@
     font-weight: 600;
     font-size: 13px;
     color: var(--link-color);
-    margin: 40px 0;
-  }
-
-  .fragment-wrapper {
-    margin: 60px 0;
+    margin-top: 30px;
   }
 
   .sales-center-info {
@@ -150,6 +136,7 @@
           fill: #aaa;
         }
       }
+
     }
 
     padding-bottom: 20px;
