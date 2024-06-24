@@ -49,25 +49,16 @@ async function getSalesCenterCommunityNameFromUrl(url) {
 }
 
 /**
- * Fetches the sales center details for a given community.
+ * Return the sales office details for a given community name.
  *
  * @param {string} community - The name of the community.
  * @returns {Promise<Object>} The sales office details for the community,
  * or an empty object if not found.
- * @throws {Error} If the data fetching process fails.
  */
 async function getSalesCenterForCommunity(community) {
-  if (!community) {
-    return {};
-  }
-
-  try {
-    const salesOffices = await getSalesOfficesSheet('data');
-    const salesOffice = salesOffices.find((office) => office.community === community);
-    return salesOffice || {};
-  } catch (error) {
-    return {};
-  }
+  const salesOffices = await getSalesOfficesSheet('data');
+  const salesOffice = salesOffices.find((office) => office.community === community);
+  return salesOffice || {};
 }
 
 export {

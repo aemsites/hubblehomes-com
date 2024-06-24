@@ -163,6 +163,14 @@
         display: block;
       }
 
+      .fluid-grid {
+        grid-template-columns: 65% 35%;
+
+        @media (max-width: 768px) {
+          grid-template-columns: 1fr;
+        }
+      }
+
       .repeating-grid {
         --p-right-width: var(--right-col-width, var(--template-right-width));
         --p-left-width: var(--left-col-width, var(--template-left-width));
@@ -170,30 +178,6 @@
 
         /* override the aside width in custom template */
         grid-template-columns: var(--p-left-width) var(--p-right-width);
-
-        >div:nth-child(1) {
-          /* left side */
-        }
-
-        >div:nth-child(2) {
-          padding: 0 15px;
-
-          .subnav-detail-container {
-            padding: 20px;
-            min-height: 250px;
-            box-shadow: 6px 6px 5px 0 rgb(0 0 0 / 10%);
-            box-sizing: border-box;
-            font-size: var(--body-font-size-m);
-            font-family: var(--body-font-family);
-            color: var(--link-color);
-            margin: 0 15px 30px;
-
-            @media (width <= 991px) {
-              margin: 0;
-              padding: 10px 0;
-            }
-          }
-        }
       }
 
       .content {
@@ -203,12 +187,25 @@
           --left-col-width: 65%;
           --right-col-width: 35%;
           --grid-gap: 0;
+        }
 
-          @media (width <=991px) {
-            --left-col-width: 50%;
-            --right-col-width: 50%;
+        @media (max-width: 991px) {
+          .repeating-grid {
+            grid-template-columns: 1fr;
+
+            .tabs-wrapper {
+              grid-column: span 1;
+            }
           }
         }
+      }
+
+      .left {
+        padding-right: 10px;
+      }
+
+      .right {
+        margin-top: 5px;
       }
 
       aside {

@@ -5,8 +5,9 @@ import { createOptimizedPicture } from '../../../scripts/aem.js';
 import formatPhoneNumber from '../../../scripts/phone-formatter.js';
 
 class BaseCard {
-  constructor(data) {
+  constructor(data, community) {
     this.cardData = data;
+    this.community = community;
   }
 
   async render() {
@@ -239,7 +240,9 @@ class BaseCard {
    */
   // eslint-disable-next-line class-methods-use-this
   renderMiddleRowOfDetailsContainer_left(gridContainer) {
-    const { phone } = window.hh.current.sale_center;
+    const { phone } = window.hh.current.sale_center[this.community]
+      ? window.hh.current.sale_center[this.community]
+      : window.hh.current.sale_center;
     const link = a({ class: 'btn yellow square', href: `tel:${phone}` }, formatPhoneNumber(phone));
     gridContainer.appendChild(link);
   }

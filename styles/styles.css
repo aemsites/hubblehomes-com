@@ -309,5 +309,9 @@ main .section.highlight {
   color: var(--link-color);
   margin-top: 50px;
   margin-bottom: 50px;
+
+  a:any-link {
+    color: var(--link-color);
+  }
 }
 

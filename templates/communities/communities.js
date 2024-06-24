@@ -21,7 +21,6 @@ import {
 import { getSalesCentersForCommunityUrl } from '../../scripts/sales-center.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
 import { getCommunityForUrl } from '../../scripts/communities.js';
-import { createActionBar } from '../../scripts/block-helper.js';
 import { getModelsByCommunity } from '../../scripts/models.js';
 import { loadRates } from '../../scripts/mortgage.js';
 import DeferredPromise from '../../scripts/deferred.js';
@@ -283,9 +282,8 @@ export default async function decorate(doc) {
   }, 'Request a Tour'));
 
   const breadCrumbsEl = buildBreadCrumbs();
-  const actions = await createActionBar(['share', 'save']);
-  const subNav = doc.querySelector('.subnav-wrapper');
-  const navBar = div({ class: 'fluid-flex nav-bar' }, subNav, actions);
+  const overview = doc.querySelector('.overview-wrapper');
+  const tabsWrapper = doc.querySelector('.tabs-wrapper');
   const rightAside = await createRightAside(doc, salesCenter);
   const modelFilter = buildFilterForm(filter);
 
@@ -308,10 +306,11 @@ export default async function decorate(doc) {
   const twoCols = div(
     { class: 'repeating-grid' },
     div({ class: 'left' }, modelNameAddr, doc.querySelector('.description-wrapper'), requestButtons),
-    div({ class: 'right' }, div({ class: 'subnav-detail-container' })),
+    div({ class: 'right' }, overview),
+    tabsWrapper,
   );
 
-  const leftRight = div({ class: 'section' }, navBar, div(
+  const leftRight = div({ class: 'section' }, div(
     { class: 'content-wrapper' },
     div(
       { class: 'content' },

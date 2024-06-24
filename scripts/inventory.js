@@ -230,6 +230,20 @@ async function getInventoryHomesForCommunity(community, filterStr) {
   return inventory.get(community) || [];
 }
 
+async function getInventoryHomesByCommunities(modelName) {
+  const inventory = await getInventoryData();
+  const filteredInventory = inventory.filter((home) => home['model name'] === modelName);
+
+  return filteredInventory.reduce((acc, home) => {
+    const { community } = home;
+    if (!acc[community]) {
+      acc[community] = [];
+    }
+    acc[community].push(home);
+    return acc;
+  }, {});
+}
+
 /**
  * Retrieves an inventory home by its path.
  * @param {string} path - The path of the home.
@@ -247,6 +261,7 @@ async function getInventoryHomeByPath(path) {
 
 export {
   getInventoryHomesForCommunity,
+  getInventoryHomesByCommunities,
   getInventoryHomeByPath,
   getHeaderTitleForFilter,
   filters,
