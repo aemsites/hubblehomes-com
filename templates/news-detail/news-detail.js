@@ -42,9 +42,6 @@ export default async function decorate(doc) {
     pic.replaceWith(opt);
   });
 
-  // reply form
-  const $replyForm = div({ class: 'reply-form wip' }, '[reply form placeholder]');
-
   // social share
   const $socialShare = div({ class: 'social-share' },
     a({ class: 'facebook' }, 'Share'),
@@ -61,7 +58,6 @@ export default async function decorate(doc) {
       div({ class: 'content' },
         $mainContent,
         $socialShare,
-        $replyForm,
       ),
       aside(
         $categories,
