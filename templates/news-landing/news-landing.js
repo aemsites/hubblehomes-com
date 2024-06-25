@@ -39,7 +39,7 @@ export default async function decorate(doc) {
     div({ class: 'info' },
       h3(article.title),
       small(
-        strong('Posted On: '), article.publisheddate,
+        strong('Posted: '), article.publisheddate,
         ' | ',
         strong('Categories: '), article.categories.replace(/,/g, ' |'),
       ),

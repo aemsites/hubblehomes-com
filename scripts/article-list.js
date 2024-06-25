@@ -204,12 +204,10 @@ export default class ArticleList {
   setCategory() {
     const { pathname } = new URL(window.location.href);
     const pathSegments = pathname.split('/').filter(Boolean);
-  
     const filterRootPathIndex = pathSegments.indexOf(this.filterRootPath);
 
     console.log('selectedCategory', this.selectedCategory);
     this.selectedCategory = (filterRootPathIndex !== -1 && pathSegments[filterRootPathIndex + 1]) || '';
-  
     console.log('selectedCategory', this.selectedCategory);
   }
 
@@ -218,7 +216,6 @@ export default class ArticleList {
   }
 
   onPopState() {
-    console.log(po)
     this.setCategory();
     this.getArticles(this.currentPage);
   }
