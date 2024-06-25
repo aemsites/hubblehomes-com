@@ -1,5 +1,6 @@
 /* eslint-disable function-call-argument-newline, object-curly-newline, function-paren-newline */
-import { aside, div, a, button, strong, small } from '../../scripts/dom-helpers.js';
+import { aside, div, a, strong, small } from '../../scripts/dom-helpers.js';
+import ArticleList from '../../scripts/article-list.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../../blocks/fragment/fragment.js';
 
@@ -10,7 +11,7 @@ export default async function decorate(doc) {
 
   const heroCarouselPromise = loadFragment('/news/news-detail/fragments/hero-carousel');
   const asidePromise = loadFragment('/news/news-detail/fragments/right-sidebar');
-  const [heroCarouselFrag, asideFrag] = await Promise.all([heroCarouselPromise, asidePromise]);
+  const [heroCarouselFrag] = await Promise.all([heroCarouselPromise, asidePromise]);
 
   const $carousel = div({ class: 'hero-carousel' },
     heroCarouselFrag.firstElementChild,
@@ -53,6 +54,8 @@ export default async function decorate(doc) {
     a({ class: 'sharethis' }, 'Share'),
   );
 
+  const $categories = div();
+
   const $newPage = div({ class: 'section' }, $breadCrumbs,
     div({ class: 'content-wrapper' },
       div({ class: 'content' },
@@ -61,10 +64,17 @@ export default async function decorate(doc) {
         $replyForm,
       ),
       aside(
-        asideFrag.firstElementChild.querySelector('.default-content-wrapper'),
+        $categories,
       ),
     ),
   );
+
+  const newsArticles = new ArticleList({
+    jsonPath: '/news/news-index.json',
+    filterContainer: $categories,
+    filterRootPath: '/news/category/',
+  });
+  await newsArticles.render();
 
   $page.replaceWith($carousel, $newPage);
 }

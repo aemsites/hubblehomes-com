@@ -1,19 +1,33 @@
-/* eslint-disable function-call-argument-newline,  max-len, function-paren-newline, object-curly-newline */
+/* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline */
 
 /*
-Notes:
+### NOTES:
 
 Category filter functionality is depentant on fstab.yaml folder mappings
+
+This should match the 'filterRootPath'
 
 fstab.yaml
 folders:
   /news/category/: /news
 
+### USAGE EXAMPLE:
+  const dataPage = new ArticleList({
+    jsonPath: '/news/news-index.json', // required
+    articleContainer: $dataContainer, // optional: article list container (required for data list to show)
+    articleCard: $article, // optional: article card object (required for data list to show)
+    articlesPerPage: 10, // optional: max articles show per page (default = 10)
+    paginationContainer: $dataPagination, // optional: paginationContair
+    paginationMaxBtns: 7, // optional: default = 7
+    filterContainer: $dataFilter, // optional: containerContainer (required for category filter)
+    categoryPath: '/news/category/', // WIP optional: container-root apth (required for category filter)
+  });
+
 */
 
 import { button, ul, li, a, small } from './dom-helpers.js';
 
-export default class DataPage {
+export default class ArticleList {
   constructor(options) {
     const {
       jsonPath,
@@ -22,7 +36,8 @@ export default class DataPage {
       articlesPerPage = 10,
       paginationContainer,
       paginationMaxBtns = 7,
-      categoryFilter,
+      filterContainer,
+      filterRootPath,
     } = options;
 
     this.jsonPath = jsonPath;
@@ -31,16 +46,18 @@ export default class DataPage {
     this.articlesPerPage = articlesPerPage;
     this.paginationContainer = paginationContainer;
     this.paginationMaxBtns = paginationMaxBtns;
-    this.categoryFilter = categoryFilter;
+    this.filterContainer = filterContainer;
+    this.filterRootPath = filterRootPath;
 
     this.currentPage = 0;
     this.totalArticles = 0;
     this.selectedCategory = null;
-    this.allArticles = []; // ADDED: Store all articles
+    this.allArticles = [];
   }
 
   async getArticles(page) {
-    if (this.allArticles.length === 0) { // ADDED: Fetch articles only if not already fetched
+    if (this.allArticles.length === 0) {
+      // get articles if they don't already exist - CHECK WHY THIS IS NECESSARY
       const response = await fetch(this.jsonPath);
       const json = await response.json();
       this.allArticles = json.data; // ADDED: Store fetched articles
@@ -49,10 +66,14 @@ export default class DataPage {
     let articles = this.allArticles;
 
     if (this.selectedCategory) {
-      articles = articles.filter((article) => article.categories.includes(this.selectedCategory));
-      this.totalArticles = articles.length; // update article length for pagination
+      console.log('this.selectedCategory =', this.selectedCategory);
+      articles = articles.filter((article) => article.categories.toLowerCase().replace(/\s+/g, '-').includes(this.selectedCategory));
+      // update article length for pagination
+      this.totalArticles = articles.length;
     } else {
-      this.totalArticles = articles.length; // use length of all articles
+      // use length of all articles
+      console.log('for what');
+      this.totalArticles = articles.length;
     }
 
     this.renderArticles(articles.slice(page * this.articlesPerPage, (page + 1) * this.articlesPerPage));
@@ -80,7 +101,7 @@ export default class DataPage {
   }
 
   updatePagination() {
-    // ingore if paginationContainer doesn't exist
+    // exit if paginationContainer doesn't
     if (!this.paginationContainer) return;
 
     this.paginationContainer.innerHTML = '';
@@ -105,7 +126,7 @@ export default class DataPage {
       const extra = (this.paginationMaxBtns - 1) % 2; // remainder (if maxBtns is an even n)
       let startPage;
       let endPage;
-      const $spaceBtn = button({ class: 'space' }, '...');
+      const $spaceBtn = button({ class: 'space' }, ' - ');
       $spaceBtn.disabled = true;
 
       // determine start/end values
@@ -160,43 +181,64 @@ export default class DataPage {
       });
     });
 
-    const $categoryList = ul({ class: 'filter' });
+    const $categories = ul({ class: 'filter' });
 
     Object.keys(categories).forEach((category) => {
-      const $categoryItem = li(
-        a({ href: '#' },
-          `${category} `, small(`(${categories[category]})`),
-        ),
-      );
-
-      $categoryItem.querySelector('a').addEventListener('click', (event) => {
-        event.preventDefault();
-        this.selectedCategory = category;
-        this.currentPage = 0;
-        this.getArticles(this.currentPage);
+      const categoryPath = this.filterRootPath + this.selectedCategory;
+      console.log(categoryPath);
+      const $a = a({ href: categoryPath }, `${category} `, small(`(${categories[category]})`));
+      const $li = li($a);
+      $a.addEventListener('click', (event) => {
+        if (this.articleCard && this.articleContainer) event.preventDefault();
+        this.selectedCategory = category.toLowerCase().replace(/\s+/g, '-');
+        this.getArticles(0);
+        this.updateUrl();
       });
-
-      $categoryList.appendChild($categoryItem);
+      $categories.appendChild($li);
     });
 
-    this.categoryFilter.innerHTML = '';
-    this.categoryFilter.appendChild($categoryList);
+    this.filterContainer.innerHTML = '';
+    this.filterContainer.appendChild($categories);
+  }
+
+  setCategory() {
+    const { pathname } = new URL(window.location.href);
+    const pathSegments = pathname.split('/').filter(Boolean);
+  
+    const filterRootPathIndex = pathSegments.indexOf(this.filterRootPath);
+
+    console.log('selectedCategory', this.selectedCategory);
+    this.selectedCategory = (filterRootPathIndex !== -1 && pathSegments[filterRootPathIndex + 1]) || '';
+  
+    console.log('selectedCategory', this.selectedCategory);
+  }
+
+  updateUrl() {
+    window.history.pushState(null, '', this.filterRootPath + this.selectedCategory);
+  }
+
+  onPopState() {
+    console.log(po)
+    this.setCategory();
+    this.getArticles(this.currentPage);
   }
 
   async render() {
     const response = await fetch(this.jsonPath);
     const json = await response.json();
 
-    // render if categoryFilter is defined
-    if (this.categoryFilter) this.generateCategoryList(json.data);
+    // if categoryFilter is defined render it
+    if (this.filterContainer) {
+      this.generateCategoryList(json.data);
+    }
 
-    // render if articleCard & articleContainer are defined
+    // if articleCard & articleContainer are defined render them
     if (this.articleCard && this.articleContainer) {
-      // Todo: read page count and use article card to create skeleton loader
-
+      this.setCategory();
       await this.getArticles(this.currentPage);
+      window.addEventListener('popstate', (event) => this.onPopState(event));
     }
 
     // todo add history and push state
   }
-}
+} // end ArticleList

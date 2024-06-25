@@ -1,12 +1,27 @@
+/* eslint-disable function-call-argument-newline */
 /* eslint-disable max-len */
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, h3, p, small, aside, h1, a } from '../../scripts/dom-helpers.js';
-import DataPage from '../../scripts/data-page.js';
+import { div, h3, p, small, aside, h1, a, strong, hr } from '../../scripts/dom-helpers.js';
+import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
+import { loadFragment } from '../../blocks/fragment/fragment.js';
+import ArticleList from '../../scripts/article-list.js';
 
 export default async function decorate(doc) {
+  const articlesPerPage = Number(getMetadata('articles-per-page'));
+  const paginationMaxBtns = Number(getMetadata('pagination-max-buttons'));
+
+
+  const heroCarouselPromise = loadFragment('/news/news-detail/fragments/hero-carousel');
+  
+  const [heroCarouselFrag] = await Promise.all([heroCarouselPromise]);
+
+  const $carousel = div({ class: 'hero-carousel' },
+    heroCarouselFrag.firstElementChild,
+  );
+
   const $h1 = h1(doc.title);
   // test
-  const $breadCrumbs = div({ class: 'breadcrumbs' },
+  const $breadCrumbs = div({ class: 'breadcrumbs section' },
     a({ href: '/', 'arial-lable': 'View Home Page' }, 'Home'),
     ' > ',
     a({ href: '/news', 'arial-lable': 'View News Page' }, 'News'),
@@ -14,44 +29,56 @@ export default async function decorate(doc) {
     $h1.textContent,
   );
 
-  const $dataContainer = div({ class: 'articleContainer' }, 'LOADING ARTICLES');
-  const $article = (article) => div({ class: 'article' },
-    h3(article.title),
-    small(article.publisheddate, article.categories),
-    p(article.description),
-    a({ class: 'btn yellow', href: article.path }, 'Read Article'),
-    article.image,
+  // const thumb = createOptimizedPicture(article.image, article.title, true, [{ width: '200' }]);
+
+  const $articles = div({ class: 'articles' });
+  const $article = (article) => div({ class: 'card' },
+    a({ class: 'thumb', href: article.path },
+      createOptimizedPicture(article.image, article.title, true, [{ width: '200' }]),
+    ),
+    div({ class: 'info' },
+      h3(article.title),
+      small(
+        strong('Posted On: '), article.publisheddate,
+        ' | ',
+        strong('Categories: '), article.categories.replace(/,/g, ' |'),
+      ),
+      p(article.description),
+      a({ class: 'btn yellow', href: article.path }, 'Read Article'),
+      hr(),
+    ),
   );
 
-  const $dataPagination = div({ class: 'pagination' }, 'LOADING PAGINATION');
+  const $pagination = div({ class: 'pagination' }, 'LOADING PAGINATION');
 
-  const $dataFilter = div({ class: 'categories' }, 'LOADING CATEGORIES');
+  const $categoryFilter = div({ class: 'categories' }, 'LOADING CATEGORIES');
 
   const $newPage = div({ class: 'section' },
-    $breadCrumbs,
-    $h1,
     div({ class: 'content-wrapper' },
       div({ class: 'content' },
-        $dataPagination,
-        $dataContainer,
+        $articles,
+        $pagination,
       ),
       aside(
-        $dataFilter,
+        h3('Categories'),
+        $categoryFilter,
       ),
     ),
   );
-  const $page = doc.querySelector('main .section');
-  $page.replaceWith($newPage);
 
-  const dataPage = new DataPage({
-    jsonPath: '/news/news-index.json', // required
-    articleContainer: $dataContainer, // optional: article list container (required for data list to show)
-    articleCard: $article, // optional: article card object (required for data list to show)
-    articlesPerPage: 10, // optional: max articles show per page (default = 10)
-    paginationContainer: $dataPagination, // optional: paginationContair
-    paginationMaxBtns: 7, // optional: default = 7
-    categoryFilter: $dataFilter, // optional: containerContainer (required for category filter)
-    categoryPath: '/news/category/', // WIP optional: container-root apth (required for category filter)
+  const $page = doc.querySelector('main .section');
+  $page.replaceWith($carousel, $breadCrumbs,
+    $h1, $newPage);
+
+  const newsArticles = new ArticleList({
+    jsonPath: '/news/news-index.json',
+    articleContainer: $articles,
+    articleCard: $article,
+    articlesPerPage,
+    paginationContainer: $pagination,
+    paginationMaxBtns,
+    filterContainer: $categoryFilter,
+    filterRootPath: '/news/category/',
   });
-  await dataPage.render();
+  await newsArticles.render();
 }
