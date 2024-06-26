@@ -161,6 +161,24 @@ function setupGlobalVars() {
   window.hh.current = {};
 }
 
+const openSheet = ({ detail }) => {
+  const sk = detail.data;
+  // your custom code from button.action goes here
+  debugger;
+};
+
+const sk = document.querySelector('helix-sidekick');
+if (sk) {
+  // sidekick already loaded
+  sk.addEventListener('custom:openSheet', openSheet);
+} else {
+  // wait for sidekick to be loaded
+  document.addEventListener('sidekick-ready', () => {
+    document.querySelector('helix-sidekick')
+      .addEventListener('custom:openSheet', openSheet);
+  }, { once: true });
+}
+
 async function loadPage() {
   setupGlobalVars();
   await loadEager(document);

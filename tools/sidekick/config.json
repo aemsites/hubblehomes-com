@@ -1,0 +1,10 @@
+{
+    "plugins": [
+        {
+            "id": "openSheet",
+            "title": "Open Data",
+            "event": "openSheet",
+            "environments": ["dev", "admin", "edit", "preview"]
+        }
+    ]
+}
