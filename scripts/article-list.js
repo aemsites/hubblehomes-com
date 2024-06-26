@@ -213,7 +213,8 @@ export default class ArticleList {
     // only update ?page if it is not 0
     if (this.currentPage !== 0) url.searchParams.set('page', this.currentPage);
     else url.searchParams.delete('page');
-    window.history.pushState(null, '', url);
+    // only update if category exists
+    if (this.urlCategory) window.history.pushState(null, '', url);
   }
 
   onPopState() {
