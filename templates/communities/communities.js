@@ -16,17 +16,17 @@ import {
 import {
   filters,
   getHeaderTitleForFilter,
-  getInventoryHomes,
+  getInventoryHomesForCommunity,
 } from '../../scripts/inventory.js';
 import { getSalesCentersForCommunityUrl } from '../../scripts/sales-center.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
-import { fetchCommunityDetailsForUrl } from '../../scripts/communities.js';
-import { createActionBar } from '../../scripts/block-helper.js';
+import { getCommunityForUrl } from '../../scripts/communities.js';
 import { getModelsByCommunity } from '../../scripts/models.js';
-import { fetchRates } from '../../scripts/mortgage.js';
+import { loadRates } from '../../scripts/mortgage.js';
 import DeferredPromise from '../../scripts/deferred.js';
 import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import loadSVG from '../../scripts/svg-helper.js';
+import { loadWorkbook } from '../../scripts/workbook.js';
 
 /**
  * Builds the inventory homes block.
@@ -34,7 +34,7 @@ import loadSVG from '../../scripts/svg-helper.js';
  * @returns {Promise<Element>} The inventory homes block wrapped in a div.
  */
 async function buildInventoryHomes(community, filter) {
-  window.hh.current.models = await getInventoryHomes(community.name, filter);
+  window.hh.current.models = await getInventoryHomesForCommunity(community.name, filter);
   const modelsBlock = buildBlock('cards', []);
   modelsBlock.classList.add('inventory');
   const blockWrapper = div(modelsBlock);
@@ -54,22 +54,17 @@ async function buildFeaturedPlans(communityName) {
 }
 
 async function fetchRequiredPageData() {
-  // These three calls could be done differently, but for now, we will keep them separate.
-  // It might be nice to have a factory that takes the results of these calls and builds the
-  // required data for the page.
-  // For example this page could ask for the 3 sheets at once and then build the required data.
-  await fetchRates();
+  await loadWorkbook();
+  await loadRates();
 
-  const salesCenterData = await getSalesCentersForCommunityUrl(window.location);
-  const community = await fetchCommunityDetailsForUrl(window.location.pathname);
+  const salesCenter = await getSalesCentersForCommunityUrl(window.location);
+  const community = await getCommunityForUrl(window.location.pathname);
 
-  window.hh = window.hh || {};
-  window.hh.current = window.hh.current || {};
-  window.hh.current.sale_center = salesCenterData.sales_center;
+  window.hh.current.sale_center = salesCenter.sales_center;
   window.hh.current.community = community;
 
   return {
-    salesCenter: salesCenterData.sales_center,
+    salesCenter: salesCenter.sales_center,
     community,
   };
 }
@@ -123,63 +118,85 @@ async function createRightAside(doc, salesCenter) {
     specialists,
     latitude,
     longitude,
+    models,
+    note,
+    community,
+    address,
+    zipcode,
+    city,
+    'zip-code-abbr': zipCodeAbbr,
+    'sales-center-model': salesCenterModel,
   } = salesCenter;
+  const mainDiv = div({ class: 'sales-center-info' });
   const heading = h2(formatPhoneNumber(phone));
 
-  const hoursEl = div({ class: 'hours' }, ...hours.split('\n')
-    .map((hour) => span(hour, br())));
+  mainDiv.append(heading);
 
-  const saleOfficeHours = div({ class: 'sales-office-hours' }, strong('Regular Hours'), hoursEl);
-
-  const salesModel = div({ class: 'sales-center-data' }, span({ class: 'label' }, 'Sales Center: '), span(salesCenter['sales-center-model']));
-  const salesModels = div({ class: 'sales-center-data' }, span({ class: 'label' }, 'Model: '), span(salesCenter.models));
-  const salesModelInfo = div(salesModel, salesModels);
-
-  let noteEl;
-  if (salesCenter.note) {
-    noteEl = p({ class: 'note' }, salesCenter.note);
+  if (hours) {
+    const hoursEl = div({ class: 'hours' }, ...hours.split('\n')
+      .map((hour) => span(hour, br())));
+    mainDiv.append(div({ class: 'sales-office-hours' }, strong('Regular Hours'), hoursEl));
   }
 
-  const directionsIcon = await loadSVG('/icons/directions.svg');
-  const emailIcon = await loadSVG('/icons/email.svg');
-  const phoneIcon = await loadSVG('/icons/phone.svg');
+  if (salesCenterModel || models) {
+    const salesCenterModelInfo = div();
+    if (salesCenterModel) {
+      salesCenterModelInfo.append(
+        div(span({ class: 'label' }, 'Sales Center: '), span(salesCenter['sales-center-model'])),
+      );
+    }
 
-  const sEl = specialists.map((specialist) => {
-    const emailEl = emailIcon.cloneNode(true);
-    const phoneEl = phoneIcon.cloneNode(true);
-    return dd(
-      span({ class: 'specialist' }, specialist.name),
-      a({ class: 'email', href: `mailto:${specialist.email}` }, specialist.email, emailEl),
-      a({ class: 'phone', href: `tel:${specialist.phone}` }, formatPhoneNumber(specialist.phone), phoneEl),
-    );
-  });
+    if (models) {
+      salesCenterModelInfo.append(
+        div(span({ class: 'label' }, 'Model: '), span(salesCenter.models)),
+      );
+    }
+    mainDiv.append(salesCenterModelInfo);
+  }
 
-  const salesSpecialists = div(dl({ class: 'sales-center-data' }, dt({ class: 'label' }, 'New Home Specialists: '), ...sEl));
+  if (note) {
+    mainDiv.append(p({ class: 'note' }, note));
+  }
 
-  const addressEl = div(
-    { class: 'sales-center-address' },
-    p(
-      { class: 'label' },
-      'Sales Center Location: ',
-      a({
+  if (specialists) {
+    const emailIcon = await loadSVG('/icons/email.svg');
+    const phoneIcon = await loadSVG('/icons/phone.svg');
+    const sEl = specialists.map((specialist) => {
+      const emailEl = emailIcon.cloneNode(true);
+      const phoneEl = phoneIcon.cloneNode(true);
+      return dd(
+        span({ class: 'specialist' }, specialist.name),
+        a({ class: 'email', href: `mailto:${specialist.email}` }, specialist.email, emailEl),
+        a({ class: 'phone', href: `tel:${specialist.phone}` }, formatPhoneNumber(specialist.phone), phoneEl),
+      );
+    });
+    mainDiv.append(dl({ class: 'sales-center-data' }, dt({ class: 'label' }, 'New Home Specialists: '), ...sEl));
+  }
+
+  if (address && community && city && zipCodeAbbr && zipcode) {
+    const directionsIcon = await loadSVG('/icons/directions.svg');
+    let googleLink;
+    if (longitude && latitude) {
+      googleLink = a({
         href: `https://www.google.com/maps/dir/Current+Location/${latitude},${longitude}`,
         target: '_blank',
-      }, directionsIcon),
-    ),
-    span(salesCenter.community),
-    span(salesCenter.address),
-    span(`${salesCenter.city}, ${salesCenter['zip-code-abbr']}, ${salesCenter.zipcode}`),
-  );
+      }, directionsIcon);
+    }
+    const addressEl = div(
+      { class: 'sales-center-address' },
+      p(
+        { class: 'label' },
+        'Sales Center Location: ',
+        googleLink,
+      ),
+      span(community),
+      span(address),
+      span(`${city}, ${zipCodeAbbr}, ${zipcode}`),
+    );
+    mainDiv.append(addressEl);
+  }
 
-  return div(div(
-    { class: 'sales-center-info' },
-    heading,
-    saleOfficeHours,
-    noteEl,
-    salesModelInfo,
-    salesSpecialists,
-    addressEl,
-  ), doc.querySelector('.links-wrapper'));
+  return div(mainDiv, doc.querySelector('.links-wrapper'));
 }
 
 function buildFilterForm(filterByValue) {
@@ -228,7 +245,7 @@ function buildFilterForm(filterByValue) {
     }, 'Reset');
   }
 
-  return div({ class: 'filter-form' }, form(allListingSelect, sortBySelect, filterBySelect), resetEl);
+  return div({ class: 'filter-form' }, form({ class: 'fluid-flex' }, allListingSelect, sortBySelect, filterBySelect), resetEl);
 }
 
 export default async function decorate(doc) {
@@ -236,6 +253,7 @@ export default async function decorate(doc) {
   const params = url.searchParams;
   const filter = params.get('filter');
   const areaName = getMetadata('city', doc);
+  const mainSection = doc.querySelector('main > .section');
 
   const {
     salesCenter,
@@ -245,23 +263,20 @@ export default async function decorate(doc) {
   const filterSectionTitle = div({ class: 'grey-divider full-width' }, getHeaderTitleForFilter(filter));
   const inventory = await buildInventoryHomes(community, filter);
 
-  const modelNameAddr = div(h1(community.name), a({
+  const modelNameAddr = div({ class: 'page-info' }, h1(community.name), a({
     class: 'directions',
     href: `https://www.google.com/maps/dir/Current+Location/${salesCenter.latitude},${salesCenter.longitude}`,
     target: '_blank',
   }, h4(`${areaName}, ${community['zip-code-abbr']}`)));
 
-  const requestButtons = div({ class: 'request-btns fluid-flex' }, a({
-    class: 'btn gray fancy',
+  const requestButtons = div({ class: 'request-btns' }, a({
+    class: 'btn yellow fancy',
     href: `/contact-us/sales-info?communityid=${community.name}`,
-  }, 'Request Information'), a({
-    class: 'btn fancy',
-    href: `/schedule-a-tour?communityid=${community.name}`,
-  }, 'Request a Tour'));
+  }, 'Request Information'));
 
   const breadCrumbsEl = buildBreadCrumbs();
-  const actions = await createActionBar(['share', 'save']);
-  const subNav = doc.querySelector('.subnav-wrapper');
+  const overview = doc.querySelector('.overview-wrapper');
+  const tabsWrapper = doc.querySelector('.tabs-wrapper');
   const rightAside = await createRightAside(doc, salesCenter);
   const modelFilter = buildFilterForm(filter);
 
@@ -270,6 +285,7 @@ export default async function decorate(doc) {
   const disclaimer = doc.querySelector('.fragment-wrapper');
   const featuredPlansTitle = div({ class: 'grey-divider featured full-width' }, 'Featured Plans');
   const models = await buildFeaturedPlans(community.name);
+  const hasFeaturedModels = window.hh.current.models.length > 0;
   const featuredModels = div({ class: 'section featured' }, models);
 
   const specialistBanner = div({ class: 'grey-divider full-width' }, `${community.name} New Home Specialists`);
@@ -281,38 +297,39 @@ export default async function decorate(doc) {
   });
 
   const twoCols = div(
-    { class: 'repeating-grid' },
-    div({ class: 'left' }, modelNameAddr, doc.querySelector('.description-wrapper'), requestButtons),
-    div({ class: 'right' }, div({ class: 'subnav-detail-container' })),
+    modelNameAddr,
+    div({ class: 'repeating-grid' }, doc.querySelector('.description-wrapper'), div(overview)),
+    tabsWrapper,
+    requestButtons,
   );
 
-  const leftRight = div({ class: 'section' }, actions, subNav, div(
+  const leftRight = div({ class: 'section' }, div(
     { class: 'content-wrapper' },
     div(
       { class: 'content' },
       twoCols,
     ),
     aside(
-      div('right').innerHTML = rightAside,
+      rightAside,
     ),
   ));
 
-  // place the left right columns after the carousel
-  doc.querySelector('.carousel-wrapper').insertAdjacentElement('afterend', leftRight);
-  // place the breadcrumbs after the carousel
-  doc.querySelector('.carousel-wrapper').insertAdjacentElement('afterend', breadCrumbsEl);
+  mainSection.append(
+    breadCrumbsEl,
+    leftRight,
+    modelFilter,
+    plansAnchor,
+    filterSectionTitle,
+    inventoryEl,
+  );
 
-  doc.querySelector('.content-wrapper').insertAdjacentElement('afterend', modelFilter);
-  doc.querySelector('.content-wrapper').insertAdjacentElement('afterend', plansAnchor);
+  if (hasFeaturedModels) {
+    mainSection.append(featuredPlansTitle, featuredModels);
+  }
 
-  // inventory homes
-  doc.querySelector('.section').insertAdjacentElement('beforeend', filterSectionTitle);
-  filterSectionTitle.insertAdjacentElement('afterend', inventoryEl);
-
-  inventoryEl.insertAdjacentElement('afterend', featuredPlansTitle);
-  featuredPlansTitle.insertAdjacentElement('afterend', featuredModels);
-
-  featuredModels.insertAdjacentElement('afterend', specialistBanner);
-  specialistBanner.insertAdjacentElement('afterend', specialistsSection);
-  specialistsSection.insertAdjacentElement('afterend', div({ class: 'section disclaimer' }, disclaimer));
+  mainSection.append(
+    specialistBanner,
+    specialistsSection,
+    div({ class: 'section disclaimer' }, disclaimer),
+  );
 }

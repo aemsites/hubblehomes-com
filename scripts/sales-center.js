@@ -1,33 +1,5 @@
 import getLastUrlSegment from './url-utils.js';
-
-window.hh = window.hh || {};
-const { hh } = window;
-
-/**
- * sales-center.js
- *
- * This script contains functions to fetch and process data for page templates.
- * The `loadSalesCenterData` function fetches sales center data.
- */
-
-/**
- * Fetch the sales center data from the given URL.
- * @param {string} url - The URL to load the sales center data from.
- * @returns {Promise<Object>} A promise that resolves to the sales center data as JSON.
- * @throws Will throw an error if the network request fails.
- */
-async function loadSalesCenterData(url) {
-  if (hh.salescenters) {
-    return hh.salescenters;
-  }
-  const response = await fetch(url);
-  if (response.ok) {
-    const salesCenters = await response.json();
-    hh.salescenters = salesCenters;
-    return salesCenters;
-  }
-  throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
-}
+import { getSalesOfficesSheet, getStaffSheet } from './workbook.js';
 
 /**
  * Fetch the sales center details for a given community URL.
@@ -36,13 +8,13 @@ async function loadSalesCenterData(url) {
  * or an empty object if no data is found.
  */
 async function getSalesCentersForCommunityUrl(url) {
-  const salesAndStaff = await loadSalesCenterData('/data/hubblehomes.json?sheet=sales-offices&sheet=staff');
+  const salesOffices = await getSalesOfficesSheet('data');
+  const staff = await getStaffSheet('data');
 
-  if (!salesAndStaff || !url) {
+  if (!url) {
     return {};
   }
 
-  const { 'sales-offices': { data: salesOffices }, staff: { data: salesSpecialists } } = salesAndStaff;
   const urlSlug = getLastUrlSegment(url);
   const salesOfficeDetails = salesOffices.find((office) => office['url-slug'] === urlSlug);
 
@@ -52,7 +24,8 @@ async function getSalesCentersForCommunityUrl(url) {
 
   const { community } = salesOfficeDetails;
   const specialists = community
-    ? salesSpecialists.filter((specialist) => Object.keys(specialist).some((key) => key.startsWith('office location') && specialist[key] === community))
+    ? staff.filter((specialist) => Object.keys(specialist)
+      .some((key) => key.startsWith('office location') && specialist[key] === community))
     : [];
 
   return {
@@ -68,56 +41,26 @@ async function getSalesCentersForCommunityUrl(url) {
   };
 }
 
-function getSalesCenterCommunityNameFromUrl(url) {
-  const saleCenters = hh.salescenters;
-  if (!saleCenters) {
-    return '';
-  }
-
-  const { 'sales-office': { data: salesOffices } } = saleCenters;
+async function getSalesCenterCommunityNameFromUrl(url) {
+  const salesOffices = await getSalesOfficesSheet('data');
   const urlSlug = getLastUrlSegment(url);
   const salesOfficeDetails = salesOffices.find((office) => office['url-slug'] === urlSlug);
   return salesOfficeDetails ? salesOfficeDetails.community : '';
 }
 
 /**
- * Fetches the sales center details for a given community.
+ * Return the sales office details for a given community name.
  *
  * @param {string} community - The name of the community.
  * @returns {Promise<Object>} The sales office details for the community,
  * or an empty object if not found.
- * @throws {Error} If the data fetching process fails.
  */
 async function getSalesCenterForCommunity(community) {
-  if (!community) {
-    return {};
-  }
-
-  try {
-    // Load sales center and staff data
-    const salesAndStaff = await loadSalesCenterData('/data/hubblehomes.json?sheet=sales-offices&sheet=staff');
-
-    // Check if the data was loaded successfully
-    if (!salesAndStaff) {
-      return {};
-    }
-
-    const salesCenter = hh.salescenters;
-
-    // Check if sales centers are available
-    if (!salesCenter) {
-      return {};
-    }
-
-    const { 'sales-offices': { data: salesOffices } } = salesCenter;
-
-    // Find and return the sales office for the given community
-    const salesOffice = salesOffices.find((office) => office.community === community);
-    return salesOffice || {};
-  } catch (error) {
-    return {};
-  }
+  const salesOffices = await getSalesOfficesSheet('data');
+  const salesOffice = salesOffices.find((office) => office.community === community);
+  return salesOffice || {};
 }
+
 export {
   getSalesCentersForCommunityUrl,
   getSalesCenterCommunityNameFromUrl,

@@ -1,12 +1,8 @@
 import {
-  div, li, p, ul,
+  li, p, ul,
 } from '../../../scripts/dom-helpers.js';
 import CardFactory from './CardFactory.js';
-
-function createCardLoader() {
-  const loader = div({ class: 'card-loader' });
-  return div({ class: 'wrapper' }, loader);
-}
+import { readBlockConfig } from '../../../scripts/aem.js';
 
 /**
  * Render a list of models given a title for the section block.
@@ -16,35 +12,40 @@ function createCardLoader() {
  * @param block
  */
 export default async function decorate(block) {
+  const {
+    community,
+  } = readBlockConfig(block);
+
   const classTokenList = block.classList;
   if (!classTokenList.contains('cards')) {
     return;
   }
   block.innerHTML = '';
 
-  const { models: data } = window.hh.current;
+  let data;
+  // The community is optional, if it is provided then we will only show the models for
+  // that community. Otherwise we will look in the hh.current.models for the list of models
+  // to display.
+  if (community && window.hh.current.models[community]) {
+    data = window.hh.current.models[community];
+  } else if (window.hh.current.models) {
+    data = window.hh.current.models;
+  } else {
+    data = [];
+  }
 
-  if (window.hh.current.models && window.hh.current.models.length === 0) {
+  // const { models: data } = window.hh.current;
+
+  if (data.length === 0) {
     block.append(p({ class: 'no-results' }, 'Sorry, no homes match your criteria.'));
     return;
-  }
-
-  const loaderBox = div({ class: 'grid-loader repeating-grid' });
-  for (let i = 0; i < Math.floor(Math.random() * 10) + 1; i += 1) {
-    loaderBox.appendChild(createCardLoader());
-  }
-  block.appendChild(loaderBox);
-
-  const loader = document.querySelector('.grid-loader');
-  if (loader) {
-    loader.remove();
   }
 
   const ulEl = ul({ class: 'repeating-grid' });
 
   const promises = data.map(async (cardData) => {
     const liEl = li({ class: 'model-card' });
-    const card = CardFactory.createCard(classTokenList, cardData);
+    const card = CardFactory.createCard(classTokenList, cardData, community);
     const cardEl = await card.render();
     liEl.appendChild(cardEl);
     ulEl.append(liEl);

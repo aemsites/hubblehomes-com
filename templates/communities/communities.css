@@ -1,23 +1,25 @@
 .communities {
-  .content-wrapper {
-    h1 {
-      font-size: 30px;
-      color: var(--link-color);
-      margin-bottom: 0;
-      font-family: inherit;
-      font-weight: 500;
-    }
+  .actionbar-wrapper {
+    flex: 0;
   }
 
-  .section.inventory {
-    padding-bottom: 15px;
+  .tabs-wrapper {
+    grid-column: span 2;
+  }
+
+  @media (min-width: 992px) {
+    .overview {
+      dl {
+        grid-template-columns: 40% 60%;
+      }
+    }
   }
 
   .directions {
     position: relative;
     display: flex;
     align-items: center;
-    color: var(--light-blue);
+    color: var(--blue);
     margin-bottom: 30px;
 
     h1 {
@@ -29,10 +31,9 @@
       position: absolute;
       width: 18px;
       height: 22px;
-      background: var(--light-blue);
+      background: var(--blue);
       mask: url("/icons/directions.svg") no-repeat center;
       margin-left: 8px;
-      top: 1px;
     }
 
   }
@@ -55,8 +56,14 @@
     }
   }
 
-  .request-btns.fluid-flex {
-    padding: 20px 0;
+  .request-btns {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+
+    a {
+      padding: 3px 40px;
+    }
   }
 
   #plans {
@@ -79,6 +86,7 @@
       justify-content: center;
 
       select {
+        flex: 0;
         width: 160px;
         height: 34px;
         border-radius: 4px;
@@ -97,14 +105,21 @@
     font-weight: 600;
     font-size: 13px;
     color: var(--link-color);
-    margin: 40px 0;
-  }
-
-  .fragment-wrapper {
-    margin: 60px 0;
+    margin-top: 30px;
   }
 
   .sales-center-info {
+    h2 {
+      padding: 0;
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      h2 {
+        font-size: 24px;
+      }
+    }
+
     dd {
       margin: 0;
 
@@ -121,6 +136,7 @@
           fill: #aaa;
         }
       }
+
     }
 
     padding-bottom: 20px;
@@ -129,8 +145,8 @@
       padding: 10px 0;
     }
 
-    & > div {
-      padding: 5px 0;
+    & > * {
+      padding: 10px 0;
 
       > dl {
         margin: 0;

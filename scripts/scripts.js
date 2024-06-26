@@ -105,6 +105,9 @@ async function loadEager(doc) {
     decorateMain(main);
     if (templateName) {
       await loadTemplate(doc, templateName);
+      if (getMetadata('secondary-template')) {
+        await loadTemplate(doc, getMetadata('secondary-template'));
+      }
     }
     document.body.classList.add('appear');
     await waitForLCP(LCP_BLOCKS);
@@ -153,7 +156,13 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
 }
 
+function setupGlobalVars() {
+  window.hh = window.hh || {};
+  window.hh.current = {};
+}
+
 async function loadPage() {
+  setupGlobalVars();
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
