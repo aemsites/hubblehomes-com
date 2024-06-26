@@ -162,9 +162,43 @@ function setupGlobalVars() {
 }
 
 const openSheet = ({ detail }) => {
-  const sk = detail.data;
-  // your custom code from button.action goes here
-  debugger;
+  const { data } = detail;
+  const location = data.location.pathname;
+  const routes = {
+    '/new-homes/*/*/*/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=rgHBEC&nav=MTVfezAwMDAwMDAwLTAwMDEtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMH0',
+    '/new-homes/*/*/*/*/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=bD7sfK&nav=MTVfezNGNTgzREJGLTEzNkYtNDU4RC1BQkM1LTBFRjhGMDNCMUY0OX0',
+    '/new-homes/*/*/*/*/*/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/_layouts/15/Doc.aspx?sourcedoc=%7B7175FB34-E91D-4F36-A74D-07E563906126%7D&file=hubblehomes.xlsx&nav=MTVfezg2ODI3Q0EwLThEOTQtNEQxQS04Rjg2LUQ4NEJCMTU0OEU1RX0&action=default&mobileredirect=true',
+    '/home-plans/plan-details/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/_layouts/15/Doc.aspx?sourcedoc=%7B7175FB34-E91D-4F36-A74D-07E563906126%7D&file=hubblehomes.xlsx&nav=MTVfezg2ODI3Q0EwLThEOTQtNEQxQS04Rjg2LUQ4NEJCMTU0OEU1RX0&action=default&mobileredirect=true',
+    home: 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=rgHBEC&nav=MTVfezAwMDAwMDAwLTAwMDEtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMH0',
+  };
+
+  const pathToMatch = '/new-homes/idaho/boise-metro/nampa/adams-ridge/birch';
+
+  function matchPath(path) {
+    const pathSegments = path.split('/');
+    let matchedRoute = null;
+
+    for (const route in routes) {
+      const routeSegments = route.split('/');
+      if (routeSegments.length === pathSegments.length) {
+        let match = true;
+        for (let i = 0; i < routeSegments.length; i += 1) {
+          if (routeSegments[i] !== '*' && routeSegments[i] !== pathSegments[i]) {
+            match = false;
+            break;
+          }
+        }
+        if (match) {
+          matchedRoute = route;
+          break;
+        }
+      }
+    }
+    return matchedRoute ? routes[matchedRoute] : routes.home;
+  }
+
+  const matchedRoute = matchPath(pathToMatch);
+  window.open(matchedRoute, '_blank');
 };
 
 const sk = document.querySelector('helix-sidekick');
