@@ -3,6 +3,7 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { div, h3, p, small, aside, h1, a, strong, hr } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
+import formatTimeStamp from '../../scripts/utils.js';
 import { loadFragment } from '../../blocks/fragment/fragment.js';
 import ArticleList from '../../scripts/article-list.js';
 
@@ -10,9 +11,7 @@ export default async function decorate(doc) {
   const articlesPerPage = Number(getMetadata('articles-per-page'));
   const paginationMaxBtns = Number(getMetadata('pagination-max-buttons'));
 
-
   const heroCarouselPromise = loadFragment('/news/news-detail/fragments/hero-carousel');
-  
   const [heroCarouselFrag] = await Promise.all([heroCarouselPromise]);
 
   const $carousel = div({ class: 'hero-carousel' },
@@ -20,11 +19,9 @@ export default async function decorate(doc) {
   );
 
   const $h1 = h1(doc.title);
-  // test
-  const $breadCrumbs = div({ class: 'breadcrumbs section' },
+
+  const $breadCrumbs = div({ class: 'breadcrumbs' },
     a({ href: '/', 'arial-lable': 'View Home Page' }, 'Home'),
-    ' > ',
-    a({ href: '/news', 'arial-lable': 'View News Page' }, 'News'),
     ' > ',
     $h1.textContent,
   );
@@ -39,7 +36,7 @@ export default async function decorate(doc) {
     div({ class: 'info' },
       h3(article.title),
       small(
-        strong('Posted: '), article.publisheddate,
+        strong('Posted: '), formatTimeStamp(article.publisheddate),
         ' | ',
         strong('Categories: '), article.categories.replace(/,/g, ' |'),
       ),
@@ -54,6 +51,8 @@ export default async function decorate(doc) {
   const $categoryFilter = div({ class: 'categories' }, 'LOADING CATEGORIES');
 
   const $newPage = div({ class: 'section' },
+    $breadCrumbs,
+    $h1,
     div({ class: 'content-wrapper' },
       div({ class: 'content' },
         $articles,
@@ -62,15 +61,14 @@ export default async function decorate(doc) {
       aside(
         h3('Categories'),
         $categoryFilter,
+        hr(),
       ),
     ),
   );
 
   const $page = doc.querySelector('main .section');
-  $page.replaceWith($carousel, $breadCrumbs,
-    $h1, $newPage);
 
-  const newsArticles = new ArticleList({
+  await new ArticleList({
     jsonPath: '/news/news-index.json',
     articleContainer: $articles,
     articleCard: $article,
@@ -79,6 +77,7 @@ export default async function decorate(doc) {
     paginationMaxBtns,
     filterContainer: $categoryFilter,
     filterRootPath: '/news/category/',
-  });
-  await newsArticles.render();
+  }).render();
+
+  $page.replaceWith($carousel, $newPage);
 }

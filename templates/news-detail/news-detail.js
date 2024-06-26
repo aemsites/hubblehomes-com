@@ -1,5 +1,5 @@
 /* eslint-disable function-call-argument-newline, object-curly-newline, function-paren-newline */
-import { aside, div, a, strong, small } from '../../scripts/dom-helpers.js';
+import { aside, div, ul, li, a, strong, small, h3, hr } from '../../scripts/dom-helpers.js';
 import ArticleList from '../../scripts/article-list.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../../blocks/fragment/fragment.js';
@@ -52,25 +52,44 @@ export default async function decorate(doc) {
   );
 
   const $categories = div();
+  const $recentNews = ul();
+  const $recentNewsArticle = (article) => {
+    const $listItem = li(a({ href: article.path }, article.title));
+    $listItem.append(hr());
+    return $listItem;
+  };
 
-  const $newPage = div({ class: 'section' }, $breadCrumbs,
+  const $newPage = div({ class: 'section' },
+    $breadCrumbs,
     div({ class: 'content-wrapper' },
       div({ class: 'content' },
         $mainContent,
         $socialShare,
       ),
       aside(
+        h3('Categories'),
         $categories,
+        hr(),
+        h3('Recent News'),
+        $recentNews,
       ),
     ),
   );
 
-  const newsArticles = new ArticleList({
+  const categories = new ArticleList({
     jsonPath: '/news/news-index.json',
     filterContainer: $categories,
     filterRootPath: '/news/category/',
   });
-  await newsArticles.render();
+  await categories.render();
+
+  const recentNews = new ArticleList({
+    jsonPath: '/news/news-index.json',
+    articleContainer: $recentNews,
+    articleCard: $recentNewsArticle,
+    articlesPerPage: 5,
+  });
+  await recentNews.render();
 
   $page.replaceWith($carousel, $newPage);
 }
