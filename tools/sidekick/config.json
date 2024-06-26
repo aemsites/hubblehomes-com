@@ -2,9 +2,9 @@
     "plugins": [
         {
             "id": "openSheet",
-            "title": "Open Data",
+            "title": "Open HubbleHomes.xlsx",
             "event": "openSheet",
-            "environments": ["dev", "admin", "edit", "preview"]
+            "environments": ["edit", "preview"]
         }
     ]
 }
