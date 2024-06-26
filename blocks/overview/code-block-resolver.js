@@ -9,7 +9,7 @@ function parseToNumber(str) {
 }
 
 const ColumnFormatter = {
-  price: (value) => formatPrice(value),
+  price: (value) => (!Number.isNaN(parseToNumber(value)) ? formatPrice(value) : value),
   'square feet': (value) => {
     const formatter = new Intl.NumberFormat('en-US');
     return !Number.isNaN(parseToNumber(value)) ? formatter.format(parseFloat(value)) : value;

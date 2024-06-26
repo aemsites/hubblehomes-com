@@ -1,0 +1,84 @@
+@layer templates {
+  body[class*="-template"] {
+    --template-left-width: 65%;
+    --template-right-width: 35%;
+
+    main div .section {
+      padding: 0 20px;
+
+      &.breadcrumbs {
+        padding: 8px 20px;
+      }
+
+      @media (max-width: 992px) {
+        padding: 0 10px;
+
+        &.breadcrumbs {
+          padding: 8px;
+        }
+      }
+    }
+
+    .page-info {
+      padding-bottom: 20px;
+
+      h1 {
+        padding-top: 15px;
+        font-size: 30px;
+        color: var(--link-color);
+        margin-bottom: 0;
+        font-family: inherit;
+        font-weight: 500;
+      }
+    }
+
+    .content-wrapper {
+      display: flex;
+
+      /* bring the aside below the content */
+      @media (width <= 991px) {
+        display: block;
+      }
+
+      .content {
+        .repeating-grid {
+          --p-right-width: var(--right-col-width, var(--template-right-width));
+          --p-left-width: var(--left-col-width, var(--template-left-width));
+          --grid-gap: 10px;
+
+          grid-template-columns: var(--p-left-width) var(--p-right-width);
+        }
+
+        @media (max-width: 991px) {
+          .repeating-grid {
+            grid-template-columns: 1fr;
+
+            .tabs-wrapper {
+              grid-column: span 1;
+            }
+          }
+        }
+      }
+
+      aside {
+        flex: 0 0 25%;
+        padding: 0 15px;
+
+        @media (width <=991px) {
+          padding-top: 30px;
+          padding-left: 0;
+          padding-right: 0
+        }
+      }
+    }
+
+    .full-width {
+      max-width: 100%;
+    }
+
+    .embed > div {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}

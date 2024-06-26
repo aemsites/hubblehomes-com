@@ -1,8 +1,9 @@
 import {
-  a, div, h3, img, span,
+  a, div, h3, span,
 } from '../../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../../scripts/aem.js';
 import formatPhoneNumber from '../../../scripts/phone-formatter.js';
+import { getModelImage } from '../../../scripts/models.js';
 
 class BaseCard {
   constructor(data, community) {
@@ -61,8 +62,9 @@ class BaseCard {
    * @returns {Element}
    */
   async renderModelImage() {
-    const image = this.createModelImage(this.cardData.image, this.cardData.modelname);
-    const imageLink = a({ href: this.cardData.href }, image);
+    const url = await getModelImage(this.cardData['model name']);
+    const image = this.createModelImage(url, this.cardData['model name']);
+    const imageLink = a({ href: this.cardData.path }, image);
     const imagePicture = div(imageLink);
     return div({ class: 'model-card-image-container' }, imagePicture);
   }
@@ -72,6 +74,7 @@ class BaseCard {
    * By default, a share action, status text, and favorite action are displayed.
    * @returns {Element}
    */
+  // eslint-disable-next-line class-methods-use-this
   renderTopActionBar() {
     return div(
       { class: 'model-card-action-bar' },
@@ -87,20 +90,7 @@ class BaseCard {
    */
   // eslint-disable-next-line class-methods-use-this
   renderLeftTopBarAction() {
-    const shareImage = img({
-      alt: 'share',
-      src: '/icons/share.png',
-      width: '36px',
-      height: '32px',
-      onmouseover: () => shareImage.setAttribute('src', '/icons/share_over.png'),
-      onmouseout: () => shareImage.setAttribute('src', '/icons/share.png'),
-    });
-
-    const shareLink = a({
-      href: '#',
-    }, shareImage);
-
-    return div({ class: 'share' }, shareLink);
+    return div();
   }
 
   /**
@@ -117,15 +107,7 @@ class BaseCard {
    */
   // eslint-disable-next-line class-methods-use-this
   renderRightTopBarAction() {
-    const favoriteLink = img({
-      alt: 'favorite',
-      src: '/icons/save.png',
-      width: '40px',
-      height: '32px',
-      onmouseover: () => favoriteLink.setAttribute('src', '/icons/save_over.png'),
-      onmouseout: () => favoriteLink.setAttribute('src', '/icons/save.png'),
-    });
-    return div({ class: 'favorite' }, favoriteLink);
+    return div();
   }
 
   /**
@@ -178,7 +160,7 @@ class BaseCard {
 
     // render the 3 rows of the details container
     this.renderTopRowOfDetailsContainer(gridContainer);
-    this.renderMiddleRowOfDetailsContainer(gridContainer);
+    this.renderBottomRowOfDetailsContainer(gridContainer);
 
     bottomContainer.appendChild(gridContainer);
     return bottomContainer;
@@ -229,7 +211,7 @@ class BaseCard {
    * right sections.
    * @param gridContainer
    */
-  renderMiddleRowOfDetailsContainer(gridContainer) {
+  renderBottomRowOfDetailsContainer(gridContainer) {
     this.renderMiddleRowOfDetailsContainer_left(gridContainer);
     this.renderMiddleRowOfDetailsContainer_right(gridContainer);
   }
