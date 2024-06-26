@@ -118,14 +118,14 @@ input[type='text']::placeholder {
   border: 1px solid #d4d4d4;
   border-bottom: none;
   border-top: none;
-  z-index: 3; /* Ensure it overlaps other elements */
+  z-index: 3; 
   top: calc(
     100% + 34px
   ); /* Position just below the input, adjust the spacing as needed */
   
   left: 472px;
   background-color: #ddd;
-  width: 456px; /* Match the width of the input field */
+  width: 456px;
   box-shadow: 0 4px 6px color(0, 0, 0, 10%); /* Add a shadow for better visibility */
   border-radius: 6px;
 }
@@ -151,7 +151,7 @@ input[type='text']::placeholder {
 .autocomplete-items div:hover {
   border: 1px solid #74b2e2;
   background: #e4f1fb url('/icons/bg-glass.png') 50% 50% repeat-x;
-  
+
   /* outline: 5px auto;
   outline-offset: -2px; */
 }
