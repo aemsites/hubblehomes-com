@@ -58,7 +58,7 @@ export function decorateMain(main) {
 /**
  * Decorates the template.
  */
-async function loadTemplate(doc, templateName) {
+export async function loadTemplate(doc, templateName) {
   try {
     const cssLoaded = new Promise((resolve) => {
       loadCSS(`${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css`).then((resolve)).catch((err) => {
@@ -105,9 +105,6 @@ async function loadEager(doc) {
     decorateMain(main);
     if (templateName) {
       await loadTemplate(doc, templateName);
-      if (getMetadata('secondary-template')) {
-        await loadTemplate(doc, getMetadata('secondary-template'));
-      }
     }
     document.body.classList.add('appear');
     await waitForLCP(LCP_BLOCKS);
@@ -159,6 +156,57 @@ function loadDelayed() {
 function setupGlobalVars() {
   window.hh = window.hh || {};
   window.hh.current = {};
+}
+
+const openSheet = ({ detail }) => {
+  const { data } = detail;
+  const routes = {
+    '/new-homes/*/*/*/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=rgHBEC&nav=MTVfezAwMDAwMDAwLTAwMDEtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMH0',
+    '/new-homes/*/*/*/*/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=bD7sfK&nav=MTVfezNGNTgzREJGLTEzNkYtNDU4RC1BQkM1LTBFRjhGMDNCMUY0OX0',
+    '/new-homes/*/*/*/*/*/*/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=LGaAfv&nav=MTVfezg2ODI3Q0EwLThEOTQtNEQxQS04Rjg2LUQ4NEJCMTU0OEU1RX0',
+    '/home-plans/plan-detail/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=H18GCg&nav=MTVfezVCMEU1NzA5LUE2MTAtNDY1RS1BMDhGLUIxQjU1MEFDRDEwOH0',
+    home: 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=rgHBEC&nav=MTVfezAwMDAwMDAwLTAwMDEtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMH0',
+  };
+
+  const pathToMatch = data.location.pathname;
+
+  function matchPath(path) {
+    const pathSegments = path.split('/');
+    let matchedRoute = null;
+
+    for (const route in routes) {
+      const routeSegments = route.split('/');
+      if (routeSegments.length === pathSegments.length) {
+        let match = true;
+        for (let i = 0; i < routeSegments.length; i += 1) {
+          if (routeSegments[i] !== '*' && routeSegments[i] !== pathSegments[i]) {
+            match = false;
+            break;
+          }
+        }
+        if (match) {
+          matchedRoute = route;
+          break;
+        }
+      }
+    }
+    return matchedRoute ? routes[matchedRoute] : routes.home;
+  }
+
+  const matchedRoute = matchPath(pathToMatch);
+  window.open(matchedRoute, '_blank');
+};
+
+const sk = document.querySelector('helix-sidekick');
+if (sk) {
+  // sidekick already loaded
+  sk.addEventListener('custom:openSheet', openSheet);
+} else {
+  // wait for sidekick to be loaded
+  document.addEventListener('sidekick-ready', () => {
+    document.querySelector('helix-sidekick')
+      .addEventListener('custom:openSheet', openSheet);
+  }, { once: true });
 }
 
 async function loadPage() {
