@@ -209,7 +209,7 @@ export default class ArticleList {
 
     const $categories = ul({ class: 'filter' });
 
-    Object.keys(categories).forEach((category) => {
+    Object.keys(categories).sort().forEach((category) => {
       const cat = category.toLowerCase().replace(/\s+/g, '-');
       const $a = a({ href: this.categoryPath + cat }, `${category} `, small(`(${categories[category]})`));
       const $li = li({ class: this.category === cat ? 'active' : '' }, $a);
