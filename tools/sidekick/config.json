@@ -4,7 +4,7 @@
             "id": "openSheet",
             "title": "Open HubbleHomes.xlsx",
             "event": "openSheet",
-            "environments": ["edit", "preview"]
+            "environments": ["dev", "preview"]
         }
     ]
 }
