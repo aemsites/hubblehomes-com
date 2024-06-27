@@ -58,7 +58,7 @@ export function decorateMain(main) {
 /**
  * Decorates the template.
  */
-async function loadTemplate(doc, templateName) {
+export async function loadTemplate(doc, templateName) {
   try {
     const cssLoaded = new Promise((resolve) => {
       loadCSS(`${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css`).then((resolve)).catch((err) => {
@@ -105,9 +105,6 @@ async function loadEager(doc) {
     decorateMain(main);
     if (templateName) {
       await loadTemplate(doc, templateName);
-      if (getMetadata('secondary-template')) {
-        await loadTemplate(doc, getMetadata('secondary-template'));
-      }
     }
     document.body.classList.add('appear');
     await waitForLCP(LCP_BLOCKS);
