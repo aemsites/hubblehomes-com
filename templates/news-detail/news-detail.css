@@ -9,19 +9,11 @@
 }
 
 .news-detail {
-  .content-wrapper {
-    padding-top: 0;
-  }
-
   h1 {
     text-align: center;
-    box-sizing: border-box;
-    line-height: 1.1;
-    font-size: 36px;
-    margin: 3px 0 2px;
-    font-weight: 900;
-    color: var(--light-blue);
+    margin: 3px 0 60px;
   }
+
 
   .post-metadata {
     display: block;

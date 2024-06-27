@@ -1,26 +1,5 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline */
 
-/*
-## NOTES:
-
-The ArticleList class is used to render a list of articles, pagination, and a category filter,
-it can be customized to suit different needs:
-
-### EXAMPLE USAGE:
-  const articleList = new ArticleList({
-    jsonPath: '/news/news-index.json', // required
-    articleContainer: $dataContainer, // optional: (will not render if object isn't passed)
-    articleCard: $article, // optional: (will not render if object isn't passed && articleContainer)
-    articlesPerPage: 10, // optional: (default = 10)
-    paginationContainer: $dataPagination, // optional: (will not render if object isn't passed)
-    paginationMaxBtns: 7, // optional: (default = 7)
-    filterContainer: $dataFilter, // optional: (will not render if object isn't passed)
-    filterRootPath: '/news/category/', // optional: (filterContainer must be present)
-  });
-  await articleList.render();
-
-*/
-
 import { button, ul, li, a, small } from './dom-helpers.js';
 
 /**

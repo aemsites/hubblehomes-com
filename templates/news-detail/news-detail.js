@@ -6,14 +6,16 @@ import { loadFragment } from '../../blocks/fragment/fragment.js';
 import { loadTemplate } from '../../scripts/scripts.js';
 
 export default async function decorate(doc) {
+  await loadTemplate(doc, 'default');
   const $page = doc.querySelector('main .section');
-  const $mainContent = div();
-  [...$page.children].forEach((child) => $mainContent.append(child));
 
-  const hero = await loadFragment('/news/news-hero');
-  const $carousel = div({ class: 'hero-carousel' },
-    hero.firstElementChild,
-  );
+  const heroFrag = await loadFragment('/news/news-hero');
+  const $hero = heroFrag.querySelector('.carousel-wrapper').cloneNode(true);
+
+  const $breadcrumbs = doc.querySelector('.breadcrumbs');
+
+  const $mainContent = $page.cloneNode(true).querySelector('.default-content-wrapper');
+  $page.innerHTML = '';
 
   // subhead
   const $postMeta = small({ class: 'post-metadata' },
@@ -35,7 +37,7 @@ export default async function decorate(doc) {
   const $recentNews = ul({ class: 'recent-news' });
   const $recentNewsArticle = (article) => li(a({ href: article.path }, article.title));
 
-  const $newPage = div({ class: 'section' },
+  const $newsDetailPage = div({ class: 'section' },
     div({ class: 'content-wrapper' },
       div({ class: 'content' },
         $mainContent,
@@ -52,6 +54,12 @@ export default async function decorate(doc) {
     ),
   );
 
+  $page.append(
+    $hero,
+    $breadcrumbs,
+    $newsDetailPage,
+  );
+
   const categories = new ArticleList({
     jsonPath: '/news/news-index.json',
     categoryContainer: $categories,
@@ -66,11 +74,6 @@ export default async function decorate(doc) {
     articlesPerPage: 5,
   });
   await recentNews.render();
-
-  $page.append($carousel, $newPage);
-
-  // extend default template
-  await loadTemplate(doc, 'default');
 
   const shareThisScript = script({
     type: 'text/javascript',
