@@ -10,17 +10,11 @@ import formatTimeStamp from '../../scripts/utils.js';
 import ArticleList from '../../scripts/article-list.js';
 
 export default async function decorate(doc) {
+  await loadTemplate(doc, 'default');
+  const hero = await loadFragment('/news/news-hero');
+
   const articlesPerPage = Number(getMetadata('articles-per-page'));
   const paginationMaxBtns = Number(getMetadata('pagination-max-buttons'));
-
-  const hero = await loadFragment('/news/news-hero');
-  const $carousel = div({ class: 'hero-carousel' },
-    hero.firstElementChild,
-  );
-
-  const $h1 = h1(doc.title);
-
-  const $articles = div({ class: 'articles' });
 
   const $articleCard = (article) => div({ class: 'card' },
     a({ class: 'thumb', href: article.path },
@@ -38,12 +32,13 @@ export default async function decorate(doc) {
       hr(),
     ),
   );
-
+  //
   const $pagination = div({ class: 'pagination' });
   const $categoryFilter = div();
+  const $articles = div({ class: 'articles' });
 
-  const $newPage = div({ class: 'section' },
-    $h1,
+  const newsPage = div({ class: 'section' },
+    h1(doc.title),
     div({ class: 'content-wrapper' },
       div({ class: 'content' },
         $articles,
@@ -57,8 +52,6 @@ export default async function decorate(doc) {
     ),
   );
 
-  const $page = doc.querySelector('main .section');
-
   await new ArticleList({
     jsonPath: '/news/news-index.json',
     articleContainer: $articles,
@@ -70,8 +63,8 @@ export default async function decorate(doc) {
     categoryPath: '/news/category/',
   }).render();
 
-  $page.append($carousel, $newPage);
-
-  // extend default template
-  await loadTemplate(doc, 'default');
+  const staticHero = hero.querySelector('.carousel-wrapper').cloneNode(true);
+  const breadcrumbs = doc.querySelector('.breadcrumbs');
+  breadcrumbs.insertAdjacentElement('beforebegin', staticHero);
+  breadcrumbs.insertAdjacentElement('afterend', newsPage);
 }
