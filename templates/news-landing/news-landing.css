@@ -1,5 +1,6 @@
 /* stylelint-disable declaration-block-single-line-max-declarations */
-@import url("/styles/layouts.css");
+@import url('/styles/layouts.css');
+@import url('/styles/sidebar.css');
 
 .hero-carousel {
   max-width: 1920px;
@@ -33,46 +34,6 @@
     line-height: 1.5em;
     margin-bottom: 10px;
   }
-
-  /* sidebar */
-  aside  {
-    padding: 0 20px;
-    font-size: 1em;
-
-    h3 {
-      border-top: 1px solid #383838;
-      margin: 20px 0 10px;
-      padding: 20px 0 0;
-
-      &:first-of-type {
-        border: 0;
-        margin-top: 0;
-        padding: 0;
-      }
-    }
-
-    h4 {
-      font-size: 18px;
-      margin: 20px 0 0;
-      margin-bottom: 2px;
-      font-weight: 400;
-    }
-
-    ul {
-      list-style: none;
-      color: #383838;
-      line-height: 1.5;
-      &:first-of-type { margin: 0 }
-    }
-    li.active a {color: var(--blue)}
-
-    a {
-      font-size: 16px;
-      color: #383838;
-      text-decoration: none !important;
-      &:hover {color: #0055b9 }
-    }
-  } /* .aside */
 } /* .news-detail */
 
 

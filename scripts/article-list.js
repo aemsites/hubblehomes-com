@@ -3,7 +3,7 @@
 /*
 ## NOTES:
 
-The ArticleList class is used to render a list of artilces, pagination and a categor filter,
+The ArticleList class is used to render a list of articles, pagination, and a category filter,
 it can be customized to suit different needs:
 
 ### EXAMPLE USAGE:
@@ -17,65 +17,63 @@ it can be customized to suit different needs:
     filterContainer: $dataFilter, // optional: (will not render if object isn't passed)
     filterRootPath: '/news/category/', // optional: (filterContainer must be present)
   });
-await articleList.render();
+  await articleList.render();
 
 */
 
 import { button, ul, li, a, small } from './dom-helpers.js';
 
+/**
+ * Get the current page number from the URL query parameters.
+ * @returns {number} The current page number or 0 if not set.
+ */
 function getPageN() {
   const urlParams = new URLSearchParams(window.location.search);
   const page = urlParams.get('page');
   return page ? parseInt(page, 10) : 0; // set to 0 if page is not set
 }
 
+/**
+ * Create an ArticleList instance.
+ * @param {Object} options - The configuration options.
+ * @param {string} options.jsonPath - The path to the JSON data.
+ * @param {HTMLElement} [options.articleContainer] - The container for articles.
+ * @param {Function} [options.articleCard] - The function to create an article card.
+ * @param {number} [options.articlesPerPage=10] - The number of articles per page.
+ * @param {HTMLElement} [options.paginationContainer] - The container for pagination controls.
+ * @param {number} [options.paginationMaxBtns=7] - The maximum number of pagination buttons.
+ * @param {HTMLElement} [options.categoryContainer] - The container for category filters.
+ * @param {string} [options.categoryPath] - The root path for category filtering.
+ */
 export default class ArticleList {
-  constructor(options) {
-    const {
-      jsonPath,
-      articleContainer,
-      articleCard,
-      articlesPerPage = 10,
-      paginationContainer,
-      paginationMaxBtns = 7,
-      filterContainer,
-      filterRootPath,
-    } = options;
-
+  constructor({
+    jsonPath,
+    articleContainer,
+    articleCard,
+    articlesPerPage = 10,
+    paginationContainer,
+    paginationMaxBtns = 7,
+    categoryContainer,
+    categoryPath,
+  }) {
     this.jsonPath = jsonPath;
     this.articleContainer = articleContainer;
     this.articleCard = articleCard;
     this.articlesPerPage = articlesPerPage;
     this.paginationContainer = paginationContainer;
     this.paginationMaxBtns = paginationMaxBtns;
-    this.filterContainer = filterContainer;
-    this.filterRootPath = filterRootPath;
+    this.categoryContainer = categoryContainer;
+    this.categoryPath = categoryPath;
     this.currentPage = getPageN();
     this.totalArticles = 0;
-    this.urlCategory = null;
+    this.category = null;
     this.allArticles = [];
   }
 
-  async getArticles() {
-    const page = this.currentPage;
-    let articles = this.allArticles;
-
-    // filter if category is present
-    if (this.urlCategory) {
-      articles = articles.filter((article) => {
-        const articleCategories = article.categories.toLowerCase().replace(/\s+/g, '-');
-        return articleCategories.includes(this.urlCategory);
-      });
-    }
-
-    // sort articles by publisheddate
-    articles = articles.sort((A, B) => parseInt(B.publisheddate, 10) - parseInt(A.publisheddate, 10));
-
-    this.totalArticles = articles.length;
-    this.renderArticles(articles.slice(page * this.articlesPerPage, (page + 1) * this.articlesPerPage));
-    this.updatePagination();
-  }
-
+  /**
+   * Render articles and add them to articleContainer.
+   * @param {Array} articles - The list of articles.
+   */
   renderArticles(articles) {
     this.articleContainer.innerHTML = '';
     const article = document.createDocumentFragment();
@@ -85,12 +83,39 @@ export default class ArticleList {
     this.articleContainer.appendChild(article);
   }
 
-  addPageBtn(n) {
+  async updateArticles() {
+    const page = this.currentPage;
+    let articles = this.allArticles;
+
+    // Filter articles by category if present
+    if (this.category) {
+      articles = articles.filter((article) => {
+        const articleCategories = article.categories.toLowerCase().replace(/\s+/g, '-');
+        return articleCategories.includes(this.category);
+      });
+    }
+
+    // Sort articles by publish date in descending order
+    articles = articles.sort((A, B) => parseInt(B.publisheddate, 10) - parseInt(A.publisheddate, 10));
+
+    // Update total articles count and render the current page's articles
+    this.totalArticles = articles.length;
+    this.renderArticles(articles.slice(page * this.articlesPerPage, (page + 1) * this.articlesPerPage));
+    this.updatePagination();
+  }
+
+  /**
+   * Create a pagination button.
+   * @param {number} n - The page number.
+   * @returns {HTMLElement} The pagination button element.
+   */
+  pageBtn(n) {
     const $pageBtn = button({ class: n === this.currentPage ? 'active' : '' }, (n + 1).toString());
     $pageBtn.addEventListener('click', () => {
       if (this.currentPage !== n) {
         this.currentPage = n;
-        this.getArticles();
+        this.updateArticles();
+        this.scrollTop();
       }
     });
     return $pageBtn;
@@ -100,7 +125,7 @@ export default class ArticleList {
     if (!this.paginationContainer) return;
     this.paginationContainer.innerHTML = '';
 
-    // exit if paginationContainer isn't present or article count is < maxpage count
+    // Exit if paginationContainer isn't present or article count is less than max page count
     if (!this.paginationContainer || this.totalArticles < this.articlesPerPage) return;
 
     const p = document.createDocumentFragment();
@@ -109,7 +134,8 @@ export default class ArticleList {
     $prev.addEventListener('click', () => {
       if (this.currentPage > 0) {
         this.currentPage -= 1;
-        this.getArticles();
+        this.updateArticles();
+        this.scrollTop();
       }
     });
     $prev.disabled = this.currentPage === 0;
@@ -118,16 +144,16 @@ export default class ArticleList {
     const totalPages = Math.ceil(this.totalArticles / this.articlesPerPage);
 
     if (totalPages <= this.paginationMaxBtns + 2) {
-      Array.from({ length: totalPages }, (_, i) => p.appendChild(this.addPageBtn(i)));
+      Array.from({ length: totalPages }, (_, i) => p.appendChild(this.pageBtn(i)));
     } else {
-      const half = Math.floor((this.paginationMaxBtns - 3) / 2); // buttons on either side of active
-      const extra = (this.paginationMaxBtns - 1) % 2; // remainder (if maxBtns is an even n)
+      const half = Math.floor((this.paginationMaxBtns - 3) / 2); // Buttons on either side of active
+      const extra = (this.paginationMaxBtns - 1) % 2; // Remainder (if maxBtns is an even number)
       let startPage;
       let endPage;
       const $spaceBtn = button({ class: 'space' }, ' - ');
       $spaceBtn.disabled = true;
 
-      // determine start/end values
+      // Determine start/end values
       if (this.currentPage < totalPages - half * 2 + 1 + extra) {
         startPage = Math.max(1, this.currentPage - half);
         endPage = Math.max(this.paginationMaxBtns - 2, this.currentPage + half + extra);
@@ -136,21 +162,21 @@ export default class ArticleList {
         endPage = totalPages - 1;
       }
 
-      // 1st btn + space
-      p.appendChild(this.addPageBtn(0));
+      // First button + space
+      p.appendChild(this.pageBtn(0));
       if (startPage > 1) p.appendChild($spaceBtn.cloneNode(true));
 
-      // middle btns
+      // Middle buttons
       for (let i = startPage; i <= endPage; i += 1) {
-        p.appendChild(this.addPageBtn(i));
+        p.appendChild(this.pageBtn(i));
       }
 
-      // space + last btn
+      // Space + last button
       if (endPage < totalPages - 2) {
         p.appendChild($spaceBtn.cloneNode(true));
-        p.appendChild(this.addPageBtn(totalPages - 1));
+        p.appendChild(this.pageBtn(totalPages - 1));
       } else if (endPage === totalPages - 2) {
-        p.appendChild(this.addPageBtn(totalPages - 1));
+        p.appendChild(this.pageBtn(totalPages - 1));
       }
     }
 
@@ -158,7 +184,8 @@ export default class ArticleList {
     $next.addEventListener('click', () => {
       if (this.currentPage < totalPages - 1) {
         this.currentPage += 1;
-        this.getArticles();
+        this.updateArticles();
+        this.scrollTop();
       }
     });
     $next.disabled = this.currentPage === totalPages - 1;
@@ -168,7 +195,7 @@ export default class ArticleList {
     this.updateUrl();
   }
 
-  generateFilterList() {
+  updateFilterList() {
     const categories = {};
 
     this.allArticles.forEach((article) => {
@@ -184,59 +211,71 @@ export default class ArticleList {
 
     Object.keys(categories).forEach((category) => {
       const cat = category.toLowerCase().replace(/\s+/g, '-');
-      const $a = a({ href: this.filterRootPath + cat }, `${category} `, small(`(${categories[category]})`));
-      const $li = li({ class: this.urlCategory === cat ? 'active' : '' }, $a);
+      const $a = a({ href: this.categoryPath + cat }, `${category} `, small(`(${categories[category]})`));
+      const $li = li({ class: this.category === cat ? 'active' : '' }, $a);
       $a.addEventListener('click', (event) => {
         if (this.articleCard && this.articleContainer) event.preventDefault();
-        this.urlCategory = cat;
+        this.category = cat;
         this.currentPage = 0;
-        this.getArticles();
+        this.updateArticles();
         this.updateUrl();
-        this.generateFilterList();
+        this.updateFilterList();
       });
       $categories.appendChild($li);
     });
 
-    this.filterContainer.innerHTML = '';
-    this.filterContainer.appendChild($categories);
+    this.categoryContainer.innerHTML = '';
+    this.categoryContainer.appendChild($categories);
+  }
+
+  scrollTop() {
+    const { top } = this.articleContainer.getBoundingClientRect();
+    const scrollToY = top + window.scrollY - 120; // account for header
+    window.scrollTo({ top: scrollToY, behavior: 'smooth' });
   }
 
   getCategory() {
-    [this.urlCategory] = window.location.pathname
-      .replace(this.filterRootPath, '')
-      .split('/');
+    [this.category] = window.location.pathname.replace(this.categoryPath, '').split('/');
   }
 
   updateUrl() {
     const url = new URL(window.location);
-    url.pathname = this.filterRootPath + this.urlCategory;
-    // only update ?page if it is not 0
+    url.pathname = this.categoryPath + this.category;
+    // Only update ?page if it is not 0
     if (this.currentPage !== 0) url.searchParams.set('page', this.currentPage);
     else url.searchParams.delete('page');
-    // only update if category exists
-    if (this.urlCategory) window.history.pushState(null, '', url);
+    // Only update if category exists
+    if (this.category) window.history.pushState(null, '', url);
   }
 
   onPopState() {
     this.getCategory();
-    this.generateFilterList();
-    this.getArticles();
+    this.updateFilterList();
+    this.updateArticles();
   }
 
+  /**
+   * Render the article list and initialize event listeners.
+   */
   async render() {
-    const response = await fetch(this.jsonPath);
-    const json = await response.json();
-    this.allArticles = json.data;
+    try {
+      const response = await fetch(this.jsonPath);
+      const json = await response.json();
+      this.allArticles = json.data;
 
-    this.getCategory();
+      this.getCategory();
 
-    // if categoryFilter is defined render it
-    if (this.filterContainer) this.generateFilterList();
+      // If categoryFilter is defined, render it
+      if (this.categoryContainer) this.updateFilterList();
 
-    // if articleCard & articleContainer are defined render them
-    if (this.articleCard && this.articleContainer) {
-      await this.getArticles();
-      window.addEventListener('popstate', (event) => this.onPopState(event));
+      // If articleCard & articleContainer are defined, render them
+      if (this.articleCard && this.articleContainer) {
+        await this.updateArticles();
+        window.addEventListener('popstate', (event) => this.onPopState(event));
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error fetching articles:', error);
     }
   }
 }
