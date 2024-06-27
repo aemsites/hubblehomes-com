@@ -172,9 +172,7 @@ const openSheet = ({ detail }) => {
 
   function matchPath(path) {
     const pathSegments = path.split('/');
-    let matchedRoute = null;
-
-    for (const route in routes) {
+    const matchedRoute = Object.keys(routes).find((route) => {
       const routeSegments = route.split('/');
       if (routeSegments.length === pathSegments.length) {
         let match = true;
@@ -184,12 +182,10 @@ const openSheet = ({ detail }) => {
             break;
           }
         }
-        if (match) {
-          matchedRoute = route;
-          break;
-        }
+        return match;
       }
-    }
+      return false;
+    });
     return matchedRoute ? routes[matchedRoute] : routes.home;
   }
 
