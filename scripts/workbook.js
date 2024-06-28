@@ -36,10 +36,21 @@ async function getSheet(sheetNames) {
   if (cachedSheets.length === sheets.length) {
     return Object.fromEntries(cachedSheets.map((sheetName) => [sheetName, hh[sheetName]]));
   }
+
   const data = await fetchWorkbook(sheets.length === Object.keys(Sheets).length ? 'all' : sheets);
+
+  // we could look at the sheets.length to determine if we have a single sheet or multi sheet
+  // workbook but the result also tells us that it's a sheet, or multi-sheet response
+  if (data[':type'] === 'sheet') {
+    hh[sheets[0]] = data;
+    return { [sheets[0]]: data };
+  }
+
+  // we have a multi sheet workbook
   Object.entries(data).forEach(([key, value]) => {
     if (!key.startsWith(':')) hh[key] = value;
   });
+
   return Object.fromEntries(sheets.map((sheetName) => [sheetName, hh[sheetName]]));
 }
 
