@@ -192,6 +192,7 @@
 
   /* links */
   a:any-link {
+    color: var(--link-color);
     text-decoration: none;
     font-weight: 600;
   }
@@ -240,20 +241,35 @@
     margin: 20px 0;
   }
 
-
   .breadcrumbs {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
     font-size: .8em;
     color: #c8c8c8;
     padding: 8px 0;
     user-select: none;
 
-    a {
-      color: #aaa;
-      text-decoration: none;
-    }
+    li {
+      margin: 10px 1px;
 
-    &:hover {
-      color: #0055b9;
+      &::after {
+        content: ">";
+        margin-left: 5px;
+      }
+
+      &:last-child::after {
+        content: "";
+      }
+
+      a {
+        color: #aaa;
+        text-decoration: none;
+
+        &:hover {
+          color: #0055b9;
+        }
+      }
     }
   }
 
@@ -309,10 +325,6 @@
     font-weight: 400;
     color: var(--link-color);
     padding-top: 30px !important;
-
-    a:any-link {
-      color: var(--link-color);
-    }
   }
 
   .strike-through {

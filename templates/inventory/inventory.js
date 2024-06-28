@@ -25,6 +25,7 @@ import {
   buildBlock, decorateBlock,
 } from '../../scripts/aem.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
+import { loadTemplate } from '../../scripts/scripts.js';
 
 async function fetchRequiredPageData() {
   await loadWorkbook();
@@ -38,17 +39,6 @@ async function fetchRequiredPageData() {
     homeDetails,
     phoneNumber: phone,
   };
-}
-
-function buildBreadCrumbs() {
-  return div(
-    { class: 'breadcrumbs section' },
-    a({ href: '/', 'aria-label': 'View Home Page' }, 'Home'),
-    ' > ',
-    a({ href: '/foo', 'aria-label': 'View News Page' }, 'CommunityName'),
-    ' > ',
-    'The Birch',
-  );
 }
 
 async function buildInventoryCards(inventoryHomes, community) {
@@ -101,9 +91,10 @@ async function createPricingInformation(homeDetails) {
 }
 
 export default async function decorate(doc) {
+  await loadTemplate(doc, 'default');
+
   const { homeDetails, phoneNumber } = await fetchRequiredPageData();
 
-  const breadCrumbsEl = buildBreadCrumbs();
   const rightAside = await createRightAside(doc, homeDetails, phoneNumber);
 
   const mainSectionEl = doc.querySelector('main > .section');
@@ -163,7 +154,6 @@ export default async function decorate(doc) {
 
   safeAppend(
     mainSectionEl,
-    breadCrumbsEl,
     leftRight,
     elevations,
     actionButtons,
