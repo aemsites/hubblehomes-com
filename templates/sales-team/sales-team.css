@@ -7,7 +7,7 @@
         column-gap: 2rem;
         margin-left: auto;
         margin-right: auto;
-        align-items: center;
+        align-items: center;        
     }
 }
 @media screen and (min-width: 992px) {
@@ -29,7 +29,7 @@
         padding-left: 15px;
         margin-top: 30px;
         margin-bottom: 30px;
-        height: 424px;
+        min-height: 424px;
     }
 
     /* Sales team member image */
@@ -44,7 +44,7 @@
     width: 100%;
     height: auto;
     margin-bottom: 10px;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1/1;
 }
 
 .specialist-info-sales-team {
@@ -155,7 +155,7 @@
         justify-content: left;
         column-gap: 2rem;
         margin-left: 0;
-        margin-right: 0;
+        margin-right: 0;        
     }
 
     .sales-team .specialists-sales-team .specialists-wrapper {

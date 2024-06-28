@@ -18,7 +18,7 @@ function buildBreadCrumbs() {
 function createSpeicalistBlock(specialist) {    
     const agent = div(
         { class: 'specialist' },
-        div({ class: 'specialist-image-container-sales-team' }, createOptimizedPicture(specialist.photo, specialist.name, false, [{ width: '750' }, { width: '400' }])),
+        div({ class: 'specialist-image-container-sales-team' }, createOptimizedPicture(specialist.photo, specialist.name, false, [{ width: '750' }, { width: '400'}])),
         div(
             { class: 'specialist-info-sales-team' },
             div({ class: 'name' }, specialist.name),
@@ -91,6 +91,5 @@ export default async function decorate(doc) {
     });
     const mainPageContent = div({ class: 'section' }, $breadCrumbs, specialistsSection);
     $newPage.appendChild(mainPageContent);
-    const $parent = $page.parentNode;
-    $parent.replaceChild($newPage, $page);
+    $page.appendChild($newPage);
 }
