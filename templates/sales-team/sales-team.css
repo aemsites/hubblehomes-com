@@ -1,3 +1,31 @@
+.default-content-wrapper {
+    h1 {
+        text-align: center;       
+    }
+
+    strong {
+        font-weight: 900;
+    }
+
+    p {
+        margin-top: 30px;
+        text-align: center;
+        font-size: var(--body-font-size-m);
+    }
+
+    h1:nth-of-type(2) {
+        margin-top: 30px;
+        margin-bottom: 30px;
+        color: var(--light-gray);
+        font-weight: 400;        
+    }
+
+    strong:nth-of-type(2) {
+        font-weight: 900;
+        color: black;
+    }
+}
+
 @media screen and (min-width: 1200px) {
     .sales-team .specialists-sales-team {
         width: 1170px !important;

@@ -72,17 +72,15 @@ async function createSpecialists(specialists) {
 }
 
 export default async function decorate(doc) {
-    const $newPage = div();
-
-    const $carouselWrapper = doc.querySelector('.carousel-wrapper');
-    if ($carouselWrapper) {
-        $newPage.appendChild($carouselWrapper);
-    }
+    const $newPage = div();  
 
     const $page = doc.querySelector('main .section');
+    const $text = $page.querySelector('.default-content-wrapper');
+    
 
     const $breadCrumbs = buildBreadCrumbs();
     const specialistsSection = div({ class: 'specialists-sales-team' });
+    specialistsSection.append($text);
     const staffData = await getStaffSheet('data');
     staffData.sort((a, b) => a.name.localeCompare(b.name));
     const specialistEl = await createSpecialists(staffData);
