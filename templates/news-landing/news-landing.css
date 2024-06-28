@@ -57,10 +57,14 @@
       }
 
       hr { margin-top: 20px }
+
+      @media (width <= 768px) {
+        h3 { font-size: var(--body-font-size-l) }
+        .btn { scale: .8; margin-left: -12px; }
+      }
     }
   }
 }
-
 
 .pagination {
   text-align: center;
@@ -93,5 +97,3 @@
     }
   }
 }
-
-

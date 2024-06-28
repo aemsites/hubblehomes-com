@@ -1,9 +1,10 @@
 /* eslint-disable function-call-argument-newline, object-curly-newline, function-paren-newline */
-import { aside, div, ul, li, a, strong, small, h3, hr, script } from '../../scripts/dom-helpers.js';
+import { aside, div, ul, li, p, a, strong, small, h3, hr, script } from '../../scripts/dom-helpers.js';
 import ArticleList from '../../scripts/article-list.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../../blocks/fragment/fragment.js';
 import { loadTemplate } from '../../scripts/scripts.js';
+import formatTimeStamp from '../../scripts/utils.js';
 
 export default async function decorate(doc) {
   await loadTemplate(doc, 'default');
@@ -34,21 +35,39 @@ export default async function decorate(doc) {
   });
 
   const $categories = div();
-  const $recentNews = ul({ class: 'recent-news' });
-  const $recentNewsArticle = (article) => li(a({ href: article.path }, article.title));
+  const $recentNews = div();
+  // const $recentNewsArticle = (article) => li(a({ href: article.path }, article.title));
+
+  const $recentNewsArticle = (article) => div({ class: 'card' },
+    a({ class: 'thumb', href: article.path },
+      createOptimizedPicture(article.image, article.title, true, [{ width: '200' }]),
+    ),
+    div({ class: 'info' },
+      h3(a({ href: article.path }, article.title)),
+      small(
+        strong('Posted: '), formatTimeStamp(article.publisheddate),
+        ' | ',
+        strong('Categories: '), article.categories.replace(/,/g, ' |'),
+      ),
+      p(article.description),
+      // a({ class: 'btn yellow', href: article.path }, 'Read Article'),
+      // hr(),
+    ),
+  );
 
   const $newsDetailPage = div({ class: 'section' },
     div({ class: 'content-wrapper' },
       div({ class: 'content' },
         $mainContent,
         div({ class: 'sharethis sharethis-inline-share-buttons' }),
+        div({ class: 'recent-news' },
+          h3('Recent News'),
+          $recentNews,
+        ),
       ),
       aside(
         h3('Categories'),
         $categories,
-        hr(),
-        h3('Recent News'),
-        $recentNews,
         hr(),
       ),
     ),
@@ -71,7 +90,7 @@ export default async function decorate(doc) {
     jsonPath: '/news/news-index.json',
     articleContainer: $recentNews,
     articleCard: $recentNewsArticle,
-    articlesPerPage: 5,
+    articlesPerPage: 3,
   });
   await recentNews.render();
 

@@ -24,7 +24,7 @@
       font-size: 16px;
       color: #383838;
       text-decoration: none !important;
-      &:hover {color: #0055b9 }
+      &:hover { color: var(--blue) }
     }
     li.active a {color: var(--blue)}
 
