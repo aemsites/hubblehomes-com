@@ -146,7 +146,7 @@ async function setupAutocomplete() {
         });
         autocompleteList.appendChild(item);
       });
-    }, 300); // Adjust the throttle limit as needed
+    }, 200); // Adjust the throttle limit as needed
 
     searchInput.addEventListener('input', handleInput);
 
