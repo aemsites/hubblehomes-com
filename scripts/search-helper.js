@@ -13,10 +13,14 @@ export const formatCommunities = (data) => data.map((item) => ({
  * @param {Array} data - The array of data objects from the Staff sheet.
  * @returns {Array} Formatted suggestions.
  */
-export const formatStaff = (data) => data.map((item) => ({
-  display: `${item.name} - Sales Agent`,
-  value: item.name,
-}));
+export const formatStaff = (data) => data.map((item) => {
+  const formattedName = item.name.toLowerCase().replace(/\s+/g, '-');
+  return {
+    display: `${item.name} - Sales Agent`,
+    value: item.name,
+    path: `/contact-us/sales-team#${formattedName}`
+  };
+});
 
 /**
  * Formats data from the Sales Offices sheet for autocomplete.

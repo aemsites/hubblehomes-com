@@ -104,6 +104,10 @@ async function buildNav() {
  * Sets up the autocomplete functionality for the search input.
  * @returns {Promise<void>}
  */
+/**
+ * Sets up the autocomplete functionality for the search input.
+ * @returns {Promise<void>}
+ */
 async function setupAutocomplete() {
   try {
     const searchInput = await waitForElement('#navSearch');
