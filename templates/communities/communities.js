@@ -27,6 +27,7 @@ import DeferredPromise from '../../scripts/deferred.js';
 import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import loadSVG from '../../scripts/svg-helper.js';
 import { loadWorkbook } from '../../scripts/workbook.js';
+import { loadTemplate } from '../../scripts/scripts.js';
 
 /**
  * Builds the inventory homes block.
@@ -91,23 +92,6 @@ async function createSpecialists(specialists) {
   Promise.all(promises)
     .then(() => deferred.resolve(agents));
   return deferred.promise;
-}
-
-function buildBreadCrumbs() {
-  return div(
-    { class: 'breadcrumbs section' },
-    a({
-      href: '/',
-      'arial-label': 'View Home Page',
-    }, 'Home'),
-    ' > ',
-    a({
-      href: '/foo',
-      'arial-label': 'View News Page',
-    }, 'CommunityName'),
-    ' > ',
-    'XXX',
-  );
 }
 
 async function createRightAside(doc, salesCenter) {
@@ -249,6 +233,8 @@ function buildFilterForm(filterByValue) {
 }
 
 export default async function decorate(doc) {
+  await loadTemplate(doc, 'default');
+
   const url = new URL(window.location);
   const params = url.searchParams;
   const filter = params.get('filter');
@@ -274,7 +260,6 @@ export default async function decorate(doc) {
     href: `/contact-us/sales-info?communityid=${community.name}`,
   }, 'Request Information'));
 
-  const breadCrumbsEl = buildBreadCrumbs();
   const overview = doc.querySelector('.overview-wrapper');
   const tabsWrapper = doc.querySelector('.tabs-wrapper');
   const rightAside = await createRightAside(doc, salesCenter);
@@ -315,7 +300,6 @@ export default async function decorate(doc) {
   ));
 
   mainSection.append(
-    breadCrumbsEl,
     leftRight,
     modelFilter,
     plansAnchor,
