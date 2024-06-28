@@ -20,3 +20,14 @@ indices:
       categories:
         select: head > meta[name="categories"]
         value: attribute(el, "content")
+  pages:
+    include:
+      - '/**'
+    target: /data/page-index.json
+    properties:
+      title:
+        select: head > title
+        value: textContent(el)
+      pageName:
+        select: head > meta[name="page-name"]
+        value: attribute(el, "content")
