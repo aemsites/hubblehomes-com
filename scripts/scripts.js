@@ -21,7 +21,9 @@ const LCP_BLOCKS = []; // add your LCP blocks to the list
 async function loadFonts() {
   await loadCSS(`${window.hlx.codeBasePath}/styles/fonts.css`);
   try {
-    if (!window.location.hostname.includes('localhost')) sessionStorage.setItem('fonts-loaded', 'true');
+    if (!window.location.hostname.includes('localhost')) {
+      sessionStorage.setItem('fonts-loaded', 'true');
+    }
   } catch (e) {
     // do nothing
   }
@@ -61,16 +63,25 @@ export function decorateMain(main) {
 export async function loadTemplate(doc, templateName) {
   try {
     const cssLoaded = new Promise((resolve) => {
-      loadCSS(`${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css`).then((resolve)).catch((err) => {
-        // eslint-disable-next-line no-console
-        console.error(`failed to load css module for ${templateName}`, err.target.href);
-        resolve();
-      });
+      loadCSS(
+        `${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css`,
+      )
+        .then(resolve)
+        .catch((err) => {
+          // eslint-disable-next-line no-console
+          console.error(
+            `failed to load css module for ${templateName}`,
+            err.target.href,
+          );
+          resolve();
+        });
     });
     const decorationComplete = new Promise((resolve) => {
       (async () => {
         try {
-          const mod = await import(`../templates/${templateName}/${templateName}.js`);
+          const mod = await import(
+            `../templates/${templateName}/${templateName}.js`
+          );
           if (mod.default) {
             await mod.default(doc);
           }
