@@ -1,0 +1,80 @@
+{
+  "cleanup": {
+    "start": [
+      ".navholder",
+      "form",
+      "#chat-widget-container",
+      ".cd-top",
+      "#buttonClickModal",
+      "noscript",
+      "#communities",
+      ".homesearchform",
+      ".container > .row > .col-sm-12 > .btn-group",
+      ".container > .row > .col-sm-12 > small > a",
+      ".container > .row > .topbuffer",
+      ".modal",
+      ".graydivider",
+      ":scope > img",
+      "#inventoryshowhide"
+    ],
+    "end": [
+      ".breadcrumb",
+      "#skiptocontent",
+      ".footerrow",
+      ".subfooter",
+      ".sidebar",
+      ".sharethis-inline-share-buttons",
+      ".mobile-footer",
+      ".modal-footer"
+    ]
+  },
+  "blocks": [
+    {
+      "type": "metadata",
+      "insertMode": "append",
+      "params": {
+        "cells": {
+          "Template": "community",
+          "PublishedDate": [[".text-center small strong", ".text-center small strong:first-child + ::text", { "replace": ["\\|"] }]]
+        }
+      }
+    },
+    {
+      "type": "carousel",
+      "variants": ["auto-2000"],
+      "selectors": [
+        ".homesearchmapwrapper:has(#myCarousel)"
+      ],
+      "params": {
+        "cells": [
+          ["Default Slide Text (optional)", ["<h2>{{.communitytitle-top #communitytitle-1}}</h2>{{.communitytitle-top #communitytitle-2}}<hr><h2>{{.communitytitle-bottom #communitytitle-3}}</h2>{{.communitytitle-bottom #communitytitle-4}}"]]
+        ]
+      }
+    },
+    {
+      "type": "columns",
+      "variants": ["About"],
+      "selectors": [
+        ".row .row:has(.panel-group)"
+      ],
+      "params": {
+        "cells": ".panel-group"
+      }
+    },
+    {
+      "type": "video",
+      "selectors": [
+        ".video-container:has(iframe)"
+      ],
+      "params": {
+        "cells": {
+          "URL": "iframe[src]",
+          "Type": [
+            ["iframe[type]", "iframe[type]"],
+            ["*", "video"]
+          ]
+        }
+      }
+    }
+  ]
+}
