@@ -18,7 +18,7 @@ export const formatStaff = (data) => data.map((item) => {
   return {
     display: `${item.name} - Sales Agent`,
     value: item.name,
-    path: `/contact-us/sales-team#${formattedName}`
+    path: `/contact-us/sales-team#${formattedName}`,
   };
 });
 
@@ -66,7 +66,7 @@ export const formatInventory = (data) => data.map((item) => ({
 export const throttle = (func, limit) => {
   let lastFunc;
   let lastRan;
-  return function (...args) {
+  return (...args) => {
     if (!lastRan) {
       func.apply(this, args);
       lastRan = Date.now();

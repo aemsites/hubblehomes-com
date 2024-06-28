@@ -109,59 +109,55 @@ async function buildNav() {
  * @returns {Promise<void>}
  */
 async function setupAutocomplete() {
-  try {
-    const searchInput = await waitForElement('#navSearch');
-    const autocompleteList = await waitForElement('#autocomplete-list');
+  const searchInput = await waitForElement('#navSearch');
+  const autocompleteList = await waitForElement('#autocomplete-list');
 
-    // Fetch data from various sheets
-    const communityResult = await getCommunitiesSheet();
-    const staffResult = await getStaffSheet();
-    const modelResult = await getModelsSheet();
-    const inventoryResult = await getInventorySheet();
+  // Fetch data from various sheets
+  const communityResult = await getCommunitiesSheet();
+  const staffResult = await getStaffSheet();
+  const modelResult = await getModelsSheet();
+  const inventoryResult = await getInventorySheet();
 
-    // Format the data for autocomplete
-    const communityData = formatCommunities(communityResult.data);
-    const staffData = formatStaff(staffResult.data);
-    const modelData = formatModels(modelResult.data);
-    const inventoryData = formatInventory(inventoryResult.data);
+  // Format the data for autocomplete
+  const communityData = formatCommunities(communityResult.data);
+  const staffData = formatStaff(staffResult.data);
+  const modelData = formatModels(modelResult.data);
+  const inventoryData = formatInventory(inventoryResult.data);
 
-    // Combine all formatted data
-    const allSuggestions = [
-      ...communityData,
-      ...staffData,
-      ...modelData,
-      ...inventoryData,
-    ];
+  // Combine all formatted data
+  const allSuggestions = [
+    ...communityData,
+    ...staffData,
+    ...modelData,
+    ...inventoryData,
+  ];
 
-    const handleInput = throttle(() => {
-      const value = searchInput.value.toLowerCase();
-      autocompleteList.innerHTML = '';
+  const handleInput = throttle(() => {
+    const value = searchInput.value.toLowerCase();
+    autocompleteList.innerHTML = '';
 
-      if (value.length < 2) return;
+    if (value.length < 2) return;
 
-      const filteredSuggestions = allSuggestions.filter((item) => item.display
-        .toLowerCase().includes(value));
-      filteredSuggestions.forEach((suggestion) => {
-        const item = document.createElement('div');
-        item.innerHTML = `<a href="${suggestion.path}" class="autocomplete-link">${suggestion.display}</a>`;
-        item.addEventListener('click', () => {
-          searchInput.value = suggestion.value;
-          autocompleteList.innerHTML = '';
-        });
-        autocompleteList.appendChild(item);
-      });
-    }, 200); // Adjust the throttle limit as needed
-
-    searchInput.addEventListener('input', handleInput);
-
-    document.addEventListener('click', (e) => {
-      if (e.target !== searchInput) {
+    const filteredSuggestions = allSuggestions.filter((item) => item.display
+      .toLowerCase().includes(value));
+    filteredSuggestions.forEach((suggestion) => {
+      const item = document.createElement('div');
+      item.innerHTML = `<a href="${suggestion.path}" class="autocomplete-link">${suggestion.display}</a>`;
+      item.addEventListener('click', () => {
+        searchInput.value = suggestion.value;
         autocompleteList.innerHTML = '';
-      }
+      });
+      autocompleteList.appendChild(item);
     });
-  } catch (error) {
-    console.error(error.message);
-  }
+  }, 200); // Adjust the throttle limit as needed
+
+  searchInput.addEventListener('input', handleInput);
+
+  document.addEventListener('click', (e) => {
+    if (e.target !== searchInput) {
+      autocompleteList.innerHTML = '';
+    }
+  });
 }
 
 export default async function decorate(block) {
