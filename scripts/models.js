@@ -1,4 +1,4 @@
-import { getModelsSheet } from './workbook.js';
+import { getHomePlansSheet, getModelsSheet } from './workbook.js';
 import { getCommunityDetailsByName } from './communities.js';
 
 /**
@@ -28,8 +28,8 @@ async function getModelsByCommunity(communityName) {
  * @returns {Promise<boolean|string|*|string>}
  */
 async function getModelImage(modelName) {
-  const models = await getModels();
-  const m = models.find((model) => model.name === modelName);
+  const models = await getHomePlansSheet('data');
+  const m = models.find((model) => model['model name'] === modelName);
   return m ? m.image : '';
 }
 
@@ -51,8 +51,14 @@ async function getCommunitiesForModel(modelName) {
   return Promise.all(communities.map(async (community) => getCommunityDetailsByName(community)));
 }
 
+async function getModelByPath(path) {
+  const models = await getModels();
+  return models.find((model) => model.path === path);
+}
+
 export {
   getModels,
+  getModelByPath,
   getModelImage,
   getModelsByCommunity,
   getCommunitiesForModel,

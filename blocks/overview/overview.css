@@ -1,7 +1,29 @@
+.overview-wrapper {
+  padding-right: 10px;
+}
+
 .overview {
+  padding: 0 10px 20px;
+  margin: 0 15px;
+  min-height: 250px;
+  box-shadow: 6px 6px 5px 0 rgb(0 0 0 / 10%);
+
+  h3 { display: none }
+
+  @media (max-width: 991px) {
+    h3 {
+      display: block;
+    }
+
+    min-height: initial;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+  }
+
   dl {
     display: grid;
-    grid-template-columns: 40% 1fr;
+    grid-template-columns: 55% 45%;
     gap: 4px;
     margin: 0;
   }

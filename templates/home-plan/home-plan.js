@@ -2,42 +2,22 @@ import {
   aside,
   div,
   a,
-  button,
-  h2,
-  h3,
   h4,
-  h5,
-  br,
-  span,
-  h1,
+  h1, br,
 } from '../../scripts/dom-helpers.js';
 import { createTemplateBlock, safeAppend } from '../../scripts/block-helper.js';
-import {
-  getInventoryHomeByPath,
-  getInventoryHomesByCommunities,
-} from '../../scripts/inventory.js';
-import { loadRates, calculateMonthlyPayment } from '../../scripts/mortgage.js';
-import { formatPrice } from '../../scripts/currency-formatter.js';
-import formatPhoneNumber from '../../scripts/phone-formatter.js';
-import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
 import { loadWorkbook } from '../../scripts/workbook.js';
-import {
-  buildBlock, decorateBlock,
-} from '../../scripts/aem.js';
+import { getHomePlanByPath } from '../../scripts/home-plans.js';
+import { getInventoryHomesByCommunities } from '../../scripts/inventory.js';
+import { buildBlock, decorateBlock } from '../../scripts/aem.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
+import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
+import { loadRates } from '../../scripts/mortgage.js';
 
 async function fetchRequiredPageData() {
   await loadWorkbook();
   await loadRates();
-
-  const homeDetails = await getInventoryHomeByPath(window.location.pathname);
-  const salesCenter = await getSalesCenterForCommunity(homeDetails.community);
-  const phone = salesCenter ? salesCenter.phone : '';
-
-  return {
-    homeDetails,
-    phoneNumber: phone,
-  };
+  return getHomePlanByPath(window.location.pathname);
 }
 
 function buildBreadCrumbs() {
@@ -47,8 +27,14 @@ function buildBreadCrumbs() {
     ' > ',
     a({ href: '/foo', 'aria-label': 'View News Page' }, 'CommunityName'),
     ' > ',
-    'The Birch',
+    '-- TO BE UPDATED --',
   );
+}
+
+async function createRightAside(doc, homePlan) {
+  const modelName = homePlan['model name'];
+  const availableAt = await createTemplateBlock('available-at-locations', [['model', modelName]]);
+  return div(availableAt, br(), doc.querySelector('.links-wrapper'));
 }
 
 async function buildInventoryCards(inventoryHomes, community) {
@@ -66,6 +52,10 @@ async function buildInventoryCards(inventoryHomes, community) {
 
 async function buildAccordion(model) {
   const homesByCommunity = await getInventoryHomesByCommunities(model);
+  if (Object.keys(homesByCommunity).length === 0) {
+    return undefined;
+  }
+
   const content = [];
 
   const communityName = Object.keys(homesByCommunity);
@@ -83,39 +73,19 @@ async function buildAccordion(model) {
   return wrapper;
 }
 
-async function createRightAside(doc, homeDetails, phoneNumber) {
-  const modelName = homeDetails['model name'];
-  const headingEl = h2(formatPhoneNumber(phoneNumber));
-  const availableAt = await createTemplateBlock('available-at-locations', [['model', modelName]]);
-  return div(headingEl, br(), availableAt, br(), doc.querySelector('.links-wrapper'));
-}
-
-async function createPricingInformation(homeDetails) {
-  const { price } = homeDetails;
-  const numericPrice = price ? parseFloat(price) : null;
-  const estimatedCost = formatPrice(calculateMonthlyPayment(numericPrice));
-  const perMonthText = span({ class: 'per-month' }, '/mo*');
-  const estimatedCostHeadingText = h4(estimatedCost, perMonthText);
-  const priceEl = h3(formatPrice(numericPrice));
-  return div({ class: 'pricing-information' }, priceEl, estimatedCostHeadingText);
-}
-
 export default async function decorate(doc) {
-  const { homeDetails, phoneNumber } = await fetchRequiredPageData();
-
+  const homePlan = await fetchRequiredPageData();
   const breadCrumbsEl = buildBreadCrumbs();
-  const rightAside = await createRightAside(doc, homeDetails, phoneNumber);
+  const rightAside = await createRightAside(doc, homePlan);
 
   const mainSectionEl = doc.querySelector('main > .section');
   const disclaimer = doc.querySelector('.fragment-wrapper');
   const overview = doc.querySelector('.overview-wrapper');
-  const descriptionWrapper = doc.querySelector('.description-wrapper');
-
   const matterport = doc.querySelector('.embed-wrapper');
   if (matterport) {
     matterport.classList.add('section');
   }
-
+  const descriptionWrapper = doc.querySelector('.description-wrapper');
   const elevations = doc.querySelector('.elevations-wrapper');
   if (elevations) {
     elevations.classList.add('section');
@@ -131,25 +101,17 @@ export default async function decorate(doc) {
     tabs.classList.add('section');
   }
 
-  const accordion = await buildAccordion(homeDetails['model name']);
+  const accordion = await buildAccordion(homePlan['model name']);
 
-  const address = div({ class: 'page-info' }, h1(homeDetails['model name']), a({
-    href: `https://www.google.com/maps/dir/Current+Location/${homeDetails.latitude},${homeDetails.longitude}`,
-    target: '_blank',
-  }, h4(homeDetails.address)), h5(`MLS #${homeDetails.mls}`));
-
-  const pricingContainer = await createPricingInformation(homeDetails);
-  const listingHeader = div({ class: 'fluid-flex inventory-details' }, address, pricingContainer);
-
-  const buttons = div(
-    { class: 'button-container' },
-    button({ class: 'fancy yellow' }, 'Request Information'),
+  const listingHeader = div(
+    { class: 'page-info' },
+    h1(`The ${homePlan['model name']}`),
+    h4(homePlan['home style']),
   );
 
   const twoCols = div(
     listingHeader,
     div({ class: 'repeating-grid' }, descriptionWrapper, div(overview)),
-    buttons,
   );
 
   const leftRight = div({ class: 'section' }, div(

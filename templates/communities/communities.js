@@ -60,10 +60,6 @@ async function fetchRequiredPageData() {
   const salesCenter = await getSalesCentersForCommunityUrl(window.location);
   const community = await getCommunityForUrl(window.location.pathname);
 
-  window.hh = window.hh || {};
-
-  // setup the data that needs to flow to additional blocks
-  window.hh.current = window.hh.current || {};
   window.hh.current.sale_center = salesCenter.sales_center;
   window.hh.current.community = community;
 
@@ -267,19 +263,16 @@ export default async function decorate(doc) {
   const filterSectionTitle = div({ class: 'grey-divider full-width' }, getHeaderTitleForFilter(filter));
   const inventory = await buildInventoryHomes(community, filter);
 
-  const modelNameAddr = div(h1(community.name), a({
+  const modelNameAddr = div({ class: 'page-info' }, h1(community.name), a({
     class: 'directions',
     href: `https://www.google.com/maps/dir/Current+Location/${salesCenter.latitude},${salesCenter.longitude}`,
     target: '_blank',
   }, h4(`${areaName}, ${community['zip-code-abbr']}`)));
 
-  const requestButtons = div({ class: 'request-btns fluid-flex' }, a({
-    class: 'btn gray fancy',
+  const requestButtons = div({ class: 'request-btns' }, a({
+    class: 'btn yellow fancy',
     href: `/contact-us/sales-info?communityid=${community.name}`,
-  }, 'Request Information'), a({
-    class: 'btn fancy',
-    href: `/schedule-a-tour?communityid=${community.name}`,
-  }, 'Request a Tour'));
+  }, 'Request Information'));
 
   const breadCrumbsEl = buildBreadCrumbs();
   const overview = doc.querySelector('.overview-wrapper');
@@ -304,10 +297,10 @@ export default async function decorate(doc) {
   });
 
   const twoCols = div(
-    { class: 'repeating-grid' },
-    div({ class: 'left' }, modelNameAddr, doc.querySelector('.description-wrapper'), requestButtons),
-    div({ class: 'right' }, overview),
+    modelNameAddr,
+    div({ class: 'repeating-grid' }, doc.querySelector('.description-wrapper'), div(overview)),
     tabsWrapper,
+    requestButtons,
   );
 
   const leftRight = div({ class: 'section' }, div(

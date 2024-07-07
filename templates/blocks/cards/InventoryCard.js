@@ -4,7 +4,6 @@ import {
 } from '../../../scripts/dom-helpers.js';
 import { formatPrice } from '../../../scripts/currency-formatter.js';
 import { calculateMonthlyPayment } from '../../../scripts/mortgage.js';
-import { getModelImage } from '../../../scripts/models.js';
 
 class InventoryCard extends BaseCard {
   renderAddress() {
@@ -14,12 +13,13 @@ class InventoryCard extends BaseCard {
     return addressHref;
   }
 
-  async renderModelImage() {
-    const url = await getModelImage(this.cardData.modelname);
-    const image = this.createModelImage(url, this.cardData.modelname);
-    const imageLink = a({ href: this.cardData.href }, image);
-    const imagePicture = div(imageLink);
-    return div({ class: 'model-card-image-container' }, imagePicture);
+  renderTopRowOfDetailsContainer_left(gridContainer) {
+    const link = a({
+      href: this.cardData.path,
+      class: 'btn light-blue square',
+    }, 'Get Info');
+
+    gridContainer.appendChild(link);
   }
 
   renderTaglineItems(taglineContainer) {

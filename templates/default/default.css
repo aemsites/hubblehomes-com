@@ -1,9 +1,24 @@
 .default-template {
-  h1 {
-    padding: 30px;
+  main > .section > *:not(.carousel-wrapper) {
+    padding: 0 20px;
+
+    @media (max-width: 768px) {
+      padding: 0 10px;
+    }
   }
 
-  .section {
-    text-align: center;
+  h1 {
+    padding: 20px 0;
+  }
+
+  .btn-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+  }
+
+  div.breadcrumbs {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
   }
 }
