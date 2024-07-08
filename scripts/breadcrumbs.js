@@ -19,8 +19,8 @@ export default async function buildBreadcrumbs() {
 
   const homeLink = a({ href: '/' }, 'Home');
   const homeCrumb = li(homeLink);
-  const crumbList = ul({ class: 'breadcrumbs' }, homeCrumb);
-  const breadcrumbContainer = div({ class: 'section' }, crumbList);
+  const crumbList = ul({ class: 'breadcrumb-list' }, homeCrumb);
+  const breadcrumbContainer = div({ class: 'breadcrumbs' }, crumbList);
 
   pathParts.forEach((part, index) => {
     currentPath += `/${part}`;

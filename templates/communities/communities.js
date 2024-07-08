@@ -232,6 +232,49 @@ function buildFilterForm(filterByValue) {
   return div({ class: 'filter-form' }, form({ class: 'fluid-flex' }, allListingSelect, sortBySelect, filterBySelect), resetEl);
 }
 
+/**
+ * Verify that the community exists in the spreadsheet, if not redirect to the previous page.
+ * @param community The community object
+ * @param doc The document
+ */
+function verifyCommunity(community, doc) {
+  if (!community) {
+    const breadcrumbs = doc.querySelectorAll('.breadcrumbs a');
+    for (let i = breadcrumbs.length - 1; i >= 0; i -= 1) {
+      const breadcrumb = breadcrumbs[i];
+      if (breadcrumb.href) {
+        window.location = breadcrumb.href;
+        return;
+      }
+    }
+  }
+}
+
+function checkIfSoldOut(community, doc) {
+  const mainSection = doc.querySelector('main > .section');
+
+  if (community.price !== 'Sold Out') return;
+
+  // Clear all content after breadcrumbs
+  const breadcrumb = mainSection.querySelector('.breadcrumbs');
+  while (breadcrumb.nextSibling) {
+    breadcrumb.nextSibling.remove();
+  }
+
+  mainSection.append(h1('Sold Out'));
+
+  // Offer navigation to other communities
+  const lastBreadcrumb = [...doc.querySelectorAll('.breadcrumbs a')].pop();
+  if (lastBreadcrumb) {
+    mainSection.append(
+      span(
+        'Come take a look at our other communities in ',
+        a({ href: lastBreadcrumb.href }, `${lastBreadcrumb.textContent}.`),
+      ),
+    );
+  }
+}
+
 export default async function decorate(doc) {
   await loadTemplate(doc, 'default');
 
@@ -245,6 +288,10 @@ export default async function decorate(doc) {
     salesCenter,
     community,
   } = await fetchRequiredPageData();
+
+  // if the community doesn't exist redirect up
+  verifyCommunity(community, doc);
+  checkIfSoldOut(community, doc);
 
   const filterSectionTitle = div({ class: 'grey-divider full-width' }, getHeaderTitleForFilter(filter));
   const inventory = await buildInventoryHomes(community, filter);
