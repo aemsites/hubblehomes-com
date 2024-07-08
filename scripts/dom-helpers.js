@@ -32,13 +32,19 @@ export function domEl(tag, ...items) {
 
   if (!items || items.length === 0) return element;
 
-  if (!(items[0] instanceof Element || items[0] instanceof HTMLElement) && typeof items[0] === 'object') {
+  if (
+    !(items[0] instanceof Element || items[0] instanceof HTMLElement)
+    && typeof items[0] === 'object'
+  ) {
     const [attributes, ...rest] = items;
     items = rest;
 
     Object.entries(attributes).forEach(([key, value]) => {
       if (!key.startsWith('on')) {
-        element.setAttribute(key, Array.isArray(value) ? value.join(' ') : value);
+        element.setAttribute(
+          key,
+          Array.isArray(value) ? value.join(' ') : value,
+        );
       } else {
         element.addEventListener(key.substring(2).toLowerCase(), value);
       }
@@ -64,16 +70,43 @@ export const removeEmptyTags = (block) => {
     // checking the innerHTML and trim it to make sure the content inside the tag is 0
     if (
       x.outerHTML.slice(tagName.length * -1).toUpperCase() === tagName
-        // && x.childElementCount === 0
-        && x.innerHTML.trim().length === 0) {
+      // && x.childElementCount === 0
+      && x.innerHTML.trim().length === 0
+    ) {
       x.remove();
     }
   });
 };
-/*
-    More short hand functions can be added for very common DOM elements below.
-    domEl function from above can be used for one off DOM element occurrences.
-  */
+
+/**
+ * Waits for a DOM element to appear within a specified timeout period.
+ * @param {string} selector - The CSS selector of the desired element.
+ * @param {number} [timeout=3000] - The maximum time to wait for the element,
+ * in milliseconds. Defaults to 3000ms.
+ * @returns {Promise<Element>} A promise that resolves with the element when it is found,
+ * or rejects if the timeout is reached.
+ */
+export const waitForElement = (selector, timeout = 3000) => new Promise((resolve, reject) => {
+  const interval = 100;
+  let elapsedTime = 0;
+
+  const check = () => {
+    const element = document.querySelector(selector);
+    if (element) {
+      resolve(element);
+    } else {
+      elapsedTime += interval;
+      if (elapsedTime >= timeout) {
+        reject(new Error('Element not found: ', selector));
+      } else {
+        setTimeout(check, interval);
+      }
+    }
+  };
+
+  check();
+});
+
 export function div(...items) { return domEl('div', ...items); }
 export function p(...items) { return domEl('p', ...items); }
 export function a(...items) { return domEl('a', ...items); }
