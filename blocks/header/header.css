@@ -89,7 +89,7 @@ a:hover#phone {
 
 #search .search-icon img {
   opacity: 0.25;
-  padding: 5px 0 0 12px;
+  padding: 0 0 0 12px;
 }
 
 #search input[type='text'] {

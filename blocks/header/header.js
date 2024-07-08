@@ -199,8 +199,8 @@ export default async function decorate(block) {
       { class: 'search-icon' },
       img({
         src: '/icons/search.svg',
-        height: 17,
-        width: 17,
+        height: 25,
+        width: 25,
         alt: 'search',
       }),
     ),
