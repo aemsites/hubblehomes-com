@@ -29,7 +29,7 @@
 
 @media screen and (min-width: 992px) {
     .sales-team .specialists-sales-team {
-        width: 970px !important;
+        width: 970px;
         display: flex;
         flex-wrap: wrap;
         justify-content: left;
@@ -59,7 +59,7 @@
 
 @media screen and (min-width: 1200px) {
     .sales-team .specialists-sales-team {
-        width: 1170px !important;
+        width: 1170px;
         display: flex;
         flex-wrap: wrap;
         justify-content: left;
