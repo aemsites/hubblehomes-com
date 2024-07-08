@@ -4,7 +4,7 @@
     }
 
     strong {
-        font-weight: 900;
+        font-weight: 900;        
     }
 
     p {
@@ -20,7 +20,7 @@
         font-weight: 400;        
     }
 
-    strong:nth-of-type(2) {
+    h1:nth-of-type(2) > strong {
         font-weight: 900;
         color: black;
     }
