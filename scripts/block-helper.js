@@ -3,20 +3,6 @@ import { div } from './dom-helpers.js';
 import { loadTemplateBlock } from './template-block.js';
 
 /**
- * Creates an action bar with the given actions.  The actions should be a comma separated list of
- * action names.  The names of the actions can be found in actionbar.js's Action object.
- * @param {string[]} actions - The actions to include in the action bar.
- * @returns {Promise<Element>} The action bar wrapped in a div.
- */
-async function createActionBar(actions) {
-  const actionBarBlock = buildBlock('actionbar', actions.join(', '));
-  const blockWrapper = div(actionBarBlock);
-  decorateBlock(actionBarBlock);
-  await loadTemplateBlock(actionBarBlock);
-  return blockWrapper;
-}
-
-/**
  * Creates a template block with the given block name and data.
  *
  * @param {string} blockName - The name of the block to create.
@@ -31,7 +17,20 @@ async function createTemplateBlock(blockName, blockData) {
   return blockWrapper;
 }
 
+/**
+ * Safely appends elements to the parent element. If the element is null or undefined,
+ * it is not appended.
+ * @param parent the parent element
+ * @param elements the elements to append
+ */
+function safeAppend(parent, ...elements) {
+  elements
+    .filter((element) => element !== null && element !== undefined)
+    .forEach((element) => parent.append(element));
+}
+
 export {
-  createActionBar,
+  // eslint-disable-next-line import/prefer-default-export
   createTemplateBlock,
+  safeAppend,
 };

@@ -273,6 +273,7 @@ header nav .r-col p:not(:first-child) picture img { margin-top: 30px }
   color: #fff;
   border: 1px solid #ddd;
   border-radius: 6px;
+  box-sizing: content-box;
 }
 
 .bgr-btn span {

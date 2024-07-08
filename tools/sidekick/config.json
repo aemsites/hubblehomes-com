@@ -1,0 +1,10 @@
+{
+    "plugins": [
+        {
+            "id": "openSheet",
+            "title": "Open HubbleHomes Sheet",
+            "event": "openSheet",
+            "environments": ["dev", "preview"]
+        }
+    ]
+}

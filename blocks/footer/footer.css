@@ -1,6 +1,8 @@
 /* stylelint-disable declaration-block-single-line-max-declarations, no-descending-specificity, rule-empty-line-before */
 
 footer {
+  padding-top: 20px;
+
   * { margin: 0; padding: 0; }
 
   .top {
@@ -204,6 +206,7 @@ footer {
         margin-right: 20px;
         cursor: pointer;
         border-radius: 16px;
+        border: 0;
         background: var(--light-blue);
         transition: all 160ms ease-in;
         &:hover { background: var(--yellow) }

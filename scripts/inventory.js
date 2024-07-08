@@ -1,7 +1,5 @@
 import { getModels } from './models.js';
-
-window.hh = window.hh || {};
-const { hh } = window;
+import { getInventorySheet } from './workbook.js';
 
 const filters = [
   {
@@ -169,20 +167,8 @@ const filters = [
  * @returns {Promise<Array>} The inventory data.
  * @throws {Error} If the fetch request fails.
  */
-async function loadInventoryData() {
-  // Check if the data is already cached
-  if (hh.inventory) {
-    return hh.inventory;
-  }
-
-  const response = await fetch('/data/hubblehomes.json?sheet=inventory');
-  if (response.ok) {
-    const inventory = await response.json();
-    // Cache the data
-    hh.inventory = inventory.data;
-    return hh.inventory;
-  }
-  throw new Error(`Failed to fetch inventory data: ${response.statusText}`);
+async function getInventoryData() {
+  return getInventorySheet('data');
 }
 
 /**
@@ -192,8 +178,7 @@ async function loadInventoryData() {
  */
 async function createCommunityInventoryMap() {
   // Load inventory data using the loadInventoryData function
-  const inventoryData = await loadInventoryData();
-
+  const inventoryData = await getInventoryData();
   const models = await getModels();
 
   // Create a map of communities to homes
@@ -235,14 +220,28 @@ function getHeaderTitleForFilter(filterStr) {
  * @param {string} filterStr - The filter string.
  * @returns {Promise<Array>} The filtered inventory homes for the community.
  */
-async function getInventoryHomes(community, filterStr) {
+async function getInventoryHomesForCommunity(community, filterStr) {
   const inventory = await createCommunityInventoryMap();
   if (filterStr) {
     const filter = filters.find((f) => f.value === filterStr);
     return filter.rule(inventory.get(community));
   }
 
-  return inventory.get(community);
+  return inventory.get(community) || [];
+}
+
+async function getInventoryHomesByCommunities(modelName) {
+  const inventory = await getInventoryData();
+  const filteredInventory = inventory.filter((home) => home['model name'] === modelName);
+
+  return filteredInventory.reduce((acc, home) => {
+    const { community } = home;
+    if (!acc[community]) {
+      acc[community] = [];
+    }
+    acc[community].push(home);
+    return acc;
+  }, {});
 }
 
 /**
@@ -253,7 +252,7 @@ async function getInventoryHomes(community, filterStr) {
  */
 async function getInventoryHomeByPath(path) {
   try {
-    const inventory = await loadInventoryData();
+    const inventory = await getInventoryData();
     return inventory.find((home) => home.path === path);
   } catch (error) {
     return {};
@@ -261,7 +260,8 @@ async function getInventoryHomeByPath(path) {
 }
 
 export {
-  getInventoryHomes,
+  getInventoryHomesForCommunity,
+  getInventoryHomesByCommunities,
   getInventoryHomeByPath,
   getHeaderTitleForFilter,
   filters,

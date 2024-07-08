@@ -1,5 +1,5 @@
-window.hh = window.hh || {};
-const { hh } = window;
+import { getHomePlansSheet, getModelsSheet } from './workbook.js';
+import { getCommunityDetailsByName } from './communities.js';
 
 /**
  * Fetches the models data.
@@ -8,18 +8,7 @@ const { hh } = window;
  * @throws {Error} If the fetch request fails.
  */
 async function getModels() {
-  if (hh.models) {
-    return hh.models;
-  }
-
-  const response = await fetch('/data/hubblehomes.json?sheet=models');
-  if (response.ok) {
-    const models = await response.json();
-    hh.models = models.data;
-    return models.data;
-  }
-
-  throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+  return getModelsSheet('data');
 }
 
 /**
@@ -34,15 +23,14 @@ async function getModelsByCommunity(communityName) {
 }
 
 /**
- * Retrieves the image URL for a specific model.
- *
- * @param {string} modelName - The name of the model.
- * @returns {Promise<string>} The image URL for the specified model.
+ * Given the name of a model, retrieves the image associated with the model.
+ * @param modelName
+ * @returns {Promise<boolean|string|*|string>}
  */
 async function getModelImage(modelName) {
-  const models = await getModels();
-  const desiredModel = models.find((model) => model.name === modelName);
-  return desiredModel ? desiredModel.image : null;
+  const models = await getHomePlansSheet('data');
+  const m = models.find((model) => model['model name'] === modelName);
+  return m ? m.image : '';
 }
 
 /**
@@ -55,15 +43,23 @@ async function getCommunitiesForModel(modelName) {
   const models = await getModels();
 
   // Filter models by the given modelName and extract community names.
-  return models
+  const communities = models
     .filter((model) => model['model name'].trim().toLowerCase() === modelName.trim().toLowerCase())
     .map((model) => model.community)
-    .filter((community, index, self) => self.indexOf(community) === index); // Remove duplicates
+    .filter((community, index, self) => self.indexOf(community) === index);
+
+  return Promise.all(communities.map(async (community) => getCommunityDetailsByName(community)));
+}
+
+async function getModelByPath(path) {
+  const models = await getModels();
+  return models.find((model) => model.path === path);
 }
 
 export {
   getModels,
-  getModelsByCommunity,
+  getModelByPath,
   getModelImage,
+  getModelsByCommunity,
   getCommunitiesForModel,
 };
