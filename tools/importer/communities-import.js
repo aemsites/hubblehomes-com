@@ -1,68 +1,10 @@
-import { createDescriptionBlock, createLinksBlock, createDisclaimerFragment, createOverviewBlock } from './common.js';
-
-/** Create Carousel block */
-const createCarouselBlock = (document, main) => {
-  const carousel = document.querySelector('#myCarousel');
-  if (carousel) {
-    const cells = [['Carousel (auto-2000)']]; // Title row
-
-    const communityTitleTop = document.querySelector('.communitytitle-top');
-    const communityTitleBottom = document.querySelector(
-      '.communitytitle-bottom',
-    );
-    const defaultText = `Default Slide Text
-      (optional)`;
-
-    let title1Html = communityTitleTop
-      ? `<h2>${communityTitleTop.querySelector('#communitytitle-1')?.innerHTML || ''
-      }</h2>${communityTitleTop.querySelector('#communitytitle-2')?.innerHTML || ''
-      }`
-      : '';
-    let title2Html = communityTitleBottom
-      ? `<h2>${communityTitleBottom.querySelector('#communitytitle-3')?.innerHTML ||
-      ''
-      }</h2>${communityTitleBottom.querySelector('#communitytitle-4')?.innerHTML ||
-      ''
-      }`
-      : '';
-
-    if (title1Html || title2Html) {
-      let combinedTitleHtml = `${title1Html}<hr>${title2Html}`;
-      cells.push([defaultText, combinedTitleHtml]);
-    }
-
-    communityTitleTop?.remove();
-    communityTitleBottom?.remove();
-
-    const items = carousel.querySelectorAll('.item');
-    items.forEach((item) => {
-      const picture = item.querySelector('picture img');
-      const imgSrc = picture ? picture.src : '';
-      const imgElement = `<img src="${imgSrc}" alt="${picture?.alt || ''}">`;
-
-      const title =
-        item.querySelector('.carousel-caption .carousel-header div')
-          ?.textContent || '';
-      const description =
-        item.querySelector('.carousel-caption .carousel-copy div')
-          ?.textContent || '';
-
-      let content = `${imgElement}<h3>${title}</h3><p>${description}</p>`;
-
-      cells.push([content, '']); // Add the concatenated content as a new row with HTML
-
-      // Check for a PDF link
-      const btnLink = item.querySelector('.carousel-button a');
-      if (btnLink) {
-        const btnUrl = btnLink.href;
-        cells.push(['url', btnUrl]); // Add the PDF link as a new row
-      }
-    });
-
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    main.append(table);
-  }
-};
+import {
+  createLinksBlock,
+  createDisclaimerFragment,
+  createOverviewBlock,
+  createCarouselBlock,
+  getPageName,
+} from './common.js';
 
 const createCommunityDescriptionBlock = (document, main) => {
   const descriptionContainer = document.querySelector('.col-sm-6.col-xs-6');
@@ -116,7 +58,7 @@ const createMinimalTabsBlock = (document, main) => {
         const amenities = ddElements
           .flatMap(dd =>
             Array.from(dd.querySelectorAll('p'))
-              .flatMap(p => p.textContent.split('\n').map(line => line.trim()))
+              .flatMap(p => p.textContent.split(/[\n,]/).map(line => line.trim()))
           )
           .filter(text => text.length > 0);
 
@@ -143,11 +85,19 @@ const createMinimalTabsBlock = (document, main) => {
         const ampTitle = tab.querySelector(".blueheader + br + strong").textContent.trim();
 
         const ampTitleElement = tab.querySelector(".blueheader + br + strong");
+
         let nextElement = ampTitleElement.nextSibling;
         const elementsAfterAmpTitle = [];
         while (nextElement) {
-          elementsAfterAmpTitle.push(`<div>${nextElement.textContent.trim()}</div>`);
-          nextElement = nextElement.nextElementSibling;
+          if (nextElement.nodeType === Node.ELEMENT_NODE) {
+            elementsAfterAmpTitle.push(`<div>${nextElement.outerHTML}</div>`);
+          } else if (nextElement.nodeType === Node.TEXT_NODE) {
+            const trimmedText = nextElement.textContent.trim();
+            if (trimmedText) {
+              elementsAfterAmpTitle.push(`<div>${trimmedText}</div>`);
+            }
+          }
+          nextElement = nextElement.nextSibling;
         }
 
         const hoaContactInfo = elementsAfterAmpTitle.join('');
@@ -171,7 +121,6 @@ const createMinimalTabsBlock = (document, main) => {
     main.append(table)
   }
 };
-
 
 const createMetadata = (main, document, url, html) => {
   const meta = {};
@@ -239,7 +188,10 @@ const createMetadata = (main, document, url, html) => {
           }
         }
 
-        meta.Spec = dataLayer.spec || '';
+        if (dataLayer.spec) {
+          meta.Spec = dataLayer.spec;
+        }
+
       } catch (e) {
         console.error('Error parsing dataLayer JSON:', e);
       }
@@ -248,28 +200,39 @@ const createMetadata = (main, document, url, html) => {
 
   meta.Path = new URL(url).pathname;
 
+  // Page Name
+  meta['Page Name'] = getPageName(document);
+
   // Create Metadata Block
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
-  main.append(block);
 
-  return meta;
+  return block
 };
 
 export default {
   transformDOM: ({ document, url, html, params }) => {
     const main = document.body;
+    const meta = createMetadata(main, document, url, html);
 
-    createCarouselBlock(document, main);
+    createCarouselBlock(document, main, ['carousel']);
     createOverviewBlock(document, main);
     createCommunityDescriptionBlock(document, main);
     createMinimalTabsBlock(document, main);
     createLinksBlock(document, main);
     createDisclaimerFragment(document, main);
-    createMetadata(main, document, url, html);
+
+    main.append(meta);
 
     WebImporter.DOMUtils.remove(main, [
       ':scope > :not(table)',
     ]);
+    
+    // Remove text nodes from `main`
+    Array.from(main.childNodes).forEach(node => {
+      if (node.nodeType === 3) { // Node.TEXT_NODE === 3
+        main.removeChild(node);
+      }
+    });
 
     return main;
   },

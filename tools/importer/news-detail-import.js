@@ -43,6 +43,28 @@ const createAboutColumnBlock = (document) => {
   }
 };
 
+const getThumbnailImage = (url) => {
+  const newsurl = new URL(url);
+  const pathname = newsurl.pathname;
+  let thumbnailUrl = null;
+
+  // Synchronous XMLHttpRequest to fetch the mapping file
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', 'https://main--hubblehomes-com--aemsites.hlx.live/data/news-thumbails.json', false);
+  xhr.send(null);
+
+  if (xhr.status === 200) {
+    const jsonObject = JSON.parse(xhr.responseText);
+    const { data } = jsonObject;
+    const mappingObject = data.find((item) => pathname.includes(item['news-detail-path']));
+    if (mappingObject) {
+      thumbnailUrl = mappingObject['thumbnail-url'];
+    }
+  }
+
+  return thumbnailUrl;
+};
+
 const createMetadata = (main, document, url) => {
   const meta = {};
 
@@ -58,11 +80,11 @@ const createMetadata = (main, document, url) => {
     meta.Description = desc.content;
   }
 
-  // Image
-  const img = document.querySelector("[property='og:image']");
-  if (img && img.content) {
+  // Thumbnail Image
+  const imgUrl = getThumbnailImage(url);
+  if (imgUrl) {
     const el = document.createElement('img');
-    el.src = img.content;
+    el.src = imgUrl;
     meta.Image = el;
   }
 
@@ -72,6 +94,8 @@ const createMetadata = (main, document, url) => {
     meta.PublishedDate = postDateElement.nextSibling.textContent.split('|')[0].trim();
     postDateElement.remove();
   }
+
+  meta['Page Name'] = getPageName(document);
 
   // Categories
   const categoriesElement = document.querySelector('.text-center small');
@@ -118,6 +142,11 @@ const removeUnwantedSections = (document) => {
   // Remove any <img> directly inside the <body> tag
   const bodyImages = Array.from(document.body.querySelectorAll(':scope > img'));
   bodyImages.forEach((img) => img.remove());
+
+  // remove recapcha badge
+  const recaptchaElements = document.querySelector('.grecaptcha-badge');
+  recaptchaElements?.remove();
+
 };
 
 export default {
@@ -147,11 +176,11 @@ export default {
       '.homesearchmapwrapper',
     ]);
 
-    removeUnwantedSections(document);
+
     createAboutColumnBlock(document);
     createEmbedBlock(document);
+    removeUnwantedSections(document);›
     createMetadata(main, document, url);
-
     return main;
   },
 

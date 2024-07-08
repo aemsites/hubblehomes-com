@@ -4,6 +4,11 @@ const createDisclaimerFragment = (document, main) => {
     main.append(table);
 }
 
+const cleanupImageSrc = (src) => {
+    const imgUrl = new URL(src);
+    return imgUrl.protocol + "//" + imgUrl.host + imgUrl.pathname;
+}
+
 const createLinksBlock = (document, main) => {
     const linksContainer = document.querySelector('.detaillinks');
     if (linksContainer) {
@@ -36,8 +41,13 @@ const createDescriptionBlock = (document, main) => {
 const createOverviewBlock = (document, main) => {
     const overviewElement = document.querySelector('#overview');
     const overviewCategories = Array.from(overviewElement.querySelectorAll('dt'))
-        .map((el) => el.textContent.trim().toLowerCase())
-        .join(', ');
+        .map((el) => {
+            let key = el.textContent.trim().toLowerCase();
+            if (key.includes('from') || key.includes('pricing')) {
+                key = 'price';
+            }
+            return key;
+        }).join(', ');
     const tabContent = `${overviewCategories}`;
 
     const cells = [['Overview'], [tabContent]];
@@ -123,6 +133,110 @@ const createEmbedBlock = (document, main) => {
     }
 };
 
+const getCarouselDefaultText = (carousel) => {
+    const communityTitleTop = carousel.querySelector('.communitytitle-top');
+    let communityTitleBottom = carousel.querySelector('.communitytitle-bottom');
+    if (communityTitleBottom) {
+        communityTitleBottom.querySelector('a')?.remove();
+    }
+
+    const defaultText = `Default Slide Text (optional)`;
+
+    let title1Html = communityTitleTop
+        ? `<h2>${communityTitleTop.querySelector('#communitytitle-1')?.innerHTML || ''}</h2>
+      ${communityTitleTop.querySelector('#communitytitle-2')?.innerHTML || ''}`
+        : '';
+
+    let title2Html = communityTitleBottom
+        ? `<h2>${communityTitleBottom.querySelector('#communitytitle-3')?.innerHTML || ''}</h2>
+      ${communityTitleBottom.querySelector('#communitytitle-4')?.innerHTML || ''}`
+        : '';
+
+    let combinedTitleHtml;
+
+    if (title1Html || title2Html) {
+        combinedTitleHtml = `${title1Html}<hr>${title2Html}`;
+    }
+
+    communityTitleTop?.remove();
+    communityTitleBottom?.remove()
+
+    return {
+        defaultText,
+        combinedTitleHtml
+    }
+}
+
+const getGalleryImages = (document) => {
+    const imageGalleryElements = document.querySelectorAll('#imagegallery2 img');
+    let images = [];
+    if (imageGalleryElements.length > 0) {
+        imageGalleryElements.forEach((img) => {
+            const imgElement = `<img src="${cleanupImageSrc(img.src)}" alt="${img.alt}" style="display:block;">`;
+            images.push(imgElement);
+        });
+    }
+
+    return images;
+}
+
+const getCarouselImages = (carousel) => {
+    const items = carousel.querySelectorAll('.item');
+    let images = [];
+    items.forEach((item) => {
+        const picture = item.querySelector('picture img');
+        const imgSrc = picture ? picture.src : '';
+        const imgElement = `<img src="${cleanupImageSrc(imgSrc)}" alt="${picture?.alt || ''}">`;
+        images.push(imgElement);
+    });
+
+    return images;
+}
+
+
+/** Create Carousel block */
+const createCarouselBlock = (document, main, imageSources) => {
+    const carousel = document.querySelector('.homesearchmapwrapper');
+    if (carousel) {
+        const cells = [['Carousel (auto-2000)']]; // Title row
+
+        const { defaultText, combinedTitleHtml } = getCarouselDefaultText(carousel);
+        cells.push([defaultText, combinedTitleHtml]);
+
+        if (imageSources.includes('carousel')) {
+            const carouselImages = getCarouselImages(carousel);
+            carouselImages.forEach((imgElement) => {
+                cells.push([imgElement, '']);
+            });
+        } else if (imageSources.includes('gallery')) {
+            const galleryImages = getGalleryImages(document);
+            galleryImages.forEach((imgElement) => {
+                cells.push([imgElement, '']);
+            });
+        }
+
+        const table = WebImporter.DOMUtils.createTable(cells, document);
+        main.append(table);
+    }
+};
+
+const getPageName = (document) => {
+    const breadcrumbElement = document.querySelector('.breadcrumb');
+    if (!breadcrumbElement) return '';
+
+    // Find the first non-empty text node and remove special characters
+    let textNode = Array.from(breadcrumbElement.childNodes)
+        .filter(node => node.nodeType === Node.TEXT_NODE && !/^\s*$/.test(node.nodeValue))
+        .map(node => node.nodeValue.trim().replace(/[^a-zA-Z0-9\s]/g, ''))
+        .filter(value => value !== '')[0];
+
+    // Return the cleaned text value or an empty string if not found
+    return textNode || '';
+
+    debugger;
+    return textNode ? textNode.nodeValue.trim() : '';
+}
+
 export {
     createDisclaimerFragment,
     createLinksBlock,
@@ -130,5 +244,8 @@ export {
     createOverviewBlock,
     createActionButtonBlock,
     createFloorplanTabsBlock,
-    createEmbedBlock
+    createEmbedBlock,
+    cleanupImageSrc,
+    createCarouselBlock,
+    getPageName,
 }

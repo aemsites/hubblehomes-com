@@ -5,77 +5,11 @@ import {
   createOverviewBlock,
   createActionButtonBlock,
   createFloorplanTabsBlock,
-  createEmbedBlock
+  createEmbedBlock,
+  cleanupImageSrc,
+  createCarouselBlock,
+  getPageName,
 } from './common.js';
-
-/** Create Carousel block */
-const createCarouselBlock = (document, main) => {
-  const carousel = document.querySelector('#myCarousel');
-  if (carousel) {
-    const cells = [['Carousel (auto-2000)']]; // Title row
-
-    const communityTitleTop = document.querySelector('.communitytitle-top');
-    const communityTitleBottom = document.querySelector(
-      '.communitytitle-bottom',
-    );
-    const defaultText = `Default Slide Text
-      (optional)`;
-
-    let title1Html = communityTitleTop
-      ? `<h2>${communityTitleTop.querySelector('#communitytitle-1')?.innerHTML || ''
-      }</h2>${communityTitleTop.querySelector('#communitytitle-2')?.innerHTML || ''
-      }`
-      : '';
-
-    let title2Html = communityTitleBottom
-      ? `<h2>${communityTitleBottom.querySelector('#communitytitle-3')?.innerHTML ||
-      communityTitleBottom.querySelector('.communitytitle-large')
-        ?.innerHTML ||
-      ''
-      }</h2>${communityTitleBottom.querySelector('#communitytitle-4')?.innerHTML ||
-      communityTitleBottom.querySelector('.communitytitle-medium')
-        ?.innerHTML ||
-      ''
-      }`
-      : '';
-
-    if (title1Html || title2Html) {
-      let combinedTitleHtml = `${title1Html}<hr>${title2Html}`;
-      cells.push([defaultText, combinedTitleHtml]);
-    }
-
-    communityTitleTop?.remove();
-    communityTitleBottom?.remove();
-
-    const items = carousel.querySelectorAll('.item');
-    items.forEach((item) => {
-      const picture = item.querySelector('picture img');
-      const imgSrc = picture ? picture.src : '';
-      const imgElement = `<img src="${imgSrc}" alt="${picture?.alt || ''}">`;
-
-      const title =
-        item.querySelector('.carousel-caption .carousel-header div')
-          ?.textContent || '';
-      const description =
-        item.querySelector('.carousel-caption .carousel-copy div')
-          ?.textContent || '';
-
-      let content = `${imgElement}<h3>${title}</h3><p>${description}</p>`;
-
-      cells.push([content, '']); // Add the concatenated content as a new row with HTML
-
-      // Check for a PDF link
-      const btnLink = item.querySelector('.carousel-button a');
-      if (btnLink) {
-        const btnUrl = btnLink.href;
-        cells.push(['url', btnUrl]); // Add the PDF link as a new row
-      }
-    });
-
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    main.append(table); // Replace the original carousel section with the new table
-  }
-};
 
 
 const createElevationGalleryBlock = (document, main) => {
@@ -83,16 +17,15 @@ const createElevationGalleryBlock = (document, main) => {
     '.col-sm-3 a.fancybox',
   );
   if (elevationGallerySection?.length > 0) {
-    const cells = [['Elevation Gallery']];
+    const cells = [['Elevations']];
 
     elevationGallerySection.forEach((section) => {
       const imgElement = section.querySelector('img');
       const imgSrc = imgElement ? imgElement.src : '';
       const imgAlt = imgElement ? imgElement.alt : '';
-      const imgHtml = `<img src="${imgSrc}" alt="${imgAlt}">`;
+      const imgHtml = `<img src="${cleanupImageSrc(imgSrc)}" alt="${imgAlt}">`;
 
-      const label =
-        section.querySelector('.carousel-caption')?.textContent.trim() || '';
+      const label = section.querySelector('.carousel-caption')?.textContent.trim() || '';
 
       cells.push([label, imgHtml]);
     });
@@ -100,6 +33,12 @@ const createElevationGalleryBlock = (document, main) => {
     const table = WebImporter.DOMUtils.createTable(cells, document);
     main.append(table);
   }
+};
+
+// Function to extract only the words
+const extractWord = (str) => {
+  // Regular expression to match and remove non-alphabetical characters at the beginning and end
+  return str.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g, '').trim();
 };
 
 const createMetadata = (main, document, url, html) => {
@@ -142,25 +81,36 @@ const createMetadata = (main, document, url, html) => {
 
         const dataLayer = JSON.parse(jsonString)[0];
 
-        meta.City = dataLayer.city || '';
-        meta.State = dataLayer.state || '';
-        meta.Metro = dataLayer.region || '';
+        if (dataLayer.city) {
+          meta.City = dataLayer.city;
+        }
+
+        if (dataLayer.state) {
+          meta.State = dataLayer.state;
+        }
+
+        if (dataLayer.region) {
+          meta.Metro = dataLayer.region;
+        }
+
+        if (dataLayer.spec) {
+          meta.Spec = dataLayer.spec;
+        }
 
         if (dataLayer.community) {
-          const communityMatch = dataLayer.community.match(/\d+\s\|\s(.+)/);
-          if (communityMatch) {
-            meta.Community = communityMatch[1];
+          const community = extractWord(dataLayer.community);
+          if (community) {
+            meta.Community = community;
           }
         }
 
         if (dataLayer.model) {
-          const modelMatch = dataLayer.model.match(/\d+\s\|\s(.+)/);
-          if (modelMatch) {
-            meta.Model = modelMatch[1];
+          const model = extractWord(dataLayer.model);
+          if (model) {
+            meta.Model = model;
           }
         }
 
-        meta.Spec = dataLayer.spec || '';
       } catch (e) {
         console.error('Error parsing dataLayer JSON:', e);
       }
@@ -169,26 +119,20 @@ const createMetadata = (main, document, url, html) => {
 
   meta.Path = new URL(url).pathname;
 
-  // nameElement
-  const nameElement = document.querySelector('.col-sm-6 h2');
-  if (nameElement) {
-    meta.Name = nameElement.textContent.trim();
-    nameElement.remove();
-  }
-
-  const homeStyleElement = document.querySelector('.col-sm-6 h4');
+  const homeStyleElement = document.querySelector('.col-sm-6 h2 + h4');
   if (homeStyleElement) {
     meta.Homestyle = homeStyleElement.textContent.trim();
     homeStyleElement.remove();
   }
 
+  // Page Name
+  meta['Page Name'] = getPageName(document);
+
   // Create Metadata Block
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
-  main.append(block);
 
-  return meta;
+  return block;
 };
-
 
 export default {
   /**
@@ -204,8 +148,10 @@ export default {
     // define the main element: the one that will be transformed to Markdown
     const main = document.body;
 
+    const meta = createMetadata(main, document, url, html);
+
     // Use helper methods to create and append various blocks to the main element
-    createCarouselBlock(document, main);
+    createCarouselBlock(document, main, ['gallery', 'carousel']);
     createDescriptionBlock(document, main);
     createOverviewBlock(document, main);
     createElevationGalleryBlock(document, main);
@@ -214,7 +160,9 @@ export default {
     createEmbedBlock(document, main);
     createLinksBlock(document, main);
     createDisclaimerFragment(document, main);
-    createMetadata(main, document, url, html);
+
+    main.append(meta);
+
 
     WebImporter.DOMUtils.remove(main, [
       ':scope > :not(table)',

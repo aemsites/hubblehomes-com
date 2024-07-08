@@ -5,63 +5,10 @@ import {
   createOverviewBlock,
   createActionButtonBlock,
   createFloorplanTabsBlock,
-  createEmbedBlock
+  createEmbedBlock,
+  createCarouselBlock,
+  getPageName,
 } from './common.js';
-
-/** Create Carousel block */
-const createCarouselBlock = (document, main) => {
-  const carousel = document.querySelector('.homesearchmap');
-  if (carousel) {
-    const cells = [['Carousel (auto-2000)']]; // Title row
-
-    const communityTitleTop = document.querySelector('.communitytitle-top');
-    const communityTitleBottom = document.querySelector(
-      '.communitytitle-bottom',
-    );
-    const defaultText = `Default Slide Text
-      (optional)`;
-
-    cells.push([defaultText, '']);
-
-    const items = carousel.querySelectorAll('.item');
-    items.forEach((item) => {
-      const picture = item.querySelector('picture img');
-      const imgSrc = picture ? picture.src : '';
-      const imgElement = `<img src="${imgSrc}" alt="${picture?.alt || ''}">`;
-
-      const title =
-        item.querySelector('.carousel-caption .carousel-header div')
-          ?.textContent || '';
-      const description =
-        item.querySelector('.carousel-caption .carousel-copy div')
-          ?.textContent || '';
-
-      let content = `${imgElement}<h3>${title}</h3><p>${description}</p>`;
-
-      cells.push([content, '']); // Add the concatenated content as a new row with HTML
-
-      // Check for a PDF link
-      const btnLink = item.querySelector('.carousel-button a');
-      if (btnLink) {
-        const btnUrl = btnLink.href;
-        cells.push(['url', btnUrl]); // Add the PDF link as a new row
-      }
-    });
-
-    const imageGalleryElements =
-      document.querySelectorAll('#imagegallery2 img');
-    if (imageGalleryElements.length > 0) {
-      imageGalleryElements.forEach((img) => {
-        const imgElement = `<img src="${img.src}" alt="${img.alt}" style="display:block;">`;
-        cells.push([imgElement, '']);
-      });
-    }
-
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    main.append(table);
-  }
-}
-
 
 const createMetadata = (main, document, url, html) => {
   const meta = {};
@@ -146,6 +93,9 @@ const createMetadata = (main, document, url, html) => {
     postDateElement.remove();
   }
 
+  meta['Page Name'] = getPageName(document);
+
+
   // Create Metadata Block
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
   main.append(block);
@@ -168,7 +118,7 @@ export default {
     const main = document.body;
 
     // Use helper methods to create and append various blocks to the main element
-    createCarouselBlock(document, main);
+    createCarouselBlock(document, main, ['gallery']);
     createDescriptionBlock(document, main);
     createOverviewBlock(document, main);
     createLinksBlock(document, main);
