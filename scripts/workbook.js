@@ -1,4 +1,3 @@
-window.hh = window.hh || {};
 const { hh } = window;
 
 const Sheets = {
@@ -8,6 +7,7 @@ const Sheets = {
   INVENTORY: 'inventory',
   RATES: 'rates',
   MODELS: 'models',
+  HOME_PLANS: 'home-plans',
 };
 
 /**
@@ -120,6 +120,15 @@ async function getModelsSheet(property) {
   return result[Sheets.MODELS];
 }
 
+/**
+ * Fetches the home plans sheet data, includes the total, offset, limit, and data fields.
+ * @returns {Promise<*|undefined>}
+ */
+async function getHomePlansSheet(property) {
+  const result = await getSheetData(property, Sheets.HOME_PLANS);
+  return result[Sheets.HOME_PLANS];
+}
+
 async function loadWorkbook() {
   return getSheetData(
     'data',
@@ -129,6 +138,7 @@ async function loadWorkbook() {
     Sheets.INVENTORY,
     Sheets.RATES,
     Sheets.MODELS,
+    Sheets.HOME_PLANS,
   );
 }
 
@@ -145,4 +155,5 @@ export {
   getRatesSheet,
   getModelsSheet,
   getStaffAndSalesOffices,
+  getHomePlansSheet,
 };
