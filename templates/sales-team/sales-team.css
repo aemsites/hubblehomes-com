@@ -1,0 +1,204 @@
+.default-content-wrapper {
+    h1 {
+        text-align: center;       
+    }
+
+    strong {
+        font-weight: 900;        
+    }
+
+    p {
+        margin-top: 30px;
+        text-align: center;
+        font-size: var(--body-font-size-m);
+    }
+
+    h1:nth-of-type(2) {
+        margin-top: 30px;
+        margin-bottom: 30px;
+        color: var(--light-gray);
+        font-weight: 400;        
+    }
+
+    h1:nth-of-type(2) > strong {
+        font-weight: 900;
+        color: black;
+    }
+}
+
+
+@media screen and (min-width: 992px) {
+    .sales-team .specialists-sales-team {
+        width: 970px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: left;
+        column-gap: 5rem;
+        margin-left: auto;
+        margin-right: auto;
+        align-items: center;
+    }
+
+    .sales-team .specialists-sales-team .specialists-wrapper {
+        width: calc((83.33%) / 3);
+        flex: none;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        min-height: 465px;
+    }
+
+    /* Sales team member image */
+    .sales-team .specialists-sales-team .specialists-wrapper .specialist-image-container-sales-team {
+        width: 66.66666667%;
+        margin-left: 16.66666667%;
+        margin-right: 16.66666667%;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .sales-team .specialists-sales-team {
+        width: 1170px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: left;
+        column-gap: 5rem;
+        margin-left: auto;
+        margin-right: auto;
+        align-items: center;        
+    }
+}
+
+.sales-team .specialists-sales-team .specialists-wrapper .specialist-image-container-sales-team img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+    aspect-ratio: 1/1;
+}
+
+.specialist-info-sales-team {
+    .phone,
+    .email {
+        display: flex;
+        justify-content: left;
+        align-items: left;
+        font-size: var(--body-font-size-m);
+        font-weight: 600;
+    }
+
+    a {
+        color: var(--link-color);
+    }
+
+    .phone small {
+        padding-left: 5px;
+    }
+
+    .name {
+        font-weight: 700;
+        color: var(--blue);
+        font-size: var(--heading-font-size-l);
+        line-height: 1.1;
+        margin-top: 3px;
+        margin-bottom: 2px;
+    }
+
+    .designation {
+        font-weight: 400;
+        color: var(--text-color);
+        font-size: var(--heading-font-size-m);
+        line-height: 1.1;
+        margin-top: 3px;
+        margin-bottom: 2px;
+    }
+
+    .line-break {
+        border-top: 2px solid #0055b9 !important;
+        margin-top: 2px;
+        margin-bottom: 2px;
+        border: 0;
+    }
+}
+
+.communities {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;    
+}
+
+.communities .communityheader {
+    margin-top: 15px;
+    color: var(--blue);
+    width: 100%;
+}
+
+.communities div.community {
+    font-weight: 400;
+    width: 50%;
+    float: left;
+    position: relative;
+}
+
+.communities div.community:nth-of-type(even) {
+    padding-right: 15px;
+}
+
+.communities div.community:nth-of-type(odd) {
+    padding-left: 15px;
+}
+
+@media (max-width: 991px) {
+    .sales-team .specialists-sales-team {
+        max-width: 83.333% !important;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: left;
+        column-gap: 5rem;
+        margin-left: 12%;
+        margin-right: 12%;
+    }
+
+    .sales-team .specialists-sales-team .specialists-wrapper {
+        width: calc((83.33%) / 2);
+        flex: none;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-bottom: 30px;
+    }
+
+    /* Sales team member image */
+    .sales-team .specialists-sales-team .specialists-wrapper .specialist-image-container-sales-team {
+        width: 66.66666667%;
+        margin-left: 16.66666667%;
+        margin-right: 16.66666667%;
+    }
+}
+
+/* Mobile styles for 768px */
+@media (max-width: 768px) {
+    .sales-team .specialists-sales-team {
+        max-width: 100% !important;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: left;
+        column-gap: 2rem;
+        margin-left: 0;
+        margin-right: 0;        
+    }
+
+    .sales-team .specialists-sales-team .specialists-wrapper {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-bottom: 30px;
+    }
+
+    .sales-team .specialists-sales-team .specialists-wrapper .specialist-image-container-sales-team {
+        width: 66.66666667%;
+        margin-left: 16.66666667%;
+        margin-right: 16.66666667%;
+    }
+   
+}
