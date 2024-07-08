@@ -1,7 +1,6 @@
 import {
   aside,
   div,
-  a,
   h4,
   h1, br,
 } from '../../scripts/dom-helpers.js';
@@ -13,22 +12,12 @@ import { buildBlock, decorateBlock } from '../../scripts/aem.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
 import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
 import { loadRates } from '../../scripts/mortgage.js';
+import { loadTemplate } from '../../scripts/scripts.js';
 
 async function fetchRequiredPageData() {
   await loadWorkbook();
   await loadRates();
   return getHomePlanByPath(window.location.pathname);
-}
-
-function buildBreadCrumbs() {
-  return div(
-    { class: 'breadcrumbs section' },
-    a({ href: '/', 'aria-label': 'View Home Page' }, 'Home'),
-    ' > ',
-    a({ href: '/foo', 'aria-label': 'View News Page' }, 'CommunityName'),
-    ' > ',
-    '-- TO BE UPDATED --',
-  );
 }
 
 async function createRightAside(doc, homePlan) {
@@ -74,8 +63,8 @@ async function buildAccordion(model) {
 }
 
 export default async function decorate(doc) {
+  await loadTemplate(doc, 'default');
   const homePlan = await fetchRequiredPageData();
-  const breadCrumbsEl = buildBreadCrumbs();
   const rightAside = await createRightAside(doc, homePlan);
 
   const mainSectionEl = doc.querySelector('main > .section');
@@ -125,7 +114,6 @@ export default async function decorate(doc) {
 
   safeAppend(
     mainSectionEl,
-    breadCrumbsEl,
     leftRight,
     elevations,
     actionButtons,
