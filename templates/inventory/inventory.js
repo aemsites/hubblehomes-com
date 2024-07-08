@@ -25,7 +25,6 @@ import {
   buildBlock, decorateBlock,
 } from '../../scripts/aem.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
-import { loadTemplate } from '../../scripts/scripts.js';
 
 async function fetchRequiredPageData() {
   await loadWorkbook();
@@ -91,8 +90,6 @@ async function createPricingInformation(homeDetails) {
 }
 
 export default async function decorate(doc) {
-  await loadTemplate(doc, 'default');
-
   const { homeDetails, phoneNumber } = await fetchRequiredPageData();
 
   const rightAside = await createRightAside(doc, homeDetails, phoneNumber);

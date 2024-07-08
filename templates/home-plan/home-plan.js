@@ -12,7 +12,6 @@ import { buildBlock, decorateBlock } from '../../scripts/aem.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
 import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
 import { loadRates } from '../../scripts/mortgage.js';
-import { loadTemplate } from '../../scripts/scripts.js';
 
 async function fetchRequiredPageData() {
   await loadWorkbook();
@@ -63,7 +62,6 @@ async function buildAccordion(model) {
 }
 
 export default async function decorate(doc) {
-  await loadTemplate(doc, 'default');
   const homePlan = await fetchRequiredPageData();
   const rightAside = await createRightAside(doc, homePlan);
 

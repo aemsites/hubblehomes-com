@@ -3,10 +3,8 @@ import { buildBlock, decorateBlock } from '../../scripts/aem.js';
 import { div } from '../../scripts/dom-helpers.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
 import { loadRates } from '../../scripts/mortgage.js';
-import { loadTemplate } from '../../scripts/scripts.js';
 
 export default async function decorate(doc) {
-  await loadTemplate(doc, 'default');
   await loadRates();
 
   const fragment = doc.querySelector('.fragment-wrapper');

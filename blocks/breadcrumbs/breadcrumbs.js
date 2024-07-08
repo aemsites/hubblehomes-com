@@ -1,10 +1,10 @@
-import { fetchPageIndex } from './pages.js';
+import { fetchPageIndex } from '../../scripts/pages.js';
 import {
   a, div, li, span, ul,
-} from './dom-helpers.js';
+} from '../../scripts/dom-helpers.js';
 
-export default async function buildBreadcrumbs() {
-  const { data } = await fetchPageIndex();
+async function buildBreadcrumbs() {
+  const data = await fetchPageIndex();
 
   const { pathname } = window.location;
   const pathParts = pathname.split('/').filter((part) => part);
@@ -20,7 +20,7 @@ export default async function buildBreadcrumbs() {
   const homeLink = a({ href: '/' }, 'Home');
   const homeCrumb = li(homeLink);
   const crumbList = ul({ class: 'breadcrumb-list' }, homeCrumb);
-  const breadcrumbContainer = div({ class: 'breadcrumbs' }, crumbList);
+  const breadcrumbContainer = div({ class: 'section breadcrumbs' }, crumbList);
 
   pathParts.forEach((part, index) => {
     currentPath += `/${part}`;
@@ -65,4 +65,17 @@ export default async function buildBreadcrumbs() {
   }
 
   return breadcrumbContainer;
+}
+
+export default async function decorate(block) {
+  const breadcrumbs = await buildBreadcrumbs();
+  block.innerHTML = '';
+
+  const main = document.querySelector('main > div.section');
+  const $carousel = main.querySelector('.carousel-wrapper');
+  if ($carousel) {
+    $carousel.insertAdjacentElement('afterend', breadcrumbs);
+  } else {
+    main.insertAdjacentElement('afterbegin', breadcrumbs);
+  }
 }

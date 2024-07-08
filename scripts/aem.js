@@ -11,7 +11,6 @@
  */
 
 /* eslint-env browser */
-
 /**
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
@@ -718,6 +717,14 @@ async function loadFooter(footer) {
   return loadBlock(footerBlock);
 }
 
+async function loadBreadcrumbs(doc) {
+  const breadcrumbBlock = buildBlock('breadcrumbs', '');
+  const mainEl = doc.querySelector('main');
+  mainEl.prepend(breadcrumbBlock);
+  decorateBlock(breadcrumbBlock);
+  return loadBlock(breadcrumbBlock);
+}
+
 /**
  * Load LCP block and/or wait for LCP in default content.
  * @param {Array} lcpBlocks Array of blocks
@@ -759,6 +766,7 @@ export {
   loadCSS,
   loadFooter,
   loadHeader,
+  loadBreadcrumbs,
   loadScript,
   readBlockConfig,
   sampleRUM,

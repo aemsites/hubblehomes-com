@@ -3,19 +3,15 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { div, h3, p, small, aside, h1, a, strong, hr } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
-import { loadTemplate } from '../../scripts/scripts.js';
 import { loadFragment } from '../../blocks/fragment/fragment.js';
 import formatTimeStamp from '../../scripts/utils.js';
 import ArticleList from '../../scripts/article-list.js';
 
 export default async function decorate(doc) {
-  await loadTemplate(doc, 'default');
   const $page = doc.querySelector('main .section');
 
   const heroFrag = await loadFragment('/news/news-hero');
   const $hero = heroFrag.querySelector('.carousel-wrapper').cloneNode(true);
-
-  const $breadcrumbs = doc.querySelector('.breadcrumbs');
 
   const articlesPerPage = Number(getMetadata('articles-per-page'));
   const paginationMaxBtns = Number(getMetadata('pagination-max-buttons'));
@@ -58,7 +54,6 @@ export default async function decorate(doc) {
 
   $page.append(
     $hero,
-    $breadcrumbs,
     $newsPage,
   );
 

@@ -241,40 +241,6 @@
     margin: 20px 0;
   }
 
-  .breadcrumbs {
-    .breadcrumb-list {
-      list-style: none;
-      display: flex;
-      flex-wrap: wrap;
-      font-size: .8em;
-      color: #c8c8c8;
-      padding: 8px 0;
-      user-select: none;
-
-      li {
-        margin: 10px 1px;
-
-        &::after {
-          content: ">";
-          margin-left: 5px;
-        }
-
-        &:last-child::after {
-          content: "";
-        }
-
-        a {
-          color: #aaa;
-          text-decoration: none;
-
-          &:hover {
-            color: #0055b9;
-          }
-        }
-      }
-    }
-  }
-
   @media (width >= 900px) {
     .section > div {
       max-width: 1200px;
@@ -333,3 +299,13 @@
     text-decoration: line-through;
   }
 }
+
+/* pad all sections */
+main > .section > *:not(.carousel-wrapper) {
+  padding: 0 20px;
+
+  @media (max-width: 768px) {
+    padding: 0 10px;
+  }
+}
+
