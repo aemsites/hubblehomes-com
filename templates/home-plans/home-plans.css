@@ -1,0 +1,9 @@
+.home-plans-template{
+  main div .cards-wrapper {
+    padding-top: 30px;
+  }
+
+  .cards > ul > li {
+    min-height: 400px;
+  }
+}

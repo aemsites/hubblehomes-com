@@ -13,6 +13,15 @@ class InventoryCard extends BaseCard {
     return addressHref;
   }
 
+  renderTopRowOfDetailsContainer_left(gridContainer) {
+    const link = a({
+      href: this.cardData.path,
+      class: 'btn light-blue square',
+    }, 'Get Info');
+
+    gridContainer.appendChild(link);
+  }
+
   renderTaglineItems(taglineContainer) {
     const price = span(formatPrice(this.cardData.price));
     const priceContainer = div(price);

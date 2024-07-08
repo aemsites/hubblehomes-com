@@ -1,0 +1,13 @@
+.action-buttons {
+  padding: 30px 0;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+
+  a {
+    flex: 0;
+    font-size: 14px;
+    padding: 6px 25px;
+    border-radius: 3px;
+  }
+}

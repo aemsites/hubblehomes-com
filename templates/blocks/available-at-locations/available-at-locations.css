@@ -1,6 +1,9 @@
-.available-at-locations a {
-  font-weight: 400;
-  text-decoration: underline;
-  text-decoration-color: #afafaf;
-  color: var(--link-color);
+.available-at-locations {
+  a {
+    display: block;
+    font-weight: 400;
+    text-decoration: underline;
+    text-decoration-color: #afafaf;
+    color: var(--link-color);
+  }
 }

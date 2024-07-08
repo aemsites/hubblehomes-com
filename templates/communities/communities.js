@@ -21,13 +21,13 @@ import {
 import { getSalesCentersForCommunityUrl } from '../../scripts/sales-center.js';
 import { loadTemplateBlock } from '../../scripts/template-block.js';
 import { getCommunityForUrl } from '../../scripts/communities.js';
-import { createActionBar } from '../../scripts/block-helper.js';
 import { getModelsByCommunity } from '../../scripts/models.js';
 import { loadRates } from '../../scripts/mortgage.js';
 import DeferredPromise from '../../scripts/deferred.js';
 import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import loadSVG from '../../scripts/svg-helper.js';
 import { loadWorkbook } from '../../scripts/workbook.js';
+import { loadTemplate } from '../../scripts/scripts.js';
 
 /**
  * Builds the inventory homes block.
@@ -61,10 +61,6 @@ async function fetchRequiredPageData() {
   const salesCenter = await getSalesCentersForCommunityUrl(window.location);
   const community = await getCommunityForUrl(window.location.pathname);
 
-  window.hh = window.hh || {};
-
-  // setup the data that needs to flow to additional blocks
-  window.hh.current = window.hh.current || {};
   window.hh.current.sale_center = salesCenter.sales_center;
   window.hh.current.community = community;
 
@@ -96,23 +92,6 @@ async function createSpecialists(specialists) {
   Promise.all(promises)
     .then(() => deferred.resolve(agents));
   return deferred.promise;
-}
-
-function buildBreadCrumbs() {
-  return div(
-    { class: 'breadcrumbs section' },
-    a({
-      href: '/',
-      'arial-label': 'View Home Page',
-    }, 'Home'),
-    ' > ',
-    a({
-      href: '/foo',
-      'arial-label': 'View News Page',
-    }, 'CommunityName'),
-    ' > ',
-    'XXX',
-  );
 }
 
 async function createRightAside(doc, salesCenter) {
@@ -253,7 +232,52 @@ function buildFilterForm(filterByValue) {
   return div({ class: 'filter-form' }, form({ class: 'fluid-flex' }, allListingSelect, sortBySelect, filterBySelect), resetEl);
 }
 
+/**
+ * Verify that the community exists in the spreadsheet, if not redirect to the previous page.
+ * @param community The community object
+ * @param doc The document
+ */
+function verifyCommunity(community, doc) {
+  if (!community) {
+    const breadcrumbs = doc.querySelectorAll('.breadcrumbs a');
+    for (let i = breadcrumbs.length - 1; i >= 0; i -= 1) {
+      const breadcrumb = breadcrumbs[i];
+      if (breadcrumb.href) {
+        window.location = breadcrumb.href;
+        return;
+      }
+    }
+  }
+}
+
+function checkIfSoldOut(community, doc) {
+  const mainSection = doc.querySelector('main > .section');
+
+  if (community.price !== 'Sold Out') return;
+
+  // Clear all content after breadcrumbs
+  const breadcrumb = mainSection.querySelector('.breadcrumbs');
+  while (breadcrumb.nextSibling) {
+    breadcrumb.nextSibling.remove();
+  }
+
+  mainSection.append(h1('Sold Out'));
+
+  // Offer navigation to other communities
+  const lastBreadcrumb = [...doc.querySelectorAll('.breadcrumbs a')].pop();
+  if (lastBreadcrumb) {
+    mainSection.append(
+      span(
+        'Come take a look at our other communities in ',
+        a({ href: lastBreadcrumb.href }, `${lastBreadcrumb.textContent}.`),
+      ),
+    );
+  }
+}
+
 export default async function decorate(doc) {
+  await loadTemplate(doc, 'default');
+
   const url = new URL(window.location);
   const params = url.searchParams;
   const filter = params.get('filter');
@@ -265,27 +289,26 @@ export default async function decorate(doc) {
     community,
   } = await fetchRequiredPageData();
 
+  // if the community doesn't exist redirect up
+  verifyCommunity(community, doc);
+  checkIfSoldOut(community, doc);
+
   const filterSectionTitle = div({ class: 'grey-divider full-width' }, getHeaderTitleForFilter(filter));
   const inventory = await buildInventoryHomes(community, filter);
 
-  const modelNameAddr = div(h1(community.name), a({
+  const modelNameAddr = div({ class: 'page-info' }, h1(community.name), a({
     class: 'directions',
     href: `https://www.google.com/maps/dir/Current+Location/${salesCenter.latitude},${salesCenter.longitude}`,
     target: '_blank',
   }, h4(`${areaName}, ${community['zip-code-abbr']}`)));
 
-  const requestButtons = div({ class: 'request-btns fluid-flex' }, a({
-    class: 'btn gray fancy',
+  const requestButtons = div({ class: 'request-btns' }, a({
+    class: 'btn yellow fancy',
     href: `/contact-us/sales-info?communityid=${community.name}`,
-  }, 'Request Information'), a({
-    class: 'btn fancy',
-    href: `/schedule-a-tour?communityid=${community.name}`,
-  }, 'Request a Tour'));
+  }, 'Request Information'));
 
-  const breadCrumbsEl = buildBreadCrumbs();
-  const actions = await createActionBar(['share', 'save']);
-  const subNav = doc.querySelector('.subnav-wrapper');
-  const navBar = div({ class: 'fluid-flex nav-bar' }, subNav, actions);
+  const overview = doc.querySelector('.overview-wrapper');
+  const tabsWrapper = doc.querySelector('.tabs-wrapper');
   const rightAside = await createRightAside(doc, salesCenter);
   const modelFilter = buildFilterForm(filter);
 
@@ -306,12 +329,13 @@ export default async function decorate(doc) {
   });
 
   const twoCols = div(
-    { class: 'repeating-grid' },
-    div({ class: 'left' }, modelNameAddr, doc.querySelector('.description-wrapper'), requestButtons),
-    div({ class: 'right' }, div({ class: 'subnav-detail-container' })),
+    modelNameAddr,
+    div({ class: 'repeating-grid' }, doc.querySelector('.description-wrapper'), div(overview)),
+    tabsWrapper,
+    requestButtons,
   );
 
-  const leftRight = div({ class: 'section' }, navBar, div(
+  const leftRight = div({ class: 'section' }, div(
     { class: 'content-wrapper' },
     div(
       { class: 'content' },
@@ -323,7 +347,6 @@ export default async function decorate(doc) {
   ));
 
   mainSection.append(
-    breadCrumbsEl,
     leftRight,
     modelFilter,
     plansAnchor,

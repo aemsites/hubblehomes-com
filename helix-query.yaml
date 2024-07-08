@@ -16,7 +16,15 @@ indices:
         value: match(attribute(el, "content"), "https:\/\/[^/]+(/.*)")
       publisheddate:
         select: head > meta[name="publisheddate"]
-        value: attribute(el, "content")
+        value: parseTimestamp(attribute(el, 'content'), 'MM/DD/YYYY')
       categories:
         select: head > meta[name="categories"]
+        value: attribute(el, "content")
+  pages:
+    include:
+      - '/**'
+    target: /data/page-index.json
+    properties:
+      pageName:
+        select: head > meta[name="page-name"]
         value: attribute(el, "content")

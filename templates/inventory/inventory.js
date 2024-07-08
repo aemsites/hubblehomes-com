@@ -1,13 +1,31 @@
-/* eslint-disable function-call-argument-newline, object-curly-newline, function-paren-newline */
-import { aside, div, a, button, strong, small, h2, h3, h4, h5, br, span } from '../../scripts/dom-helpers.js';
-import { createTemplateBlock } from '../../scripts/block-helper.js';
-import { getInventoryHomeByPath } from '../../scripts/inventory.js';
+import {
+  aside,
+  div,
+  a,
+  button,
+  h2,
+  h3,
+  h4,
+  h5,
+  br,
+  span,
+  h1,
+} from '../../scripts/dom-helpers.js';
+import { createTemplateBlock, safeAppend } from '../../scripts/block-helper.js';
+import {
+  getInventoryHomeByPath,
+  getInventoryHomesByCommunities,
+} from '../../scripts/inventory.js';
 import { loadRates, calculateMonthlyPayment } from '../../scripts/mortgage.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
 import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
-import loadSVG from '../../scripts/svg-helper.js';
 import { loadWorkbook } from '../../scripts/workbook.js';
+import {
+  buildBlock, decorateBlock,
+} from '../../scripts/aem.js';
+import { loadTemplateBlock } from '../../scripts/template-block.js';
+import { loadTemplate } from '../../scripts/scripts.js';
 
 async function fetchRequiredPageData() {
   await loadWorkbook();
@@ -15,161 +33,133 @@ async function fetchRequiredPageData() {
 
   const homeDetails = await getInventoryHomeByPath(window.location.pathname);
   const salesCenter = await getSalesCenterForCommunity(homeDetails.community);
-  const salesCenterPhoneNumber = salesCenter ? salesCenter['phone-number'] : '';
+  const phone = salesCenter ? salesCenter.phone : '';
 
   return {
     homeDetails,
-    phoneNumber: formatPhoneNumber(salesCenterPhoneNumber),
+    phoneNumber: phone,
   };
 }
 
-async function createPriceCell(homeDetails) {
-  const { price } = homeDetails;
-  const numericPrice = price ? parseFloat(price.replace(/[^\d.-]/g, '')) : null;
-
-  const priceHeading = h3(formatPrice(numericPrice));
-  const buyNowButton = div(button({
-    class: 'fancy yellow',
-    onclick: () => {
-      const { host } = window.location;
-      window.location.href = `https://${host}/buy-now`;
-    },
-  }, 'Buy Now'));
-
-  return div({ class: 'cell border-right' }, priceHeading, div(), buyNowButton);
+async function buildInventoryCards(inventoryHomes, community) {
+  window.hh.current.models = window.hh.current.models || {};
+  window.hh.current.models[community] = inventoryHomes;
+  window.hh.current.sale_center = window.hh.current.sale_center || {};
+  window.hh.current.sale_center[community] = await getSalesCenterForCommunity(community);
+  const modelsBlock = buildBlock('cards', [['community', community]]);
+  modelsBlock.classList.add('inventory');
+  const blockWrapper = div(modelsBlock);
+  decorateBlock(modelsBlock);
+  await loadTemplateBlock(modelsBlock);
+  return blockWrapper;
 }
 
-function createEstimatedPaymentCell(price) {
-  const numericPrice = price ? parseFloat(price.replace(/[^\d.-]/g, '')) : null;
+async function buildAccordion(model) {
+  const homesByCommunity = await getInventoryHomesByCommunities(model);
+  const content = [];
 
+  const communityName = Object.keys(homesByCommunity);
+
+  await Promise.all(communityName.map(async (community) => {
+    const models = await buildInventoryCards(homesByCommunity[community], community);
+    content.push([`View All ${model} Quick-Delivery Homes in ${community}`, models]);
+  }));
+
+  const block = buildBlock('accordion', content);
+  const wrapper = div(block);
+  wrapper.classList.add('section');
+  decorateBlock(block);
+  await loadTemplateBlock(block);
+  return wrapper;
+}
+
+async function createRightAside(doc, homeDetails, phoneNumber) {
+  const modelName = homeDetails['model name'];
+  const headingEl = h2(formatPhoneNumber(phoneNumber));
+  const availableAt = await createTemplateBlock('available-at-locations', [['model', modelName]]);
+  return div(headingEl, br(), availableAt, br(), doc.querySelector('.links-wrapper'));
+}
+
+async function createPricingInformation(homeDetails) {
+  const { price } = homeDetails;
+  const numericPrice = price ? parseFloat(price) : null;
   const estimatedCost = formatPrice(calculateMonthlyPayment(numericPrice));
   const perMonthText = span({ class: 'per-month' }, '/mo*');
-  const estimatedCostHeadingText = h3(strong(estimatedCost), perMonthText);
-
-  const estimatedPayment = 'Estimated<br>Payment';
-  const estimatedText = small();
-  estimatedText.innerHTML = estimatedPayment;
-
-  const prequalifyButton = div(button({
-    class: 'fancy dark-gray',
-    onclick: () => {
-      window.location.href = 'https://www.hubblehomes.com/contact-us/get-pre-qualified';
-    },
-  }, 'Pre-Qualify'));
-
-  return div({ class: 'cell' }, estimatedCostHeadingText, div(estimatedText), prequalifyButton);
-}
-
-function buildBreadCrumbs() {
-  return div(
-    { class: 'breadcrumbs' },
-    a({ href: '/', 'aria-label': 'View Home Page' }, 'Home'),
-    ' > ',
-    a({ href: '/foo', 'aria-label': 'View News Page' }, 'CommunityName'),
-    ' > ',
-    'The Birch',
-  );
+  const estimatedCostHeadingText = h4(estimatedCost, perMonthText);
+  const priceEl = h3(formatPrice(numericPrice));
+  return div({ class: 'pricing-information' }, priceEl, estimatedCostHeadingText);
 }
 
 export default async function decorate(doc) {
+  await loadTemplate(doc, 'default');
+
   const { homeDetails, phoneNumber } = await fetchRequiredPageData();
 
-  const $newPage = div();
+  const rightAside = await createRightAside(doc, homeDetails, phoneNumber);
 
-  const $carouselWrapper = doc.querySelector('.carousel-wrapper');
-  if ($carouselWrapper) {
-    $newPage.appendChild($carouselWrapper);
+  const mainSectionEl = doc.querySelector('main > .section');
+  const disclaimer = doc.querySelector('.fragment-wrapper');
+  const overview = doc.querySelector('.overview-wrapper');
+  const descriptionWrapper = doc.querySelector('.description-wrapper');
+
+  const matterport = doc.querySelector('.embed-wrapper');
+  if (matterport) {
+    matterport.classList.add('section');
   }
 
-  const $page = doc.querySelector('main .section');
+  const elevations = doc.querySelector('.elevations-wrapper');
+  if (elevations) {
+    elevations.classList.add('section');
+  }
 
-  const $breadCrumbs = buildBreadCrumbs();
+  const actionButtons = doc.querySelector('.action-buttons-wrapper');
+  if (actionButtons) {
+    actionButtons.classList.add('section');
+  }
 
-  const linksBlock = doc.querySelector('.links-wrapper');
+  const tabs = doc.querySelector('.tabs-wrapper');
+  if (tabs) {
+    tabs.classList.add('section');
+  }
 
-  const heading = h2(phoneNumber);
-  const modelName = homeDetails['model name'];
-  const availableAt = await createTemplateBlock('available-at-locations', [[modelName]]);
-  const alsoAvailableAtAside = div({ class: 'item' }, heading, br(), availableAt, br(), linksBlock);
+  const accordion = await buildAccordion(homeDetails['model name']);
 
-  // Temporary for showing home details
-  const homeDetailsBoxContent = `
-    <dl>
-      <dt>Price</dt>
-      <dd>${homeDetails.price ? formatPrice(homeDetails.price) : 'N/A'}</dd>
-      <dt>Square Feet</dt>
-      <dd>${homeDetails['square feet'] || 'N/A'}</dd>
-      <dt>Beds</dt>
-      <dd>${homeDetails.beds || 'N/A'}</dd>
-      <dt>Baths</dt>
-      <dd>${homeDetails.baths || 'N/A'}</dd>
-      <dt>Cars</dt>
-      <dd>${homeDetails.cars || 'N/A'}</dd>
-      <dt>Primary Bed</dt>
-      <dd>${homeDetails['primary bed'] || 'N/A'}</dd>
-      <dt>Home Style</dt>
-      <dd>${homeDetails['home style'] || 'N/A'}</dd>
-    </dl>`;
-  const homeDetailsBox = div({ class: 'subnav-detail-container' });
-  homeDetailsBox.innerHTML = homeDetailsBoxContent;
-
-  const name = h2(modelName);
-  const svgElement = await loadSVG('/icons/directions.svg', 'icon');
-  const address = a({
+  const address = div({ class: 'page-info' }, h1(homeDetails['model name']), a({
     href: `https://www.google.com/maps/dir/Current+Location/${homeDetails.latitude},${homeDetails.longitude}`,
     target: '_blank',
-    class: 'address-container',
-  }, h4(homeDetails.address, ' ', svgElement));
+  }, h4(homeDetails.address)), h5(`MLS #${homeDetails.mls}`));
 
-  const mls = h5(`MLS #${homeDetails.mls}`);
-  const homeIdentity = div(name, address, mls);
+  const pricingContainer = await createPricingInformation(homeDetails);
+  const listingHeader = div({ class: 'fluid-flex inventory-details' }, address, pricingContainer);
 
-  const priceCell = await createPriceCell(homeDetails);
-  const estimatedCostCell = createEstimatedPaymentCell(homeDetails.price);
-  const pricingContainer = div({ class: 'pricing-information' }, priceCell, estimatedCostCell);
-
-  const listingHeader = div({ class: 'listing-header' }, homeIdentity, pricingContainer);
-  const descriptionText = doc.querySelector('.description-wrapper');
-  const buttonContainer = div({ class: 'button-container' },
-    button({ class: 'fancy dark-gray' }, 'Request Information'),
-    button({ class: 'fancy' }, 'Request a Tour'),
+  const buttons = div(
+    { class: 'button-container' },
+    button({ class: 'fancy yellow' }, 'Request Information'),
   );
 
-  const fullDescription = div({ class: 'full-description' }, listingHeader, br(), descriptionText, buttonContainer);
   const twoCols = div(
-    { class: 'repeating-grid' },
-    div({ class: 'left' }, fullDescription),
-    div({ class: 'right' }, homeDetailsBox),
+    listingHeader,
+    div({ class: 'repeating-grid' }, descriptionWrapper, div(overview)),
+    buttons,
   );
 
-  const actionbar = await createTemplateBlock('actionbar', [['save, share']]);
-
-  const floorplan = $page.querySelector('.floor-plan-images-wrapper');
-
-  const embed = $page.querySelector('.embed-wrapper');
-
-  const disclaimer = $page.querySelector('.fragment-wrapper');
-  if (disclaimer) {
-    disclaimer.classList.add('disclaimer');
-  }
-
-  const mainPageContent = div({ class: 'section' },
-    $breadCrumbs,
-    actionbar,
+  const leftRight = div({ class: 'section' }, div(
+    { class: 'content-wrapper' },
     div(
-      { class: 'content-wrapper' },
-      div(
-        { class: 'content' },
-        twoCols,
-      ),
-      aside(alsoAvailableAtAside),
+      { class: 'content' },
+      twoCols,
     ),
-    floorplan || null,
-    embed || null,
-    disclaimer || null,
-  );
+    aside(rightAside),
+  ));
 
-  $newPage.appendChild(mainPageContent);
-  const $parent = $page.parentNode;
-  $parent.replaceChild($newPage, $page);
+  safeAppend(
+    mainSectionEl,
+    leftRight,
+    elevations,
+    actionButtons,
+    tabs,
+    matterport,
+    accordion,
+    div({ class: 'section disclaimer' }, disclaimer),
+  );
 }
