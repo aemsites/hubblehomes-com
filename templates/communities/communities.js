@@ -1,5 +1,5 @@
 import {
-  buildBlock, decorateBlock, getMetadata,
+  buildBlock, decorateBlock, getMetadata, loadBlock,
 } from '../../scripts/aem.js';
 import {
   a,
@@ -19,7 +19,6 @@ import {
   getInventoryHomesForCommunity,
 } from '../../scripts/inventory.js';
 import { getSalesCentersForCommunityUrl } from '../../scripts/sales-center.js';
-import { loadTemplateBlock } from '../../scripts/template-block.js';
 import { getCommunityForUrl } from '../../scripts/communities.js';
 import { getModelsByCommunity } from '../../scripts/models.js';
 import { loadRates } from '../../scripts/mortgage.js';
@@ -40,7 +39,7 @@ async function buildInventoryHomes(community, filter) {
   modelsBlock.classList.add('inventory');
   const blockWrapper = div(modelsBlock);
   decorateBlock(modelsBlock);
-  await loadTemplateBlock(modelsBlock);
+  await loadBlock(modelsBlock, true);
   return blockWrapper;
 }
 
@@ -50,7 +49,7 @@ async function buildFeaturedPlans(communityName) {
   modelsBlock.classList.add('featured');
   const blockWrapper = div(modelsBlock);
   decorateBlock(modelsBlock);
-  await loadTemplateBlock(modelsBlock);
+  await loadBlock(modelsBlock, true);
   return blockWrapper;
 }
 
@@ -85,7 +84,7 @@ async function createSpecialists(specialists) {
     const specialistsBlock = buildBlock('specialists', content);
     const blockWrapper = div(specialistsBlock);
     decorateBlock(specialistsBlock);
-    promises.push(loadTemplateBlock(specialistsBlock));
+    promises.push(loadBlock(specialistsBlock, true));
     agents.push(blockWrapper);
   });
 

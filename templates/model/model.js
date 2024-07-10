@@ -7,8 +7,7 @@ import {
 import { createTemplateBlock, safeAppend } from '../../scripts/block-helper.js';
 import { loadWorkbook } from '../../scripts/workbook.js';
 import { getInventoryHomesByCommunities } from '../../scripts/inventory.js';
-import { buildBlock, decorateBlock } from '../../scripts/aem.js';
-import { loadTemplateBlock } from '../../scripts/template-block.js';
+import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
 import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
 import { loadRates } from '../../scripts/mortgage.js';
 import { getModelByPath } from '../../scripts/models.js';
@@ -34,7 +33,7 @@ async function buildInventoryCards(inventoryHomes, community) {
   modelsBlock.classList.add('inventory');
   const blockWrapper = div(modelsBlock);
   decorateBlock(modelsBlock);
-  await loadTemplateBlock(modelsBlock);
+  await loadBlock(modelsBlock, true);
   return blockWrapper;
 }
 
@@ -57,7 +56,7 @@ async function buildAccordion(model) {
   const wrapper = div(block);
   wrapper.classList.add('section');
   decorateBlock(block);
-  await loadTemplateBlock(block);
+  await loadBlock(block, true);
   return wrapper;
 }
 

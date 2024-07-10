@@ -10,9 +10,6 @@
  * governing permissions and limitations under the License.
  */
 
-/* eslint-env browser */
-import { loadTemplateBlock } from './template-block.js';
-
 /**
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
@@ -620,20 +617,23 @@ function buildBlock(blockName, content) {
 
 /**
  * Loads JS and CSS for a block.
- * @param {Element} block The block element
+ * @param block the block to load
+ * @param isTemplate whether the block is a template block, default is false
+ * @returns {Promise<*>} the block
  */
-async function loadBlock(block) {
+async function loadBlock(block, isTemplate = false) {
   const status = block.dataset.blockStatus;
   if (status !== 'loading' && status !== 'loaded') {
     block.dataset.blockStatus = 'loading';
     const { blockName } = block.dataset;
     try {
-      const cssLoaded = loadCSS(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.css`);
+      const blockPath = isTemplate ? 'templates/blocks' : 'blocks';
+      const cssLoaded = loadCSS(`${window.hlx.codeBasePath}/${blockPath}/${blockName}/${blockName}.css`);
       const decorationComplete = new Promise((resolve) => {
         (async () => {
           try {
             const mod = await import(
-              `${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`
+              `${window.hlx.codeBasePath}/${blockPath}/${blockName}/${blockName}.js`
             );
             if (mod.default) {
               await mod.default(block);
@@ -724,7 +724,7 @@ async function loadBreadcrumbs(doc) {
   const mainEl = doc.querySelector('main');
   mainEl.prepend(breadcrumbBlock);
   decorateBlock(breadcrumbBlock);
-  return loadTemplateBlock(breadcrumbBlock);
+  return loadBlock(breadcrumbBlock, true);
 }
 
 /**

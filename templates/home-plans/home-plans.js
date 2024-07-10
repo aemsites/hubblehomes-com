@@ -1,7 +1,6 @@
 import { getHomePlansSheet } from '../../scripts/workbook.js';
-import { buildBlock, decorateBlock } from '../../scripts/aem.js';
+import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
 import { div } from '../../scripts/dom-helpers.js';
-import { loadTemplateBlock } from '../../scripts/template-block.js';
 import { loadRates } from '../../scripts/mortgage.js';
 
 export default async function decorate(doc) {
@@ -16,7 +15,7 @@ export default async function decorate(doc) {
   modelsBlock.classList.add('home-plans');
   const blockWrapper = div(modelsBlock);
   decorateBlock(modelsBlock);
-  await loadTemplateBlock(modelsBlock);
+  await loadBlock(modelsBlock, true);
 
   const cards = div({ class: 'section featured' }, blockWrapper);
 
