@@ -22,31 +22,26 @@
         display: flex;
         justify-content: center;
       }
-    
       .error-container {
         text-align: center;
         padding: 20px;
       }
-    
       .error-title {
         font-size: 48px;
         color: var(--dark-blue);
         margin-bottom: 20px;
       }
-    
       .error-message {
         font-size: 24px;
         color: var(--link-color);
         margin-bottom: 40px;
       }
-    
       .error-links {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
         gap: 20px;
       }
-    
       .error-link {
         display: flex;
         flex-direction: column;
@@ -55,11 +50,9 @@
         color: var(--link-color);
         transition: transform 0.3s ease;
       }
-    
       .error-link:hover {
         transform: scale(1.05);
       }
-    
       .error-link img {
         width: 150px;
         height: 150px;
@@ -67,32 +60,28 @@
         border-radius: 10px;
         margin-bottom: 10px;
       }
-    
       .error-link span {
         font-weight: bold;
       }
-    
+
       @media (max-width: 900px) {
         .error-links {
           flex-direction: column;
         }
-    
         .error-link img {
           width: 100px;
           height: 100px;
         }
       }
-    
+
       @media (max-width: 600px) {
         .error-links {
           flex-direction: row;
         }
-    
         .error-link img {
           width: 80px;
           height: 80px;
         }
-    
         .error-link span {
           font-size: 14px;
         }
