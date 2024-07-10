@@ -11,6 +11,8 @@
  */
 
 /* eslint-env browser */
+import { loadTemplateBlock } from './template-block.js';
+
 /**
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
@@ -722,7 +724,7 @@ async function loadBreadcrumbs(doc) {
   const mainEl = doc.querySelector('main');
   mainEl.prepend(breadcrumbBlock);
   decorateBlock(breadcrumbBlock);
-  return loadBlock(breadcrumbBlock);
+  return loadTemplateBlock(breadcrumbBlock);
 }
 
 /**

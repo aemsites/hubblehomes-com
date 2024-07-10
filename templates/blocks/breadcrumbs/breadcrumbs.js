@@ -1,7 +1,7 @@
-import { fetchPageIndex } from '../../scripts/pages.js';
+import { fetchPageIndex } from '../../../scripts/pages.js';
 import {
   a, div, li, span, ul,
-} from '../../scripts/dom-helpers.js';
+} from '../../../scripts/dom-helpers.js';
 
 async function buildBreadcrumbs() {
   const data = await fetchPageIndex();
