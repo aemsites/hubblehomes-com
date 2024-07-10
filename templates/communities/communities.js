@@ -1,5 +1,5 @@
 import {
-  buildBlock, decorateBlock, getMetadata,
+  buildBlock, decorateBlock, getMetadata, loadBlock,
 } from '../../scripts/aem.js';
 import {
   a,
@@ -19,7 +19,6 @@ import {
   getInventoryHomesForCommunity,
 } from '../../scripts/inventory.js';
 import { getSalesCentersForCommunityUrl } from '../../scripts/sales-center.js';
-import { loadTemplateBlock } from '../../scripts/template-block.js';
 import { getCommunityForUrl } from '../../scripts/communities.js';
 import { getModelsByCommunity } from '../../scripts/models.js';
 import { loadRates } from '../../scripts/mortgage.js';
@@ -27,7 +26,7 @@ import DeferredPromise from '../../scripts/deferred.js';
 import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import loadSVG from '../../scripts/svg-helper.js';
 import { loadWorkbook } from '../../scripts/workbook.js';
-import { loadTemplate } from '../../scripts/scripts.js';
+import { getPageTitleForUrl } from '../../scripts/pages.js';
 
 /**
  * Builds the inventory homes block.
@@ -40,7 +39,7 @@ async function buildInventoryHomes(community, filter) {
   modelsBlock.classList.add('inventory');
   const blockWrapper = div(modelsBlock);
   decorateBlock(modelsBlock);
-  await loadTemplateBlock(modelsBlock);
+  await loadBlock(modelsBlock, true);
   return blockWrapper;
 }
 
@@ -50,7 +49,7 @@ async function buildFeaturedPlans(communityName) {
   modelsBlock.classList.add('featured');
   const blockWrapper = div(modelsBlock);
   decorateBlock(modelsBlock);
-  await loadTemplateBlock(modelsBlock);
+  await loadBlock(modelsBlock, true);
   return blockWrapper;
 }
 
@@ -85,7 +84,7 @@ async function createSpecialists(specialists) {
     const specialistsBlock = buildBlock('specialists', content);
     const blockWrapper = div(specialistsBlock);
     decorateBlock(specialistsBlock);
-    promises.push(loadTemplateBlock(specialistsBlock));
+    promises.push(loadBlock(specialistsBlock, true));
     agents.push(blockWrapper);
   });
 
@@ -232,52 +231,38 @@ function buildFilterForm(filterByValue) {
   return div({ class: 'filter-form' }, form({ class: 'fluid-flex' }, allListingSelect, sortBySelect, filterBySelect), resetEl);
 }
 
-/**
- * Verify that the community exists in the spreadsheet, if not redirect to the previous page.
- * @param community The community object
- * @param doc The document
- */
-function verifyCommunity(community, doc) {
-  if (!community) {
-    const breadcrumbs = doc.querySelectorAll('.breadcrumbs a');
-    for (let i = breadcrumbs.length - 1; i >= 0; i -= 1) {
-      const breadcrumb = breadcrumbs[i];
-      if (breadcrumb.href) {
-        window.location = breadcrumb.href;
-        return;
-      }
-    }
+async function checkIfSoldOut(community, doc) {
+  if (community.status !== 'Sold Out') {
+    return false;
   }
-}
 
-function checkIfSoldOut(community, doc) {
   const mainSection = doc.querySelector('main > .section');
 
-  if (community.price !== 'Sold Out') return;
-
-  // Clear all content after breadcrumbs
-  const breadcrumb = mainSection.querySelector('.breadcrumbs');
-  while (breadcrumb.nextSibling) {
-    breadcrumb.nextSibling.remove();
+  // Find the overview wrapper and remove everything after it and itself
+  const overviewWrapperEl = mainSection.querySelector('.overview-wrapper');
+  while (overviewWrapperEl.nextSibling) {
+    overviewWrapperEl.nextSibling.remove();
   }
+  overviewWrapperEl.remove();
 
-  mainSection.append(h1('Sold Out'));
+  // create a link to the parent community
+  // using window.location go up one level
+  const pathSegments = window.location.pathname.split('/').filter(Boolean);
+  pathSegments.pop();
+  const newPathname = `/${pathSegments.join('/')}`;
+  const target = `${window.location.protocol}//${window.location.host}${newPathname}`;
+  const title = await getPageTitleForUrl(newPathname);
 
-  // Offer navigation to other communities
-  const lastBreadcrumb = [...doc.querySelectorAll('.breadcrumbs a')].pop();
-  if (lastBreadcrumb) {
-    mainSection.append(
-      span(
-        'Come take a look at our other communities in ',
-        a({ href: lastBreadcrumb.href }, `${lastBreadcrumb.textContent}.`),
-      ),
-    );
-  }
+  const link = span(
+    'Come take a look at our other communities in ',
+    a({ href: target }, `${title}.`),
+  );
+
+  mainSection.append(div({ class: 'section' }, h1('Sold Out'), link));
+  return true;
 }
 
 export default async function decorate(doc) {
-  await loadTemplate(doc, 'default');
-
   const url = new URL(window.location);
   const params = url.searchParams;
   const filter = params.get('filter');
@@ -289,9 +274,10 @@ export default async function decorate(doc) {
     community,
   } = await fetchRequiredPageData();
 
-  // if the community doesn't exist redirect up
-  verifyCommunity(community, doc);
-  checkIfSoldOut(community, doc);
+  const isSoldOut = await checkIfSoldOut(community, doc);
+  if (isSoldOut) {
+    return;
+  }
 
   const filterSectionTitle = div({ class: 'grey-divider full-width' }, getHeaderTitleForFilter(filter));
   const inventory = await buildInventoryHomes(community, filter);
