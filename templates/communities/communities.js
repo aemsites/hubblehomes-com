@@ -231,37 +231,19 @@ function buildFilterForm(filterByValue) {
   return div({ class: 'filter-form' }, form({ class: 'fluid-flex' }, allListingSelect, sortBySelect, filterBySelect), resetEl);
 }
 
-/**
- * Verify that the community exists in the spreadsheet, if not redirect to the previous page.
- * @param community The community object
- * @param doc The document
- */
-function verifyCommunity(community, doc) {
-  if (!community) {
-    const breadcrumbs = doc.querySelectorAll('.breadcrumbs a');
-    for (let i = breadcrumbs.length - 1; i >= 0; i -= 1) {
-      const breadcrumb = breadcrumbs[i];
-      if (breadcrumb.href) {
-        window.location = breadcrumb.href;
-        return;
-      }
-    }
-  }
-}
-
 async function checkIfSoldOut(community, doc) {
-  const mainSection = doc.querySelector('main > .section');
-
   if (community.status !== 'Sold Out') {
     return false;
   }
 
-  // Clear all content after breadcrumbs
-  const breadcrumb = mainSection.querySelector('.overview-wrapper');
-  while (breadcrumb.nextSibling) {
-    breadcrumb.nextSibling.remove();
+  const mainSection = doc.querySelector('main > .section');
+
+  // Find the overview wrapper and remove everything after it and itself
+  const overviewWrapperEl = mainSection.querySelector('.overview-wrapper');
+  while (overviewWrapperEl.nextSibling) {
+    overviewWrapperEl.nextSibling.remove();
   }
-  breadcrumb.remove();
+  overviewWrapperEl.remove();
 
   // create a link to the parent community
   // using window.location go up one level
@@ -291,9 +273,6 @@ export default async function decorate(doc) {
     salesCenter,
     community,
   } = await fetchRequiredPageData();
-
-  // if the community doesn't exist redirect up
-  verifyCommunity(community, doc);
 
   const isSoldOut = await checkIfSoldOut(community, doc);
   if (isSoldOut) {
