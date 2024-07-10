@@ -22,7 +22,22 @@ async function getCommunityDetailsByName(communityName) {
   return communities.find((community) => community.name === communityName);
 }
 
+/**
+ * Retrieves the list of unique cities from the communities sheet.
+ * @returns {Promise<*>} The list of unique cities.
+ */
+async function getCitiesForCommunities() {
+  const communities = await getCommunitiesSheet('data');
+  return communities.reduce((acc, community) => {
+    if (!acc.includes(community.city)) {
+      acc.push(community.city);
+    }
+    return acc;
+  }, []);
+}
+
 export {
   getCommunityForUrl,
   getCommunityDetailsByName,
+  getCitiesForCommunities,
 };

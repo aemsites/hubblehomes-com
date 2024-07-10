@@ -211,9 +211,27 @@ function buildFilterForm(filterByValue) {
     }, ...options);
   }
 
-  const allListingOptions = buildOptions(filters.filter((filter) => filter.filter === 'status'));
-  const sortByOptions = buildOptions(filters.filter((filter) => filter.filter === 'sortBy'));
-  const filterByOptions = buildOptions(filters.filter((filter) => filter.filter === 'filterBy'));
+  const allListingOptions = buildOptions(
+    filters.filter((filter) => filter.category === 'status'),
+  );
+
+  const sortBy = filters.filter(
+    (filter) => filter.category === 'sortBy'
+    || filter.category === 'priceAcsDesc'
+    || filter.category === 'bedsAcsDesc'
+    || filter.category === 'bathsAcsDesc'
+    || filter.category === 'sqftAcsDesc',
+  );
+
+  const sortByOptions = buildOptions(sortBy);
+
+  const filterBy = filters.filter(
+    (filter) => filter.category === 'filterBy'
+    || filter.category === 'beds'
+    || filter.category === 'sqft',
+  );
+
+  const filterByOptions = buildOptions(filterBy);
 
   const allListingSelect = createSelectElement(allListingOptions);
   const sortBySelect = createSelectElement(sortByOptions);

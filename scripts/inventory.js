@@ -3,162 +3,283 @@ import { getInventorySheet } from './workbook.js';
 
 const filters = [
   {
-    filter: 'status',
+    category: 'status',
     value: '',
     label: 'All Listings',
     headerTitle: 'All New Home Listings',
   },
   {
-    filter: 'status',
-    value: 'quick-delivery',
-    label: 'Quick Delivery',
-    headerTitle: 'Quick Delivery Homes',
-    rule: (models) => models.filter((model) => model.status === 'Quick Delivery'),
+    category: 'filterBy',
+    value: '',
+    label: 'Filter By',
   },
   {
-    filter: 'status',
+    category: 'sortBy',
+    value: '',
+    label: 'Sort By',
+  },
+  {
+    category: 'status',
     value: 'ready-now',
     label: 'Ready Now',
     headerTitle: 'Move-In Ready Homes',
     rule: (models) => models.filter((model) => model.status === 'Ready Now'),
   },
   {
-    filter: 'status',
+    category: 'status',
     value: 'under-construction',
     label: 'Under Construction',
     headerTitle: 'Under Construction Homes',
     rule: (models) => models.filter((model) => model.status === 'Under Construction'),
   },
   {
-    filter: 'status',
+    category: 'status',
     value: 'to-be-built',
     label: 'To Be Built',
     headerTitle: 'To Be Built Homes',
     rule: (models) => models.filter((model) => model.status === 'To Be Built'),
   },
   {
-    filter: 'sortBy',
-    value: '',
-    label: 'Sort By',
-  },
-  {
-    filter: 'sortBy',
+    category: 'priceAcsDesc',
     value: 'pricesasc',
     label: 'Price - Low to High',
     rule: (models) => models.sort((a, b) => parseInt(a.pricing, 10) - parseInt(b.pricing, 10)),
   },
   {
-    filter: 'sortBy',
+    category: 'priceAcsDesc',
     value: 'pricedesc',
     label: 'Price - High to Low',
     rule: (models) => models.sort((a, b) => parseInt(b.pricing, 10) - parseInt(a.pricing, 10)),
   },
   {
-    filter: 'sortBy',
+    category: 'sqftAcsDesc',
     value: 'totalsquarefeetasc',
     label: 'Sq Ft - Low to High',
     // eslint-disable-next-line max-len
     rule: (models) => models.sort((a, b) => parseInt(a.squarefeet, 10) - parseInt(b.squarefeet, 10)),
   },
   {
-    filter: 'sortBy',
+    category: 'sqftAcsDesc',
     value: 'totalsquarefeetdesc',
     label: 'Sq Ft - High to Low',
     // eslint-disable-next-line max-len
     rule: (models) => models.sort((a, b) => parseInt(b.squarefeet, 10) - parseInt(a.squarefeet, 10)),
   },
   {
-    filter: 'sortBy',
+    category: 'bedsAcsDesc',
     value: 'bedsasc',
     label: 'Beds - Low to High',
     rule: (models) => models.sort((a, b) => parseInt(a.beds, 10) - parseInt(b.beds, 10)),
   },
   {
-    filter: 'sortBy',
+    category: 'bedsAcsDesc',
     value: 'bedsdesc',
     label: 'Beds - High to Low',
     rule: (models) => models.sort((a, b) => parseInt(b.beds, 10) - parseInt(a.beds, 10)),
   },
   {
-    filter: 'sortBy',
+    category: 'bathsAcsDesc',
     value: 'bathsasc',
     label: 'Baths - Low to High',
     rule: (models) => models.sort((a, b) => parseInt(a.baths, 10) - parseInt(b.baths, 10)),
   },
   {
-    filter: 'sortBy',
+    category: 'bathsAcsDesc',
     value: 'bathsdesc',
     label: 'Baths - High to Low',
     rule: (models) => models.sort((a, b) => parseInt(b.baths, 10) - parseInt(a.baths, 10)),
   },
   {
-    filter: 'filterBy',
-    value: '',
-    label: 'Filter By',
-  },
-  {
-    filter: 'filterBy',
+    category: 'beds',
     value: 'beds-3',
     label: '3+ beds',
     rule: (models) => models.filter((model) => parseInt(model.beds, 10) >= 3),
   },
   {
-    filter: 'filterBy',
+    category: 'beds',
     value: 'beds-4',
     label: '4+ beds',
     rule: (models) => models.filter((model) => parseInt(model.beds, 10) >= 4),
   },
   {
-    filter: 'filterBy',
+    category: 'beds',
     value: 'beds-5',
     label: '5+ beds',
     rule: (models) => models.filter((model) => parseInt(model.beds, 10) >= 5),
   },
   {
-    filter: 'filterBy',
+    category: 'beds',
     value: 'beds-6',
     label: '6+ beds',
     rule: (models) => models.filter((model) => parseInt(model.beds, 10) >= 6),
   },
   {
-    filter: 'filterBy',
+    category: 'sqft',
     value: 'squarefeet-1',
     label: 'Under 1500 sq ft',
-    rule: (models) => models.filter((model) => parseInt(model.squarefeet, 10) <= 1500),
+    rule: (models) => models.filter((model) => parseInt(model['square feet'], 10) <= 1500),
   },
   {
-    filter: 'filterBy',
+    category: 'sqft',
     value: 'squarefeet-2',
     label: '1501 - 2000 sq ft',
     // eslint-disable-next-line max-len
-    rule: (models) => models.filter((model) => parseInt(model.squarefeet, 10) > 1500 && parseInt(model.squarefeet, 10) <= 2000),
+    rule: (models) => models.filter((model) => parseInt(model['square feet'], 10) > 1500 && parseInt(model['square feet'], 10) <= 2000),
   },
   {
-    filter: 'filterBy',
+    category: 'sqft',
     value: 'squarefeet-3',
     label: '2001 - 2500 sq ft',
     // eslint-disable-next-line max-len
-    rule: (models) => models.filter((model) => parseInt(model.squarefeet, 10) > 2000 && parseInt(model.squarefeet, 10) <= 2500),
+    rule: (models) => models.filter((model) => parseInt(model['square feet'], 10) > 2000 && parseInt(model['square feet'], 10) <= 2500),
   },
   {
-    filter: 'filterBy',
+    category: 'sqft',
     value: 'squarefeet-4',
     label: '2501 - 3000 sq ft',
     // eslint-disable-next-line max-len
-    rule: (models) => models.filter((model) => parseInt(model.squarefeet, 10) > 2500 && parseInt(model.squarefeet, 10) <= 3000),
+    rule: (models) => models.filter((model) => parseInt(model['square feet'], 10) > 2500 && parseInt(model['square feet'], 10) <= 3000),
   },
   {
-    filter: 'filterBy',
+    category: 'sqft',
     value: 'squarefeet-5',
     label: '3001 - 3500 sq ft',
     // eslint-disable-next-line max-len
-    rule: (models) => models.filter((model) => parseInt(model.squarefeet, 10) > 3000 && parseInt(model.squarefeet, 10) <= 3500),
+    rule: (models) => models.filter((model) => parseInt(model['square feet'], 10) > 3000 && parseInt(model['square feet'], 10) <= 3500),
   },
   {
-    filter: 'filterBy',
+    category: 'sqft',
     value: 'squarefeet-6',
     label: 'Over 3500 sq ft',
-    rule: (models) => models.filter((model) => parseInt(model.squarefeet, 10) > 3500),
+    rule: (models) => models.filter((model) => parseInt(model['square feet'], 10) > 3500),
+  },
+  {
+    category: 'price',
+    value: 'price-1',
+    label: '$300-$399',
+    rule: (models) => models.filter(
+      (model) => parseInt(model.price, 10) >= 300000
+         && parseInt(model.price, 10) <= 399999,
+    ),
+  },
+  {
+    category: 'price',
+    value: 'price-2',
+    label: '$400-$499',
+    rule: (models) => models.filter(
+      (model) => parseInt(model.price, 10) >= 400000
+        && parseInt(model.price, 10) <= 499999,
+    ),
+  },
+  {
+    category: 'price',
+    value: 'price-3',
+    label: '$500-$599',
+    rule: (models) => models.filter(
+      (model) => parseInt(model.price, 10) >= 500000
+        && parseInt(model.price, 10) <= 599999,
+    ),
+  },
+  {
+    category: 'price',
+    value: 'price-4',
+    label: '$600-$699',
+    rule: (models) => models.filter(
+      (model) => parseInt(model.price, 10) >= 600000
+        && parseInt(model.price, 10) <= 699999,
+    ),
+  },
+  {
+    category: 'price',
+    value: 'price-5',
+    label: '$700-$799',
+    rule: (models) => models.filter(
+      (model) => parseInt(model.price, 10) >= 700000
+        && parseInt(model.price, 10) <= 799999,
+    ),
+  },
+  {
+    category: 'price',
+    value: 'price-8',
+    label: '$800-$899',
+    rule: (models) => models.filter(
+      (model) => parseInt(model.price, 10) >= 800000
+        && parseInt(model.price, 10) <= 899999,
+    ),
+  },
+  {
+    category: 'price',
+    value: 'price-9',
+    label: '$900+',
+    rule: (models) => models.filter(
+      (model) => parseInt(model.price, 10) >= 900000,
+    ),
+  },
+  {
+    category: 'city',
+    value: 'Caldwell',
+    label: '',
+    rule: (models) => models.filter((model) => model.city === 'Caldwell'),
+  },
+  {
+    category: 'city',
+    value: 'Kuna',
+    label: '',
+    rule: (models) => models.filter((model) => model.city === 'Kuna'),
+  },
+  {
+    category: 'city',
+    value: 'Meridian',
+    label: '',
+    rule: (models) => models.filter((model) => model.city === 'Meridian'),
+  },
+  {
+    category: 'city',
+    value: 'Middleton',
+    label: '',
+    rule: (models) => models.filter((model) => model.city === 'Middleton'),
+  },
+  {
+    category: 'city',
+    value: 'Nampa',
+    label: '',
+    rule: (models) => models.filter((model) => model.city === 'Nampa'),
+  },
+  {
+    category: 'city',
+    value: 'Star',
+    label: '',
+    rule: (models) => models.filter((model) => model.city === 'Star'),
+  },
+  {
+    category: 'cars',
+    value: '2',
+    label: '',
+    rule: (models) => models.filter((model) => parseInt(model.cars, 10) === 2),
+  },
+  {
+    category: 'cars',
+    value: '3',
+    label: '',
+    rule: (models) => models.filter((model) => parseInt(model.cars, 10) === 3),
+  },
+  {
+    category: 'baths',
+    value: '2+',
+    label: '',
+    rule: (models) => models.filter((model) => parseInt(model.baths, 10) >= 2),
+  },
+  {
+    category: 'baths',
+    value: '3+',
+    label: '',
+    rule: (models) => models.filter((model) => parseInt(model.baths, 10) >= 3),
+  },
+  {
+    category: 'baths',
+    value: '4+',
+    label: '',
+    rule: (models) => models.filter((model) => parseInt(model.baths, 10) >= 4),
   },
 ];
 
@@ -217,17 +338,26 @@ function getHeaderTitleForFilter(filterStr) {
 /**
  * Retrieves the inventory homes for a specific community and filter.
  * @param {string} community - The name of the community.
- * @param {string} filterStr - The filter string.
+ * @param {string} filterStr - The filter string. If empty, all homes are returned. Otherwise,
+ * the filterStr should be a single or comma-separated list of values.  The values come from
+ * the `filters` array in this module.
  * @returns {Promise<Array>} The filtered inventory homes for the community.
  */
 async function getInventoryHomesForCommunity(community, filterStr) {
   const inventory = await createCommunityInventoryMap();
-  if (filterStr) {
-    const filter = filters.find((f) => f.value === filterStr);
-    return filter.rule(inventory.get(community));
+
+  // no filtering return everything
+  if (!filterStr) {
+    return inventory.get(community) || [];
   }
 
-  return inventory.get(community) || [];
+  const searchFilters = filterStr.split(',');
+  const filteredItems = searchFilters.reduce((acc, curr) => {
+    const filter = filters.find((f) => f.value === curr);
+    return filter ? filter.rule(acc) : acc;
+  }, inventory.get(community));
+
+  return Promise.resolve(filteredItems);
 }
 
 async function getInventoryHomesByCommunities(modelName) {
