@@ -3,17 +3,13 @@ import { aside, div, p, a, strong, small, h3, hr, script } from '../../scripts/d
 import ArticleList from '../../scripts/article-list.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../../blocks/fragment/fragment.js';
-import { loadTemplate } from '../../scripts/scripts.js';
 import formatTimeStamp from '../../scripts/utils.js';
 
 export default async function decorate(doc) {
-  await loadTemplate(doc, 'default');
   const $page = doc.querySelector('main .section');
 
   const heroFrag = await loadFragment('/news/news-hero');
   const $hero = heroFrag.querySelector('.carousel-wrapper').cloneNode(true);
-
-  const $breadcrumbs = doc.querySelector('.breadcrumbs');
 
   const $mainContent = $page.cloneNode(true).querySelector('.default-content-wrapper');
   $page.innerHTML = '';
@@ -75,7 +71,6 @@ export default async function decorate(doc) {
 
   $page.append(
     $hero,
-    $breadcrumbs,
     $newsDetailPage,
   );
 

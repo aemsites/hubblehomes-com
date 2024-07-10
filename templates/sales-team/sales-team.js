@@ -4,16 +4,7 @@ import { div, a, small } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import formatPhoneNumber from '../../scripts/phone-formatter.js';
 
-function buildBreadCrumbs() {
-  return div(
-    { class: 'breadcrumbs' },
-    a({ href: '/', 'aria-label': 'View Home Page' }, 'Home'),
-    ' > ',
-    'Our Sales Team',
-  );
-}
-
-function createSpeicalistBlock(specialist) {
+function createSpecialistBlock(specialist) {
   const agent = div(
     { class: 'specialist' },
     div({ class: 'specialist-image-container-sales-team' }, createOptimizedPicture(specialist.photo, specialist.name, false, [{ width: '750' }, { width: '400' }])),
@@ -58,7 +49,7 @@ async function createSpecialists(specialists) {
       }
       content.communities = communities;
     }
-    const specialistsBlock = createSpeicalistBlock(content);
+    const specialistsBlock = createSpecialistBlock(content);
     const blockWrapper = div({ class: 'specialists-wrapper' }, specialistsBlock);
     promises.push(blockWrapper);
     agents.push(blockWrapper);
@@ -72,16 +63,13 @@ export default async function decorate(doc) {
   const $newPage = div();
   const $page = doc.querySelector('main .section');
   const $text = $page.querySelector('.default-content-wrapper');
-  const $breadCrumbs = buildBreadCrumbs();
   const specialistsSection = div({ class: 'specialists-sales-team' });
   specialistsSection.append($text);
   const staffData = await getStaffSheet('data');
   staffData.sort((x, y) => x.name.localeCompare(y.name));
   const specialistEl = await createSpecialists(staffData);
-  specialistEl.forEach((el) => {
-    specialistsSection.appendChild(el);
-  });
-  const mainPageContent = div({ class: 'section' }, $breadCrumbs, specialistsSection);
+  specialistsSection.append(...specialistEl);
+  const mainPageContent = div({ class: 'section' }, specialistsSection);
   $newPage.appendChild(mainPageContent);
   $page.appendChild($newPage);
 }
