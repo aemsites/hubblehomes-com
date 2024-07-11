@@ -320,15 +320,6 @@ function getHeaderTitleForFilter(filterStr) {
 }
 
 /**
- * Retrieves all inventory homes and apply a filter if provided.
- * @param filter
- * @returns {Promise<Array>}
- */
-async function getAllInventoryHomes(filter) {
-  return getInventoryHomesForCommunity(null, filter);
-}
-
-/**
  * Retrieves the inventory homes for a specific community and filter.
  * @param {string} community - The name of the community.
  * @param {string} filterStr - The filter string. If empty, all homes are returned. Otherwise,
@@ -370,6 +361,15 @@ async function getInventoryHomesByCommunities(modelName) {
     acc[community].push(home);
     return acc;
   }, {});
+}
+
+/**
+ * Retrieves all inventory homes and apply a filter if provided.
+ * @param filter
+ * @returns {Promise<Array>}
+ */
+async function getAllInventoryHomes(filter) {
+  return getInventoryHomesForCommunity(null, filter);
 }
 
 /**
