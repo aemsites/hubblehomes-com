@@ -22,10 +22,8 @@ import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
 import { loadWorkbook } from '../../scripts/workbook.js';
 import {
-  buildBlock, decorateBlock,
+  buildBlock, decorateBlock, loadBlock,
 } from '../../scripts/aem.js';
-import { loadTemplateBlock } from '../../scripts/template-block.js';
-import { loadTemplate } from '../../scripts/scripts.js';
 
 async function fetchRequiredPageData() {
   await loadWorkbook();
@@ -50,7 +48,7 @@ async function buildInventoryCards(inventoryHomes, community) {
   modelsBlock.classList.add('inventory');
   const blockWrapper = div(modelsBlock);
   decorateBlock(modelsBlock);
-  await loadTemplateBlock(modelsBlock);
+  await loadBlock(modelsBlock, true);
   return blockWrapper;
 }
 
@@ -69,7 +67,7 @@ async function buildAccordion(model) {
   const wrapper = div(block);
   wrapper.classList.add('section');
   decorateBlock(block);
-  await loadTemplateBlock(block);
+  await loadBlock(block, true);
   return wrapper;
 }
 
@@ -91,8 +89,6 @@ async function createPricingInformation(homeDetails) {
 }
 
 export default async function decorate(doc) {
-  await loadTemplate(doc, 'default');
-
   const { homeDetails, phoneNumber } = await fetchRequiredPageData();
 
   const rightAside = await createRightAside(doc, homeDetails, phoneNumber);
