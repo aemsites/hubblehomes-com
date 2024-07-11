@@ -1,19 +1,63 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { script, div, aside, a, i, strong, p } from '../../scripts/dom-helpers.js';
+import {
+  script,
+  div,
+  aside,
+  a,
+  i,
+  strong,
+  p,
+  h3,
+  span,
+  ul,
+  li,
+} from '../../scripts/dom-helpers.js';
 import { getAllInventoryHomes } from '../../scripts/inventory.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import buildFilters from './map-filters.js';
+import { formatPrice } from '../../scripts/currency-formatter.js';
+import { calculateMonthlyPayment, loadRates } from '../../scripts/mortgage.js';
 
-async function fetchInventoryData() {
-  return getAllInventoryHomes('');
+function addListeners() {
+  window.addEventListener('filtersChanged', async (event) => {
+    const updatedFilters = event.detail.chosenFilters;
+    const filterValues = updatedFilters.map((filter) => filter.value).join(',');
+    const inventoryData = await getAllInventoryHomes(filterValues);
+
+    // eslint-disable-next-line no-use-before-define
+    const inventoryCards = buildInventoryCards(inventoryData);
+
+    if (inventoryCards.length === 0) {
+      const inventoryContainer = document.querySelector('.listings-wrapper');
+      inventoryContainer.innerHTML = 'No homes found.';
+    } else {
+      const inventoryContainer = document.querySelector('.listings-wrapper');
+      inventoryContainer.innerHTML = '';
+      inventoryCards.forEach((card) => inventoryContainer.appendChild(card));
+    }
+  });
 }
 
 function buildInventoryCards(homes) {
-  return homes.map((home) => div(p(`${home.latitude} ${home.longitude}`), p(home.community), p(home.city), createOptimizedPicture(home.image)));
+  return homes.map((home) => div({ class: 'item-listing' },
+    a({ href: home.path }, createOptimizedPicture(home.image)),
+    div({ class: 'listing-info' },
+      h3(home.address),
+      div(span(home.city), span(home['home style'])),
+      div(span(formatPrice(home.price)), span(`${calculateMonthlyPayment(home.price)}/mo*`)),
+      div(span(home.status)),
+      ul({ class: 'specs' },
+        li(p('Beds'), p(home.beds)),
+        li(p('Baths'), p(home.baths)),
+        li(p('Sq. Ft.'), p(home['square feet'])),
+        li(p('Cars'), p(home.cars))),
+    )));
 }
 
 export default async function decorate(doc) {
-  const inventory = await fetchInventoryData();
+  addListeners();
+  await loadRates();
+  const inventory = await getAllInventoryHomes(null);
   const filters = await buildFilters();
 
   const $page = doc.querySelector('main .section');
@@ -30,7 +74,8 @@ export default async function decorate(doc) {
     ),
     aside(
       filters,
-      ...buildInventoryCards(inventory),
+      div({ class: 'listings-wrapper' },
+        div({ class: 'scrollable-container' }, ...buildInventoryCards(inventory))),
     ),
   );
 

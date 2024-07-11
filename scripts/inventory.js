@@ -16,6 +16,7 @@ const filters = [
     value: 'status-*',
     label: 'All Listings',
     headerTitle: 'All New Home Listings',
+    rule: (models) => models.filter(() => true),
   },
   {
     category: 'filterBy',
@@ -100,7 +101,7 @@ const filters = [
   },
   {
     category: 'beds',
-    value: 'baths-*',
+    value: 'beds-*',
     label: 'All',
     rule: (models) => models.filter(() => true),
   },

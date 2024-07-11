@@ -1,5 +1,5 @@
 import {
-  button, div, li, option, select, strong, ul,
+  button, div, li, option, select, span, strong, ul,
 } from '../../scripts/dom-helpers.js';
 import { filters } from '../../scripts/inventory.js';
 import { getCitiesInCommunities } from '../../scripts/communities.js';
@@ -18,6 +18,8 @@ const chosenFilters = new Proxy(originalArray, {
   set(target, property, value) {
     const result = Reflect.set(target, property, value);
     debouncedRenderElement(target);
+    const e = new CustomEvent('filtersChanged', { detail: { chosenFilters: target } });
+    window.dispatchEvent(e);
     return result;
   },
   deleteProperty(target, property) {
@@ -29,6 +31,22 @@ const chosenFilters = new Proxy(originalArray, {
 
 function resolveFilter(filterValue) {
   return filters.find((f) => f.value === filterValue);
+}
+
+function resetOptions() {
+  if (chosenFilters.length === 0) {
+    document.querySelectorAll('option')
+      .forEach((optionEl) => {
+        optionEl.selected = false;
+      });
+  }
+}
+
+function removeFilter(filter) {
+  chosenFilters.splice(chosenFilters.indexOf(filter), 1);
+  if (chosenFilters.length === 0) {
+    resetOptions();
+  }
 }
 
 function renderFilters(array) {
@@ -43,6 +61,11 @@ function renderFilters(array) {
   array.forEach((filter) => {
     filterChoices.append(
       li(
+        {
+          onclick: () => {
+            removeFilter(filter);
+          },
+        },
         toUpper(`${filter.category}: `),
         strong(filter.label),
       ),
@@ -58,9 +81,7 @@ function renderFilters(array) {
           class: 'light-gray small',
           onclick: () => {
             chosenFilters.length = 0;
-            document.querySelectorAll('option').forEach((optionEl) => {
-              optionEl.selected = false;
-            });
+            resetOptions();
           },
         },
         'Clear',
