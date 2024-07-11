@@ -320,6 +320,15 @@ function getHeaderTitleForFilter(filterStr) {
 }
 
 /**
+ * Retrieves all inventory homes and apply a filter if provided.
+ * @param filter
+ * @returns {Promise<Array>}
+ */
+async function getAllInventoryHomes(filter) {
+  return getInventoryHomesForCommunity(null, filter);
+}
+
+/**
  * Retrieves the inventory homes for a specific community and filter.
  * @param {string} community - The name of the community.
  * @param {string} filterStr - The filter string. If empty, all homes are returned. Otherwise,
@@ -328,18 +337,23 @@ function getHeaderTitleForFilter(filterStr) {
  * @returns {Promise<Array>} The filtered inventory homes for the community.
  */
 async function getInventoryHomesForCommunity(community, filterStr) {
+  function flatten(communityMap) {
+    return Array.from(communityMap)
+      .flatMap(([, value]) => Object.values(value));
+  }
+
   const inventory = await createCommunityInventoryMap();
 
   // no filtering return everything
   if (!filterStr) {
-    return inventory.get(community) || [];
+    return community ? inventory.get(community) : flatten(inventory);
   }
 
   const searchFilters = filterStr.split(',');
   const filteredItems = searchFilters.reduce((acc, curr) => {
     const filter = filters.find((f) => f.value === curr);
     return filter ? filter.rule(acc) : acc;
-  }, inventory.get(community));
+  }, community ? inventory.get(community) : flatten(inventory));
 
   return Promise.resolve(filteredItems);
 }
@@ -374,6 +388,7 @@ async function getInventoryHomeByPath(path) {
 }
 
 export {
+  getAllInventoryHomes,
   getInventoryHomesForCommunity,
   getInventoryHomesByCommunities,
   getInventoryHomeByPath,
