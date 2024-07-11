@@ -76,12 +76,10 @@
           padding: .75em 0 .25em;
         }
 
-
-
         li {
           padding: 0 0.3em;
 
-          &:not(:last-child)::after {
+          &:not(:last-of-type)::after {
             content: ',';
           }
         }

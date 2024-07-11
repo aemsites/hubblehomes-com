@@ -3,26 +3,15 @@ import {
 } from '../../scripts/dom-helpers.js';
 import { filters } from '../../scripts/inventory.js';
 import { getCitiesInCommunities } from '../../scripts/communities.js';
+import { debounce } from '../../scripts/utils.js';
 
 const originalArray = [];
 let filterChoices;
 
-function resolveFilter(filterValue) {
-  return filters.find((f) => f.value === filterValue);
-}
+// eslint-disable-next-line no-use-before-define
+const debouncedRenderElement = debounce(renderFilters, 100);
 
-function debounce(func, wait) {
-  let timeout;
-  return function (...args) {
-    const context = this;
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(context, args), wait);
-  };
-}
-
-const debouncedRenderElement = debounce(renderElement, 100);
-
-const arrayChangeHandler = {
+const chosenFilters = new Proxy(originalArray, {
   get(target, property) {
     return Reflect.get(target, property);
   },
@@ -36,18 +25,22 @@ const arrayChangeHandler = {
     debouncedRenderElement(target);
     return result;
   },
-};
+});
 
-const chosenFilters = new Proxy(originalArray, arrayChangeHandler);
+function resolveFilter(filterValue) {
+  return filters.find((f) => f.value === filterValue);
+}
 
-function renderElement(array) {
+function renderFilters(array) {
   function toUpper(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
+
+  // Clear the filter choices list to rebuild it
   filterChoices.innerHTML = 'Filters: ';
 
-  array.forEach((filterValue) => {
-    const filter = resolveFilter(filterValue);
+  // Add the chosen filters to the filter choices list
+  array.forEach((filter) => {
     filterChoices.append(
       li(
         toUpper(`${filter.category}: `),
@@ -56,6 +49,7 @@ function renderElement(array) {
     );
   });
 
+  // If there are filters, show the clear button
   if (chosenFilters.length > 0) {
     document.querySelector('.filter-choices').classList.add('show');
     filterChoices.append(
@@ -77,6 +71,11 @@ function renderElement(array) {
   }
 }
 
+/**
+ * Build an array of option elements from the given filters.
+ * @param allFilters {Array} - An array of filters to be added to the select element.
+ * @returns {*[]} - An array of option elements.
+ */
 function buildOptions(allFilters) {
   const optionEls = [];
 
@@ -88,13 +87,23 @@ function buildOptions(allFilters) {
   return optionEls;
 }
 
+/**
+ * Return a select element with the given options.  When the select element is changed, the
+ * chosenFilters array is updated with the selected filter.
+ *
+ * @param options {Array} - An array of option elements to be added to the select element.
+ * @returns {Element} - A select element with the given options.
+ */
 function buildSelect(options) {
   return select({
     // eslint-disable-next-line no-unused-vars
     onchange: (event) => {
-      const { value } = event.target.options[event.target.selectedIndex];
-      if (value) {
-        chosenFilters.push(value);
+      const filter = resolveFilter(event.target.value);
+      const index = chosenFilters.findIndex((f) => f.category === filter.category);
+      if (index !== -1) {
+        chosenFilters[index] = filter;
+      } else {
+        chosenFilters.push(filter);
       }
     },
   }, ...options);
