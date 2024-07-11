@@ -222,7 +222,6 @@ function buildFilterForm(filterByValue) {
     || filter.category === 'bathsAcsDesc'
     || filter.category === 'sqftAcsDesc',
   );
-
   const sortByOptions = buildOptions(sortBy);
 
   const filterBy = filters.filter(
@@ -230,7 +229,6 @@ function buildFilterForm(filterByValue) {
     || filter.category === 'beds'
     || filter.category === 'sqft',
   );
-
   const filterByOptions = buildOptions(filterBy);
 
   const allListingSelect = createSelectElement(allListingOptions);
