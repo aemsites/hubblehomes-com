@@ -1,7 +1,9 @@
 import { getModels } from './models.js';
 import { getInventorySheet } from './workbook.js';
+import { getCityForCommunity } from './communities.js';
 
 const filters = [
+  { category: 'all', value: '', label: 'All' },
   {
     category: 'status',
     value: '',
@@ -216,42 +218,6 @@ const filters = [
     ),
   },
   {
-    category: 'city',
-    value: 'Caldwell',
-    label: '',
-    rule: (models) => models.filter((model) => model.city === 'Caldwell'),
-  },
-  {
-    category: 'city',
-    value: 'Kuna',
-    label: '',
-    rule: (models) => models.filter((model) => model.city === 'Kuna'),
-  },
-  {
-    category: 'city',
-    value: 'Meridian',
-    label: '',
-    rule: (models) => models.filter((model) => model.city === 'Meridian'),
-  },
-  {
-    category: 'city',
-    value: 'Middleton',
-    label: '',
-    rule: (models) => models.filter((model) => model.city === 'Middleton'),
-  },
-  {
-    category: 'city',
-    value: 'Nampa',
-    label: '',
-    rule: (models) => models.filter((model) => model.city === 'Nampa'),
-  },
-  {
-    category: 'city',
-    value: 'Star',
-    label: '',
-    rule: (models) => models.filter((model) => model.city === 'Star'),
-  },
-  {
     category: 'cars',
     value: '2',
     label: '',
@@ -293,13 +259,22 @@ async function getInventoryData() {
 }
 
 /**
- * Maps community to inventory homes
+ * Get the list of inventory homes for each community.
+ * {
+ *   'Adams Ridge': [
+ *   { 'model name': 'The Aspen', 'community': 'Adams Ridge', ... },
+ *   ],
+ *   'Sera Sol': [
+  *   { 'model name': 'The Aspen', 'community': 'Sera Sol', ... },
+ *   ],
+ * }
  * @returns {Promise<Map>} A map of communities to their respective homes.
  * @throws {Error} If the fetch request fails or data processing fails.
  */
 async function createCommunityInventoryMap() {
   // Load inventory data using the loadInventoryData function
   const inventoryData = await getInventoryData();
+
   const models = await getModels();
 
   // Create a map of communities to homes
@@ -318,6 +293,15 @@ async function createCommunityInventoryMap() {
     }
     communityMap.get(community).push(inventoryHome);
   });
+
+  // iterate through all the communties and update the city for each inventory home
+  const communityMapEntries = Array.from(communityMap.entries());
+  await Promise.all(communityMapEntries.map(async ([community, homes]) => {
+    const city = await getCityForCommunity(community);
+    homes.forEach((home) => {
+      home.city = city;
+    });
+  }));
 
   return communityMap;
 }
