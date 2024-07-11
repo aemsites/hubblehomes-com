@@ -1,0 +1,47 @@
+
+.map-view {
+  .map-filter-container {
+    display: flex;
+    height: calc(100vh - 90px);
+    max-width: 100vw;
+
+    .map {
+      flex: 1;
+      position: relative;
+
+      .download {
+        position: absolute;
+        right: 5em;
+        top: .8em;
+        height: 40px;
+        z-index: 1;
+        background: #fff;
+        box-shadow: 3px 3px 8px 0 rgba(0, 0, 0, .14);
+        font-size: .77em;
+        padding: .7em 1em;
+
+      }
+
+      .reset-zoom {
+        position: absolute;
+        top: 60px;
+        right: 10px;
+        z-index: 1;
+        display: none;
+        &.active { display: block}
+      }
+
+      #google-map {
+        height: 100%;
+      }
+    }
+
+    .filter {
+      width: 600px;
+      min-height: 600px;
+    }
+  }
+
+}  
+
+
