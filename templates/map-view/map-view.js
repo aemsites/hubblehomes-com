@@ -2,6 +2,7 @@
 import { script, div, aside, a, i, strong, p } from '../../scripts/dom-helpers.js';
 import { getAllInventoryHomes } from '../../scripts/inventory.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import buildFilters from './map-filters.js';
 
 async function fetchInventoryData() {
   return getAllInventoryHomes('');
@@ -13,6 +14,7 @@ function buildInventoryCards(homes) {
 
 export default async function decorate(doc) {
   const inventory = await fetchInventoryData();
+  const filters = await buildFilters();
 
   const $page = doc.querySelector('main .section');
 
@@ -26,10 +28,8 @@ export default async function decorate(doc) {
       a({ class: 'btn reset-zoom' }, 'Reset Zoom'),
       div({ id: 'google-map' }),
     ),
-    aside({ class: 'filter' },
-      div(
-        'FILTERS HERE',
-      ),
+    aside(
+      filters,
       ...buildInventoryCards(inventory),
     ),
   );

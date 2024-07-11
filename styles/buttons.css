@@ -38,6 +38,11 @@
   font-size: 18px;
   transition: all 0.3s ease-in-out;
 
+  &.small {
+    padding: 3px 12px;
+    font-size: 14px;
+  }
+
   &.fancy {
     font-family: minion-pro, serif;
     font-style: italic;
