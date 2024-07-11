@@ -1,5 +1,5 @@
 import { getModels } from './models.js';
-import { getInventorySheet } from './workbook.js';
+import { getHomePlansSheet, getInventorySheet } from './workbook.js';
 import { getCityForCommunity } from './communities.js';
 
 const filters = [
@@ -275,14 +275,14 @@ async function createCommunityInventoryMap() {
   // Load inventory data using the loadInventoryData function
   const inventoryData = await getInventoryData();
 
-  const models = await getModels();
+  const homeplans = await getHomePlansSheet('data');
 
   // Create a map of communities to homes
   const communityMap = new Map();
 
   inventoryData.forEach((inventoryHome) => {
-    // Inject the model image into the inventory home
-    const { image } = models.find((model) => model['model name'] === inventoryHome['model name']) || {};
+    // Inject the home plan image into the inventory home
+    const { image } = homeplans.find((model) => model['model name'] === inventoryHome['model name']) || {};
     if (image) {
       inventoryHome.image = image;
     }
@@ -294,7 +294,7 @@ async function createCommunityInventoryMap() {
     communityMap.get(community).push(inventoryHome);
   });
 
-  // iterate through all the communties and update the city for each inventory home
+  // iterate through all the communities and update the city for each inventory home
   const communityMapEntries = Array.from(communityMap.entries());
   await Promise.all(communityMapEntries.map(async ([community, homes]) => {
     const city = await getCityForCommunity(community);

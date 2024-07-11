@@ -1,7 +1,19 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { script, div, aside, a, i, strong } from '../../scripts/dom-helpers.js';
+import { script, div, aside, a, i, strong, p } from '../../scripts/dom-helpers.js';
+import { getAllInventoryHomes } from '../../scripts/inventory.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
+
+async function fetchInventoryData() {
+  return getAllInventoryHomes('');
+}
+
+function buildInventoryCards(homes) {
+  return homes.map((home) => div(p(`${home.latitude} ${home.longitude}`), p(home.community), p(home.city), createOptimizedPicture(home.image)));
+}
 
 export default async function decorate(doc) {
+  const inventory = await fetchInventoryData();
+
   const $page = doc.querySelector('main .section');
 
   const $mapFilter = div({ class: 'map-filter-container' },
@@ -18,6 +30,7 @@ export default async function decorate(doc) {
       div(
         'FILTERS HERE',
       ),
+      ...buildInventoryCards(inventory),
     ),
   );
 
