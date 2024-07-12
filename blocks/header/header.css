@@ -1,4 +1,5 @@
-/* stylelint-disable declaration-block-single-line-max-declarations, no-descending-specificity, declaration-block-no-shorthand-property-overrides */
+/* stylelint-disable declaration-block-no-shorthand-property-overrides,  */
+
 
 header * {
   padding: 0;
@@ -15,6 +16,34 @@ header * {
   font-size: 16px;
 }
 
+header nav a {
+  display: block;
+}
+
+
+header nav > div > ul > li > ul > li a {
+  padding: 5px 15px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  color: #fff;
+  display: block;
+}
+
+/* headings */
+header nav > div > ul > li > ul > li > a {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--yellow);
+  text-wrap: nowrap;
+}
+
+header nav > div > ul > li > ul > li:not(:has(> ul)) > a,
+header nav > div > ul > li > ul > li > ul > li > a {
+  padding-left: 30px;
+  font-weight: 400 !important;
+  color: #fff;
+}
+
 .header a {
   text-decoration: none !important;
 }
@@ -24,46 +53,6 @@ header * {
   top: 18px;
   left: 40px;
   display: inline-block;
-}
-
-/* promo & phone */
-a#promo,
-a#phone {
-  position: absolute;
-  top: 8px;
-  left: 170px;
-  color: var(--link-light-gray);
-  font-size: 1em;
-  font-weight: 600;
-  transition: all 0.3s ease-in-out;
-  line-height: 0.9em;
-}
-
-a:hover#promo {
-  color: var(--dark-blue);
-}
-
-#promo span {
-  display: block;
-  font-size: 0.72em;
-}
-
-a#promo span::after {
-  content: ' >';
-  font-size: 1.5em;
-  color: var(--yellow);
-  vertical-align: top;
-}
-
-a#phone {
-  top: 0;
-  left: 764px;
-  padding: 8px;
-}
-
-a:hover#phone {
-  background: var(--dark-blue);
-  color: #fff;
 }
 
 /* search form */
@@ -118,20 +107,17 @@ input[type='text']::placeholder {
   border: 1px solid #d4d4d4;
   border-bottom: none;
   border-top: none;
-  z-index: 3; 
-  top: calc(
-    100% + 34px
-  ); /* Position just below the input, adjust the spacing as needed */
-  
+  z-index: 3;
+  top: calc(100% + 34px);
   left: 472px;
   background-color: #e9e9e9;
   width: 566px;
-  box-shadow: 0 4px 6px color(0, 0, 0, 10%); /* Add a shadow for better visibility */
+  box-shadow: 0 4px 6px rgb(0 0 0 / 10%);
   border-radius: 6px;
 }
 
 #search {
-  position: relative; /* Ensure positioning context for autocomplete */
+  position: relative;
 }
 
 .autocomplete-items div {
@@ -161,9 +147,51 @@ input[type='text']::placeholder {
   zoom: 1;
 }
 
+/* top level */
+header nav > div > ul > li {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  height: 50px;
+  padding: 0 14px;
+  font-weight: 600;
+  font-size: 1em;
+  color: var(--link-light-gray);
+  text-transform: uppercase;
+  float: left;
+}
+
+header nav > div > ul > li > ul > li {
+  text-transform: none;
+  padding: 4px 0;
+  font-size: 0.85em;
+  line-height: 1.6em;
+  font-weight: normal;
+  width: 100%;
+  white-space: nowrap;
+}
+
+header nav > div > ul > li > ul > li a:hover {
+  background: var(--light-blue);
+}
+
 .autocomplete-items div a:hover {
   color: #2a6496;
   font-weight: normal;
+}
+
+#phone {
+  position: absolute;
+  right: 300px;
+  color: var(--link-light-gray);
+  font-size: var(--body-font-size-m);
+  font-weight: 600;
+  transition: all 0.3s ease-in-out;
+}
+
+#phone:hover {
+  color: var(--dark-blue);
 }
 
 /* chat */
@@ -182,28 +210,9 @@ header nav {
   user-select: none;
 }
 
-header nav a {
-  display: block;
-}
-
 header nav ul {
   list-style: none;
   position: relative;
-}
-
-/* top level */
-header nav > div > ul > li {
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: center;
-  cursor: pointer;
-  height: 50px;
-  padding: 0 14px;
-  font-weight: 600;
-  font-size: 1em;
-  color: var(--link-light-gray);
-  text-transform: uppercase;
-  float: left;
 }
 
 header nav > div > ul > li:hover,
@@ -221,127 +230,13 @@ header nav > div > ul > li > ul {
   padding: 4px 0 14px;
   background: var(--dark-blue);
   box-shadow: 0 6px 12px rgb(0 0 0 / 17%);
+  width: auto;
+  min-width: 200px;
+  max-width: 300px;
 }
 
 header nav > div > ul > li.on > ul {
   display: block;
-}
-
-header nav > div > ul > li > ul > li {
-  text-transform: none;
-  padding: 4px 0 0;
-  font-size: 0.85em;
-  line-height: 1.6em;
-  font-weight: normal;
-}
-
-/* drowdown (left col) */
-header nav > div > ul > li:nth-child(1) > ul > li {
-  width: 230px;
-}
-
-header nav > div > ul > li:nth-child(2) > ul > li {
-  width: 153px;
-}
-
-/* drowdown (right col) = left-col [+] right-col (260px) */
-header nav > div > ul > li:nth-child(1) > ul {
-  width: 490px;
-}
-
-header nav > div > ul > li:nth-child(2) > ul {
-  width: 413px;
-}
-
-header nav > div > ul > li > ul > li a {
-  padding: 0 12px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  color: #fff;
-}
-
-header nav > div > ul > li > ul > li a:hover {
-  background: var(--light-blue);
-}
-
-/* headings */
-header nav > div > ul > li > ul > li > a {
-  font-size: 1.1em;
-  font-weight: 600;
-  color: var(--yellow);
-  text-wrap: nowrap;
-}
-
-header nav>div>ul>li>ul>li>ul>li>a, /* all 3rd level links */
-header nav>div>ul>li>ul>li:not(:has(> ul)) >a /* headings w/out children */ {
-  padding-left: 15px;
-  font-weight: 400 !important;
-  color: #fff;
-}
-
-/* right column */
-header nav .r-col {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 260px;
-  height: 100%;
-  background: #fff;
-  color: #000;
-}
-
-header nav .r-col .section {
-  padding: 10px;
-  text-align: left;
-}
-
-header nav .r-col p {
-  text-transform: none;
-  font-family: var(--body-font-family);
-  font-size: 14px;
-  line-height: 1.4em;
-  color: var(--link-light-gray);
-}
-
-header {
-  .btn.yellow {
-    float: right;
-    font-size: 14px;
-    font-weight: 400;
-    padding: 6px 12px;
-  }
-}
-
-header nav .r-col p.button-container {
-  float: right;
-}
-
-/* TODO: button style could be moved to styles.css */
-header nav .r-col .button {
-  display: inline-block;
-  padding: 6px 12px;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.4em;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  touch-action: manipulation;
-  user-select: none;
-  border-radius: 3px;
-  color: var(--dark-blue);
-  background: var(--yellow);
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-}
-
-header nav .r-col .button:hover {
-  color: #fff;
-  background: var(--dark-blue);
-}
-
-header nav .r-col p:not(:first-child) picture img {
-  margin-top: 30px;
 }
 
 /* hamburger button */
@@ -372,8 +267,7 @@ header nav .r-col p:not(:first-child) picture img {
   margin-top: 6px;
 }
 
-@media (width <= 1170px) {
-  #promo,
+@media (max-width: 1170px) {
   #search,
   #phone,
   .chat {
@@ -401,13 +295,13 @@ header nav .r-col p:not(:first-child) picture img {
     padding: 0 20px;
     overflow: hidden;
     background: #fff;
-    transition: all 600ms ease-in-out; /* match js -> navTransitionTime */
+    transition: all 600ms ease-in-out;
   }
 
   .mobile-nav-open {
     position: fixed;
     overflow-y: scroll;
-  } /* disable content scrolling */
+  }
 
   .mobile-nav-open nav > div {
     height: 100vh;
@@ -418,10 +312,9 @@ header nav .r-col p:not(:first-child) picture img {
   }
 
   header nav > div > ul {
-    height: 840px; /* max height with items expanded - revisit to make fluid */
+    height: 840px;
   }
 
-  /* top level */
   header nav > div > ul > li {
     clear: left;
     height: auto;
@@ -434,12 +327,13 @@ header nav .r-col p:not(:first-child) picture img {
     padding-bottom: 0;
   }
 
-  /* dropdown menus */
   header nav > div > ul > li > ul {
-    position: relative;
+    position: static;
     top: auto !important;
     padding: 10px 0;
-    width: calc(100vw - 46px) !important;
+    width: 100% !important;
+    max-width: none;
+    margin-left: 0;
     box-shadow: none;
   }
 
@@ -452,12 +346,12 @@ header nav .r-col p:not(:first-child) picture img {
     width: auto !important;
   }
 
-  header nav > div > ul > li:nth-child(2) > ul {
-    min-height: 420px;
+  header nav > div > ul > li > ul > li a {
+    padding: 5px 10px;
   }
 }
 
-@media (width <= 540px) {
+@media (max-width: 540px) {
   header nav .r-col {
     position: relative;
     margin: 10px 10px 0;
