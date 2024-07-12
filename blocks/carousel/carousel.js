@@ -151,7 +151,7 @@ function createSlide(row, i) {
     // decorate content
     if (c === 1) {
       // use default content if col is empty
-      const content = (col.textContent === '') ? defaultContent.cloneNode(true) : decorateSlideContent(col);
+      const content = (col.textContent === '' && defaultContent !== undefined) ? defaultContent.cloneNode(true) : decorateSlideContent(col);
       $slide.append(content);
     }
   });
