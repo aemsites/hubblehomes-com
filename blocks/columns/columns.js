@@ -53,9 +53,7 @@ function decorateAbout(col, index) {
   headerRow.addEventListener('click', (e) => {
     e.preventDefault();
     if (window.innerWidth < 900) {
-      setTimeout(() => {
-        col.classList.toggle('expanded');
-      }, 10);
+      col.classList.toggle('expanded');
     }
   });
 }

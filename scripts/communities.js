@@ -22,7 +22,35 @@ async function getCommunityDetailsByName(communityName) {
   return communities.find((community) => community.name === communityName);
 }
 
+/**
+ * Every community is associated in a city therefore return a unique list of
+ * city names that are associated with communities.
+ *
+ * @returns {Promise<*>} The list of unique cities.
+ */
+async function getCitiesInCommunities() {
+  const communities = await getCommunitiesSheet('data');
+  return communities.reduce((acc, community) => {
+    if (!acc.includes(community.city)) {
+      acc.push(community.city);
+    }
+    return acc;
+  }, []);
+}
+
+/**
+ * Given a community name, return the city that the community exists in.
+ * @param communityName - The name of the community to search for.
+ * @returns {Promise<*>} The city that the community exists in
+ */
+async function getCityForCommunity(communityName) {
+  const community = await getCommunityDetailsByName(communityName);
+  return community.city;
+}
+
 export {
   getCommunityForUrl,
   getCommunityDetailsByName,
+  getCitiesInCommunities,
+  getCityForCommunity,
 };

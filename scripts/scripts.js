@@ -10,7 +10,7 @@ import {
   waitForLCP,
   loadBlocks,
   loadCSS,
-  getMetadata,
+  getMetadata, loadBreadcrumbs,
 } from './aem.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
@@ -190,6 +190,7 @@ async function loadLazy(doc) {
   if (hash && element) element.scrollIntoView();
 
   loadHeader(doc.querySelector('header'));
+  loadBreadcrumbs(document);
   loadFooter(doc.querySelector('footer'));
   loadTopBanner(doc);
 
@@ -267,6 +268,7 @@ async function loadPage() {
   clearTopBannerDismissedOnLoad();
   setupGlobalVars();
   await loadEager(document);
+
   await loadLazy(document);
   loadDelayed();
 }
