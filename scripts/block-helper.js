@@ -1,6 +1,5 @@
-import { buildBlock, decorateBlock } from './aem.js';
+import { buildBlock, decorateBlock, loadBlock } from './aem.js';
 import { div } from './dom-helpers.js';
-import { loadTemplateBlock } from './template-block.js';
 
 /**
  * Creates a template block with the given block name and data.
@@ -13,7 +12,7 @@ async function createTemplateBlock(blockName, blockData) {
   const block = buildBlock(blockName, blockData);
   const blockWrapper = div(block);
   decorateBlock(block);
-  await loadTemplateBlock(block);
+  await loadBlock(block, true);
   return blockWrapper;
 }
 
