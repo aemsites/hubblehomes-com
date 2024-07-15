@@ -126,9 +126,3 @@
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }
-
-@media (min-width: 900px) {
-  .cards > ul {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  }
-}
