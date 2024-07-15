@@ -295,7 +295,7 @@ header nav > div > ul > li.on > ul {
     padding: 0 20px;
     overflow: hidden;
     background: #fff;
-    transition: all 600ms ease-in-out;
+    transition: height 600ms ease-in-out;
   }
 
   .mobile-nav-open {
