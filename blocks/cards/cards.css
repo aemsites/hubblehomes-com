@@ -11,11 +11,11 @@
 
 .cards-container h2 {
   margin-bottom: 10px;
-  font-size: 36px;
+  font-size: var(--heading-font-size-xxl);
   font-weight: bold;
   color: var(--blue);
   word-wrap: break-word;
-  /* overflow-wrap: break-word; */
+  overflow-wrap: break-word;
   hyphens: auto;
 }
 
@@ -27,7 +27,7 @@
 }
 
 .cards-container .default-content-wrapper p {
-  font-size: 24px;
+  font-size: var(--heading-font-size-l);
   line-height: 1;
 }
 
@@ -48,6 +48,16 @@
 
 .cards > ul > li:hover {
   transform: translateY(-5px);
+}
+
+.cards > ul > li:hover .cards-card-body .btn-container a {
+  background: var(--btn-hover);
+}
+
+.card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
 }
 
 .cards-card-image {
@@ -84,7 +94,7 @@
 }
 
 .cards-card-body .btn-container a {
-  font-size: 16px;
+  font-size: var(--body-font-size-m);
   font-style: normal;
   font-family: var(--body-font-family);
   font-weight: bold;
@@ -99,7 +109,7 @@
 }
 
 .cards-card-body .btn-container + p {
-  font-size: 16px;
+  font-size: var(--body-font-size-m);
   font-weight: bold;
   margin: 0;
   text-transform: uppercase;
