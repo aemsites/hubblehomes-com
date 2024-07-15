@@ -15,6 +15,12 @@ import {
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 
+function clearTopBannerDismissedOnLoad() {
+  if (performance.getEntriesByType('navigation')[0].type === 'reload') {
+    sessionStorage.removeItem('topBannerDismissed');
+  }
+}
+
 /**
  * load fonts.css and set a session storage flag
  */
@@ -55,6 +61,35 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+}
+
+/**
+ * Loads a fragment.
+ * @param {string} path The path to the fragment
+ * @returns {HTMLElement} The root element of the fragment
+ */
+async function loadFragment(path) {
+  if (path && path.startsWith('/')) {
+    const resp = await fetch(`${path}.plain.html`);
+    if (resp.ok) {
+      const main = document.createElement('main');
+      main.innerHTML = await resp.text();
+
+      // reset base path for media to fragment base
+      const resetAttributeBase = (tag, attr) => {
+        main.querySelectorAll(`${tag}[${attr}^="./media_"]`).forEach((elem) => {
+          elem[attr] = new URL(elem.getAttribute(attr), new URL(path, window.location)).href;
+        });
+      };
+      resetAttributeBase('img', 'src');
+      resetAttributeBase('source', 'srcset');
+
+      decorateMain(main);
+      await loadBlocks(main);
+      return main;
+    }
+  }
+  return null;
 }
 
 /**
@@ -102,6 +137,17 @@ export async function loadTemplate(doc, templateName) {
   }
 }
 
+async function loadTopBanner(doc) {
+  const topBannerFragment = await loadFragment('/fragments/top-banner');
+  if (topBannerFragment) {
+    const topBanner = topBannerFragment.querySelector('.top-banner');
+    if (topBanner) {
+      const header = doc.querySelector('header');
+      header?.prepend(topBanner);
+    }
+  }
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -146,6 +192,7 @@ async function loadLazy(doc) {
   loadHeader(doc.querySelector('header'));
   loadBreadcrumbs(document);
   loadFooter(doc.querySelector('footer'));
+  loadTopBanner(doc);
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
@@ -218,6 +265,7 @@ if (sk) {
 }
 
 async function loadPage() {
+  clearTopBannerDismissedOnLoad();
   setupGlobalVars();
   await loadEager(document);
 

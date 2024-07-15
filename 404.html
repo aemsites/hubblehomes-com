@@ -1,67 +1,142 @@
 <!DOCTYPE html>
-<html>
-
-<head>
-  <title>Page not found</title>
-  <script type="text/javascript">
-    window.isErrorPage = true;
-    window.errorCode = '404';
-  </script>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta property="og:title" content="Page not found">
-  <script src="/scripts/scripts.js" type="module" crossorigin="use-credentials"></script>
-  <script type="module">
-    import { sampleRUM } from '/scripts/aem.js';
-
-    window.addEventListener('load', () => {
-      if (document.referrer) {
-        const { origin, pathname } = new URL(document.referrer);
-        if (origin === window.location.origin) {
-          const backBtn = document.createElement('a');
-          backBtn.classList.add('button', 'error-button-back');
-          backBtn.href = pathname;
-          backBtn.textContent = 'Go back';
-          backBtn.title = 'Go back';
-          const btnContainer = document.querySelector('.button-container');
-          btnContainer.append(backBtn);
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Page not found - Hubble Homes</title>
+    <script type="text/javascript">
+      window.isErrorPage = true;
+      window.errorCode = '404';
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="Page not found" />
+    <script
+      src="/scripts/scripts.js"
+      type="module"
+      crossorigin="use-credentials"
+    ></script>
+    <script src="/scripts/aem.js" type="module"></script>
+    <link rel="stylesheet" href="/styles/styles.css" />
+    <style>
+      main.error {
+        min-height: calc(100vh - var(--nav-height));
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+      }
+      .error-container {
+        text-align: center;
+        padding: 20px;
+      }
+      .error-title {
+        font-size: 48px;
+        color: var(--dark-blue);
+        margin-bottom: 20px;
+      }
+      .error-message {
+        font-size: 24px;
+        color: var(--link-color);
+        margin-bottom: 40px;
+      }
+      .error-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 60px;
+      }
+      .error-link {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        color: var(--link-color);
+        transition: transform 0.3s ease;
+      }
+      .error-link:hover {
+        transform: scale(1.05);
+      }
+      .error-link img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 10px;
+      }
+      .error-link span {
+        font-weight: bold;
+      }
+    
+      @media (max-width: 900px) {
+        .error-links {
+          flex-direction: column;
+          align-items: center;
+          gap: 30px;
+        }
+        .error-link {
+          width: 100%;
+          max-width: 200px;
+        }
+        .error-link img {
+          width: 120px;
+          height: 120px;
         }
       }
-      sampleRUM('404', { source: document.referrer, target: window.location.href });
-    });
-  </script>
-  <link rel="stylesheet" href="/styles/styles.css">
-  <style>
-    main.error {
-      min-height: calc(100vh - var(--nav-height));
-      display: flex;
-      align-items: center;
-    }
+    
+      @media (max-width: 600px) {
+        .error-title {
+          font-size: 36px;
+        }
+        .error-message {
+          font-size: 20px;
+        }
+        .error-links {
+          gap: 20px;
+        }
+        .error-link img {
+          width: 100px;
+          height: 100px;
+        }
+        .error-link span {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
 
-    main.error .error-number {
-      width: 100%;
-    }
+  <body>
+    <header></header>
+    <main class="error">
+      <div class="error-container">
+        <h1 class="error-title">404</h1>
+        <h2 class="error-message">Oops! Page Not Found</h2>
+        <div class="error-links">
+          <a href="/new-homes/idaho" class="error-link">
+            <img src="/icons/home-search.png" alt="Find A Home" />
+            <span>Find A Home</span>
+          </a>
+          <a
+            href="/new-homes-search/available/quick-move-ins"
+            class="error-link"
+          >
+            <img src="/icons/home-clock.png" alt="Quick Move-In" />
+            <span>Quick Move-In</span>
+          </a>
+          <a href="/contact-us" class="error-link">
+            <img src="/icons/home-envelope.png" alt="Contact Us" />
+            <span>Contact Us</span>
+          </a>
+        </div>
+      </div>
+    </main>
+    <footer></footer>
+    <script type="module">
+      import { sampleRUM } from '/scripts/aem.js';
 
-    main.error .error-number text {
-      font-family: var(--fixed-font-family);
-    }
-  </style>
-  <link rel="stylesheet" href="/styles/lazy-styles.css">
-</head>
-
-<body>
-  <header></header>
-  <main class="error">
-    <div class="section">
-      <svg viewBox="1 0 38 18" class="error-number">
-        <text x="0" y="17">404</text>
-      </svg>
-      <h2 class="error-message">Page Not Found</h2>
-      <p class="button-container">
-        <a href="/" class="button secondary error-button-home">Go home</a>
-      </p>
-    </div>
-  </main>
-  <footer></footer>
-</body>
-
+      window.addEventListener('load', () => {
+        sampleRUM('404', {
+          source: document.referrer,
+          target: window.location.href,
+        });
+      });
+    </script>
+  </body>
 </html>
