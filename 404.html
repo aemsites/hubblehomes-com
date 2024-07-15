@@ -41,7 +41,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 20px;
+        gap: 40px; /* Increased gap for more spacing */
       }
       .error-link {
         display: flex;
@@ -64,24 +64,36 @@
       .error-link span {
         font-weight: bold;
       }
-
+    
       @media (max-width: 900px) {
         .error-links {
           flex-direction: column;
+          align-items: center;
+          gap: 30px; /* Adjusted gap for vertical layout */
+        }
+        .error-link {
+          width: 100%;
+          max-width: 200px; /* Limit width for better appearance */
+        }
+        .error-link img {
+          width: 120px;
+          height: 120px;
+        }
+      }
+    
+      @media (max-width: 600px) {
+        .error-title {
+          font-size: 36px;
+        }
+        .error-message {
+          font-size: 20px;
+        }
+        .error-links {
+          gap: 20px; /* Further reduced gap for smaller screens */
         }
         .error-link img {
           width: 100px;
           height: 100px;
-        }
-      }
-
-      @media (max-width: 600px) {
-        .error-links {
-          flex-direction: row;
-        }
-        .error-link img {
-          width: 80px;
-          height: 80px;
         }
         .error-link span {
           font-size: 14px;
