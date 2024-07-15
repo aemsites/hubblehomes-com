@@ -140,7 +140,7 @@ export async function loadTemplate(doc, templateName) {
 function handleTopBanner(topBanner) {
   document.body.classList.add('has-top-banner');
   document.body.style.paddingTop = `${topBanner.offsetHeight}px`;
-  
+
   const header = document.querySelector('header');
   if (header) {
     header.style.top = `${topBanner.offsetHeight}px`;
@@ -179,7 +179,7 @@ function setupTopBannerObserver() {
     });
   });
 
-  //observing the header for changes
+  // observing the header for changes
   observer.observe(header, { childList: true, subtree: true });
 
   // listen for the custom event

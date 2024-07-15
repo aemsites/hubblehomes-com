@@ -282,10 +282,7 @@ header nav > div > ul > li.on > ul {
   }
 
   header nav {
-    top: var(--nav-height);
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: var(--nav-height) 0 0 0;
     position: fixed;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
