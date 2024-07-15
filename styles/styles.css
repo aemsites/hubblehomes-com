@@ -1,3 +1,5 @@
+/* stylelint-disable selector-id-pattern  */
+
 @layer reset, theme, layout, templates;
 
 /*
