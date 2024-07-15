@@ -137,6 +137,60 @@ export async function loadTemplate(doc, templateName) {
   }
 }
 
+function handleTopBanner(topBanner) {
+  document.body.classList.add('has-top-banner');
+  document.body.style.paddingTop = `${topBanner.offsetHeight}px`;
+  
+  const header = document.querySelector('header');
+  if (header) {
+    header.style.top = `${topBanner.offsetHeight}px`;
+  }
+
+  const closeButton = topBanner.querySelector('.top-banner-close');
+  if (closeButton) {
+    closeButton.addEventListener('click', () => {
+      topBanner.classList.add('dismissed');
+      document.body.classList.remove('has-top-banner');
+      document.body.style.paddingTop = '0';
+      if (header) {
+        header.style.top = '0';
+      }
+      setTimeout(() => {
+        topBanner.remove();
+      }, 300); // 300ms matches the transition duration in CSS
+      sessionStorage.setItem('topBannerDismissed', 'true');
+    });
+  }
+}
+
+function setupTopBannerObserver() {
+  const header = document.querySelector('header');
+
+  // watch for changes in the header
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        const topBanner = document.querySelector('.top-banner');
+        if (topBanner) {
+          handleTopBanner(topBanner);
+          observer.disconnect(); // Stop observing once we've handled the banner
+        }
+      }
+    });
+  });
+
+  //observing the header for changes
+  observer.observe(header, { childList: true, subtree: true });
+
+  // listen for the custom event
+  window.addEventListener('topbannerloaded', () => {
+    const topBanner = document.querySelector('.top-banner');
+    if (topBanner) {
+      handleTopBanner(topBanner);
+    }
+  }, { once: true });
+}
+
 async function loadTopBanner(doc) {
   const topBannerFragment = await loadFragment('/fragments/top-banner');
   if (topBannerFragment) {
@@ -144,6 +198,9 @@ async function loadTopBanner(doc) {
     if (topBanner) {
       const header = doc.querySelector('header');
       header?.prepend(topBanner);
+
+      // Dispatch a custom event when the banner is added
+      window.dispatchEvent(new CustomEvent('topbannerloaded'));
     }
   }
 }
@@ -175,6 +232,8 @@ async function loadEager(doc) {
   } catch (e) {
     // do nothing
   }
+
+  // handleTopBanner();
 }
 
 /**
@@ -265,6 +324,7 @@ if (sk) {
 }
 
 async function loadPage() {
+  setupTopBannerObserver();
   clearTopBannerDismissedOnLoad();
   setupGlobalVars();
   await loadEager(document);
