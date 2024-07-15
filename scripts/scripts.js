@@ -149,11 +149,14 @@ function handleTopBanner(topBanner) {
   const closeButton = topBanner.querySelector('.top-banner-close');
   if (closeButton) {
     closeButton.addEventListener('click', () => {
+      const header = document.querySelector('header');
+      const bannerHeight = topBanner.offsetHeight;
+
       topBanner.classList.add('dismissed');
       document.body.classList.remove('has-top-banner');
       document.body.style.paddingTop = '0';
       if (header) {
-        header.style.top = '0';
+        header.style.top = `${bannerHeight}px`; 
       }
       setTimeout(() => {
         topBanner.remove();

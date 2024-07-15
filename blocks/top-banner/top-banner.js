@@ -39,17 +39,26 @@ export default function decorate(block) {
   if (variant === 'dismissible') {
     closeButton = button({ class: 'top-banner-close', 'aria-label': 'Close banner' });
     closeButton.addEventListener('click', () => {
-      block.classList.add('dismissed');
-      document.body.classList.remove('has-top-banner');
-      // Use setTimeout to remove the banner after the transition
-      setTimeout(() => {
-        block.remove();
-      }, 300); // 300ms matches the transition duration in CSS
-      // Set a flag in sessionStorage
-      sessionStorage.setItem('topBannerDismissed', 'true');
+        block.classList.add('dismissed');
+        document.body.classList.remove('has-top-banner');
+        
+        // Adjust body padding and header position
+        document.body.style.paddingTop = '0';
+        const header = document.querySelector('header');
+        if (header) {
+            header.style.top = '0';
+        }
+
+        // Use a longer timeout to match the transition duration
+        setTimeout(() => {
+            block.remove();
+        }, 500); // 500ms matches the transition duration in CSS
+        
+        // Set a flag in sessionStorage
+        sessionStorage.setItem('topBannerDismissed', 'true');
     });
   }
-
+  
   // Clear the existing content
   block.innerHTML = '';
 

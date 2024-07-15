@@ -56,7 +56,11 @@
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    transition: background-color 0.3s ease;
+    transition: opacity 0.3s ease-out;
+  }
+
+  .top-banner.dismissed .top-banner-close {
+    opacity: 0;
   }
   
   .top-banner-close:hover {
@@ -67,6 +71,14 @@
     content: "\00D7"; /* Unicode for multiplication sign, looks like an "x" */
   }
   
+  body {
+    transition: padding-top 0.5s ease-out;
+  }
+
+  header {
+    transition: top 0.5s ease-out;
+  }
+
   body.has-top-banner {
     padding-top: 48px;
   }
