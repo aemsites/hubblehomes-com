@@ -1,4 +1,7 @@
 .map-view {
+
+  .breadcrumbs { display: none }
+
   .map-filter-container {
     padding: 0 !important;
     display: flex;
@@ -33,7 +36,85 @@
 
       #google-map {
         height: 100%;
+
+        .pin {
+          position: relative;
+          background-color: var(--blue);
+          color: var(--yellow);
+          border-radius: 8px;
+          font-size: 14px;
+          padding: 10px 15px;
+
+          /* triangle */
+          &::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            transform: translate(-50%, 0);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid var(--blue);
+          }
+
+          .details { display: none }
+          &.active {
+            /* doesn't work - FIX */
+            z-index: 999999999999999999999 !important;
+            span { display: none }
+           .details {
+              display: block;
+              width: 300px;
+              
+
+              a.close {
+                background: transparent;
+                display: block;
+                height: 32px;
+                position: fixed;
+                right: 10px;
+                top: 4px;
+                width: 24px;
+                z-index: 1;
+            
+                &:before, &:after {
+                    border-top: 2px solid #fff;
+                    bottom: 0;
+                    content: "";
+                    display: block;
+                    height: 0;
+                    left: 0;
+                    margin: auto;
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    width: inherit;
+                    transform: rotate(45deg);
+                    transform-origin: center;
+                }
+                &:after { transform: rotate(-45deg) }
+                
+                &:hover {
+                  color: transparent;
+                  transform: rotate(180deg);
+                }
+            }
+              picture {
+                img {
+                  width: 100%;
+                  height: 200px;
+                }
+              }
+            }
+          }
+        }
       }
+
+
+
+
     }
 
     aside {
@@ -99,16 +180,30 @@
       .listings-wrapper {
         padding: 10px;
         height: 100%;
+        width: 100%;
         overflow-y: scroll;
 
         .item-listing {
           min-height: 192px;
-          box-shadow: 0 4px 3px 0 rgb(0 0 0 / 5%);
+          width: 100% !important;
+
           color: #383938;
           width: 100%;
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 5px;
+          gap: 10px;
+
+          &:hover, &.active { 
+            background: #dfdfdf;
+          //  box-shadow: 0 14px 20px 10px rgb(0 0 0 / 25%);
+            z-index:99;
+          }
+          
+          a {
+            img {
+              height: 100%;
+            }
+          }
 
           .listing-info {
             > * {
