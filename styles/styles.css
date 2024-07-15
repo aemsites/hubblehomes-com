@@ -1,3 +1,5 @@
+/* stylelint-disable selector-id-pattern  */
+
 @layer reset, theme, layout, templates;
 
 /*
@@ -223,6 +225,20 @@
     width: 100%;
   }
 
+  #news--inspiration {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  #news--inspiration em {
+    color: var(--yellow);
+  }
+
+  #whats-new-stay-in-the-know {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
   /* sections */
   main > .section > * {
     max-width: 1200px;
@@ -255,20 +271,28 @@
   }
 
   .section.yellow {
+    background-color: var(--yellow);
+    margin-bottom: 20px;
+    padding: 20px;
+  }
+
+  .section.yellow .default-content-wrapper {
+    max-width: 100%;
     text-align: center;
     padding: 10px 0;
     background-color: var(--yellow);
     margin-bottom: 20px;
-
-    h2 {
-      color: var(--blue);
-      font-weight: 700;
-    }
   }
 
-  .section.yellow .default-content-wrapper {
-    font-size: 16px;
-    padding: 30px;
+  .section.yellow .default-content-wrapper h2 {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--blue);
+  }
+
+  .section.yellow .default-content-wrapper p {
+    font-size: 14px;
+    margin: 0 0 10px;
   }
 
   .btn-primary {
@@ -313,4 +337,43 @@ main > .section > *:not(.carousel-wrapper) {
     padding: 0 10px;
   }
 }
+
+@media (min-width: 600px) {
+  .section.yellow {
+    padding: 25px;
+  }
+
+  .section.yellow .default-content-wrapper {
+    padding: 25px;
+  }
+
+  .section.yellow .default-content-wrapper h2 {
+    font-size: 32px;
+  }
+
+  .section.yellow .default-content-wrapper p {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 900px) {
+  .section.yellow {
+    padding: 30px;
+  }
+
+  .section.yellow .default-content-wrapper {
+    max-width: 975px;
+    margin: 0 auto;
+    padding: 30px;
+  }
+
+  .section.yellow .default-content-wrapper h2 {
+    font-size: 36px;
+  }
+
+  .section.yellow .default-content-wrapper p {
+    font-size: 16px;
+  }
+}
+
 
