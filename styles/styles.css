@@ -282,11 +282,6 @@
     padding: 10px 0;
     background-color: var(--yellow);
     margin-bottom: 20px;
-
-    h2 {
-      color: var(--blue);
-      font-weight: 700;
-    }
   }
 
   .section.yellow .default-content-wrapper h2 {
