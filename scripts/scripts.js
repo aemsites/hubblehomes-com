@@ -232,8 +232,6 @@ async function loadEager(doc) {
   } catch (e) {
     // do nothing
   }
-
-  // handleTopBanner();
 }
 
 /**
