@@ -138,31 +138,24 @@ export async function loadTemplate(doc, templateName) {
 }
 
 function handleTopBanner(topBanner) {
-  document.body.classList.add('has-top-banner');
-  document.body.style.paddingTop = `${topBanner.offsetHeight}px`;
+  if (topBanner && !topBanner.classList.contains('dismissed')) {
+    const header = document.querySelector('header');
+    const bannerHeight = topBanner.offsetHeight;
 
-  const header = document.querySelector('header');
-  if (header) {
-    header.style.top = `${topBanner.offsetHeight}px`;
-  }
+    document.body.classList.add('has-top-banner');
+    document.body.style.paddingTop = `${bannerHeight}px`;
 
-  const closeButton = topBanner.querySelector('.top-banner-close');
-  if (closeButton) {
-    closeButton.addEventListener('click', () => {
-      const header = document.querySelector('header');
-      const bannerHeight = topBanner.offsetHeight;
+    if (header) {
+      header.style.top = `${bannerHeight}px`;
+    }
+  } else {
+    document.body.classList.remove('has-top-banner');
+    document.body.style.paddingTop = '0';
 
-      topBanner.classList.add('dismissed');
-      document.body.classList.remove('has-top-banner');
-      document.body.style.paddingTop = '0';
-      if (header) {
-        header.style.top = `${bannerHeight}px`; 
-      }
-      setTimeout(() => {
-        topBanner.remove();
-      }, 300); // 300ms matches the transition duration in CSS
-      sessionStorage.setItem('topBannerDismissed', 'true');
-    });
+    const header = document.querySelector('header');
+    if (header) {
+      header.style.top = '0';
+    }
   }
 }
 
