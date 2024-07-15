@@ -1,30 +1,12 @@
-/* eslint-disable function-paren-newline, object-curly-newline */
 import {
-  a,
-  div,
-  form,
-  img,
-  input,
-  label,
-  nav,
-  span,
-  waitForElement,
+  a, div, form, img, input, label, nav, span, waitForElement,
 } from '../../scripts/dom-helpers.js';
-import { loadFragment } from '../fragment/fragment.js';
 import {
-  getCommunitiesSheet,
-  getStaffSheet,
-  getModelsSheet,
-  getInventorySheet,
+  getCommunitiesSheet, getStaffSheet, getModelsSheet, getInventorySheet,
 } from '../../scripts/workbook.js';
 import {
-  formatCommunities,
-  formatStaff,
-  formatModels,
-  formatInventory,
-  throttle,
+  formatCommunities, formatStaff, formatModels, formatInventory, throttle,
 } from '../../scripts/search-helper.js';
-import { createOptimizedPicture } from '../../scripts/aem.js';
 
 const $body = document.body;
 
@@ -56,75 +38,33 @@ async function buildNav() {
       if (!$nav.contains(e.target)) closeDropdown($nav);
     });
 
-    // 2nd level lis - build right column fragment
-    const l2LIs = $nav.querySelectorAll('li > ul > li');
-    l2LIs.forEach(async (li) => {
-      if (li.textContent.includes('RIGHT-COLUMN:')) {
-        const link = li.querySelector('a');
-        if (link) {
-          const href = link.getAttribute('href');
-          const rColFrag = await loadFragment(href);
-          if (rColFrag) {
-            const $rCol = div({ class: 'r-col' });
-            while (rColFrag.firstElementChild) {
-              const $rColContent = rColFrag.firstElementChild;
-
-              // optimize pic
-              $rColContent.querySelectorAll('picture').forEach((pic) => {
-                const image = pic.querySelector('img');
-                const opt = createOptimizedPicture(image.src, 'alt', true, [
-                  { width: '240' },
-                ]);
-                pic.replaceWith(opt);
-              });
-
-              $rColContent.querySelectorAll('a').forEach((aEl) => {
-                aEl.classList.remove('fancy');
-                aEl.classList.add('yellow');
-                aEl.classList.add('btn');
-              });
-
-              $rCol.append($rColContent);
-            }
-            li.parentNode.append($rCol);
-          } else {
-            // eslint-disable-next-line no-console
-            console.error('Failed to load login fragment.');
-          }
+    // Remove any text nodes that are direct children of <ul> elements
+    $nav.querySelectorAll('ul').forEach((ul) => {
+      ul.childNodes.forEach((node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          node.remove();
         }
-        li.remove();
-      }
+      });
     });
 
     $header.append($nav);
   }
 }
 
-/**
- * Sets up the autocomplete functionality for the search input.
- * @returns {Promise<void>}
- */
-/**
- * Sets up the autocomplete functionality for the search input.
- * @returns {Promise<void>}
- */
 async function setupAutocomplete() {
   const searchInput = await waitForElement('#navSearch');
   const autocompleteList = await waitForElement('#autocomplete-list');
 
-  // Fetch data from various sheets
   const communityResult = await getCommunitiesSheet();
   const staffResult = await getStaffSheet();
   const modelResult = await getModelsSheet();
   const inventoryResult = await getInventorySheet();
 
-  // Format the data for autocomplete
   const communityData = formatCommunities(communityResult.data);
   const staffData = formatStaff(staffResult.data);
   const modelData = formatModels(modelResult.data);
   const inventoryData = formatInventory(inventoryResult.data);
 
-  // Combine all formatted data
   const allSuggestions = [
     ...communityData,
     ...staffData,
@@ -149,7 +89,7 @@ async function setupAutocomplete() {
       });
       autocompleteList.appendChild(item);
     });
-  }, 200); // Adjust the throttle limit as needed
+  }, 200);
 
   searchInput.addEventListener('input', handleInput);
 
@@ -175,15 +115,6 @@ export default async function decorate(block) {
       height: '56',
       alt: 'Hubble Homes, LLC',
     }),
-  );
-
-  const $promo = a(
-    {
-      id: 'promo',
-      href: '/promotions/promotions-detail/quick-move-ins',
-    },
-    '$25K Your Way | Quick Move-Ins',
-    span('Get Details'),
   );
 
   const $search = form(
@@ -236,7 +167,7 @@ export default async function decorate(block) {
 
   const $bgrBtn = div({ class: 'bgr-btn' }, span(), span(), span());
   $bgrBtn.addEventListener('click', () => {
-    const navTransitionTime = 600; // match css -> nav>div
+    const navTransitionTime = 600;
     if (!$body.classList.contains('mobile-nav-open')) {
       $body.classList.add('mobile-nav-open');
       setTimeout(() => {
@@ -250,5 +181,5 @@ export default async function decorate(block) {
   buildNav();
   setupAutocomplete();
 
-  block.append($logo, $promo, $search, $phone, $chat, $bgrBtn);
+  block.append($logo, $search, $phone, $chat, $bgrBtn);
 }
