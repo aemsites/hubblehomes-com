@@ -15,31 +15,12 @@ header * {
   font-size: 16px;
 }
 
-header nav a {
-  display: block;
+body.has-top-banner header {
+  top: 45px;
 }
 
-
-header nav > div > ul > li > ul > li a {
-  padding: 5px 15px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  color: #fff;
-  display: block;
-}
-
-/* headings */
-header nav > div > ul > li > ul > li > a {
-  font-size: 1.1em;
-  font-weight: 600;
-  color: var(--yellow);
-  text-wrap: nowrap;
-}
-
-header nav > div > ul > li > ul > li:not(:has(> ul)) > a,
-header nav > div > ul > li > ul > li > ul > li > a {
-  font-weight: 400 !important;
-  color: #fff;
+body.has-top-banner .bgr-btn {
+  bottom: 20px;
 }
 
 .header a {
@@ -348,6 +329,7 @@ header nav .r-col p:not(:first-child) picture img {
   border: 1px solid #ddd;
   border-radius: 6px;
   box-sizing: content-box;
+  z-index: 1001;
 }
 
 .bgr-btn span {
@@ -378,17 +360,14 @@ header nav .r-col p:not(:first-child) picture img {
   }
 
   header nav {
-    inset: var(--nav-height) 0 0 0;
-    position: fixed;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    top: var(--nav-height);
+    left: 0;
   }
 
   header nav > div {
     position: absolute;
     inset: 0;
-    height: auto;
-    max-height: 0; /* start with 0 height */
+    height: 0;
     width: 100vw;
     padding: 0 20px;
     overflow: hidden;
@@ -399,7 +378,7 @@ header nav .r-col p:not(:first-child) picture img {
   .mobile-nav-open {
     position: fixed;
     overflow-y: scroll;
-  }
+  } /* disable content scrolling */
 
   .mobile-nav-open nav > div {
     height: 100vh;
@@ -411,8 +390,6 @@ header nav .r-col p:not(:first-child) picture img {
 
   header nav > div > ul {
     height: 840px; /* max height with items expanded - revisit to make fluid */
-    height: auto;
-    padding-bottom: 50px;
   }
 
   /* top level */

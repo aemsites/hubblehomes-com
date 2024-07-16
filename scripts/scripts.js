@@ -154,7 +154,7 @@ function handleTopBanner(topBanner) {
 
     const header = document.querySelector('header');
     if (header) {
-      header.style.top = '0';
+      header.style.top = '';
     }
   }
 }

@@ -1,7 +1,6 @@
 .top-banner {
     background-color: var(--light-blue);
     color: var(--dark-blue);
-    transition: max-height 0.5s ease-out, opacity 0.5s ease-out, visibility 0.5s ease-out;
     max-height: 60px;
     opacity: 1;
     overflow: hidden;
@@ -73,22 +72,19 @@
   .top-banner-close::before {
     content: "\00D7"; /* Unicode for multiplication sign, looks like an "x" */
   }
-  
-  body {
-    transition: padding-top 0.5s ease-out;
-  }
-
-  header {
-    transition: top 0.5s ease-out;
-  }
 
   body.has-top-banner {
-    padding-top: 48px;
+    padding-top: 46px;
+    transition: padding-top 0s;
   }
-  
+
   body.has-top-banner .top-banner {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
+  }
+
+  body:not(.has-top-banner) {
+    padding-top: 0;
   }

@@ -1,6 +1,16 @@
 import { readBlockConfig } from '../../scripts/aem.js';
 import { div, a, button } from '../../scripts/dom-helpers.js';
 
+
+function resetHeaderPosition() {
+  const header = document.querySelector('header');
+  const body = document.querySelector('body');
+  if (header) {
+    header.style.top = '';
+    body.style.paddingTop = '';
+  }
+}
+
 export default function decorate(block) {
   const config = readBlockConfig(block);
   const variant = config.variant || '';
@@ -39,28 +49,14 @@ export default function decorate(block) {
   if (variant === 'dismissible') {
     closeButton = button({ class: 'top-banner-close', 'aria-label': 'Close banner' });
     closeButton.addEventListener('click', () => {
-      const bannerHeight = block.offsetHeight;
-
-      block.style.maxHeight = `${bannerHeight}px`;
-      // Force a reflow
-      block.offsetHeight; // eslint-disable-line no-unused-expressions
-
       block.classList.add('dismissed');
       document.body.classList.remove('has-top-banner');
-
-      document.body.style.paddingTop = '0';
-      const header = document.querySelector('header');
-      if (header) {
-        header.style.top = '0';
-      }
-
-      // Remove the inline max-height after the transition
-      setTimeout(() => {
-        block.style.maxHeight = '';
-      }, 500); // 500ms matches the transition duration in CSS
-
+      resetHeaderPosition();
+      block.remove();
       // Set a flag in sessionStorage
       sessionStorage.setItem('topBannerDismissed', 'true');
+      // Force a reflow =
+      void document.body.offsetHeight;
     });
   }
 
