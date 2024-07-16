@@ -15,6 +15,14 @@ header * {
   font-size: 16px;
 }
 
+body.has-top-banner header {
+  top: 45px;
+}
+
+body.has-top-banner .bgr-btn {
+  bottom: 20px;
+}
+
 .header a {
   text-decoration: none !important;
 }
@@ -321,6 +329,7 @@ header nav .r-col p:not(:first-child) picture img {
   border: 1px solid #ddd;
   border-radius: 6px;
   box-sizing: content-box;
+  z-index: 1001;
 }
 
 .bgr-btn span {
