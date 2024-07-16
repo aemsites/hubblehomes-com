@@ -7,10 +7,10 @@ import {
 import { createTemplateBlock, safeAppend } from '../../scripts/block-helper.js';
 import { loadWorkbook } from '../../scripts/workbook.js';
 import { getHomePlanByPath } from '../../scripts/home-plans.js';
-import { getInventoryHomesByCommunities } from '../../scripts/inventory.js';
 import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
 import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
 import { loadRates } from '../../scripts/mortgage.js';
+import { getInventoryHomeModelByCommunities } from '../../scripts/inventory.js';
 
 async function fetchRequiredPageData() {
   await loadWorkbook();
@@ -38,7 +38,7 @@ async function buildInventoryCards(inventoryHomes, community) {
 }
 
 async function buildAccordion(model) {
-  const homesByCommunity = await getInventoryHomesByCommunities(model);
+  const homesByCommunity = await getInventoryHomeModelByCommunities(model);
   if (Object.keys(homesByCommunity).length === 0) {
     return undefined;
   }

@@ -314,9 +314,9 @@ async function createCommunityInventoryMap() {
 function getHeaderTitleForFilter(filterStr) {
   const filter = filters.find((f) => f.value === filterStr);
   if (!filter) {
-    return filters[0].headerTitle;
+    return 'All New Home Listings';
   }
-  return filter.headerTitle || filters[0].headerTitle;
+  return filter.headerTitle || 'All New Home Listings';
 }
 
 /**
@@ -349,7 +349,12 @@ async function getInventoryHomesForCommunity(community, filterStr) {
   return Promise.resolve(filteredItems);
 }
 
-async function getInventoryHomesByCommunities(modelName) {
+/**
+ * Retrieves inventory homes by model name and groups them by community.
+ * @param modelName
+ * @returns {Promise<*>}
+ */
+async function getInventoryHomeModelByCommunities(modelName) {
   const inventory = await getInventoryData();
   const filteredInventory = inventory.filter((home) => home['model name'] === modelName);
 
@@ -390,7 +395,7 @@ async function getInventoryHomeByPath(path) {
 export {
   getAllInventoryHomes,
   getInventoryHomesForCommunity,
-  getInventoryHomesByCommunities,
+  getInventoryHomeModelByCommunities,
   getInventoryHomeByPath,
   getHeaderTitleForFilter,
   filters,
