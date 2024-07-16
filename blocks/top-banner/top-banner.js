@@ -1,7 +1,6 @@
 import { readBlockConfig } from '../../scripts/aem.js';
 import { div, a, button } from '../../scripts/dom-helpers.js';
 
-
 function resetHeaderPosition() {
   const header = document.querySelector('header');
   const body = document.querySelector('body');
@@ -56,7 +55,7 @@ export default function decorate(block) {
       // Set a flag in sessionStorage
       sessionStorage.setItem('topBannerDismissed', 'true');
       // Force a reflow =
-      void document.body.offsetHeight;
+      document.body.offsetHeight; // eslint-disable-line no-unused-expressions
     });
   }
 
