@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define, object-curly-newline, function-paren-newline */
-import { div, ul, li, button } from '../../scripts/dom-helpers.js';
+import { div, ul, li, button, img } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
 let isAuto;
@@ -127,9 +127,95 @@ function decorateSlideContent(col) {
   return frag;
 }
 
+function createGalleryButton() {
+  const button = document.createElement('button');
+  button.classList.add('gallery-button');
+  
+  const icon = document.createElement('img');
+  icon.src = '/icons/gallery.svg';
+  icon.alt = 'Gallery icon';
+  
+  const text = document.createElement('span');
+  text.textContent = 'Gallery';
+  
+  button.appendChild(icon);
+  button.appendChild(text);
+  
+  return button;
+}
+
+function getItemClasses(index) {
+  const position = index % 9;
+  if (position === 2 || position === 6) {
+    return ['large'];
+  } else {
+    return ['small'];
+  }
+}
+
+function createGallery(block) {
+  const gallery = div({ class: 'gallery' });
+  const closeButton = button({ class: 'gallery-close' }, 'Close');
+  closeButton.addEventListener('click', () => {
+    gallery.classList.remove('active');
+  });
+
+  const galleryContent = div({ class: 'gallery-content' });
+
+  const slides = block.querySelectorAll('.slide');
+  console.log('Total slides:', slides.length);
+
+  slides.forEach((slide, i) => {
+    const picture = slide.querySelector('.slide-image picture');
+    if (picture) {
+      const galleryItem = div({ class: 'gallery-item' });
+      const clonedPicture = picture.cloneNode(true);
+      
+      const img = clonedPicture.querySelector('img');
+      if (img) {
+        img.removeAttribute('loading');
+      }
+      
+      galleryItem.appendChild(clonedPicture);
+      
+      const classes = getItemClasses(i);
+      classes.forEach(cls => galleryItem.classList.add(cls));
+      
+      galleryItem.addEventListener('click', () => {
+        createImageOverlay(img.src);
+      });
+      
+      galleryContent.appendChild(galleryItem);
+    }
+  });
+
+  gallery.appendChild(closeButton);
+  gallery.appendChild(galleryContent);
+
+  return gallery;
+}
+
+function createImageOverlay(src) {
+  const overlay = div({ class: 'image-overlay' });
+  const img = document.createElement('img');
+  img.src = src;
+  
+  const closeButton = button({ class: 'overlay-close' }, 'Close');
+  closeButton.addEventListener('click', () => {
+    document.body.removeChild(overlay);
+  });
+  
+  overlay.appendChild(img);
+  overlay.appendChild(closeButton);
+  document.body.appendChild(overlay);
+}
+
 function createSlide(row, i) {
   const isFirst = i === 1;
   const $slide = li({ 'data-slide-index': i, class: `slide ${isFirst ? 'active' : ''}` });
+
+  // Create a wrapper for the slide content
+  const $slideWrapper = div({ class: 'slide-wrapper' });
 
   row.querySelectorAll(':scope > div').forEach((col, c) => {
     // decorate image
@@ -145,16 +231,19 @@ function createSlide(row, i) {
         ];
         col.innerHTML = '';
         col.append(createOptimizedPicture(img.src, img.alt || `slide ${c}`, true, imgSizes));
-        $slide.append(col);
+        $slideWrapper.append(col);
       }
     }
     // decorate content
     if (c === 1) {
       // use default content if col is empty
       const content = (col.textContent === '' && defaultContent !== undefined) ? defaultContent.cloneNode(true) : decorateSlideContent(col);
-      $slide.append(content);
+      $slideWrapper.append(content);
     }
   });
+
+  $slide.appendChild($slideWrapper);
+
   return $slide;
 }
 
@@ -171,6 +260,7 @@ export default async function decorate(block) {
   block.setAttribute('aria-roledescription', 'Carousel');
 
   const rows = block.querySelectorAll(':scope > div');
+  console.log('Rows found:', rows.length);
   const isMultiple = rows.length > 2;
   const $slides = ul({ class: 'slides' });
 
@@ -203,8 +293,29 @@ export default async function decorate(block) {
     $container.append(div({ class: 'btns' }, $prev, $next));
   }
 
+  // Create and add gallery
+  const gallery = createGallery(block);
+  console.log('Gallery created');
+
+  // Create and add gallery button
+  const galleryButton = createGalleryButton();
+  $container.appendChild(galleryButton);
+
   block.innerHTML = '';
   block.append($container);
+
+  // Add click event to gallery button
+  galleryButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    
+    // Create gallery dynamically when button is clicked
+    const gallery = createGallery(block);
+    block.appendChild(gallery);
+    
+    gallery.classList.add('active');
+    console.log('Gallery opened');
+  });
 
   // auto slide functionality
   if (isAuto && isMultiple) initAuto(block);
