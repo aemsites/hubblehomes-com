@@ -25,6 +25,9 @@ indices:
       - '/**'
     exclude:
       - '/drafts/**'
+      - '/footer'
+      - '/fragments/**'
+      - '/nav/**'
     target: /data/page-index.json
     properties:
       pageName:
