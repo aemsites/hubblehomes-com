@@ -28,6 +28,7 @@ indices:
       - '/footer'
       - '/fragments/**'
       - '/nav/**'
+      - '/news/news-hero'
     target: /data/page-index.json
     properties:
       pageName:
