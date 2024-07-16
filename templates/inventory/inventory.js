@@ -14,7 +14,7 @@ import {
 import { createTemplateBlock, safeAppend } from '../../scripts/block-helper.js';
 import {
   getInventoryHomeByPath,
-  getInventoryHomesByCommunities,
+  getInventoryHomeModelByCommunities,
 } from '../../scripts/inventory.js';
 import { loadRates, calculateMonthlyPayment } from '../../scripts/mortgage.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
@@ -53,7 +53,7 @@ async function buildInventoryCards(inventoryHomes, community) {
 }
 
 async function buildAccordion(model) {
-  const homesByCommunity = await getInventoryHomesByCommunities(model);
+  const homesByCommunity = await getInventoryHomeModelByCommunities(model);
   const content = [];
 
   const communityName = Object.keys(homesByCommunity);

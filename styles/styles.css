@@ -247,14 +247,14 @@
   /**
     Grey divider used for section titles.
    */
-  .section div.grey-divider {
+  div.grey-divider {
     background-color: var(--grey-bar);
     color: var(--link-color);
-    padding: 10px;
+    padding: 10px !important;
     text-align: center;
     font-size: 28px;
     font-weight: 600;
-    margin: 20px 0;
+    margin: 20px 0 !important;
   }
 
   @media (width >= 900px) {
