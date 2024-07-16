@@ -29,16 +29,11 @@ header * {
 /* phone */
 a#phone {
   position: absolute;
-  top: 8px;
-  left: 170px;
   color: var(--link-light-gray);
   font-size: 1em;
   font-weight: 600;
   transition: all 0.3s ease-in-out;
   line-height: 0.9em;
-}
-
-a#phone {
   top: 0;
   left: 764px;
   padding: 8px;
