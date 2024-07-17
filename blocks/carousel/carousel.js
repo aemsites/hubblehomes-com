@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define, object-curly-newline, function-paren-newline */
-import { div, ul, li, button, img } from '../../scripts/dom-helpers.js';
+import { div, ul, li, button } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
 let isAuto;
@@ -10,6 +10,8 @@ let isInitialLoad = true;
 const initialLoadDelay = 4000;
 let defaultContent;
 let isAnimating = false;
+let galleryImages = [];
+let currentIndex = 0;
 
 function showSlide(block, dir) {
   // wait till current animation is compeleted
@@ -165,24 +167,27 @@ function createGallery(block) {
   const slides = block.querySelectorAll('.slide');
   console.log('Total slides:', slides.length);
 
+  galleryImages = []; // Reset the array
+
   slides.forEach((slide, i) => {
     const picture = slide.querySelector('.slide-image picture');
     if (picture) {
       const galleryItem = div({ class: 'gallery-item' });
-      const clonedPicture = picture.cloneNode(true);
+      const img = picture.querySelector('img');
       
-      const img = clonedPicture.querySelector('img');
       if (img) {
-        img.removeAttribute('loading');
+        // Use the original image instead of createOptimizedPicture
+        const clonedPicture = picture.cloneNode(true);
+        galleryItem.appendChild(clonedPicture);
+        
+        galleryImages.push({ src: img.src, alt: img.alt });
       }
-      
-      galleryItem.appendChild(clonedPicture);
       
       const classes = getItemClasses(i);
       classes.forEach(cls => galleryItem.classList.add(cls));
       
       galleryItem.addEventListener('click', () => {
-        createImageOverlay(img.src);
+        createImageOverlay(i);
       });
       
       galleryContent.appendChild(galleryItem);
@@ -191,24 +196,68 @@ function createGallery(block) {
 
   gallery.appendChild(closeButton);
   gallery.appendChild(galleryContent);
-
   return gallery;
 }
 
-function createImageOverlay(src) {
+function navigateOverlay(direction) {
+  currentIndex = (currentIndex + direction + galleryImages.length) % galleryImages.length;
+  
+  const overlay = document.querySelector('.image-overlay');
+  const content = overlay.querySelector('.image-overlay-content');
+  const oldPicture = content.querySelector('picture');
+  
+  const newOptimizedPicture = createOptimizedPicture(
+    galleryImages[currentIndex].src, 
+    galleryImages[currentIndex].alt, 
+    false, 
+    [
+      { width: '1200' },
+      { width: '1600' },
+      { width: '2000' },
+    ]
+  );
+  
+  content.replaceChild(newOptimizedPicture, oldPicture);
+}
+
+function createImageOverlay(index) {
+  currentIndex = index; // Set the initial index
   const overlay = div({ class: 'image-overlay' });
-  const img = document.createElement('img');
-  img.src = src;
+  const content = div({ class: 'image-overlay-content' });
+  
+  const optimizedPicture = createOptimizedPicture(
+    galleryImages[index].src, 
+    galleryImages[index].alt, 
+    false, 
+    [
+      { width: '1200' },
+      { width: '1600' },
+      { width: '2000' },
+    ]
+  );
   
   const closeButton = button({ class: 'overlay-close' }, 'Close');
   closeButton.addEventListener('click', () => {
     document.body.removeChild(overlay);
   });
   
-  overlay.appendChild(img);
+  const btnsContainer = div({ class: 'btns' });
+  const prevButton = button({ class: 'prev', 'aria-label': 'Previous Image' });
+  const nextButton = button({ class: 'next', 'aria-label': 'Next Image' });
+  
+  prevButton.addEventListener('click', () => navigateOverlay(-1));
+  nextButton.addEventListener('click', () => navigateOverlay(1));
+  
+  btnsContainer.appendChild(prevButton);
+  btnsContainer.appendChild(nextButton);
+  
+  content.appendChild(optimizedPicture);
+  content.appendChild(btnsContainer);
+  overlay.appendChild(content);
   overlay.appendChild(closeButton);
   document.body.appendChild(overlay);
 }
+
 
 function createSlide(row, i) {
   const isFirst = i === 1;
@@ -293,10 +342,6 @@ export default async function decorate(block) {
     $container.append(div({ class: 'btns' }, $prev, $next));
   }
 
-  // Create and add gallery
-  const gallery = createGallery(block);
-  console.log('Gallery created');
-
   // Create and add gallery button
   const galleryButton = createGalleryButton();
   $container.appendChild(galleryButton);
@@ -309,7 +354,6 @@ export default async function decorate(block) {
     e.stopPropagation();
     e.preventDefault();
     
-    // Create gallery dynamically when button is clicked
     const gallery = createGallery(block);
     block.appendChild(gallery);
     
