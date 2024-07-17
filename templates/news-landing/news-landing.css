@@ -31,17 +31,14 @@
   .card {
     display: flex;
     margin: 0 30px 40px 0;
-    
+
     .thumb {
       min-width: 190px;
       font-size: 0;
-      
-      img { 
-        display: block;
-        aspect-ratio: 1/1;
-        background: gray;
-      }
 
+      img {
+        width: 100%;
+      }
     }
 
     .info {
@@ -77,7 +74,7 @@
     margin-left: -1px;
     color: #428bca;
     background: #fff;
-    border: 1px solid #ddd !important;    
+    border: 1px solid #ddd !important;
     border-radius: 0;
     cursor: pointer;
 

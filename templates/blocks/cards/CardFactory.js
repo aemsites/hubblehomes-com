@@ -4,24 +4,23 @@ import InventoryCard from './InventoryCard.js';
 import CommunityCard from './CommunityCard.js';
 
 class CardFactory {
-  static createCard(classList, data, community) {
-    if (classList.contains('featured')) {
-      return new FeaturedCard(data, community);
+  static createCard(cardType, data, community) {
+    let type = cardType;
+    if (cardType instanceof DOMTokenList) {
+      type = ['featured', 'home-plans', 'inventory', 'community'].find((t) => cardType.contains(t))
+        || 'community';
     }
 
-    if (classList.contains('home-plans')) {
-      return new HomePlansCard(data, community);
+    switch (type) {
+      case 'featured':
+        return new FeaturedCard(data, community);
+      case 'home-plans':
+        return new HomePlansCard(data, community);
+      case 'inventory':
+        return new InventoryCard(data, community);
+      default:
+        return new CommunityCard(data, community);
     }
-
-    if (classList.contains('inventory')) {
-      return new InventoryCard(data, community);
-    }
-
-    if (classList.contains('community')) {
-      return new CommunityCard(data, community);
-    }
-
-    return undefined;
   }
 }
 
