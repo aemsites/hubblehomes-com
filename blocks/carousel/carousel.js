@@ -232,14 +232,12 @@ export default async function decorate(block) {
     $container.append(div({ class: 'btns' }, $prev, $next));
   }
 
-  // Create and add gallery button
   const galleryButton = createGalleryButton();
   $container.appendChild(galleryButton);
 
   block.innerHTML = '';
   block.append($container);
 
-  // Add click event to gallery button
   galleryButton.addEventListener('click', (e) => {
     e.stopPropagation();
     e.preventDefault();
