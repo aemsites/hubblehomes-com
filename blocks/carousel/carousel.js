@@ -1,6 +1,6 @@
-/* eslint-disable no-use-before-define, object-curly-newline, function-paren-newline */
 import { div, ul, li, button } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import { initGallery } from '../../scripts/gallery.js';
 
 let isAuto;
 let autoInterval;
@@ -10,11 +10,9 @@ let isInitialLoad = true;
 const initialLoadDelay = 4000;
 let defaultContent;
 let isAnimating = false;
-let galleryImages = [];
-let currentIndex = 0;
 
 function showSlide(block, dir) {
-  // wait till current animation is compeleted
+  // wait till current animation is completed
   if (isAnimating) return;
   isAnimating = true;
   const nextSlideIndex = parseInt(block.dataset.activeSlide, 10) + dir;
@@ -146,119 +144,6 @@ function createGalleryButton() {
   return button;
 }
 
-function getItemClasses(index) {
-  const position = index % 9;
-  if (position === 2 || position === 6) {
-    return ['large'];
-  } else {
-    return ['small'];
-  }
-}
-
-function createGallery(block) {
-  const gallery = div({ class: 'gallery' });
-  const closeButton = button({ class: 'gallery-close' }, 'Close');
-  closeButton.addEventListener('click', () => {
-    gallery.classList.remove('active');
-  });
-
-  const galleryContent = div({ class: 'gallery-content' });
-
-  const slides = block.querySelectorAll('.slide');
-  console.log('Total slides:', slides.length);
-
-  galleryImages = []; // Reset the array
-
-  slides.forEach((slide, i) => {
-    const picture = slide.querySelector('.slide-image picture');
-    if (picture) {
-      const galleryItem = div({ class: 'gallery-item' });
-      const img = picture.querySelector('img');
-      
-      if (img) {
-        // Use the original image instead of createOptimizedPicture
-        const clonedPicture = picture.cloneNode(true);
-        galleryItem.appendChild(clonedPicture);
-        
-        galleryImages.push({ src: img.src, alt: img.alt });
-      }
-      
-      const classes = getItemClasses(i);
-      classes.forEach(cls => galleryItem.classList.add(cls));
-      
-      galleryItem.addEventListener('click', () => {
-        createImageOverlay(i);
-      });
-      
-      galleryContent.appendChild(galleryItem);
-    }
-  });
-
-  gallery.appendChild(closeButton);
-  gallery.appendChild(galleryContent);
-  return gallery;
-}
-
-function navigateOverlay(direction) {
-  currentIndex = (currentIndex + direction + galleryImages.length) % galleryImages.length;
-  
-  const overlay = document.querySelector('.image-overlay');
-  const content = overlay.querySelector('.image-overlay-content');
-  const oldPicture = content.querySelector('picture');
-  
-  const newOptimizedPicture = createOptimizedPicture(
-    galleryImages[currentIndex].src, 
-    galleryImages[currentIndex].alt, 
-    false, 
-    [
-      { width: '1200' },
-      { width: '1600' },
-      { width: '2000' },
-    ]
-  );
-  
-  content.replaceChild(newOptimizedPicture, oldPicture);
-}
-
-function createImageOverlay(index) {
-  currentIndex = index; // Set the initial index
-  const overlay = div({ class: 'image-overlay' });
-  const content = div({ class: 'image-overlay-content' });
-  
-  const optimizedPicture = createOptimizedPicture(
-    galleryImages[index].src, 
-    galleryImages[index].alt, 
-    false, 
-    [
-      { width: '1200' },
-      { width: '1600' },
-      { width: '2000' },
-    ]
-  );
-  
-  const closeButton = button({ class: 'overlay-close' }, 'Close');
-  closeButton.addEventListener('click', () => {
-    document.body.removeChild(overlay);
-  });
-  
-  const btnsContainer = div({ class: 'btns' });
-  const prevButton = button({ class: 'prev', 'aria-label': 'Previous Image' });
-  const nextButton = button({ class: 'next', 'aria-label': 'Next Image' });
-  
-  prevButton.addEventListener('click', () => navigateOverlay(-1));
-  nextButton.addEventListener('click', () => navigateOverlay(1));
-  
-  btnsContainer.appendChild(prevButton);
-  btnsContainer.appendChild(nextButton);
-  
-  content.appendChild(optimizedPicture);
-  content.appendChild(btnsContainer);
-  overlay.appendChild(content);
-  overlay.appendChild(closeButton);
-  document.body.appendChild(overlay);
-}
-
-
 function createSlide(row, i) {
   const isFirst = i === 1;
   const $slide = li({ 'data-slide-index': i, class: `slide ${isFirst ? 'active' : ''}` });
@@ -354,11 +239,12 @@ export default async function decorate(block) {
     e.stopPropagation();
     e.preventDefault();
     
-    const gallery = createGallery(block);
-    block.appendChild(gallery);
+    const images = Array.from(block.querySelectorAll('.slide-image img')).map(img => ({
+      src: img.src,
+      alt: img.alt
+    }));
     
-    gallery.classList.add('active');
-    console.log('Gallery opened');
+    initGallery(images);
   });
 
   // auto slide functionality
