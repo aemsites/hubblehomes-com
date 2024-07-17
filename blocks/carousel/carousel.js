@@ -1,6 +1,11 @@
-import { div, ul, li, button } from '../../scripts/dom-helpers.js';
+import {
+  div,
+  ul,
+  li,
+  button,
+} from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { initGallery } from '../../scripts/gallery.js';
+import initGallery from '../../scripts/gallery.js';
 
 let isAuto;
 let autoInterval;
@@ -128,20 +133,20 @@ function decorateSlideContent(col) {
 }
 
 function createGalleryButton() {
-  const button = document.createElement('button');
-  button.classList.add('gallery-button');
-  
+  const galleryButton = document.createElement('button');
+  galleryButton.classList.add('gallery-button');
+
   const icon = document.createElement('img');
   icon.src = '/icons/gallery.svg';
   icon.alt = 'Gallery icon';
-  
+
   const text = document.createElement('span');
   text.textContent = 'Gallery';
-  
-  button.appendChild(icon);
-  button.appendChild(text);
-  
-  return button;
+
+  galleryButton.appendChild(icon);
+  galleryButton.appendChild(text);
+
+  return galleryButton;
 }
 
 function createSlide(row, i) {
@@ -194,7 +199,6 @@ export default async function decorate(block) {
   block.setAttribute('aria-roledescription', 'Carousel');
 
   const rows = block.querySelectorAll(':scope > div');
-  console.log('Rows found:', rows.length);
   const isMultiple = rows.length > 2;
   const $slides = ul({ class: 'slides' });
 
@@ -207,7 +211,8 @@ export default async function decorate(block) {
     }
   });
 
-  const $container = div({ class: 'slides-container' },
+  const $container = div(
+    { class: 'slides-container' },
     $slides,
   );
 
@@ -238,12 +243,12 @@ export default async function decorate(block) {
   galleryButton.addEventListener('click', (e) => {
     e.stopPropagation();
     e.preventDefault();
-    
-    const images = Array.from(block.querySelectorAll('.slide-image img')).map(img => ({
+
+    const images = Array.from(block.querySelectorAll('.slide-image img')).map((img) => ({
       src: img.src,
-      alt: img.alt
+      alt: img.alt,
     }));
-    
+
     initGallery(images);
   });
 

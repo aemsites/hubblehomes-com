@@ -1,4 +1,4 @@
-/* File: blocks/carousel/carousel.css */
+/* stylelint-disable font-family-no-missing-generic-family-keyword, declaration-block-single-line-max-declarations */
 
 @import url('../../styles/gallery.css');
 
@@ -60,6 +60,12 @@
 .carousel .slide-image picture {
   position: absolute;
   inset: 0;
+}
+
+.gallery-button img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
 }
 
 .carousel .slide-image picture > img {
@@ -160,6 +166,7 @@
   border: 0;
   -webkit-tap-highlight-color: transparent;
 }
+
 .carousel .btns button.next { left: auto; right: 0; }
 
 .carousel .btns button::after {
@@ -193,7 +200,7 @@
   position: absolute;
   bottom: 20px;
   left: 20px;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgb(255 255 255 / 80%);
   border: none;
   border-radius: 20px;
   padding: 10px 20px;
@@ -205,13 +212,7 @@
 }
 
 .gallery-button:hover {
-  background: rgba(255, 255, 255, 1);
-}
-
-.gallery-button img {
-  width: 24px;
-  height: 24px;
-  margin-right: 10px;
+  background: rgb(255 255 255 / 100%);
 }
 
 .gallery-button span {
