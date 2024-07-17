@@ -234,7 +234,7 @@ export default async function decorate(doc) {
   const $mapFilter = div({ class: 'map-filter-container' },
     $toggleViewBtn,
     div({ class: 'map' },
-      a({ class: 'download', href: '#' },
+      a({ class: 'download', href: '/available-homes-report.pdf' },
         span('Download'),
         ' our ',
         strong('Available Homes List'),
