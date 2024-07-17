@@ -77,6 +77,11 @@
   &.community {
     .model-card {
       .card-tagline {
+        a {
+          color: white;
+          font-weight: normal;
+        }
+
         div:nth-child(1) {
           color: var(--yellow);
           font-weight: bold;
@@ -87,6 +92,9 @@
           color: #fff;
           font-size: inherit;
           font-weight: inherit;
+          display: flex;
+          justify-content: center;
+          gap: 20px;
         }
       }
     }

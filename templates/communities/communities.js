@@ -193,8 +193,8 @@ function buildFilterForm(filterByValue) {
     allFilters.forEach((filter) => {
       const properties = {
         value: filter.value
-          ? `${window.location.pathname}?filter=${filter.value}#plans`
-          : `${window.location.pathname}#plans`,
+          ? `${window.location.pathname}?filter=${filter.value}#inventory`
+          : `${window.location.pathname}#inventory`,
         ...(filter.selected ? { selected: true } : {}),
       };
       optionEls.push(option(properties, filter.label));
@@ -320,6 +320,7 @@ export default async function decorate(doc) {
   const modelFilter = buildFilterForm(filter);
 
   const plansAnchor = a({ id: 'plans' }, '');
+  const inventoryAnchor = a({ id: 'inventory' }, '');
   const inventoryEl = div({ class: 'section inventory' }, inventory);
   const disclaimer = doc.querySelector('.fragment-wrapper');
   const featuredPlansTitle = div({ class: 'grey-divider featured full-width' }, 'Featured Plans');
@@ -356,13 +357,13 @@ export default async function decorate(doc) {
   mainSection.append(
     leftRight,
     modelFilter,
-    plansAnchor,
     filterSectionTitle,
+    inventoryAnchor,
     inventoryEl,
   );
 
   if (hasFeaturedModels) {
-    mainSection.append(featuredPlansTitle, featuredModels);
+    mainSection.append(plansAnchor, featuredPlansTitle, featuredModels);
   }
 
   mainSection.append(

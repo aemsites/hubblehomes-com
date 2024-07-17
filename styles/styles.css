@@ -247,7 +247,7 @@
   /**
     Grey divider used for section titles.
    */
-  .section div.grey-divider {
+  div.grey-divider {
     background-color: var(--grey-bar);
     color: var(--link-color);
     padding: 10px !important;

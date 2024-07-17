@@ -6,7 +6,9 @@ import {
 } from '../../scripts/dom-helpers.js';
 import { createTemplateBlock, safeAppend } from '../../scripts/block-helper.js';
 import { loadWorkbook } from '../../scripts/workbook.js';
-import { getInventoryHomesByCommunities } from '../../scripts/inventory.js';
+import {
+  getInventoryHomeModelByCommunities,
+} from '../../scripts/inventory.js';
 import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
 import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
 import { loadRates } from '../../scripts/mortgage.js';
@@ -38,7 +40,7 @@ async function buildInventoryCards(inventoryHomes, community) {
 }
 
 async function buildAccordion(model) {
-  const homesByCommunity = await getInventoryHomesByCommunities(model);
+  const homesByCommunity = await getInventoryHomeModelByCommunities(model);
   if (Object.keys(homesByCommunity).length === 0) {
     return undefined;
   }
