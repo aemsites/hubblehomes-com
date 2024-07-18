@@ -13,7 +13,13 @@ function getCurrencyFormatter() {
  * @returns {*}
  */
 // eslint-disable-next-line import/prefer-default-export
-export function formatPrice(price) {
-  return getCurrencyFormatter()
-    .format(price);
+export function formatPrice(price, formatType = 'full') {
+  if (formatType === 'rounded') {
+    if (price >= 1000) {
+      return `${Math.round(price / 1000)}k`;
+    }
+    return `${Math.round(price)}`;
+  }
+
+  return getCurrencyFormatter().format(price);
 }

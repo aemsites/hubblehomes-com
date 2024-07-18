@@ -14,3 +14,19 @@ export default function formatTimeStamp(timestamp) {
   const year = date.getUTCFullYear();
   return `${month} ${day}, ${year}`;
 }
+
+/**
+ * Debounce function to prevent multiple calls to the same function.
+ * @param func - function to debounce
+ * @param wait - time to wait before calling function
+ * @returns {(function(...[*]): void)|*}
+ */
+export function debounce(func, wait) {
+  let timeout;
+  // eslint-disable-next-line func-names
+  return function (...args) {
+    const context = this;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(context, args), wait);
+  };
+}

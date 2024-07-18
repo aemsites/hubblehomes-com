@@ -1,4 +1,8 @@
 .communities {
+  .cards-wrapper {
+    margin-top: 30px;
+  }
+
   .actionbar-wrapper {
     flex: 0;
   }
