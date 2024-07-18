@@ -31,19 +31,14 @@ function deleteMapMarkers() {
 
 /**
  * Creates a marker pin element for a home.
- *
  * @param {Object} home - The home object.
  * @param {number} i - The index of the pin.
  * @returns {HTMLElement} - The marker pin element.
  */
 function markerPin(home, i) {
-  const $closeBtn = a({ class: 'close' });
-  $closeBtn.addEventListener('click', disableActiveHomes);
-
   return div({ class: `pin pin-${i}`, 'data-pin': i },
     span(formatPrice(home.price, 'rounded')),
     div({ class: 'details' },
-      $closeBtn,
       h4(home['model name']),
       h5(home.address),
       createOptimizedPicture(home.image),
@@ -51,6 +46,61 @@ function markerPin(home, i) {
       a({ class: 'btn yellow', href: home.path }, 'Details'),
     ),
   );
+}
+/**
+ * Checks marker position and if it's off the map moves it into view
+ * @param {number} i - The index of the active home.
+*/
+function fitMarkerWithinBounds(i) {
+  // padding around marker when moved into view
+  const padding = {
+    top: 40,
+    right: 40,
+    bottom: 60,
+    left: 40,
+  };
+
+  const markerElement = document.querySelector(`[data-pin="${i}"]`);
+  const markerRect = markerElement.getBoundingClientRect();
+  const mapContainer = document.getElementById('google-map');
+  const mapRect = mapContainer.getBoundingClientRect();
+  const { top: markerTop, left: markerLeft, right: markerRight, bottom: markerBottom } = markerRect;
+  const { top: mapTop, left: mapLeft, right: mapRight, bottom: mapBottom } = mapRect;
+
+  // calculate distances
+  const markerPXfromTop = markerTop - mapTop;
+  const markerPXfromLeft = markerLeft - mapLeft;
+  const markerPXfromRight = mapRight - markerRight;
+  const markerPXfromBottom = mapBottom - markerBottom;
+
+  let panX = 0;
+  let panY = 0;
+
+  // calculate pan amounts based on padding
+  if (markerPXfromTop < padding.top) {
+    panY = (padding.top - markerPXfromTop) * -1;
+  } else if (markerPXfromBottom < padding.bottom) {
+    panY = (padding.bottom - markerPXfromBottom);
+  }
+
+  if (markerPXfromLeft < padding.left) {
+    panX = (padding.left - markerPXfromLeft) * -1;
+  } else if (markerPXfromRight < padding.right) {
+    panX = (padding.right - markerPXfromRight);
+  }
+
+  // pan the map if needed
+  if (panX !== 0 || panY !== 0) {
+    const currentCenter = map.getCenter();
+    const projection = map.getProjection();
+    const currentCenterPX = projection.fromLatLngToPoint(currentCenter);
+
+    currentCenterPX.y += (panY / 2 ** map.getZoom());
+    currentCenterPX.x += (panX / 2 ** map.getZoom());
+
+    const newCenter = projection.fromPointToLatLng(currentCenterPX);
+    map.panTo(newCenter);
+  }
 }
 
 /**
@@ -82,14 +132,15 @@ async function addMapMarkers(inventory) {
     markers.push(marker);
     bounds.extend(new google.maps.LatLng(lat, lng));
 
-    // Note: this click listener must be added in order for any other events to work
-    marker.addListener('click', () => {
+    // Note: this empty click listener must be added in order for any other events to work
+    marker.addListener('click', () => {});
+
+    marker.content.addEventListener('click', () => {
       highlightActiveHome(i);
     });
 
-    // will not work unles above is present
-    marker.content.addEventListener('mouseover', () => {
-      highlightActiveHome(i);
+    map.addListener('click', () => {
+      resetActiveHomes();
     });
   });
 
@@ -147,7 +198,8 @@ function filterListeners() {
  * @param {number} i - The index of the active home.
  */
 function highlightActiveHome(i) {
-  disableActiveHomes();
+  resetActiveHomes();
+  // card actions
   const $card = document.querySelector(`[data-card="${i}"]`);
   $card.classList.add('active');
 
@@ -164,15 +216,17 @@ function highlightActiveHome(i) {
     $scrollContainer.scrollTop += targetTopRelativeToContainer;
   }
 
+  // pin actions
   const $pin = document.querySelector(`[data-pin="${i}"]`);
   $pin.classList.add('active');
   $pin.parentNode.parentNode.style.zIndex = '999'; // must use javascript to set/unset
+  fitMarkerWithinBounds(i);
 }
 
 /**
  * Disables active homes by removing the 'active' class from pins and item listings.
  */
-function disableActiveHomes() {
+function resetActiveHomes() {
   const allPins = document.querySelectorAll('.pin');
   allPins.forEach((pin) => {
     pin.classList.remove('active');
@@ -208,7 +262,6 @@ function buildInventoryCards(homes) {
     );
     $home.addEventListener('mouseenter', () => {
       highlightActiveHome(i);
-      map.panTo(new google.maps.LatLng(home.latitude, home.longitude));
     });
     return $home;
   });
