@@ -23,6 +23,7 @@ export default function formatTimeStamp(timestamp) {
  */
 export function debounce(func, wait) {
   let timeout;
+  // eslint-disable-next-line func-names
   return function (...args) {
     const context = this;
     clearTimeout(timeout);
