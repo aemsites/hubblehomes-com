@@ -159,8 +159,10 @@ input[type='text']::placeholder {
 /* nav */
 header nav {
   position: absolute;
-  bottom: 0;
-  left: 260px;
+  bottom: 35px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   user-select: none;
 }
 
@@ -171,10 +173,13 @@ header nav a {
 header nav ul {
   list-style: none;
   position: relative;
+  white-space: nowrap;
+
 }
 
 /* top level */
 header nav > div > ul > li {
+  color: var(--link-light-gray);
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
@@ -182,53 +187,44 @@ header nav > div > ul > li {
   height: 50px;
   padding: 0 14px;
   font-weight: 600;
-  font-size: 1em;
-  color: var(--link-light-gray);
   text-transform: uppercase;
   float: left;
-}
 
-header nav > div > ul > li:hover,
-header nav > div > ul > li.on {
-  background: var(--dark-blue);
-  color: #fff;
+  &:hover,
+  &.on {
+    background: var(--dark-blue);
+    color: #fff;
+  }
 }
 
 /* dropdown menus */
 header nav > div > ul > li > ul {
+  text-transform: none;
   display: none;
+  color: var(--yellow);
   position: absolute;
   top: 50px;
   margin-left: -14px;
-  padding: 4px 0 14px;
+  padding: 4px 14px 14px;
   background: var(--dark-blue);
   box-shadow: 0 6px 12px rgb(0 0 0 / 17%);
 }
 
+/* show the menu when the class on is set */
 header nav > div > ul > li.on > ul {
   display: block;
 }
 
+/* 2nd level styles */
 header nav > div > ul > li > ul > li {
-  text-transform: none;
-  padding: 4px 0 0;
-  font-size: 0.85em;
-  line-height: 1.6em;
-  font-weight: normal;
-}
-
-header nav > div > ul > li:nth-child(1) > ul > li {
-  width: 230px;
-}
-
-header nav > div > ul > li:nth-child(2) > ul > li {
-  width: 153px;
+  padding: 4px 0 3px;
+  font-size: 0.90em;
+  font-weight: 600;
 }
 
 header nav > div > ul > li > ul > li a {
   padding: 0 12px;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
   color: #fff;
 }
 
@@ -238,14 +234,12 @@ header nav > div > ul > li > ul > li a:hover {
 
 /* headings */
 header nav > div > ul > li > ul > li > a {
-  font-size: 1.1em;
   font-weight: 600;
   color: var(--yellow);
 }
 
 header nav>div>ul>li>ul>li>ul>li>a, /* all 3rd level links */
-header nav>div>ul>li>ul>li:not(:has(> ul)) >a /* headings w/out children */ {
-  padding-left: 20px;
+header nav>div>ul>li>ul>li:not(:has(> ul)) > a /* headings w/out children */ {
   font-weight: 400 !important;
   color: #fff;
 }
@@ -372,32 +366,28 @@ header nav .r-col p:not(:first-child) picture img {
     padding: 0 20px;
     overflow: hidden;
     background: #fff;
-    transition: all 600ms ease-in-out; /* match js -> navTransitionTime */
+    transition: height 300ms ease-in-out;
   }
 
   .mobile-nav-open {
     position: fixed;
     overflow-y: scroll;
+
+    #chat-widget-container {
+      display: none;
+    }
   } /* disable content scrolling */
 
   .mobile-nav-open nav > div {
     height: 100vh;
   }
 
-  .mobile-nav-open.done nav > div {
-    overflow: auto;
-  }
-
-  header nav > div > ul {
-    height: 840px; /* max height with items expanded - revisit to make fluid */
-  }
 
   /* top level */
   header nav > div > ul > li {
-    clear: left;
     height: auto;
     padding: 10px 0 10px 14px;
-    width: calc(100vw - 60px);
+    width: 100%;
     border-top: 1px solid #fff;
   }
 
@@ -409,33 +399,12 @@ header nav .r-col p:not(:first-child) picture img {
   header nav > div > ul > li > ul {
     position: relative;
     top: auto !important;
-    padding: 10px 0;
-    width: calc(100vw - 46px) !important;
     box-shadow: none;
   }
 
   header nav > div > ul > li.on > ul {
     border-top: 1px solid #fff;
+    padding: 10px;
     margin-top: 10px;
-  }
-
-  header nav > div > ul > li > ul > li {
-    width: auto !important;
-  }
-
-  header nav > div > ul > li:nth-child(2) > ul {
-    min-height: 420px;
-  }
-}
-
-@media (width <= 540px) {
-  header nav .r-col {
-    position: relative;
-    margin: 10px 10px 0;
-    width: auto;
-  }
-
-  header nav .r-col picture {
-    margin-left: calc((100vw - 300px) * 0.5);
   }
 }

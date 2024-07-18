@@ -157,8 +157,7 @@
   position: absolute;
   display: block;
   content: '\e079';
-  top: 50%;
-  left: 20%;
+  left: 25%;
   z-index: 3;
   width: 30px;
   height: 30px;
@@ -174,14 +173,12 @@
 .carousel .btns button:focus::after { opacity: .5 }
 .carousel .btns button:hover::after, .carousel .btns button:focus:hover::after { opacity: 1 }
 
-
-
 .carousel .btns button.next::after {
   transform: rotate(180deg);
-  left: auto;
-  right: 80px;
-}
 
+  /* minus the width of the arrow */
+  left: calc(70% - 30px)
+}
 
 @media (width <= 1920px) {
   .carousel-wrapper, .carousel {
@@ -191,7 +188,7 @@
 
 @media (width <= 800px) {
   .carousel .btns button::after { scale: 75% }
-  
+
   .carousel-wrapper, .carousel {
     aspect-ratio: unset;
   }
@@ -202,17 +199,17 @@
     padding: 14px 0;
   }
 
-  .carousel .content.top { 
-    top: auto; 
-    background: var(--dark-blue); 
+  .carousel .content.top {
+    top: auto;
+    background: var(--dark-blue);
   }
 
-  .carousel .content.top p { 
+  .carousel .content.top p {
     font-size: 18px;
   }
 
-  .carousel .content.bottom { 
-    bottom: auto; 
-    background: var(--light-blue); 
+  .carousel .content.bottom {
+    bottom: auto;
+    background: var(--light-blue);
   }
 }
