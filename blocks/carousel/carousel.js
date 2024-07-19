@@ -3,8 +3,9 @@ import {
   ul,
   li,
   button,
+  h2,
 } from '../../scripts/dom-helpers.js';
-import { createOptimizedPicture } from '../../scripts/aem.js';
+import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import initGallery from '../../scripts/gallery.js';
 
 let isAuto;
@@ -208,8 +209,16 @@ function adjustGalleryPosition() {
 }
 
 function openGallery() {
-  initGallery(galleryImages);
-  setTimeout(adjustGalleryPosition, 0);
+  const pageName = getMetadata('page-name');
+  initGallery(galleryImages, pageName);
+  setTimeout(() => {
+    adjustGalleryPosition();
+    const galleryHeader = document.querySelector('.gallery-header');
+    if (galleryHeader && pageName) {
+      const titleElement = h2({ class: 'gallery-title' }, pageName);
+      galleryHeader.insertBefore(titleElement, galleryHeader.firstChild);
+    }
+  }, 0);
 }
 
 function initializeGallery(block) {

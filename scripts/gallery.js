@@ -1,4 +1,4 @@
-import { div, button } from './dom-helpers.js';
+import { div, button, h2 } from './dom-helpers.js';
 import { createOptimizedPicture } from './aem.js';
 
 let galleryImages = [];
@@ -138,7 +138,7 @@ function createGallery(images) {
   return gallery;
 }
 
-export default function initGallery(images) {
+export default function initGallery(images, pageName) {
   const gallery = createGallery(images);
   document.body.appendChild(gallery);
   gallery.classList.add('active');
@@ -155,6 +155,12 @@ export default function initGallery(images) {
       document.body.removeChild(gallery);
     }, 300);
   });
+
+  if (pageName) {
+    const galleryHeader = gallery.querySelector('.gallery-header');
+    const titleElement = h2({ class: 'gallery-title' }, pageName);
+    galleryHeader.insertBefore(titleElement, galleryHeader.firstChild);
+  }
 
   // Adjust gallery position when top banner is present
   const adjustGalleryPosition = () => {

@@ -23,6 +23,13 @@
     max-width: 1200px;
     width: 100%;
   }
+
+  .gallery-title {
+    margin: 0;
+    font-size: var(--heading-font-size-l);
+    font-weight: bold;
+    color: var(--light-blue);
+  }
   
   .gallery-close, .overlay-close {
     background: none;
