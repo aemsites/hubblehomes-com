@@ -37,6 +37,11 @@ export default async function decorate(doc) {
     ),
   );
 
+  const $categoryList = div({ class: 'select' },
+    h3('Categories'),
+    $categoryFilter,
+  );
+
   const $newsPage = div({ class: 'section' },
     h1(doc.title),
     div({ class: 'content-wrapper' },
@@ -45,8 +50,7 @@ export default async function decorate(doc) {
         $pagination,
       ),
       aside(
-        h3('Categories'),
-        $categoryFilter,
+        $categoryList,
         hr(),
       ),
     ),
@@ -67,4 +71,25 @@ export default async function decorate(doc) {
     categoryContainer: $categoryFilter,
     categoryPath: '/news/category/',
   }).render();
+
+  function filterDropdown() {
+    if ($categoryList.classList.contains('active')) {
+      $categoryList.classList.remove('active');
+    } else {
+      $categoryList.classList.add('active');
+    }
+  }
+
+  function mobileView(event) {
+    if (event.matches) {
+      // mobile view
+      $categoryList.addEventListener('click', filterDropdown);
+    } else {
+      $categoryList.removeEventListener('click', filterDropdown);
+      $categoryList.classList.remove('active');
+    }
+  }
+  const mobileMediaQuery = window.matchMedia('(max-width: 991px)');
+  mobileMediaQuery.addEventListener('change', mobileView);
+  mobileView(mobileMediaQuery);
 }
