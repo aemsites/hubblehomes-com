@@ -3,6 +3,7 @@ import {
   ul,
   li,
   button,
+  span,
   h2,
 } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
@@ -136,20 +137,15 @@ function decorateSlideContent(col) {
 }
 
 function createGalleryButton() {
-  const galleryButton = document.createElement('button');
-  galleryButton.classList.add('gallery-button');
-
   const icon = document.createElement('img');
   icon.src = '/icons/gallery.svg';
   icon.alt = 'Gallery icon';
 
-  const text = document.createElement('span');
-  text.textContent = 'Gallery';
-
-  galleryButton.appendChild(icon);
-  galleryButton.appendChild(text);
-
-  return galleryButton;
+  return button(
+    { class: 'gallery-button' },
+    icon,
+    span({}, 'Gallery')
+  );
 }
 
 function createSlide(row, i) {
