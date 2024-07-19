@@ -13,8 +13,8 @@ let markers = [];
 
 // Sets the map on all markers in the array.
 function setAllMarkers(m) {
-  markers.forEach((marker) => {
-    marker.setMap(m);
+  markers.forEach((markerData) => {
+    markerData.marker.setMap(m);
   });
 }
 
@@ -91,13 +91,10 @@ function fitMarkerWithinBounds(marker) {
   // pan the map if needed
   if (panX !== 0 || panY !== 0) {
     const currentCenter = map.getCenter();
-    console.log('currentCenter', currentCenter);
     const projection = map.getProjection();
     const currentCenterPX = projection.fromLatLngToPoint(currentCenter);
-
     currentCenterPX.y += (panY / 2 ** map.getZoom());
     currentCenterPX.x += (panX / 2 ** map.getZoom());
-
     const newCenter = projection.fromPointToLatLng(currentCenterPX);
     map.panTo(newCenter);
   }
