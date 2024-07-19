@@ -196,13 +196,19 @@ function filterListeners() {
  * Highlights the active home card and its corresponding marker on the map.
  * @param {number} i - The index of the active home.
  */
+let isHighlighting = false;
+
 function highlightActiveHome(i) {
+  if (isHighlighting) return; // prevent re-entrant calls
+  isHighlighting = true;
+
   resetActiveHomes();
-  // card actions
+
+  // Card actions
   const $card = document.querySelector(`[data-card="${i}"]`);
   $card.classList.add('active');
 
-  // scroll card into view if it's not visible
+  // Scroll card into view if it's not visible
   const $scrollContainer = document.querySelector('.scroll-container');
   const scrollContainerRect = $scrollContainer.getBoundingClientRect();
   const activeCardRect = $card.getBoundingClientRect();
@@ -215,24 +221,26 @@ function highlightActiveHome(i) {
     $scrollContainer.scrollTop += targetTopRelativeToContainer;
   }
 
-  // marker actions
+  // Marker actions
   const $marker = document.querySelector(`[data-marker="${i}"]`);
 
   if (!$marker) {
-    // marker doesn't exist on map (user moved too far away)
-    // pan to it, then highlight it
-    const { position } = markers[i]; // retrieve stored position
+    // Marker doesn't exist on the map (user moved too far away)
+    // Pan to it, then highlight it
+    const { position } = markers[i]; // Retrieve stored position
     if (position) {
       map.panTo(position);
-      // small delay to allow marker to render
+      // Small delay to allow marker to render
       setTimeout(() => {
-        highlightActiveHome(i);
+        isHighlighting = false;
+        highlightActiveHome(i); // re-call function if needed
       }, 100);
     }
   } else {
     $marker.classList.add('active');
-    $marker.parentNode.parentNode.style.zIndex = '999'; // must use javascript to set/unset
+    $marker.parentNode.parentNode.style.zIndex = '999'; // Must use JavaScript to set/unset
     fitMarkerWithinBounds($marker);
+    isHighlighting = false; // Reset flag when done
   }
 }
 
@@ -274,7 +282,7 @@ function buildInventoryCards(homes) {
       ),
     );
 
-    const debouncedHighlight = debounce(() => highlightActiveHome(i), 100);
+    const debouncedHighlight = debounce(() => highlightActiveHome(i), 10);
 
     $home.addEventListener('mouseenter', () => {
       debouncedHighlight();
