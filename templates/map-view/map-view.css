@@ -70,7 +70,7 @@
         /* disable maps blue border */
         .gm-style iframe + div { border: none !important; }
 
-        .pin {
+        .marker {
           position: relative;
           background-color: var(--blue);
           color: var(--yellow);

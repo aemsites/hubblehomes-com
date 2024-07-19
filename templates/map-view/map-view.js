@@ -30,13 +30,13 @@ function deleteMapMarkers() {
 }
 
 /**
- * Creates a marker pin element for a home.
+ * Creates a marker marker element for a home.
  * @param {Object} home - The home object.
- * @param {number} i - The index of the pin.
- * @returns {HTMLElement} - The marker pin element.
+ * @param {number} i - The index of the marker.
+ * @returns {HTMLElement} - The marker element.
  */
-function markerPin(home, i) {
-  return div({ class: `pin pin-${i}`, 'data-pin': i },
+function createMarker(home, i) {
+  return div({ class: `marker marker-${i}`, 'data-marker': i },
     span(formatPrice(home.price, 'rounded')),
     div({ class: 'details' },
       h4(home['model name']),
@@ -51,7 +51,7 @@ function markerPin(home, i) {
  * Checks marker position and if it's off the map moves it into view
  * @param {number} i - The index of the active home.
 */
-function fitMarkerWithinBounds(i) {
+function fitMarkerWithinBounds(marker) {
   // padding around marker when moved into view
   const padding = {
     top: 60, // ensure it clears buttons
@@ -60,8 +60,7 @@ function fitMarkerWithinBounds(i) {
     left: 40,
   };
 
-  const markerElement = document.querySelector(`[data-pin="${i}"]`);
-  const markerRect = markerElement.getBoundingClientRect();
+  const markerRect = marker.getBoundingClientRect();
   const mapContainer = document.getElementById('google-map');
   const mapRect = mapContainer.getBoundingClientRect();
   const { top: markerTop, left: markerLeft, right: markerRight, bottom: markerBottom } = markerRect;
@@ -92,6 +91,7 @@ function fitMarkerWithinBounds(i) {
   // pan the map if needed
   if (panX !== 0 || panY !== 0) {
     const currentCenter = map.getCenter();
+    console.log('currentCenter', currentCenter);
     const projection = map.getProjection();
     const currentCenterPX = projection.fromLatLngToPoint(currentCenter);
 
@@ -123,13 +123,14 @@ async function addMapMarkers(inventory) {
   inventory.forEach((home, i) => {
     const lat = Number(home.latitude);
     const lng = Number(home.longitude);
+    const position = { lat, lng };
     const marker = new AdvancedMarkerElement({
       map,
-      position: { lat, lng },
-      content: markerPin(home, i),
+      position,
+      content: createMarker(home, i),
     });
 
-    markers.push(marker);
+    markers.push({ marker, position });
     bounds.extend(new google.maps.LatLng(lat, lng));
 
     // Note: this empty click listener must be added in order for any other events to work
@@ -194,7 +195,7 @@ function filterListeners() {
 }
 
 /**
- * Highlights the active home card and its corresponding pin on the map.
+ * Highlights the active home card and its corresponding marker on the map.
  * @param {number} i - The index of the active home.
  */
 function highlightActiveHome(i) {
@@ -216,21 +217,35 @@ function highlightActiveHome(i) {
     $scrollContainer.scrollTop += targetTopRelativeToContainer;
   }
 
-  // pin actions
-  const $pin = document.querySelector(`[data-pin="${i}"]`);
-  $pin.classList.add('active');
-  $pin.parentNode.parentNode.style.zIndex = '999'; // must use javascript to set/unset
-  fitMarkerWithinBounds(i);
+  // marker actions
+  const $marker = document.querySelector(`[data-marker="${i}"]`);
+
+  if (!$marker) {
+    // marker doesn't exist on map (user moved too far away)
+    // pan to it, then highlight it
+    const { position } = markers[i]; // retrieve stored position
+    if (position) {
+      map.panTo(position);
+      // small delay to allow marker to render
+      setTimeout(() => {
+        highlightActiveHome(i);
+      }, 100);
+    }
+  } else {
+    $marker.classList.add('active');
+    $marker.parentNode.parentNode.style.zIndex = '999'; // must use javascript to set/unset
+    fitMarkerWithinBounds($marker);
+  }
 }
 
 /**
- * Disables active homes by removing the 'active' class from pins and item listings.
+ * Disables active homes by removing the 'active' class from markers and item listings.
  */
 function resetActiveHomes() {
-  const allPins = document.querySelectorAll('.pin');
-  allPins.forEach((pin) => {
-    pin.classList.remove('active');
-    pin.parentNode.parentNode.style.zIndex = '';
+  const allMarkers = document.querySelectorAll('.marker');
+  allMarkers.forEach((marker) => {
+    marker.classList.remove('active');
+    marker.parentNode.parentNode.style.zIndex = '';
   });
   document.querySelectorAll('.item-listing').forEach((item) => item.classList.remove('active'));
 }
