@@ -244,30 +244,6 @@ header nav>div>ul>li>ul>li:not(:has(> ul)) > a /* headings w/out children */ {
   color: #fff;
 }
 
-/* right column */
-header nav .r-col {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 260px;
-  height: 100%;
-  background: #fff;
-  color: #000;
-}
-
-header nav .r-col .section {
-  padding: 10px;
-  text-align: left;
-}
-
-header nav .r-col p {
-  text-transform: none;
-  font-family: var(--body-font-family);
-  font-size: 14px;
-  line-height: 1.4em;
-  color: var(--link-light-gray);
-}
-
 header {
   .btn.yellow {
     float: right;
@@ -275,38 +251,6 @@ header {
     font-weight: 400;
     padding: 6px 12px;
   }
-}
-
-header nav .r-col p.button-container {
-  float: right;
-}
-
-/* TODO: button style could be moved to styles.css */
-header nav .r-col .button {
-  display: inline-block;
-  padding: 6px 12px;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.4em;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  touch-action: manipulation;
-  user-select: none;
-  border-radius: 3px;
-  color: var(--dark-blue);
-  background: var(--yellow);
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-}
-
-header nav .r-col .button:hover {
-  color: #fff;
-  background: var(--dark-blue);
-}
-
-header nav .r-col p:not(:first-child) picture img {
-  margin-top: 30px;
 }
 
 /* hamburger button */
@@ -407,4 +351,13 @@ header nav .r-col p:not(:first-child) picture img {
     padding: 10px;
     margin-top: 10px;
   }
+
+  header nav > div > ul > li > ul > li {
+    width: auto !important;
+  }
+
+  header nav > div > ul > li:nth-child(2) > ul {
+    min-height: 420px;
+  }
 }
+
