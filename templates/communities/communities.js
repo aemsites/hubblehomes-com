@@ -187,15 +187,14 @@ function buildFilterForm(filterByValue) {
     const optionEls = [];
 
     // eslint-disable-next-line max-len
-    const selectedItem = allFilters.find((filter) => filter.value === filterByValue)
-      || allFilters[0];
+    const selectedItem = allFilters.find((filter) => filter.value === filterByValue) || allFilters[0];
     selectedItem.selected = true;
 
     allFilters.forEach((filter) => {
       const properties = {
         value: filter.value
-          ? `${window.location.pathname}?filter=${filter.value}#plans`
-          : `${window.location.pathname}#plans`,
+          ? `${window.location.pathname}?filter=${filter.value}#inventory`
+          : `${window.location.pathname}#inventory`,
         ...(filter.selected ? { selected: true } : {}),
       };
       optionEls.push(option(properties, filter.label));
@@ -206,7 +205,11 @@ function buildFilterForm(filterByValue) {
   function createSelectElement(options) {
     return select({
       onchange: (event) => {
-        window.location = event.target.options[event.target.selectedIndex].value;
+        let { value } = event.target.options[event.target.selectedIndex];
+        if (value.indexOf('*') !== -1) {
+          value = window.location.pathname;
+        }
+        window.location = value;
       },
     }, ...options);
   }
@@ -228,7 +231,9 @@ function buildFilterForm(filterByValue) {
     (filter) => filter.category === 'filterBy'
     || filter.category === 'beds'
     || filter.category === 'sqft',
-  );
+  ) // filter any of the ALL options
+    .filter((filter) => filter.value.indexOf('*') === -1);
+
   const filterByOptions = buildOptions(filterBy);
 
   const allListingSelect = createSelectElement(allListingOptions);
@@ -315,6 +320,7 @@ export default async function decorate(doc) {
   const modelFilter = buildFilterForm(filter);
 
   const plansAnchor = a({ id: 'plans' }, '');
+  const inventoryAnchor = a({ id: 'inventory' }, '');
   const inventoryEl = div({ class: 'section inventory' }, inventory);
   const disclaimer = doc.querySelector('.fragment-wrapper');
   const featuredPlansTitle = div({ class: 'grey-divider featured full-width' }, 'Featured Plans');
@@ -351,13 +357,13 @@ export default async function decorate(doc) {
   mainSection.append(
     leftRight,
     modelFilter,
-    plansAnchor,
     filterSectionTitle,
+    inventoryAnchor,
     inventoryEl,
   );
 
   if (hasFeaturedModels) {
-    mainSection.append(featuredPlansTitle, featuredModels);
+    mainSection.append(plansAnchor, featuredPlansTitle, featuredModels);
   }
 
   mainSection.append(

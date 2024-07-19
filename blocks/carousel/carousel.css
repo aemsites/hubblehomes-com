@@ -173,8 +173,7 @@
   position: absolute;
   display: block;
   content: '\e079';
-  top: 50%;
-  left: 20%;
+  left: 25%;
   z-index: 3;
   width: 30px;
   height: 30px;
@@ -192,8 +191,9 @@
 
 .carousel .btns button.next::after {
   transform: rotate(180deg);
-  left: auto;
-  right: 80px;
+  
+  /* minus the width of the arrow */
+  left: calc(70% - 30px)
 }
 
 .gallery-button {
@@ -209,6 +209,7 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   z-index: 10;
+
 }
 
 .gallery-button:hover {
@@ -223,7 +224,7 @@
 
 @media (width <= 800px) {
   .carousel .btns button::after { scale: 75% }
-  
+
   .carousel-wrapper, .carousel {
     aspect-ratio: unset;
   }
@@ -234,23 +235,17 @@
     padding: 14px 0;
   }
 
-  .carousel .content.top { 
-    top: auto; 
-    background: var(--dark-blue); 
+  .carousel .content.top {
+    top: auto;
+    background: var(--dark-blue);
   }
 
-  .carousel .content.top p { 
+  .carousel .content.top p {
     font-size: 18px;
   }
 
-  .carousel .content.bottom { 
-    bottom: auto; 
-    background: var(--light-blue); 
-  }
-}
-
-@media (width <= 1920px) {
-  .carousel-wrapper, .carousel {
-    max-width: 100vw !important;
+  .carousel .content.bottom {
+    bottom: auto;
+    background: var(--light-blue);
   }
 }

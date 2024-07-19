@@ -16,7 +16,7 @@ export default async function decorate(doc) {
 
   // subhead
   const $postMeta = small({ class: 'post-metadata' },
-    strong('Posted: '), getMetadata('publisheddate'),
+    strong('Posted: '), getMetadata('published-date'),
     ' | ',
     strong('Categories: '), getMetadata('categories'),
   );
@@ -32,7 +32,6 @@ export default async function decorate(doc) {
 
   const $categories = div();
   const $recentNews = div();
-  // const $recentNewsArticle = (article) => li(a({ href: article.path }, article.title));
 
   const $recentNewsArticle = (article) => div({ class: 'card' },
     a({ class: 'thumb', href: article.path },
@@ -46,8 +45,6 @@ export default async function decorate(doc) {
         strong('Categories: '), article.categories.replace(/,/g, ' |'),
       ),
       p(article.description),
-      // a({ class: 'btn yellow', href: article.path }, 'Read Article'),
-      // hr(),
     ),
   );
 
@@ -94,5 +91,6 @@ export default async function decorate(doc) {
     src: '//platform-api.sharethis.com/js/sharethis.js#property=5cd459d83255ff0012e3808f&product=\'inline-share-buttons\'',
     async: true,
   });
+
   doc.head.appendChild(shareThisScript);
 }

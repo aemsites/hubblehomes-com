@@ -79,6 +79,7 @@ function createImageOverlay(index) {
   content.appendChild(optimizedPicture);
   content.appendChild(btnsContainer);
   overlay.appendChild(overlayHeader);
+  overlay.appendChild(content);
   document.body.appendChild(overlay);
   document.body.classList.add('gallery-active');
   document.documentElement.style.top = `-${window.scrollY}px`;
@@ -139,11 +140,11 @@ function createGallery(images) {
 
 export default function initGallery(images) {
   const gallery = createGallery(images);
-document.body.appendChild(gallery);
-gallery.classList.add('active');
-document.body.classList.add('gallery-active');
-document.documentElement.style.top = `-${window.scrollY}px`;
-document.documentElement.style.position = 'fixed';
+  document.body.appendChild(gallery);
+  gallery.classList.add('active');
+  document.body.classList.add('gallery-active');
+  document.documentElement.style.top = `-${window.scrollY}px`;
+  document.documentElement.style.position = 'fixed';
 
   const closeButton = gallery.querySelector('.gallery-close');
   closeButton.addEventListener('click', () => {

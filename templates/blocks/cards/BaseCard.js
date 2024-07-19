@@ -18,7 +18,7 @@ class BaseCard {
     imageBox.appendChild(topActionsBar);
 
     const taglineContainer = this.renderTaglineContainer();
-    const details = this.renderGridDetails();
+    const details = await this.renderGridDetails();
     const bottomContainer = this.renderDetailsContainer();
     const incentives = this.renderIncentives();
 
@@ -98,7 +98,8 @@ class BaseCard {
    * @returns {Element}
    */
   renderTopBarStatus() {
-    return div({ class: 'status' }, span(this.cardData.status));
+    const clazz = this.cardData.status ? 'status' : '';
+    return div({ class: clazz }, span(this.cardData.status));
   }
 
   /**
@@ -184,8 +185,7 @@ class BaseCard {
   renderTopRowOfDetailsContainer_left(gridContainer) {
     const link = a({
       class: 'btn light-blue square',
-      // eslint-disable-next-line no-alert
-      onclick: () => alert('Get Info'),
+      href: this.cardData.path,
     }, 'Get Info');
 
     gridContainer.appendChild(link);
@@ -199,8 +199,7 @@ class BaseCard {
   renderTopRowOfDetailsContainer_right(gridContainer) {
     const link = a({
       class: 'btn light-gray square',
-      // eslint-disable-next-line no-alert
-      onclick: () => alert('Photos'),
+      href: `${this.cardData.path}#gallery`,
     }, 'Photos');
     const middleLeft = div(link);
     gridContainer.appendChild(middleLeft);

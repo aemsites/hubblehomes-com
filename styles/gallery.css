@@ -200,6 +200,11 @@
     right: 10px;
     transform: rotate(180deg);
   }
+  
+  .image-overlay .btns button.next::after {
+    right: 10px;
+    transform: rotate(180deg);
+  }
 
   .image-overlay .btns button:focus::after {
     opacity: .7;
