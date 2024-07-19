@@ -213,6 +213,8 @@
 
   body.gallery-active {
     overflow: hidden;
+    position: fixed;
+    width: 100%;
   }
   
   body.has-top-banner .gallery {

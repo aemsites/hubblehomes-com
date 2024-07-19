@@ -33,6 +33,13 @@ function navigateOverlay(direction) {
   content.replaceChild(newOptimizedPicture, oldPicture);
 }
 
+function restoreScrollPosition() {
+  const scrollY = document.documentElement.style.top;
+  document.documentElement.style.position = '';
+  document.documentElement.style.top = '';
+  window.scrollTo(0, parseInt(scrollY || '0') * -1);
+}
+
 function createImageOverlay(index) {
   currentIndex = index;
   const overlay = div({ class: 'image-overlay' });
@@ -54,7 +61,7 @@ function createImageOverlay(index) {
   closeButton.addEventListener('click', () => {
     document.body.removeChild(overlay);
     document.body.classList.remove('gallery-active');
-    document.querySelector('header').style.overflow = '';
+    restoreScrollPosition();
   });
 
   overlayHeader.appendChild(closeButton);
@@ -72,10 +79,10 @@ function createImageOverlay(index) {
   content.appendChild(optimizedPicture);
   content.appendChild(btnsContainer);
   overlay.appendChild(overlayHeader);
-  overlay.appendChild(content);
   document.body.appendChild(overlay);
   document.body.classList.add('gallery-active');
-  document.querySelector('header').style.overflow = 'hidden';
+  document.documentElement.style.top = `-${window.scrollY}px`;
+  document.documentElement.style.position = 'fixed';
 
   // Adjust overlay position when top banner is present
   const adjustOverlayPosition = () => {
@@ -132,16 +139,17 @@ function createGallery(images) {
 
 export default function initGallery(images) {
   const gallery = createGallery(images);
-  document.body.appendChild(gallery);
-  gallery.classList.add('active');
-  document.body.classList.add('gallery-active');
-  document.querySelector('header').style.overflow = 'hidden';
+document.body.appendChild(gallery);
+gallery.classList.add('active');
+document.body.classList.add('gallery-active');
+document.documentElement.style.top = `-${window.scrollY}px`;
+document.documentElement.style.position = 'fixed';
 
   const closeButton = gallery.querySelector('.gallery-close');
   closeButton.addEventListener('click', () => {
     gallery.classList.remove('active');
     document.body.classList.remove('gallery-active');
-    document.querySelector('header').style.overflow = '';
+    restoreScrollPosition();
     setTimeout(() => {
       document.body.removeChild(gallery);
     }, 300);
