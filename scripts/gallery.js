@@ -36,11 +36,12 @@ function navigateOverlay(direction) {
 function createImageOverlay(index) {
   currentIndex = index;
   const overlay = div({ class: 'image-overlay' });
+  const overlayHeader = div({ class: 'image-overlay-header' });
   const content = div({ class: 'image-overlay-content' });
 
   const optimizedPicture = createOptimizedPicture(
-    galleryImages[index].src,
-    galleryImages[index].alt,
+    galleryImages[currentIndex].src,
+    galleryImages[currentIndex].alt,
     false,
     [
       { width: '1200' },
@@ -52,7 +53,11 @@ function createImageOverlay(index) {
   const closeButton = button({ class: 'overlay-close' }, 'Close');
   closeButton.addEventListener('click', () => {
     document.body.removeChild(overlay);
+    document.body.classList.remove('gallery-active');
+    document.querySelector('header').style.overflow = '';
   });
+
+  overlayHeader.appendChild(closeButton);
 
   const btnsContainer = div({ class: 'btns' });
   const prevButton = button({ class: 'prev', 'aria-label': 'Previous Image' });
@@ -66,17 +71,34 @@ function createImageOverlay(index) {
 
   content.appendChild(optimizedPicture);
   content.appendChild(btnsContainer);
+  overlay.appendChild(overlayHeader);
   overlay.appendChild(content);
-  overlay.appendChild(closeButton);
   document.body.appendChild(overlay);
+  document.body.classList.add('gallery-active');
+  document.querySelector('header').style.overflow = 'hidden';
+
+  // Adjust overlay position when top banner is present
+  const adjustOverlayPosition = () => {
+    const topBanner = document.querySelector('.top-banner');
+    if (topBanner) {
+      const topBannerHeight = topBanner.offsetHeight;
+      document.documentElement.style.setProperty('--top-banner-height', `${topBannerHeight}px`);
+    }
+  };
+
+  adjustOverlayPosition();
+  window.addEventListener('resize', adjustOverlayPosition);
 }
 
 function createGallery(images) {
   const gallery = div({ class: 'gallery' });
+  const galleryHeader = div({ class: 'gallery-header' });
   const closeButton = button({ class: 'gallery-close' }, 'Close');
   closeButton.addEventListener('click', () => {
     gallery.classList.remove('active');
   });
+
+  galleryHeader.appendChild(closeButton);
 
   const galleryContent = div({ class: 'gallery-content' });
 
@@ -103,7 +125,7 @@ function createGallery(images) {
     galleryContent.appendChild(galleryItem);
   });
 
-  gallery.appendChild(closeButton);
+  gallery.appendChild(galleryHeader);
   gallery.appendChild(galleryContent);
   return gallery;
 }
@@ -112,4 +134,28 @@ export default function initGallery(images) {
   const gallery = createGallery(images);
   document.body.appendChild(gallery);
   gallery.classList.add('active');
+  document.body.classList.add('gallery-active');
+  document.querySelector('header').style.overflow = 'hidden';
+
+  const closeButton = gallery.querySelector('.gallery-close');
+  closeButton.addEventListener('click', () => {
+    gallery.classList.remove('active');
+    document.body.classList.remove('gallery-active');
+    document.querySelector('header').style.overflow = '';
+    setTimeout(() => {
+      document.body.removeChild(gallery);
+    }, 300);
+  });
+
+  // Adjust gallery position when top banner is present
+  const adjustGalleryPosition = () => {
+    const topBanner = document.querySelector('.top-banner');
+    if (topBanner) {
+      const topBannerHeight = topBanner.offsetHeight;
+      document.documentElement.style.setProperty('--top-banner-height', `${topBannerHeight}px`);
+    }
+  };
+
+  adjustGalleryPosition();
+  window.addEventListener('resize', adjustGalleryPosition);
 }
