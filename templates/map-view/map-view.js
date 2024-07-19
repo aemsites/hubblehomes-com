@@ -6,6 +6,7 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 import buildFilters from './map-filters.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
 import { calculateMonthlyPayment, loadRates } from '../../scripts/mortgage.js';
+import { debounce } from '../../scripts/utils.js';
 
 let map;
 let bounds;
@@ -272,8 +273,11 @@ function buildInventoryCards(homes) {
         ),
       ),
     );
+
+    const debouncedHighlight = debounce(() => highlightActiveHome(i), 100);
+
     $home.addEventListener('mouseenter', () => {
-      highlightActiveHome(i);
+      debouncedHighlight();
     });
     return $home;
   });
