@@ -2,7 +2,7 @@ import {
   a, div, form, img, input, label, nav, span, waitForElement,
 } from '../../scripts/dom-helpers.js';
 import {
-  getCommunitiesSheet, getStaffSheet, getModelsSheet, getInventorySheet,
+  getCommunitiesSheet, getStaffSheet, getModelsSheet, getInventorySheet, loadWorkbook,
 } from '../../scripts/workbook.js';
 import {
   formatCommunities, formatStaff, formatModels, formatInventory, throttle,
@@ -55,15 +55,15 @@ async function setupAutocomplete() {
   const searchInput = await waitForElement('#navSearch');
   const autocompleteList = await waitForElement('#autocomplete-list');
 
-  const communityResult = await getCommunitiesSheet();
-  const staffResult = await getStaffSheet();
-  const modelResult = await getModelsSheet();
-  const inventoryResult = await getInventorySheet();
+  const communityResult = await getCommunitiesSheet('data');
+  const staffResult = await getStaffSheet('data');
+  const modelResult = await getModelsSheet('data');
+  const inventoryResult = await getInventorySheet('data');
 
-  const communityData = formatCommunities(communityResult.data);
-  const staffData = formatStaff(staffResult.data);
-  const modelData = formatModels(modelResult.data);
-  const inventoryData = formatInventory(inventoryResult.data);
+  const communityData = formatCommunities(communityResult);
+  const staffData = formatStaff(staffResult);
+  const modelData = formatModels(modelResult);
+  const inventoryData = formatInventory(inventoryResult);
 
   const allSuggestions = [
     ...communityData,
@@ -101,6 +101,8 @@ async function setupAutocomplete() {
 }
 
 export default async function decorate(block) {
+  await loadWorkbook();
+
   block.innerHTML = '';
 
   const $logo = a(
