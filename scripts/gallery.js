@@ -37,7 +37,7 @@ function restoreScrollPosition() {
   const scrollY = document.documentElement.style.top;
   document.documentElement.style.position = '';
   document.documentElement.style.top = '';
-  window.scrollTo(0, parseInt(scrollY || '0') * -1);
+  window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
 }
 
 function createImageOverlay(index) {
