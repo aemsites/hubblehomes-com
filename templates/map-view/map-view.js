@@ -256,7 +256,7 @@ function buildInventoryCards(homes) {
           li(p('Sq. Ft.'), p(home['square feet'])),
           li(p('Cars'), p(home.cars))),
         div(
-          a({ class: 'btn yellow', href: home.path }, 'View Details'),
+          button({ class: 'btn yellow', href: home.path }, 'View Details'),
         ),
       ),
     );
