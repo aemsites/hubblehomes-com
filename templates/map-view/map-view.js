@@ -54,8 +54,8 @@ function markerPin(home, i) {
 function fitMarkerWithinBounds(i) {
   // padding around marker when moved into view
   const padding = {
-    top: 40,
-    right: 40,
+    top: 60, // ensure it clears buttons
+    right: 60, // ensure it clears buttons
     bottom: 60,
     left: 40,
   };
@@ -204,7 +204,7 @@ function highlightActiveHome(i) {
   $card.classList.add('active');
 
   // scroll card into view if it's not visible
-  const $scrollContainer = document.querySelector('.listings-wrapper');
+  const $scrollContainer = document.querySelector('.scroll-container');
   const scrollContainerRect = $scrollContainer.getBoundingClientRect();
   const activeCardRect = $card.getBoundingClientRect();
   const isVisible = (
@@ -244,7 +244,7 @@ function resetActiveHomes() {
 function buildInventoryCards(homes) {
   return homes.map((home, i) => {
     const $home = div({ class: `item-listing listing-${i}`, 'data-card': i },
-      a({ href: home.path }, createOptimizedPicture(home.image)),
+      createOptimizedPicture(home.image),
       div({ class: 'listing-info' },
         h3(home.address),
         div(span(home.city), span(home['home style'])),
@@ -256,7 +256,7 @@ function buildInventoryCards(homes) {
           li(p('Sq. Ft.'), p(home['square feet'])),
           li(p('Cars'), p(home.cars))),
         div(
-          button({ class: 'btn yellow', href: home.path }, 'View Details'),
+          a({ class: 'btn yellow', href: home.path }, 'View Details'),
         ),
       ),
     );
@@ -312,8 +312,10 @@ export default async function decorate(doc) {
     ),
     aside(
       filters,
-      div({ class: 'listings-wrapper' },
-        ...buildInventoryCards(inventory),
+      div({ class: 'scroll-container' },
+        div({ class: 'listings-wrapper' },
+          ...buildInventoryCards(inventory),
+        ),
         $footer,
       ),
     ),

@@ -3,6 +3,8 @@
 .map-view {
   overflow-y: hidden;
 
+  #chat-widget-container { display: none }
+
   .breadcrumbs { display: none }
 
   .map-filter-container {
@@ -220,12 +222,16 @@
         }
       }
 
-      .listings-wrapper {
-        padding: 0 0 40px;
+      .scroll-container {
         height: 100%;
         width: 100%;
         overflow-y: auto;
         scroll-behavior: smooth;
+      }
+
+      .listings-wrapper {
+        padding: 0 0 40px;
+        width: 100%;
         
         @media (max-width: 990px ) and (min-width: 620px) {
           display: grid;
@@ -260,10 +266,8 @@
             }
           }
 
-          a {
-            img {
-              display: block;
-            }
+          img {
+            display: block;
           }
 
 
@@ -341,11 +345,6 @@
 
         footer { 
           margin-top: 80px;
-          
-          @media (max-width: 990px) {
-            margin-top: 20px;
-            grid-column: 1 / span 2;
-          }
         }
       }
     }
