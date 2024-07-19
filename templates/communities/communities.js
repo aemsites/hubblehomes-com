@@ -187,8 +187,7 @@ function buildFilterForm(filterByValue) {
     const optionEls = [];
 
     // eslint-disable-next-line max-len
-    const selectedItem = allFilters.find((filter) => filter.value === filterByValue)
-      || allFilters[0];
+    const selectedItem = allFilters.find((filter) => filter.value === filterByValue) || allFilters[0];
     selectedItem.selected = true;
 
     allFilters.forEach((filter) => {
@@ -206,7 +205,11 @@ function buildFilterForm(filterByValue) {
   function createSelectElement(options) {
     return select({
       onchange: (event) => {
-        window.location = event.target.options[event.target.selectedIndex].value;
+        let { value } = event.target.options[event.target.selectedIndex];
+        if (value.indexOf('*') !== -1) {
+          value = window.location.pathname;
+        }
+        window.location = value;
       },
     }, ...options);
   }
@@ -228,7 +231,9 @@ function buildFilterForm(filterByValue) {
     (filter) => filter.category === 'filterBy'
     || filter.category === 'beds'
     || filter.category === 'sqft',
-  );
+  ) // filter any of the ALL options
+    .filter((filter) => filter.value.indexOf('*') === -1);
+
   const filterByOptions = buildOptions(filterBy);
 
   const allListingSelect = createSelectElement(allListingOptions);
