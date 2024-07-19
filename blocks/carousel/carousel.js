@@ -188,6 +188,7 @@ function createSlide(row, i) {
 
 export default async function decorate(block) {
   const autoClass = block.className.split(' ').find((className) => className.startsWith('auto-'));
+  const hasGallery = block.classList.contains('gallery-enabled');
 
   // get duration from auto class
   if (autoClass) {
@@ -232,23 +233,25 @@ export default async function decorate(block) {
     $container.append(div({ class: 'btns' }, $prev, $next));
   }
 
-  const galleryButton = createGalleryButton();
-  $container.appendChild(galleryButton);
+  if (hasGallery) {
+    const galleryButton = createGalleryButton();
+    $container.appendChild(galleryButton);
+
+    galleryButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      const images = Array.from(block.querySelectorAll('.slide-image img')).map((img) => ({
+        src: img.src,
+        alt: img.alt,
+      }));
+
+      initGallery(images);
+    });
+  }
 
   block.innerHTML = '';
   block.append($container);
-
-  galleryButton.addEventListener('click', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-
-    const images = Array.from(block.querySelectorAll('.slide-image img')).map((img) => ({
-      src: img.src,
-      alt: img.alt,
-    }));
-
-    initGallery(images);
-  });
 
   // auto slide functionality
   if (isAuto && isMultiple) initAuto(block);
