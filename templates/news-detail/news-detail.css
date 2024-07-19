@@ -16,21 +16,22 @@
       flex-direction: column-reverse;
 
       aside {
-        text-align: right;
+        text-align: center;
         hr { display: none }
 
         /* select list styling */
         .select {
           position: relative;
-          margin: 10px 0 30px;
+          width: 180px;
+          background: var(--light-gray);
+          margin: 10px auto 30px;
           
           h3 {
             display: inline-block;
             margin: 0;
-            width: 180px;
-            padding: 6px 30px 6px 8px;
-            background: var(--light-gray);
+            padding: 4px 14px 4px 0;
             color: #fff;
+            font-size: 1.2em;
             text-align: center;
 
             &::after {
@@ -46,7 +47,7 @@
 
           .filter {
             position: absolute;
-            right: 0;
+            left: 0;
             width: 180px;
             background: #fff;
             max-height: 0;
@@ -55,6 +56,7 @@
             box-shadow: 2px 8px 12px rgb(0 0 0 / 20%);
             transition: all 400ms ease-in-out;
             text-align: left;
+            text-wrap: nowrap;
             .active & { max-height: 100vh }
 
             li {
