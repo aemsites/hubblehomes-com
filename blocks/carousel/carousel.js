@@ -144,7 +144,7 @@ function createGalleryButton() {
   return button(
     { class: 'gallery-button' },
     icon,
-    span({}, 'Gallery')
+    span({}, 'Gallery'),
   );
 }
 
