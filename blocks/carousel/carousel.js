@@ -15,6 +15,8 @@ let isInitialLoad = true;
 const initialLoadDelay = 4000;
 let defaultContent;
 let isAnimating = false;
+let galleryImages = [];
+let galleryInitialized = false;
 
 function showSlide(block, dir) {
   // wait till current animation is completed
@@ -186,6 +188,73 @@ function createSlide(row, i) {
   return $slide;
 }
 
+function adjustGalleryPosition() {
+  const topBanner = document.querySelector('.top-banner');
+  const topBannerHeight = topBanner ? topBanner.offsetHeight : 0;
+  const navHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height'), 10);
+  const adjustedNavHeight = navHeight + topBannerHeight;
+
+  document.documentElement.style.setProperty('--adjusted-nav-height', `${adjustedNavHeight}px`);
+
+  const galleryElement = document.querySelector('.gallery.active');
+  if (galleryElement) {
+    galleryElement.style.top = `${adjustedNavHeight}px`;
+  }
+
+  const imageOverlay = document.querySelector('.image-overlay');
+  if (imageOverlay) {
+    imageOverlay.style.top = `${adjustedNavHeight}px`;
+  }
+}
+
+function openGallery() {
+  initGallery(galleryImages);
+  setTimeout(adjustGalleryPosition, 0);
+}
+
+function initializeGallery(block) {
+  if (galleryInitialized) return;
+
+  const images = block.querySelectorAll('.slide-image img');
+  galleryImages = Array.from(images).map((img) => ({
+    src: img.src,
+    alt: img.alt,
+  }));
+
+  const galleryButton = createGalleryButton();
+  block.querySelector('.slides-container').appendChild(galleryButton);
+
+  galleryButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    openGallery();
+  });
+
+  // Create a MutationObserver to watch for the top banner
+  const observer = new MutationObserver((mutations) => {
+    const hasTopBanner = mutations.some(({ type, addedNodes }) => type === 'childList' && Array.from(addedNodes).some((node) => node.classList && node.classList.contains('top-banner')));
+    if (hasTopBanner) {
+      adjustGalleryPosition();
+    }
+  });
+
+  // Start observing the document body for changes
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  // Check hash and set up hashchange event
+  if (window.location.hash === '#gallery') {
+    setTimeout(openGallery, 100);
+  }
+
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash === '#gallery') {
+      openGallery();
+    }
+  });
+
+  galleryInitialized = true;
+}
+
 export default async function decorate(block) {
   const autoClass = block.className.split(' ').find((className) => className.startsWith('auto-'));
   const hasGallery = block.classList.contains('gallery-enabled');
@@ -240,14 +309,14 @@ export default async function decorate(block) {
     galleryButton.addEventListener('click', (e) => {
       e.stopPropagation();
       e.preventDefault();
-
-      const images = Array.from(block.querySelectorAll('.slide-image img')).map((img) => ({
-        src: img.src,
-        alt: img.alt,
-      }));
-
-      initGallery(images);
+      openGallery();
     });
+
+    // Collect all images for the gallery
+    galleryImages = Array.from(block.querySelectorAll('.slide-image img')).map((img) => ({
+      src: img.src,
+      alt: img.alt,
+    }));
   }
 
   block.innerHTML = '';
@@ -255,4 +324,8 @@ export default async function decorate(block) {
 
   // auto slide functionality
   if (isAuto && isMultiple) initAuto(block);
+
+  if (hasGallery) {
+    initializeGallery(block);
+  }
 }

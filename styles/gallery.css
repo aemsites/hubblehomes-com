@@ -1,10 +1,11 @@
 .gallery {
     position: fixed;
-    inset: var(--nav-height) 0 0 0;
+    inset: var(--adjusted-nav-height, var(--nav-height)) 0 0 0;
     background: var(--background-color);
     z-index: 1000;
     display: none;
     overflow-y: auto;
+    padding: 0 20px;
   }
   
   .gallery.active {
@@ -110,7 +111,7 @@
   
   .image-overlay {
     position: fixed;
-    inset: var(--nav-height) 0 0 0;
+    inset: var(--adjusted-nav-height, var(--nav-height)) 0 0 0;
     background: var(--background-color);
     display: flex;
     flex-direction: column;
@@ -239,6 +240,7 @@
     .gallery-item.large img {
       grid-column: span 2;
       grid-row: span 2;
+      height: 255px;
     }
   
     .gallery-item:nth-child(9n+1),
@@ -258,5 +260,11 @@
     .gallery-item:nth-child(9n+8),
     .gallery-item:nth-child(9n+9) {
       grid-column: auto;
+    }
+  }
+
+  @media (width <= 900px) {  
+    .gallery-item.large img {
+      height: 155px;
     }
   }
