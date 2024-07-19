@@ -1,5 +1,5 @@
 /* eslint-disable object-curly-newline */
-import { sampleRUM, loadCSS } from './aem.js';
+import { sampleRUM } from './aem.js';
 
 // Core Web Vitals RUM collection
 sampleRUM('cwv');
@@ -35,18 +35,3 @@ async function liveChat() {
   document.head.appendChild(script);
 }
 liveChat();
-
-/**
- * load fonts.css and set a session storage flag
- */
-async function loadFonts() {
-  await loadCSS(`${window.hlx.codeBasePath}/styles/fonts.css`);
-  try {
-    if (!window.location.hostname.includes('localhost')) {
-      sessionStorage.setItem('fonts-loaded', 'true');
-    }
-  } catch (e) {
-    // do nothing
-  }
-}
-loadFonts();
