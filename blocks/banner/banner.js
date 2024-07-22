@@ -51,7 +51,7 @@ export default function decorate(block) {
 
   // mobile version
   const mobileSpotlightText = spotlightTextContainer.cloneNode(true);
-  const mobileBannerTextContainer = div({ class: 'mobile-bannertext-container' }, mobileSpotlightText);
+  const mobileBannerTextContainer = div({ class: 'spotlight-circle-container-mobile' }, mobileSpotlightText);
 
   const bannerElement = div({ class: 'banner-element' }, bannerPicture, mobileBannerTextContainer);
   block.appendChild(bannerElement);
