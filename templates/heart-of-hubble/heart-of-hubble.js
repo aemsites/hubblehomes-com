@@ -1,7 +1,7 @@
 /* eslint-disable function-call-argument-newline */
 /* eslint-disable max-len */
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, h3, p, small, aside, h1, a, strong, hr } from '../../scripts/dom-helpers.js';
+import { div, h3, p, small, a, strong, hr } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../../blocks/fragment/fragment.js';
 import formatTimeStamp from '../../scripts/utils.js';
@@ -13,15 +13,14 @@ export default async function decorate(doc) {
   const heroFrag = await loadFragment('/heart-of-hubble/hero');
   const $hero = heroFrag.querySelector('.carousel-wrapper').cloneNode(true);
 
-  const h1 = $page.querySelector('.default-content-wrapper > h1');
-  const $totalContribution = div({ class: 'total-contribution' });  
+  const heading = $page.querySelector('.default-content-wrapper > h1');
+  const $totalContribution = div({ class: 'total-contribution' });
   $totalContribution.innerHTML = `<div><p>Total Donations</p></div><div><p>${getMetadata('total-donations')}</p></div>`;
-  h1.after($totalContribution);
+  heading.after($totalContribution);
   const articlesPerPage = Number(getMetadata('articles-per-page'));
   const paginationMaxBtns = Number(getMetadata('pagination-max-buttons'));
 
   const $pagination = div({ class: 'pagination' });
-  const $categoryFilter = div();
   const $articles = div({ class: 'articles' });
 
   const $articleCard = (article) => div({ class: 'card' },
@@ -41,19 +40,19 @@ export default async function decorate(doc) {
     ),
   );
 
-  const $newsPage = div({ class: 'section' },   
+  const $newsPage = div({ class: 'section' },
     div({ class: 'content-wrapper' },
       div({ class: 'content' },
         $articles,
         $pagination,
-      ),     
+      ),
     ),
   );
 
   $page.prepend(
     $hero,
   );
-  $page.append(    
+  $page.append(
     $newsPage,
   );
 
@@ -66,5 +65,5 @@ export default async function decorate(doc) {
     paginationMaxBtns,
     categoryContainer: null,
     categoryPath: '',
-  }).render('heart-of-hubble');
+  }).renderArticlesByCategory('heart-of-hubble');
 }
