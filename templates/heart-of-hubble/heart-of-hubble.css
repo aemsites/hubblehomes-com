@@ -173,37 +173,6 @@
     }
   }
 }
-/*
-@media (width <= 768px) {  
-  .articles {
-    .card {
-      display: flex;
-      margin: 0 0 40px 0;
-      flex-wrap: wrap;
-
-      .thumb {
-        min-width: 100%;
-        font-size: 0;
-        padding-bottom: 10px;
-
-        img {
-          width: 100%;
-          aspect-ratio: 16 / 9;
-        }
-      }
-
-      .info {
-        margin: 0;
-        min-height: 0;
-        width: 100%;        
-      }
-    }
-  }
-
-
-}*/
-
-
 .pagination {
   text-align: center;
   margin: 40px 0;
@@ -236,8 +205,8 @@
   }
 }
 
-
 .default-content-wrapper > p {
+  
   margin-bottom: 30px;
   text-align: center;
 }

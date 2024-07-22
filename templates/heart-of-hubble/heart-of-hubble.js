@@ -3,15 +3,11 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { div, h3, p, small, a, strong, hr } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
-import { loadFragment } from '../../blocks/fragment/fragment.js';
 import formatTimeStamp from '../../scripts/utils.js';
 import ArticleList from '../../scripts/article-list.js';
 
 export default async function decorate(doc) {
   const $page = doc.querySelector('main .section');
-
-  const heroFrag = await loadFragment('/heart-of-hubble/hero');
-  const $hero = heroFrag.querySelector('.carousel-wrapper').cloneNode(true);
 
   const heading = $page.querySelector('.default-content-wrapper > h1');
   const $totalContribution = div({ class: 'total-contribution' });
@@ -47,10 +43,6 @@ export default async function decorate(doc) {
         $pagination,
       ),
     ),
-  );
-
-  $page.prepend(
-    $hero,
   );
   $page.append(
     $newsPage,
