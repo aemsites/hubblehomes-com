@@ -4,7 +4,6 @@ import {
   li,
   button,
   span,
-  h2,
 } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import initGallery from '../../scripts/gallery.js';
