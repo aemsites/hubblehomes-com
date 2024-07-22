@@ -273,11 +273,16 @@ function setupGlobalVars() {
 const openSheet = ({ detail }) => {
   const { data } = detail;
   const routes = {
-    '/new-homes/*/*/*/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=rgHBEC&nav=MTVfezAwMDAwMDAwLTAwMDEtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMH0',
-    '/new-homes/*/*/*/*/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=bD7sfK&nav=MTVfezNGNTgzREJGLTEzNkYtNDU4RC1BQkM1LTBFRjhGMDNCMUY0OX0',
-    '/new-homes/*/*/*/*/*/*/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=LGaAfv&nav=MTVfezg2ODI3Q0EwLThEOTQtNEQxQS04Rjg2LUQ4NEJCMTU0OEU1RX0',
-    '/home-plans/plan-detail/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=H18GCg&nav=MTVfezVCMEU1NzA5LUE2MTAtNDY1RS1BMDhGLUIxQjU1MEFDRDEwOH0',
-    home: 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=rgHBEC&nav=MTVfezAwMDAwMDAwLTAwMDEtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMH0',
+    /* communities */
+    '/new-homes/*/*/*/*': 'https://woodsidegroup.sharepoint.com/:x:/r/sites/HubbleHomesWebsite/Shared%20Documents/Website/hubblehomes/data/hubblehomes.xlsx?d=w5eb9406180fd4a4ebdcbb02f9a4e06ba&csf=1&web=1&e=pfAIY7&nav=MTVfezAwMDAwMDAwLTAwMDEtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMH0',
+    /* models */
+    '/new-homes/*/*/*/*/*': 'https://woodsidegroup.sharepoint.com/:x:/r/sites/HubbleHomesWebsite/Shared%20Documents/Website/hubblehomes/data/hubblehomes.xlsx?d=w5eb9406180fd4a4ebdcbb02f9a4e06ba&csf=1&web=1&e=38VuGl&nav=MTVfezNGNTgzREJGLTEzNkYtNDU4RC1BQkM1LTBFRjhGMDNCMUY0OX0',
+    /* inventory */
+    '/new-homes/*/*/*/*/*/*/*': 'https://woodsidegroup.sharepoint.com/:x:/r/sites/HubbleHomesWebsite/Shared%20Documents/Website/hubblehomes/data/hubblehomes.xlsx?d=w5eb9406180fd4a4ebdcbb02f9a4e06ba&csf=1&web=1&e=ygnBSA&nav=MTVfezg2ODI3Q0EwLThEOTQtNEQxQS04Rjg2LUQ4NEJCMTU0OEU1RX0',
+    /* home plans */
+    '/home-plans/plan-detail/*': 'https://woodsidegroup.sharepoint.com/:x:/r/sites/HubbleHomesWebsite/Shared%20Documents/Website/hubblehomes/data/hubblehomes.xlsx?d=w5eb9406180fd4a4ebdcbb02f9a4e06ba&csf=1&web=1&e=CjeJJf&nav=MTVfezVCMEU1NzA5LUE2MTAtNDY1RS1BMDhGLUIxQjU1MEFDRDEwOH0',
+    /* default if no match */
+    home: 'https://woodsidegroup.sharepoint.com/:x:/r/sites/HubbleHomesWebsite/Shared%20Documents/Website/hubblehomes/data/hubblehomes.xlsx?d=w5eb9406180fd4a4ebdcbb02f9a4e06ba&csf=1&web=1&e=pfAIY7&nav=MTVfezAwMDAwMDAwLTAwMDEtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMH0',
   };
 
   const pathToMatch = data.location.pathname;
