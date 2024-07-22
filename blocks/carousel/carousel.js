@@ -209,11 +209,6 @@ function openGallery() {
   initGallery(galleryImages, pageName);
   setTimeout(() => {
     adjustGalleryPosition();
-    const galleryHeader = document.querySelector('.gallery-header');
-    if (galleryHeader && pageName) {
-      const titleElement = h2({ class: 'gallery-title' }, pageName);
-      galleryHeader.insertBefore(titleElement, galleryHeader.firstChild);
-    }
   }, 0);
 }
 
