@@ -16,6 +16,7 @@
 @import url("layouts.css");
 @import url('templates.css');
 @import url('buttons.css');
+@import url('index.css');
 
 @layer reset {
   :root {
