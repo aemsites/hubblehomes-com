@@ -1,0 +1,32 @@
+.energy {
+  .tabs-wrapper {
+    padding-top: 50px;
+  }
+
+  .overview-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(360px, 1fr));
+    gap: 30px;
+
+    @media (max-width: 1200px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .card {
+    padding: 15px;
+    box-shadow: 5px 5px 10px 3px rgb(151 151 151 / 30%);
+    width: 360px;
+
+    img {
+      float: right;
+      width: 80px;
+    }
+
+    @media (max-width: 1200px) {
+      width: 100%;
+    }
+  }
+
+}
+

@@ -1,6 +1,9 @@
 .tabs {
   .tabs-panel {
-    text-align: center;
+    h1 {
+      text-align: center;
+    }
+
     margin-top: -1px;
     padding: 0 16px;
     border: 1px solid var(--dark-color);
