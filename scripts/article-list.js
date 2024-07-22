@@ -65,7 +65,7 @@ export default class ArticleList {
   async updateArticles() {
     const page = this.currentPage;
     let articles = this.allArticles;
-
+    
     // Filter articles by category if present
     if (this.category) {
       articles = articles.filter((article) => {
@@ -251,6 +251,24 @@ export default class ArticleList {
       if (this.articleCard && this.articleContainer) {
         await this.updateArticles();
         window.addEventListener('popstate', (event) => this.onPopState(event));
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error fetching articles:', error);
+    }
+  }
+
+  async render(category) {
+    try {
+      const response = await fetch(this.jsonPath);
+      const json = await response.json();
+      this.allArticles = json.data;
+      
+      this.category = category;
+
+      // If articleCard & articleContainer are defined, render them
+      if (this.articleCard && this.articleContainer) {
+        await this.updateArticles();        
       }
     } catch (error) {
       // eslint-disable-next-line no-console
