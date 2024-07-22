@@ -4,7 +4,6 @@ import {
   li,
   button,
   span,
-  h2,
 } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import initGallery from '../../scripts/gallery.js';
@@ -209,11 +208,6 @@ function openGallery() {
   initGallery(galleryImages, pageName);
   setTimeout(() => {
     adjustGalleryPosition();
-    const galleryHeader = document.querySelector('.gallery-header');
-    if (galleryHeader && pageName) {
-      const titleElement = h2({ class: 'gallery-title' }, pageName);
-      galleryHeader.insertBefore(titleElement, galleryHeader.firstChild);
-    }
   }, 0);
 }
 
