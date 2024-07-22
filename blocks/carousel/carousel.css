@@ -79,7 +79,7 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  width: 50%;
+  width: 80%;
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -157,7 +157,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 25%;
+  width: 10%;
   height: 100%;
   z-index: 3;
   cursor: pointer;
@@ -247,5 +247,10 @@
   .carousel .content.bottom {
     bottom: auto;
     background: var(--light-blue);
+
+    p {
+      font-size: var(--heading-font-size-m);
+      margin: 0 10px;
+    }
   }
 }

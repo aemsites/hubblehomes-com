@@ -129,6 +129,11 @@
   h5 { font-size: var(--heading-font-size-s) }
   h6 { font-size: var(--heading-font-size-xs) }
 
+  @media (max-width: 900px) {
+    h1 { font-size: var(--heading-font-size-xl) }
+    h2 { font-size: var(--heading-font-size-l) }
+  }
+
   dl, ol, ul, pre, blockquote {
     margin-top: 1em;
     margin-bottom: 1em;
