@@ -5,16 +5,22 @@ import { calculateMonthlyPayment } from '../../../scripts/mortgage.js';
 
 class FeaturedCard extends BaseCard {
   renderTaglineItems(taglineContainer) {
-    const price = span(`From ${formatPrice(this.cardData.price)}`);
-    const priceContainer = div(price);
-    const monthly = span(
-      { class: 'card-tagline-price-per-month' },
-      `*${formatPrice(calculateMonthlyPayment(this.cardData.price))}`,
-    );
-    const perMonth = span({ class: 'card-tagline-monthly' }, '/mo');
-    const monthlyRate = div({ class: 'card-tagline-monthly-container' }, monthly, perMonth);
-    taglineContainer.appendChild(priceContainer);
-    taglineContainer.appendChild(monthlyRate);
+    const priceText = Number.isNaN(parseFloat(this.cardData.price))
+      ? this.cardData.price
+      : `From ${formatPrice(this.cardData.price)}`;
+
+    const priceElement = span(priceText);
+    taglineContainer.appendChild(div(priceElement));
+
+    if (!Number.isNaN(parseFloat(this.cardData.price))) {
+      const monthlyPayment = `*${formatPrice(calculateMonthlyPayment(this.cardData.price))}`;
+      const monthlyRate = div(
+        { class: 'card-tagline-monthly-container' },
+        span({ class: 'card-tagline-price-per-month' }, monthlyPayment),
+        span({ class: 'card-tagline-monthly' }, '/mo'),
+      );
+      taglineContainer.appendChild(monthlyRate);
+    }
   }
 
   /**

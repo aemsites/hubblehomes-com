@@ -30,7 +30,7 @@ export default async function decorate(doc) {
     pic.replaceWith(opt);
   });
 
-  const $categories = div();
+  const $categoryFilter = div();
   const $recentNews = div();
 
   const $recentNewsArticle = (article) => div({ class: 'card' },
@@ -48,6 +48,11 @@ export default async function decorate(doc) {
     ),
   );
 
+  const $categoryList = div({ class: 'select' },
+    h3('Categories'),
+    $categoryFilter,
+  );
+
   const $newsDetailPage = div({ class: 'section' },
     div({ class: 'content-wrapper' },
       div({ class: 'content' },
@@ -59,8 +64,7 @@ export default async function decorate(doc) {
         ),
       ),
       aside(
-        h3('Categories'),
-        $categories,
+        $categoryList,
         hr(),
       ),
     ),
@@ -73,7 +77,7 @@ export default async function decorate(doc) {
 
   const categories = new ArticleList({
     jsonPath: '/news/news-index.json',
-    categoryContainer: $categories,
+    categoryContainer: $categoryFilter,
     categoryPath: '/news/category/',
   });
   await categories.render();
@@ -93,4 +97,25 @@ export default async function decorate(doc) {
   });
 
   doc.head.appendChild(shareThisScript);
+
+  function filterDropdown() {
+    if ($categoryList.classList.contains('active')) {
+      $categoryList.classList.remove('active');
+    } else {
+      $categoryList.classList.add('active');
+    }
+  }
+
+  function mobileView(event) {
+    if (event.matches) {
+      // mobile view
+      $categoryList.addEventListener('click', filterDropdown);
+    } else {
+      $categoryList.removeEventListener('click', filterDropdown);
+      $categoryList.classList.remove('active');
+    }
+  }
+  const mobileMediaQuery = window.matchMedia('(max-width: 991px)');
+  mobileMediaQuery.addEventListener('change', mobileView);
+  mobileView(mobileMediaQuery);
 }
