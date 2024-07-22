@@ -8,8 +8,9 @@ function getCurrencyFormatter() {
 }
 
 /**
- * Format a price as a currency
- * @param price the price to format
+ * Format a price as a currency.
+ * @param price the price to format as a currency
+ * @param formatType the type of formatting to apply (full, rounded)
  * @returns {*}
  */
 // eslint-disable-next-line import/prefer-default-export

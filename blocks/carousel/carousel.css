@@ -1,6 +1,16 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword, declaration-block-single-line-max-declarations */
 
+@import url('../../styles/gallery.css');
+
+:root {
+  --gallery-gap: 30px;
+}
+
 .section.carousel-container { padding: 0 }
+
+.carousel {
+  position: relative;
+}
 
 .carousel-wrapper * {
   padding: 0;
@@ -41,7 +51,6 @@
 .carousel .slide.ready { display: block }
 .carousel .slide.transition { z-index: 2 }
 
-
 /* SLIDE IMAGE */
 .carousel .slide-image {
   position: relative;
@@ -51,6 +60,12 @@
 .carousel .slide-image picture {
   position: absolute;
   inset: 0;
+}
+
+.gallery-button img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
 }
 
 .carousel .slide-image picture > img {
@@ -64,7 +79,7 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  width: 50%;
+  width: 80%;
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -85,7 +100,7 @@
 }
 
 .carousel .content.top p {
-  font-size: 24px;
+  font-size: var(--heading-font-size-l);
   font-weight: 400;
 }
 
@@ -104,7 +119,7 @@
   color: var(--dark-blue);
   background: var(--yellow);
   font-family: minion-pro, serif;
-  font-size: 18px;
+  font-size: var(--body-font-size-l);
   line-height: 1.5;
   font-weight: 400;
   font-style: italic;
@@ -142,7 +157,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 25%;
+  width: 10%;
   height: 100%;
   z-index: 3;
   cursor: pointer;
@@ -151,6 +166,7 @@
   border: 0;
   -webkit-tap-highlight-color: transparent;
 }
+
 .carousel .btns button.next { left: auto; right: 0; }
 
 .carousel .btns button::after {
@@ -163,7 +179,7 @@
   height: 30px;
   margin-top: -15px;
   font-family: glyphicons;
-  font-size: 30px;
+  font-size: var(--heading-font-size-xl);
   color: #fff;
   line-height: 1;
   text-shadow: 0 1px 2px rgba(0 0 0 / 60%);
@@ -175,15 +191,35 @@
 
 .carousel .btns button.next::after {
   transform: rotate(180deg);
-
+  
   /* minus the width of the arrow */
   left: calc(70% - 30px)
 }
 
-@media (width <= 1920px) {
-  .carousel-wrapper, .carousel {
-    max-width: 100vw !important;
-  }
+.gallery-button {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: rgb(255 255 255 / 80%);
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  z-index: 10;
+
+}
+
+.gallery-button:hover {
+  background: rgb(255 255 255 / 100%);
+}
+
+.gallery-button span {
+  font-size: var(--body-font-size-m);
+  font-weight: bold;
+  color: #333;
 }
 
 @media (width <= 800px) {
@@ -211,5 +247,10 @@
   .carousel .content.bottom {
     bottom: auto;
     background: var(--light-blue);
+
+    p {
+      font-size: var(--heading-font-size-m);
+      margin: 0 10px;
+    }
   }
 }

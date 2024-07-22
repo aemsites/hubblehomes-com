@@ -1,6 +1,12 @@
-/* eslint-disable no-use-before-define, object-curly-newline, function-paren-newline */
-import { div, ul, li, button } from '../../scripts/dom-helpers.js';
-import { createOptimizedPicture } from '../../scripts/aem.js';
+import {
+  div,
+  ul,
+  li,
+  button,
+  span,
+} from '../../scripts/dom-helpers.js';
+import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
+import initGallery from '../../scripts/gallery.js';
 
 let isAuto;
 let autoInterval;
@@ -10,9 +16,11 @@ let isInitialLoad = true;
 const initialLoadDelay = 4000;
 let defaultContent;
 let isAnimating = false;
+let galleryImages = [];
+let galleryInitialized = false;
 
 function showSlide(block, dir) {
-  // wait till current animation is compeleted
+  // wait till current animation is completed
   if (isAnimating) return;
   isAnimating = true;
   const nextSlideIndex = parseInt(block.dataset.activeSlide, 10) + dir;
@@ -127,9 +135,24 @@ function decorateSlideContent(col) {
   return frag;
 }
 
+function createGalleryButton() {
+  const icon = document.createElement('img');
+  icon.src = '/icons/gallery.svg';
+  icon.alt = 'Gallery icon';
+
+  return button(
+    { class: 'gallery-button' },
+    icon,
+    span({}, 'Gallery'),
+  );
+}
+
 function createSlide(row, i) {
   const isFirst = i === 1;
   const $slide = li({ 'data-slide-index': i, class: `slide ${isFirst ? 'active' : ''}` });
+
+  // Create a wrapper for the slide content
+  const $slideWrapper = div({ class: 'slide-wrapper' });
 
   row.querySelectorAll(':scope > div').forEach((col, c) => {
     // decorate image
@@ -145,21 +168,95 @@ function createSlide(row, i) {
         ];
         col.innerHTML = '';
         col.append(createOptimizedPicture(img.src, img.alt || `slide ${c}`, true, imgSizes));
-        $slide.append(col);
+        $slideWrapper.append(col);
       }
     }
     // decorate content
     if (c === 1) {
       // use default content if col is empty
       const content = (col.textContent === '' && defaultContent !== undefined) ? defaultContent.cloneNode(true) : decorateSlideContent(col);
-      $slide.append(content);
+      $slideWrapper.append(content);
     }
   });
+
+  $slide.appendChild($slideWrapper);
+
   return $slide;
+}
+
+function adjustGalleryPosition() {
+  const topBanner = document.querySelector('.top-banner');
+  const topBannerHeight = topBanner ? topBanner.offsetHeight : 0;
+  const navHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height'), 10);
+  const adjustedNavHeight = navHeight + topBannerHeight;
+
+  document.documentElement.style.setProperty('--adjusted-nav-height', `${adjustedNavHeight}px`);
+
+  const galleryElement = document.querySelector('.gallery.active');
+  if (galleryElement) {
+    galleryElement.style.top = `${adjustedNavHeight}px`;
+  }
+
+  const imageOverlay = document.querySelector('.image-overlay');
+  if (imageOverlay) {
+    imageOverlay.style.top = `${adjustedNavHeight}px`;
+  }
+}
+
+function openGallery() {
+  const pageName = getMetadata('page-name');
+  initGallery(galleryImages, pageName);
+  setTimeout(() => {
+    adjustGalleryPosition();
+  }, 0);
+}
+
+function initializeGallery(block) {
+  if (galleryInitialized) return;
+
+  const images = block.querySelectorAll('.slide-image img');
+  galleryImages = Array.from(images).map((img) => ({
+    src: img.src,
+    alt: img.alt,
+  }));
+
+  const galleryButton = createGalleryButton();
+  block.querySelector('.slides-container').appendChild(galleryButton);
+
+  galleryButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    openGallery();
+  });
+
+  // Create a MutationObserver to watch for the top banner
+  const observer = new MutationObserver((mutations) => {
+    const hasTopBanner = mutations.some(({ type, addedNodes }) => type === 'childList' && Array.from(addedNodes).some((node) => node.classList && node.classList.contains('top-banner')));
+    if (hasTopBanner) {
+      adjustGalleryPosition();
+    }
+  });
+
+  // Start observing the document body for changes
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  // Check hash and set up hashchange event
+  if (window.location.hash === '#gallery') {
+    setTimeout(openGallery, 100);
+  }
+
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash === '#gallery') {
+      openGallery();
+    }
+  });
+
+  galleryInitialized = true;
 }
 
 export default async function decorate(block) {
   const autoClass = block.className.split(' ').find((className) => className.startsWith('auto-'));
+  const hasGallery = block.classList.contains('gallery-enabled');
 
   // get duration from auto class
   if (autoClass) {
@@ -184,7 +281,8 @@ export default async function decorate(block) {
     }
   });
 
-  const $container = div({ class: 'slides-container' },
+  const $container = div(
+    { class: 'slides-container' },
     $slides,
   );
 
@@ -204,9 +302,30 @@ export default async function decorate(block) {
     $container.append(div({ class: 'btns' }, $prev, $next));
   }
 
+  if (hasGallery) {
+    const galleryButton = createGalleryButton();
+    $container.appendChild(galleryButton);
+
+    galleryButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      openGallery();
+    });
+
+    // Collect all images for the gallery
+    galleryImages = Array.from(block.querySelectorAll('.slide-image img')).map((img) => ({
+      src: img.src,
+      alt: img.alt,
+    }));
+  }
+
   block.innerHTML = '';
   block.append($container);
 
   // auto slide functionality
   if (isAuto && isMultiple) initAuto(block);
+
+  if (hasGallery) {
+    initializeGallery(block);
+  }
 }
