@@ -6,6 +6,7 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 import buildFilters from './map-filters.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
 import { calculateMonthlyPayment, loadRates } from '../../scripts/mortgage.js';
+import { debounce } from '../../scripts/utils.js';
 
 let map;
 let bounds;
@@ -13,8 +14,8 @@ let markers = [];
 
 // Sets the map on all markers in the array.
 function setAllMarkers(m) {
-  markers.forEach((marker) => {
-    marker.setMap(m);
+  markers.forEach((markerData) => {
+    markerData.marker.setMap(m);
   });
 }
 
@@ -30,13 +31,13 @@ function deleteMapMarkers() {
 }
 
 /**
- * Creates a marker pin element for a home.
+ * Creates a marker marker element for a home.
  * @param {Object} home - The home object.
- * @param {number} i - The index of the pin.
- * @returns {HTMLElement} - The marker pin element.
+ * @param {number} i - The index of the marker.
+ * @returns {HTMLElement} - The marker element.
  */
-function markerPin(home, i) {
-  return div({ class: `pin pin-${i}`, 'data-pin': i },
+function createMarker(home, i) {
+  return div({ class: `marker marker-${i}`, 'data-marker': i },
     span(formatPrice(home.price, 'rounded')),
     div({ class: 'details' },
       h4(home['model name']),
@@ -51,17 +52,16 @@ function markerPin(home, i) {
  * Checks marker position and if it's off the map moves it into view
  * @param {number} i - The index of the active home.
 */
-function fitMarkerWithinBounds(i) {
+function fitMarkerWithinBounds(marker) {
   // padding around marker when moved into view
   const padding = {
-    top: 40,
-    right: 40,
+    top: 60, // ensure it clears buttons
+    right: 60, // ensure it clears buttons
     bottom: 60,
     left: 40,
   };
 
-  const markerElement = document.querySelector(`[data-pin="${i}"]`);
-  const markerRect = markerElement.getBoundingClientRect();
+  const markerRect = marker.getBoundingClientRect();
   const mapContainer = document.getElementById('google-map');
   const mapRect = mapContainer.getBoundingClientRect();
   const { top: markerTop, left: markerLeft, right: markerRight, bottom: markerBottom } = markerRect;
@@ -94,10 +94,8 @@ function fitMarkerWithinBounds(i) {
     const currentCenter = map.getCenter();
     const projection = map.getProjection();
     const currentCenterPX = projection.fromLatLngToPoint(currentCenter);
-
     currentCenterPX.y += (panY / 2 ** map.getZoom());
     currentCenterPX.x += (panX / 2 ** map.getZoom());
-
     const newCenter = projection.fromPointToLatLng(currentCenterPX);
     map.panTo(newCenter);
   }
@@ -123,13 +121,14 @@ async function addMapMarkers(inventory) {
   inventory.forEach((home, i) => {
     const lat = Number(home.latitude);
     const lng = Number(home.longitude);
+    const position = { lat, lng };
     const marker = new AdvancedMarkerElement({
       map,
-      position: { lat, lng },
-      content: markerPin(home, i),
+      position,
+      content: createMarker(home, i),
     });
 
-    markers.push(marker);
+    markers.push({ marker, position });
     bounds.extend(new google.maps.LatLng(lat, lng));
 
     // Note: this empty click listener must be added in order for any other events to work
@@ -194,17 +193,23 @@ function filterListeners() {
 }
 
 /**
- * Highlights the active home card and its corresponding pin on the map.
+ * Highlights the active home card and its corresponding marker on the map.
  * @param {number} i - The index of the active home.
  */
+let isHighlighting = false;
+
 function highlightActiveHome(i) {
+  if (isHighlighting) return; // prevent re-entrant calls
+  isHighlighting = true;
+
   resetActiveHomes();
-  // card actions
+
+  // Card actions
   const $card = document.querySelector(`[data-card="${i}"]`);
   $card.classList.add('active');
 
-  // scroll card into view if it's not visible
-  const $scrollContainer = document.querySelector('.listings-wrapper');
+  // Scroll card into view if it's not visible
+  const $scrollContainer = document.querySelector('.scroll-container');
   const scrollContainerRect = $scrollContainer.getBoundingClientRect();
   const activeCardRect = $card.getBoundingClientRect();
   const isVisible = (
@@ -216,21 +221,37 @@ function highlightActiveHome(i) {
     $scrollContainer.scrollTop += targetTopRelativeToContainer;
   }
 
-  // pin actions
-  const $pin = document.querySelector(`[data-pin="${i}"]`);
-  $pin.classList.add('active');
-  $pin.parentNode.parentNode.style.zIndex = '999'; // must use javascript to set/unset
-  fitMarkerWithinBounds(i);
+  // Marker actions
+  const $marker = document.querySelector(`[data-marker="${i}"]`);
+
+  if (!$marker) {
+    // Marker doesn't exist on the map (user moved too far away)
+    // Pan to it, then highlight it
+    const { position } = markers[i]; // Retrieve stored position
+    if (position) {
+      map.panTo(position);
+      // Small delay to allow marker to render
+      setTimeout(() => {
+        isHighlighting = false;
+        highlightActiveHome(i); // re-call function if needed
+      }, 100);
+    }
+  } else {
+    $marker.classList.add('active');
+    $marker.parentNode.parentNode.style.zIndex = '999'; // Must use JavaScript to set/unset
+    fitMarkerWithinBounds($marker);
+    isHighlighting = false; // Reset flag when done
+  }
 }
 
 /**
- * Disables active homes by removing the 'active' class from pins and item listings.
+ * Disables active homes by removing the 'active' class from markers and item listings.
  */
 function resetActiveHomes() {
-  const allPins = document.querySelectorAll('.pin');
-  allPins.forEach((pin) => {
-    pin.classList.remove('active');
-    pin.parentNode.parentNode.style.zIndex = '';
+  const allMarkers = document.querySelectorAll('.marker');
+  allMarkers.forEach((marker) => {
+    marker.classList.remove('active');
+    marker.parentNode.parentNode.style.zIndex = '';
   });
   document.querySelectorAll('.item-listing').forEach((item) => item.classList.remove('active'));
 }
@@ -244,7 +265,7 @@ function resetActiveHomes() {
 function buildInventoryCards(homes) {
   return homes.map((home, i) => {
     const $home = div({ class: `item-listing listing-${i}`, 'data-card': i },
-      a({ href: home.path }, createOptimizedPicture(home.image)),
+      createOptimizedPicture(home.image),
       div({ class: 'listing-info' },
         h3(home.address),
         div(span(home.city), span(home['home style'])),
@@ -260,8 +281,11 @@ function buildInventoryCards(homes) {
         ),
       ),
     );
+
+    const debouncedHighlight = debounce(() => highlightActiveHome(i), 10);
+
     $home.addEventListener('mouseenter', () => {
-      highlightActiveHome(i);
+      debouncedHighlight();
     });
     return $home;
   });
@@ -312,8 +336,10 @@ export default async function decorate(doc) {
     ),
     aside(
       filters,
-      div({ class: 'listings-wrapper' },
-        ...buildInventoryCards(inventory),
+      div({ class: 'scroll-container' },
+        div({ class: 'listings-wrapper' },
+          ...buildInventoryCards(inventory),
+        ),
         $footer,
       ),
     ),
