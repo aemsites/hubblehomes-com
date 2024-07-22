@@ -1,6 +1,15 @@
 import { readBlockConfig } from '../../scripts/aem.js';
 import { div, a, button } from '../../scripts/dom-helpers.js';
 
+function resetHeaderPosition() {
+  const header = document.querySelector('header');
+  const body = document.querySelector('body');
+  if (header) {
+    header.style.top = '';
+    body.style.paddingTop = '';
+  }
+}
+
 export default function decorate(block) {
   const config = readBlockConfig(block);
   const variant = config.variant || '';
@@ -41,12 +50,12 @@ export default function decorate(block) {
     closeButton.addEventListener('click', () => {
       block.classList.add('dismissed');
       document.body.classList.remove('has-top-banner');
-      // Use setTimeout to remove the banner after the transition
-      setTimeout(() => {
-        block.remove();
-      }, 300); // 300ms matches the transition duration in CSS
+      resetHeaderPosition();
+      block.remove();
       // Set a flag in sessionStorage
       sessionStorage.setItem('topBannerDismissed', 'true');
+      // Force a reflow =
+      document.body.offsetHeight; // eslint-disable-line no-unused-expressions
     });
   }
 

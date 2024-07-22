@@ -1,7 +1,6 @@
 .top-banner {
     background-color: var(--light-blue);
     color: var(--dark-blue);
-    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
     max-height: 60px;
     opacity: 1;
     overflow: hidden;
@@ -12,6 +11,10 @@
   .top-banner.dismissed {
     max-height: 0;
     opacity: 0;
+    visibility: hidden;
+    padding: 0;
+
+    /* pointer-events: none; */
   }
   
   .top-banner-wrapper {
@@ -55,28 +58,33 @@
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    transition: background-color 0.3s ease;
+    transition: opacity 0.3s ease-out;
   }
-  
+
   .top-banner-close:hover {
     background-color: rgb(0 0 0 / 10%);
+  }
+
+  .top-banner.dismissed .top-banner-close {
+    opacity: 0;
   }
   
   .top-banner-close::before {
     content: "\00D7"; /* Unicode for multiplication sign, looks like an "x" */
   }
-  
+
   body.has-top-banner {
-    padding-top: 48px;
+    padding-top: 46px;
+    transition: padding-top 0s;
   }
-  
+
   body.has-top-banner .top-banner {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
   }
-  
-  header {
-    transition: top 0.3s ease-out;
+
+  body:not(.has-top-banner) {
+    padding-top: 0;
   }

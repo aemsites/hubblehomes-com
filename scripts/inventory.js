@@ -1,14 +1,22 @@
-import { getModels } from './models.js';
-import { getInventorySheet } from './workbook.js';
+import { getHomePlansSheet, getInventorySheet } from './workbook.js';
 import { getCityForCommunity } from './communities.js';
 
 const filters = [
+  { category: 'label', value: '', label: 'Price' },
+  { category: 'label', value: '', label: 'Beds' },
+  { category: 'label', value: '', label: 'Baths' },
+  { category: 'label', value: '', label: 'City' },
+  { category: 'label', value: '', label: 'Square Feet' },
+  { category: 'label', value: '', label: 'Cars' },
+  { category: 'label', value: '', label: 'Status' },
+  { category: 'label', value: '', label: 'Home Type' },
   { category: 'all', value: '', label: 'All' },
   {
     category: 'status',
-    value: '',
+    value: 'status-*',
     label: 'All Listings',
     headerTitle: 'All New Home Listings',
+    rule: (models) => models.filter(() => true),
   },
   {
     category: 'filterBy',
@@ -93,6 +101,12 @@ const filters = [
   },
   {
     category: 'beds',
+    value: 'beds-*',
+    label: 'All',
+    rule: (models) => models.filter(() => true),
+  },
+  {
+    category: 'beds',
     value: 'beds-3',
     label: '3+ beds',
     rule: (models) => models.filter((model) => parseInt(model.beds, 10) >= 3),
@@ -114,6 +128,12 @@ const filters = [
     value: 'beds-6',
     label: '6+ beds',
     rule: (models) => models.filter((model) => parseInt(model.beds, 10) >= 6),
+  },
+  {
+    category: 'sqft',
+    value: 'squarefeet-*',
+    label: 'All',
+    rule: (models) => models.filter(() => true),
   },
   {
     category: 'sqft',
@@ -154,6 +174,12 @@ const filters = [
     value: 'squarefeet-6',
     label: 'Over 3500 sq ft',
     rule: (models) => models.filter((model) => parseInt(model['square feet'], 10) > 3500),
+  },
+  {
+    category: 'price',
+    value: 'price-*',
+    label: 'All',
+    rule: (models) => models.filter(() => true),
   },
   {
     category: 'price',
@@ -219,33 +245,69 @@ const filters = [
   },
   {
     category: 'cars',
-    value: '2',
-    label: '',
+    value: 'cars-*',
+    label: 'All',
+    rule: (models) => models.filter(() => true),
+  },
+  {
+    category: 'cars',
+    value: 'cars-2',
+    label: '2',
     rule: (models) => models.filter((model) => parseInt(model.cars, 10) === 2),
   },
   {
     category: 'cars',
-    value: '3',
-    label: '',
+    value: 'cars-3',
+    label: '3',
     rule: (models) => models.filter((model) => parseInt(model.cars, 10) === 3),
   },
   {
     category: 'baths',
-    value: '2+',
-    label: '',
+    value: 'baths-*',
+    label: 'All',
+    rule: (models) => models.filter(() => true),
+  },
+  {
+    category: 'baths',
+    value: 'baths-2+',
+    label: '2+',
     rule: (models) => models.filter((model) => parseInt(model.baths, 10) >= 2),
   },
   {
     category: 'baths',
-    value: '3+',
-    label: '',
+    value: 'baths-3+',
+    label: '3+',
     rule: (models) => models.filter((model) => parseInt(model.baths, 10) >= 3),
   },
   {
     category: 'baths',
-    value: '4+',
-    label: '',
+    value: 'baths-4+',
+    label: '4+',
     rule: (models) => models.filter((model) => parseInt(model.baths, 10) >= 4),
+  },
+  {
+    category: 'homestyle',
+    value: 'homestyle-*',
+    label: 'All',
+    rule: (models) => models.filter(() => true),
+  },
+  {
+    category: 'homestyle',
+    value: '1-story',
+    label: '1 Story',
+    rule: (models) => models.filter((model) => model['home style'] === '1 Story'),
+  },
+  {
+    category: 'homestyle',
+    value: '1.5-story',
+    label: '1.5 Story',
+    rule: (models) => models.filter((model) => model['home style'] === '1.5 Story'),
+  },
+  {
+    category: 'homestyle',
+    value: '2-story',
+    label: '2 Story',
+    rule: (models) => models.filter((model) => model['home style'] === '2 Story'),
   },
 ];
 
@@ -275,14 +337,14 @@ async function createCommunityInventoryMap() {
   // Load inventory data using the loadInventoryData function
   const inventoryData = await getInventoryData();
 
-  const models = await getModels();
+  const homeplans = await getHomePlansSheet('data');
 
   // Create a map of communities to homes
   const communityMap = new Map();
 
   inventoryData.forEach((inventoryHome) => {
-    // Inject the model image into the inventory home
-    const { image } = models.find((model) => model['model name'] === inventoryHome['model name']) || {};
+    // Inject the home plan image into the inventory home
+    const { image } = homeplans.find((model) => model['model name'] === inventoryHome['model name']) || {};
     if (image) {
       inventoryHome.image = image;
     }
@@ -294,7 +356,7 @@ async function createCommunityInventoryMap() {
     communityMap.get(community).push(inventoryHome);
   });
 
-  // iterate through all the communties and update the city for each inventory home
+  // iterate through all the communities and update the city for each inventory home
   const communityMapEntries = Array.from(communityMap.entries());
   await Promise.all(communityMapEntries.map(async ([community, homes]) => {
     const city = await getCityForCommunity(community);

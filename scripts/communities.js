@@ -126,7 +126,7 @@ async function getCommunityMinMaxDetails(communityName) {
   };
 
   function getValueForField(field, model) {
-    const fieldValues = model[field].split(' - ');
+    const fieldValues = model[field].split('-');
     if (fieldValues.length === 2) {
       const min = parseFloat(fieldValues[0].replace(',', ''));
       const max = parseFloat(fieldValues[1].replace(',', ''));
