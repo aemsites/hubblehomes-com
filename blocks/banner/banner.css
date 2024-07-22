@@ -10,6 +10,7 @@
 .banner {
   .spotlight-link {
     color: inherit;
+    font-weight: 900;
   }
 
   .spotlight-button {
