@@ -165,11 +165,9 @@
       margin-bottom: 40px;
       flex-direction: column;
       .thumb {
-        display: none;
-        font-size: 0;
-        width: 100%;
+        display: none;        
         img {
-          width: 100%;
+          display: none;     
 
         }
       }
