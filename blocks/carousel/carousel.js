@@ -3,21 +3,18 @@ import {
   ul,
   li,
   button,
-  span,
 } from '../../scripts/dom-helpers.js';
-import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
-import initGallery from '../../scripts/gallery.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
+import { createGallery, initializeGallery } from './gallery.js';
 
 let isAuto;
 let autoInterval;
-let autoDuration = '6000'; // default if not set in block
+let autoDuration = 6000; // default if not set in block
 const fadeDuration = 700; // match time in css -> .carousel.fade .slide
 let isInitialLoad = true;
 const initialLoadDelay = 4000;
 let defaultContent;
 let isAnimating = false;
-let galleryImages = [];
-let galleryInitialized = false;
 
 function showSlide(block, dir) {
   // wait till current animation is completed
@@ -99,10 +96,15 @@ function initAuto(block) {
   });
 }
 
-function decorateSlideContent(col) {
+/**
+ * Return the top and bottom text for the slide.
+ * @param col {HTMLElement} - The column element
+ * @returns {DocumentFragment} - The top and bottom text
+ */
+function getSlideText(col) {
   const frag = document.createDocumentFragment();
-  let top = '';
-  let bottom = '';
+  let topText = '';
+  let bottomText = '';
   let isTop = true;
 
   // decorate CTA
@@ -114,39 +116,36 @@ function decorateSlideContent(col) {
       // if node is an <hr> switch to the bottom section
       isTop = false;
     } else if (isTop) {
-      top += node.outerHTML || node.textContent;
+      topText += node.outerHTML || node.textContent;
     } else {
-      bottom += node.outerHTML || node.textContent;
+      bottomText += node.outerHTML || node.textContent;
     }
   });
 
-  if (top.trim()) {
+  if (topText.trim()) {
     const $top = div({ class: 'content top' });
-    $top.innerHTML = top.trim();
+    $top.innerHTML = topText.trim();
     frag.append($top);
   }
 
-  if (bottom.trim() || !isTop) {
+  if (bottomText.trim() || !isTop) {
     const $bottom = div({ class: 'content bottom' });
-    $bottom.innerHTML = bottom.trim();
+    $bottom.innerHTML = bottomText.trim();
     frag.append($bottom);
   }
 
   return frag;
 }
 
-function createGalleryButton() {
-  const icon = document.createElement('img');
-  icon.src = '/icons/gallery.svg';
-  icon.alt = 'Gallery icon';
-
-  return button(
-    { class: 'gallery-button' },
-    icon,
-    span({}, 'Gallery'),
-  );
-}
-
+/**
+ * Create a slide element from a row. The row should contain two columns, the first column should
+ * contain an image and the second column may contain the slide content.  If the second column is
+ * empty, the default content will be used.
+ *
+ * @param row {HTMLElement} - The row element
+ * @param i {number} - The slide index
+ * @returns {Element} - The slide element
+ */
 function createSlide(row, i) {
   const isFirst = i === 1;
   const $slide = li({ 'data-slide-index': i, class: `slide ${isFirst ? 'active' : ''}` });
@@ -154,9 +153,9 @@ function createSlide(row, i) {
   // Create a wrapper for the slide content
   const $slideWrapper = div({ class: 'slide-wrapper' });
 
-  row.querySelectorAll(':scope > div').forEach((col, c) => {
+  row.querySelectorAll(':scope > div').forEach((col, index) => {
     // decorate image
-    if (c === 0) {
+    if (index === 0) {
       col.classList.add('slide-image');
       const img = col.querySelector('img');
       if (img) {
@@ -167,14 +166,14 @@ function createSlide(row, i) {
           { media: '(min-width: 1024px)', width: '1920' },
         ];
         col.innerHTML = '';
-        col.append(createOptimizedPicture(img.src, img.alt || `slide ${c}`, true, imgSizes));
+        col.append(createOptimizedPicture(img.src, img.alt || `slide ${index}`, true, imgSizes));
         $slideWrapper.append(col);
       }
-    }
-    // decorate content
-    if (c === 1) {
+    } else if (index === 1) {
       // use default content if col is empty
-      const content = (col.textContent === '' && defaultContent !== undefined) ? defaultContent.cloneNode(true) : decorateSlideContent(col);
+      const content = (col.textContent === '' && defaultContent !== undefined)
+        ? defaultContent.cloneNode(true)
+        : getSlideText(col);
       $slideWrapper.append(content);
     }
   });
@@ -184,74 +183,27 @@ function createSlide(row, i) {
   return $slide;
 }
 
-function adjustGalleryPosition() {
-  const topBanner = document.querySelector('.top-banner');
-  const topBannerHeight = topBanner ? topBanner.offsetHeight : 0;
-  const navHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height'), 10);
-  const adjustedNavHeight = navHeight + topBannerHeight;
-
-  document.documentElement.style.setProperty('--adjusted-nav-height', `${adjustedNavHeight}px`);
-
-  const galleryElement = document.querySelector('.gallery.active');
-  if (galleryElement) {
-    galleryElement.style.top = `${adjustedNavHeight}px`;
+function createNavButtons(isMultiple, block, $container) {
+  if (isMultiple) {
+    block.dataset.activeSlide = '0';
+    const $prev = button({
+      class: 'prev',
+      'aria-label': 'Previous Slide',
+    });
+    $prev.addEventListener('click', () => {
+      showSlide(block, -1);
+      if (isAuto) resetAuto(block);
+    });
+    const $next = button({
+      class: 'next',
+      'aria-label': 'Next Slide',
+    });
+    $next.addEventListener('click', () => {
+      showSlide(block, 1);
+      if (isAuto) resetAuto(block);
+    });
+    $container.append(div({ class: 'btns' }, $prev, $next));
   }
-
-  const imageOverlay = document.querySelector('.image-overlay');
-  if (imageOverlay) {
-    imageOverlay.style.top = `${adjustedNavHeight}px`;
-  }
-}
-
-function openGallery() {
-  const pageName = getMetadata('page-name');
-  initGallery(galleryImages, pageName);
-  setTimeout(() => {
-    adjustGalleryPosition();
-  }, 0);
-}
-
-function initializeGallery(block) {
-  if (galleryInitialized) return;
-
-  const images = block.querySelectorAll('.slide-image img');
-  galleryImages = Array.from(images).map((img) => ({
-    src: img.src,
-    alt: img.alt,
-  }));
-
-  const galleryButton = createGalleryButton();
-  block.querySelector('.slides-container').appendChild(galleryButton);
-
-  galleryButton.addEventListener('click', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    openGallery();
-  });
-
-  // Create a MutationObserver to watch for the top banner
-  const observer = new MutationObserver((mutations) => {
-    const hasTopBanner = mutations.some(({ type, addedNodes }) => type === 'childList' && Array.from(addedNodes).some((node) => node.classList && node.classList.contains('top-banner')));
-    if (hasTopBanner) {
-      adjustGalleryPosition();
-    }
-  });
-
-  // Start observing the document body for changes
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  // Check hash and set up hashchange event
-  if (window.location.hash === '#gallery') {
-    setTimeout(openGallery, 100);
-  }
-
-  window.addEventListener('hashchange', () => {
-    if (window.location.hash === '#gallery') {
-      openGallery();
-    }
-  });
-
-  galleryInitialized = true;
 }
 
 export default async function decorate(block) {
@@ -260,68 +212,58 @@ export default async function decorate(block) {
 
   // get duration from auto class
   if (autoClass) {
-    [autoDuration] = autoClass.match(/\d+/);
+    // protect against bad input and see if we can find a number, if not default to 6000 ms
+    const match = autoClass.match(/\d+/);
+    const [duration] = match || [6000];
+    if (duration) {
+      autoDuration = Number.parseInt(duration, 10);
+    }
     isAuto = true;
   }
 
   block.setAttribute('role', 'region');
   block.setAttribute('aria-roledescription', 'Carousel');
 
+  let isMultiple = false;
   const rows = block.querySelectorAll(':scope > div');
-  const isMultiple = rows.length > 2;
   const $slides = ul({ class: 'slides' });
 
-  rows.forEach((row, i) => {
-    if (i === 0 && isMultiple) { // is more than 2 rows - get default content from 1st row
-      defaultContent = decorateSlideContent(row.querySelector(':scope > div').nextElementSibling);
-    } else {
-      $slides.appendChild(createSlide(row, !isMultiple ? 1 : i));
+  if (rows.length === 1) {
+    const $slide = createSlide(rows[0], 1);
+    $slides.appendChild($slide);
+  } else {
+    // check to see if there is any default content in the first row if there is no
+    // picture then we have default content
+    if (rows.length > 1 && !rows[0].querySelector(':scope > div picture')) {
+      defaultContent = getSlideText(rows[0].querySelector(':scope > div').nextElementSibling);
     }
-  });
+
+    Array.from(rows).splice(1).forEach((row, i) => {
+      const index = i + 1;
+      const $slide = createSlide(row, index);
+      $slides.appendChild($slide);
+      isMultiple = i >= 1;
+    });
+  }
 
   const $container = div(
     { class: 'slides-container' },
     $slides,
   );
 
-  // add buttons if multiple slides
-  if (isMultiple) {
-    block.dataset.activeSlide = 0;
-    const $prev = button({ class: 'prev', 'aria-label': 'Previous Slide' });
-    $prev.addEventListener('click', () => {
-      showSlide(block, -1);
-      if (isAuto) resetAuto(block);
-    });
-    const $next = button({ class: 'next', 'aria-label': 'Next Slide' });
-    $next.addEventListener('click', () => {
-      showSlide(block, 1);
-      if (isAuto) resetAuto(block);
-    });
-    $container.append(div({ class: 'btns' }, $prev, $next));
-  }
+  createNavButtons(isMultiple, block, $container);
 
   if (hasGallery) {
-    const galleryButton = createGalleryButton();
-    $container.appendChild(galleryButton);
-
-    galleryButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      openGallery();
-    });
-
-    // Collect all images for the gallery
-    galleryImages = Array.from(block.querySelectorAll('.slide-image img')).map((img) => ({
-      src: img.src,
-      alt: img.alt,
-    }));
+    createGallery($container, block);
   }
 
   block.innerHTML = '';
   block.append($container);
 
   // auto slide functionality
-  if (isAuto && isMultiple) initAuto(block);
+  if (isAuto && isMultiple) {
+    initAuto(block);
+  }
 
   if (hasGallery) {
     initializeGallery(block);
