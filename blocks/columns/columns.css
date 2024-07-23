@@ -1,5 +1,3 @@
-/* stylelint-disable declaration-block-single-line-max-declarations */
-
 .columns > div {
   display: flex;
   flex-direction: column;
@@ -23,7 +21,7 @@
 
 @media (width >= 900px) {
   .columns > div {
-    align-items: center;
+    align-items: flex-start;
     flex-direction: unset;
     gap: 32px;
   }
@@ -37,27 +35,97 @@
 /* About variant */
 .columns.about {
   > div {
-    align-items: start;
-    align-items: stretch;
+    @media (width >= 900px) {
+      display: flex;
+      align-items: flex-start;
+      gap: 32px;
+    }
   }
 
   /* column */
   > div > div {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
     padding: 16px;
-
-    &:nth-child(1) { background: #3955b1; color: #fff; }
-    &:nth-child(2) { background: #eed74b; color: #383838; }
-    &:nth-child(3) { background: #26345e; color: #fff; }
+    margin-bottom: 10px;
+    text-align: center;
+    
+    &:nth-child(1) { 
+      background: #3955b1; 
+      color: #fff; 
+      .expand-icon svg { fill: #fff; }
+    }
+    
+    &:nth-child(2) { 
+      background: #eed74b; 
+      color: #383838; 
+      .expand-icon svg { fill: #383838; }
+    }
+    
+    &:nth-child(3) { 
+      background: #26345e; 
+      color: #fff; 
+      .expand-icon svg { fill: #fff; }
+    }
   
+    .header-row {
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     h2 {
-      text-align: center;
       color: inherit;
       font-size: 24px;
       font-weight: 600;
-      padding: 0 0 20px;
+      padding: 0;
+      margin: 0;
+    }
+
+    .expand-icon {
+      width: 24px;
+      height: 24px;
+      position: absolute;
+      right: 0;
+      transition: transform 0.3s ease;
+    }
+
+    &.expanded .expand-icon {
+      transform: rotate(90deg);
+    }
+
+    .column-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out;
+    }
+
+    &.expanded .column-content {
+      max-height: 1000px;
+      transition: max-height 0.5s ease-in;
+    }
+
+    @media (width >= 900px) {
+      flex: 1 0 auto;
+      margin-bottom: 0;
+      text-align: left;
+      max-width: calc(33.33% - 21.33px);
+
+      .header-row {
+        justify-content: flex-start;
+      }
+
+      .expand-icon {
+        display: none;
+      }
+
+      .column-content {
+        max-height: none;
+        overflow: visible;
+      }
     }
 
     /* cards */
@@ -67,6 +135,7 @@
       margin-top: 16px;
       padding: 16px;
       box-shadow: 5px 5px 10px 3px rgba(151 151 151 / 30%);
+      text-align: left;
 
       h3 {
         line-height: 1.1em;
@@ -93,6 +162,5 @@
       }
       &:hover p { color: var(--light-blue) }
     }
-
   }
-} 
+}

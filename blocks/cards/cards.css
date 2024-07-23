@@ -1,31 +1,70 @@
-.cards > ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(278px, 1fr));
-  grid-gap: 16px;
-}
+.cards.locations {
+  & > ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 0;
 
-.cards > ul > li {
-  border: 1px solid var(--dark-color);
-  background-color: var(--background-color)
-}
+    > li {
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0 0 0 / 10%);
+      transition: transform 0.3s ease;
 
-.cards .cards-card-body {
-  margin: 16px;
-}
+      &:hover {
+        transform: translateY(-5px);
+      }
+    }
+  }
 
-.cards .cards-card-image {
-  line-height: 0;
-}
+  .cards-card-image {
+    height: 300px;
 
-.cards .cards-card-body > *:first-child {
-  margin-top: 0;
-}
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
 
-.cards > ul > li img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  .cards-card-body {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to bottom, rgba(0 0 0 / 40%) 0%, rgba(0 0 0 0) 30%, rgba(0 0 0 0) 70%, rgba(0 0 0 / 40%) 100%);
+    color: var(--light-color);
+    text-shadow: 0 0 5px #000;
+
+    .btn-container {
+      margin-bottom: 0;
+      text-align: center;
+
+      + p {
+        font-size: var(--body-font-size-m);
+        font-weight: bold;
+        margin: 0;
+        text-transform: uppercase;
+        color: var(--light-color);
+        text-align: center;
+      }
+
+      a {
+        font-size: var(--body-font-size-m);
+        font-style: normal;
+        font-family: var(--body-font-family);
+        width: 90%;
+        text-transform: uppercase;
+        padding: 5px 5px 8px;
+        border-radius: 0;
+        white-space: normal;
+      }
+    }
+  }
+
+  @media (min-width: 600px) {
+    .cards > ul {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+  }
 }

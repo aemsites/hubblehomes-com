@@ -1,3 +1,5 @@
+/* stylelint-disable selector-id-pattern  */
+
 @layer reset, theme, layout, templates;
 
 /*
@@ -14,13 +16,15 @@
 @import url("layouts.css");
 @import url('templates.css');
 @import url('buttons.css');
+@import url('index.css');
 
 @layer reset {
   :root {
     /* colors */
+    --white: white;
     --link-color: #383838;
     --link-hover-color: #136ff6;
-    --background-color: white;
+    --background-color: var(--white);
     --light-color: #eee;
     --dark-color: #ccc;
     --text-color: #383838;
@@ -127,6 +131,11 @@
   h5 { font-size: var(--heading-font-size-s) }
   h6 { font-size: var(--heading-font-size-xs) }
 
+  @media (max-width: 900px) {
+    h1 { font-size: var(--heading-font-size-xl) }
+    h2 { font-size: var(--heading-font-size-l) }
+  }
+
   dl, ol, ul, pre, blockquote {
     margin-top: 1em;
     margin-bottom: 1em;
@@ -223,63 +232,44 @@
     width: 100%;
   }
 
+  #news--inspiration {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  #news--inspiration em {
+    color: var(--yellow);
+  }
+
+  #whats-new-stay-in-the-know {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
   /* sections */
   main > .section > * {
     max-width: 1200px;
   }
 
-  /**
-    Grey divider used for section titles.
-   */
-  .section div.grey-divider {
-    background-color: var(--grey-bar);
-    color: var(--link-color);
-    padding: 10px;
-    text-align: center;
-    font-size: 28px;
-    font-weight: 600;
-    margin: 20px 0;
-  }
-
-  .breadcrumbs {
-    .breadcrumb-list {
-      list-style: none;
-      display: flex;
-      flex-wrap: wrap;
-      font-size: .8em;
-      color: #c8c8c8;
-      padding: 8px 0;
-      user-select: none;
-
-      li {
-        margin: 10px 1px;
-
-        &::after {
-          content: ">";
-          margin-left: 5px;
-        }
-
-        &:last-child::after {
-          content: "";
-        }
-
-        a {
-          color: #aaa;
-          text-decoration: none;
-
-          &:hover {
-            color: #0055b9;
-          }
-        }
-      }
-    }
-  }
 
   @media (width >= 900px) {
     .section > div {
       max-width: 1200px;
       margin: auto;
     }
+  }
+
+  /**
+   Grey divider used for section titles.
+  */
+  div.grey-divider {
+    background-color: var(--grey-bar);
+    color: var(--link-color);
+    padding: 10px !important;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 30px 0;
   }
 
   /* section metadata */
@@ -289,15 +279,28 @@
   }
 
   .section.yellow {
-    padding: 0;
+    background-color: var(--yellow);
+    margin-bottom: 20px;
+    padding: 20px;
+  }
+
+  .section.yellow .default-content-wrapper {
+    max-width: 100%;
+    text-align: center;
+    padding: 10px 0;
     background-color: var(--yellow);
     margin-bottom: 20px;
   }
 
-  .section.yellow .default-content-wrapper {
-    width: 975px;
-    font-size: 16px;
-    padding: 30px;
+  .section.yellow .default-content-wrapper h2 {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--blue);
+  }
+
+  .section.yellow .default-content-wrapper p {
+    font-size: 14px;
+    margin: 0 0 10px;
   }
 
   .btn-primary {
@@ -333,3 +336,52 @@
     text-decoration: line-through;
   }
 }
+
+/* pad all sections */
+main > .section > *:not(.carousel-wrapper) {
+  padding: 0 20px;
+
+  @media (max-width: 768px) {
+    padding: 0 10px;
+  }
+}
+
+@media (min-width: 600px) {
+  .section.yellow {
+    padding: 25px;
+  }
+
+  .section.yellow .default-content-wrapper {
+    padding: 25px;
+  }
+
+  .section.yellow .default-content-wrapper h2 {
+    font-size: 32px;
+  }
+
+  .section.yellow .default-content-wrapper p {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 900px) {
+  .section.yellow {
+    padding: 30px;
+  }
+
+  .section.yellow .default-content-wrapper {
+    max-width: 975px;
+    margin: 0 auto;
+    padding: 30px;
+  }
+
+  .section.yellow .default-content-wrapper h2 {
+    font-size: 36px;
+  }
+
+  .section.yellow .default-content-wrapper p {
+    font-size: 16px;
+  }
+}
+
+

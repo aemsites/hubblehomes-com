@@ -10,10 +10,16 @@ import {
   waitForLCP,
   loadBlocks,
   loadCSS,
-  getMetadata,
+  getMetadata, loadBreadcrumbs,
 } from './aem.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
+
+function clearTopBannerDismissedOnLoad() {
+  if (performance.getEntriesByType('navigation')[0].type === 'reload') {
+    sessionStorage.removeItem('topBannerDismissed');
+  }
+}
 
 /**
  * load fonts.css and set a session storage flag
@@ -21,7 +27,9 @@ const LCP_BLOCKS = []; // add your LCP blocks to the list
 async function loadFonts() {
   await loadCSS(`${window.hlx.codeBasePath}/styles/fonts.css`);
   try {
-    if (!window.location.hostname.includes('localhost')) sessionStorage.setItem('fonts-loaded', 'true');
+    if (!window.location.hostname.includes('localhost')) {
+      sessionStorage.setItem('fonts-loaded', 'true');
+    }
   } catch (e) {
     // do nothing
   }
@@ -56,21 +64,59 @@ export function decorateMain(main) {
 }
 
 /**
+ * Loads a fragment.
+ * @param {string} path The path to the fragment
+ * @returns {HTMLElement} The root element of the fragment
+ */
+async function loadFragment(path) {
+  if (path && path.startsWith('/')) {
+    const resp = await fetch(`${path}.plain.html`);
+    if (resp.ok) {
+      const main = document.createElement('main');
+      main.innerHTML = await resp.text();
+
+      // reset base path for media to fragment base
+      const resetAttributeBase = (tag, attr) => {
+        main.querySelectorAll(`${tag}[${attr}^="./media_"]`).forEach((elem) => {
+          elem[attr] = new URL(elem.getAttribute(attr), new URL(path, window.location)).href;
+        });
+      };
+      resetAttributeBase('img', 'src');
+      resetAttributeBase('source', 'srcset');
+
+      decorateMain(main);
+      await loadBlocks(main);
+      return main;
+    }
+  }
+  return null;
+}
+
+/**
  * Decorates the template.
  */
 export async function loadTemplate(doc, templateName) {
   try {
     const cssLoaded = new Promise((resolve) => {
-      loadCSS(`${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css`).then((resolve)).catch((err) => {
-        // eslint-disable-next-line no-console
-        console.error(`failed to load css module for ${templateName}`, err.target.href);
-        resolve();
-      });
+      loadCSS(
+        `${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css`,
+      )
+        .then(resolve)
+        .catch((err) => {
+          // eslint-disable-next-line no-console
+          console.error(
+            `failed to load css module for ${templateName}`,
+            err.target.href,
+          );
+          resolve();
+        });
     });
     const decorationComplete = new Promise((resolve) => {
       (async () => {
         try {
-          const mod = await import(`../templates/${templateName}/${templateName}.js`);
+          const mod = await import(
+            `../templates/${templateName}/${templateName}.js`
+          );
           if (mod.default) {
             await mod.default(doc);
           }
@@ -91,6 +137,70 @@ export async function loadTemplate(doc, templateName) {
   }
 }
 
+function handleTopBanner(topBanner) {
+  if (topBanner && !topBanner.classList.contains('dismissed')) {
+    const header = document.querySelector('header');
+    const bannerHeight = topBanner.offsetHeight;
+
+    document.body.classList.add('has-top-banner');
+    document.body.style.paddingTop = `${bannerHeight}px`;
+
+    if (header) {
+      header.style.top = `${bannerHeight}px`;
+    }
+  } else {
+    document.body.classList.remove('has-top-banner');
+    document.body.style.paddingTop = '0';
+
+    const header = document.querySelector('header');
+    if (header) {
+      header.style.top = '';
+    }
+  }
+}
+
+function setupTopBannerObserver() {
+  const header = document.querySelector('header');
+
+  // watch for changes in the header
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        const topBanner = document.querySelector('.top-banner');
+        if (topBanner) {
+          handleTopBanner(topBanner);
+          observer.disconnect(); // Stop observing once we've handled the banner
+        }
+      }
+    });
+  });
+
+  // observing the header for changes
+  observer.observe(header, { childList: true, subtree: true });
+
+  // listen for the custom event
+  window.addEventListener('topbannerloaded', () => {
+    const topBanner = document.querySelector('.top-banner');
+    if (topBanner) {
+      handleTopBanner(topBanner);
+    }
+  }, { once: true });
+}
+
+async function loadTopBanner(doc) {
+  const topBannerFragment = await loadFragment('/fragments/top-banner');
+  if (topBannerFragment) {
+    const topBanner = topBannerFragment.querySelector('.top-banner');
+    if (topBanner) {
+      const header = doc.querySelector('header');
+      header?.prepend(topBanner);
+
+      // Dispatch a custom event when the banner is added
+      window.dispatchEvent(new CustomEvent('topbannerloaded'));
+    }
+  }
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -105,6 +215,7 @@ async function loadEager(doc) {
     decorateMain(main);
     if (templateName) {
       await loadTemplate(doc, templateName);
+      await loadBreadcrumbs(doc);
     }
     document.body.classList.add('appear');
     await waitForLCP(LCP_BLOCKS);
@@ -134,6 +245,7 @@ async function loadLazy(doc) {
 
   loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
+  loadTopBanner(doc);
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
@@ -161,11 +273,16 @@ function setupGlobalVars() {
 const openSheet = ({ detail }) => {
   const { data } = detail;
   const routes = {
-    '/new-homes/*/*/*/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=rgHBEC&nav=MTVfezAwMDAwMDAwLTAwMDEtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMH0',
-    '/new-homes/*/*/*/*/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=bD7sfK&nav=MTVfezNGNTgzREJGLTEzNkYtNDU4RC1BQkM1LTBFRjhGMDNCMUY0OX0',
-    '/new-homes/*/*/*/*/*/*/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=LGaAfv&nav=MTVfezg2ODI3Q0EwLThEOTQtNEQxQS04Rjg2LUQ4NEJCMTU0OEU1RX0',
-    '/home-plans/plan-detail/*': 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=H18GCg&nav=MTVfezVCMEU1NzA5LUE2MTAtNDY1RS1BMDhGLUIxQjU1MEFDRDEwOH0',
-    home: 'https://adobe.sharepoint.com/:x:/r/sites/HelixProjects/Shared%20Documents/sites/hubblehomes/data/hubblehomes.xlsx?d=w7175fb34e91d4f36a74d07e563906126&csf=1&web=1&e=rgHBEC&nav=MTVfezAwMDAwMDAwLTAwMDEtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMH0',
+    /* communities */
+    '/new-homes/*/*/*/*': 'https://woodsidegroup.sharepoint.com/:x:/r/sites/HubbleHomesWebsite/Shared%20Documents/Website/hubblehomes/data/hubblehomes.xlsx?d=w5eb9406180fd4a4ebdcbb02f9a4e06ba&csf=1&web=1&e=pfAIY7&nav=MTVfezAwMDAwMDAwLTAwMDEtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMH0',
+    /* models */
+    '/new-homes/*/*/*/*/*': 'https://woodsidegroup.sharepoint.com/:x:/r/sites/HubbleHomesWebsite/Shared%20Documents/Website/hubblehomes/data/hubblehomes.xlsx?d=w5eb9406180fd4a4ebdcbb02f9a4e06ba&csf=1&web=1&e=38VuGl&nav=MTVfezNGNTgzREJGLTEzNkYtNDU4RC1BQkM1LTBFRjhGMDNCMUY0OX0',
+    /* inventory */
+    '/new-homes/*/*/*/*/*/*/*': 'https://woodsidegroup.sharepoint.com/:x:/r/sites/HubbleHomesWebsite/Shared%20Documents/Website/hubblehomes/data/hubblehomes.xlsx?d=w5eb9406180fd4a4ebdcbb02f9a4e06ba&csf=1&web=1&e=ygnBSA&nav=MTVfezg2ODI3Q0EwLThEOTQtNEQxQS04Rjg2LUQ4NEJCMTU0OEU1RX0',
+    /* home plans */
+    '/home-plans/plan-detail/*': 'https://woodsidegroup.sharepoint.com/:x:/r/sites/HubbleHomesWebsite/Shared%20Documents/Website/hubblehomes/data/hubblehomes.xlsx?d=w5eb9406180fd4a4ebdcbb02f9a4e06ba&csf=1&web=1&e=CjeJJf&nav=MTVfezVCMEU1NzA5LUE2MTAtNDY1RS1BMDhGLUIxQjU1MEFDRDEwOH0',
+    /* default if no match */
+    home: 'https://woodsidegroup.sharepoint.com/:x:/r/sites/HubbleHomesWebsite/Shared%20Documents/Website/hubblehomes/data/hubblehomes.xlsx?d=w5eb9406180fd4a4ebdcbb02f9a4e06ba&csf=1&web=1&e=pfAIY7&nav=MTVfezAwMDAwMDAwLTAwMDEtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMH0',
   };
 
   const pathToMatch = data.location.pathname;
@@ -206,8 +323,11 @@ if (sk) {
 }
 
 async function loadPage() {
+  setupTopBannerObserver();
+  clearTopBannerDismissedOnLoad();
   setupGlobalVars();
   await loadEager(document);
+
   await loadLazy(document);
   loadDelayed();
 }

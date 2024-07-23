@@ -3,19 +3,15 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { div, h3, p, small, aside, h1, a, strong, hr } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
-import { loadTemplate } from '../../scripts/scripts.js';
 import { loadFragment } from '../../blocks/fragment/fragment.js';
 import formatTimeStamp from '../../scripts/utils.js';
 import ArticleList from '../../scripts/article-list.js';
 
 export default async function decorate(doc) {
-  await loadTemplate(doc, 'default');
   const $page = doc.querySelector('main .section');
 
   const heroFrag = await loadFragment('/news/news-hero');
   const $hero = heroFrag.querySelector('.carousel-wrapper').cloneNode(true);
-
-  const $breadcrumbs = doc.querySelector('.breadcrumbs');
 
   const articlesPerPage = Number(getMetadata('articles-per-page'));
   const paginationMaxBtns = Number(getMetadata('pagination-max-buttons'));
@@ -41,6 +37,11 @@ export default async function decorate(doc) {
     ),
   );
 
+  const $categoryList = div({ class: 'select' },
+    h3('Categories'),
+    $categoryFilter,
+  );
+
   const $newsPage = div({ class: 'section' },
     h1(doc.title),
     div({ class: 'content-wrapper' },
@@ -49,8 +50,7 @@ export default async function decorate(doc) {
         $pagination,
       ),
       aside(
-        h3('Categories'),
-        $categoryFilter,
+        $categoryList,
         hr(),
       ),
     ),
@@ -58,7 +58,6 @@ export default async function decorate(doc) {
 
   $page.append(
     $hero,
-    $breadcrumbs,
     $newsPage,
   );
 
@@ -72,4 +71,25 @@ export default async function decorate(doc) {
     categoryContainer: $categoryFilter,
     categoryPath: '/news/category/',
   }).render();
+
+  function filterDropdown() {
+    if ($categoryList.classList.contains('active')) {
+      $categoryList.classList.remove('active');
+    } else {
+      $categoryList.classList.add('active');
+    }
+  }
+
+  function mobileView(event) {
+    if (event.matches) {
+      // mobile view
+      $categoryList.addEventListener('click', filterDropdown);
+    } else {
+      $categoryList.removeEventListener('click', filterDropdown);
+      $categoryList.classList.remove('active');
+    }
+  }
+  const mobileMediaQuery = window.matchMedia('(max-width: 991px)');
+  mobileMediaQuery.addEventListener('change', mobileView);
+  mobileView(mobileMediaQuery);
 }

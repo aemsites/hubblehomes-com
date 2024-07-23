@@ -1,10 +1,15 @@
-/* eslint-disable no-use-before-define, object-curly-newline, function-paren-newline */
-import { div, ul, li, button } from '../../scripts/dom-helpers.js';
+import {
+  div,
+  ul,
+  li,
+  button,
+} from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import { createGallery, initializeGallery } from './gallery.js';
 
 let isAuto;
 let autoInterval;
-let autoDuration = '6000'; // default if not set in block
+let autoDuration = 6000; // default if not set in block
 const fadeDuration = 700; // match time in css -> .carousel.fade .slide
 let isInitialLoad = true;
 const initialLoadDelay = 4000;
@@ -12,7 +17,7 @@ let defaultContent;
 let isAnimating = false;
 
 function showSlide(block, dir) {
-  // wait till current animation is compeleted
+  // wait till current animation is completed
   if (isAnimating) return;
   isAnimating = true;
   const nextSlideIndex = parseInt(block.dataset.activeSlide, 10) + dir;
@@ -91,10 +96,15 @@ function initAuto(block) {
   });
 }
 
-function decorateSlideContent(col) {
+/**
+ * Return the top and bottom text for the slide.
+ * @param col {HTMLElement} - The column element
+ * @returns {DocumentFragment} - The top and bottom text
+ */
+function getSlideText(col) {
   const frag = document.createDocumentFragment();
-  let top = '';
-  let bottom = '';
+  let topText = '';
+  let bottomText = '';
   let isTop = true;
 
   // decorate CTA
@@ -106,34 +116,46 @@ function decorateSlideContent(col) {
       // if node is an <hr> switch to the bottom section
       isTop = false;
     } else if (isTop) {
-      top += node.outerHTML || node.textContent;
+      topText += node.outerHTML || node.textContent;
     } else {
-      bottom += node.outerHTML || node.textContent;
+      bottomText += node.outerHTML || node.textContent;
     }
   });
 
-  if (top.trim()) {
+  if (topText.trim()) {
     const $top = div({ class: 'content top' });
-    $top.innerHTML = top.trim();
+    $top.innerHTML = topText.trim();
     frag.append($top);
   }
 
-  if (bottom.trim() || !isTop) {
+  if (bottomText.trim() || !isTop) {
     const $bottom = div({ class: 'content bottom' });
-    $bottom.innerHTML = bottom.trim();
+    $bottom.innerHTML = bottomText.trim();
     frag.append($bottom);
   }
 
   return frag;
 }
 
+/**
+ * Create a slide element from a row. The row should contain two columns, the first column should
+ * contain an image and the second column may contain the slide content.  If the second column is
+ * empty, the default content will be used.
+ *
+ * @param row {HTMLElement} - The row element
+ * @param i {number} - The slide index
+ * @returns {Element} - The slide element
+ */
 function createSlide(row, i) {
   const isFirst = i === 1;
   const $slide = li({ 'data-slide-index': i, class: `slide ${isFirst ? 'active' : ''}` });
 
-  row.querySelectorAll(':scope > div').forEach((col, c) => {
+  // Create a wrapper for the slide content
+  const $slideWrapper = div({ class: 'slide-wrapper' });
+
+  row.querySelectorAll(':scope > div').forEach((col, index) => {
     // decorate image
-    if (c === 0) {
+    if (index === 0) {
       col.classList.add('slide-image');
       const img = col.querySelector('img');
       if (img) {
@@ -144,68 +166,106 @@ function createSlide(row, i) {
           { media: '(min-width: 1024px)', width: '1920' },
         ];
         col.innerHTML = '';
-        col.append(createOptimizedPicture(img.src, img.alt || `slide ${c}`, true, imgSizes));
-        $slide.append(col);
+        col.append(createOptimizedPicture(img.src, img.alt || `slide ${index}`, true, imgSizes));
+        $slideWrapper.append(col);
       }
-    }
-    // decorate content
-    if (c === 1) {
+    } else if (index === 1) {
       // use default content if col is empty
-      const content = (col.textContent === '') ? defaultContent.cloneNode(true) : decorateSlideContent(col);
-      $slide.append(content);
+      const content = (col.textContent === '' && defaultContent !== undefined)
+        ? defaultContent.cloneNode(true)
+        : getSlideText(col);
+      $slideWrapper.append(content);
     }
   });
+
+  $slide.appendChild($slideWrapper);
+
   return $slide;
 }
 
-export default async function decorate(block) {
-  const autoClass = block.className.split(' ').find((className) => className.startsWith('auto-'));
-
-  // get duration from auto class
-  if (autoClass) {
-    [autoDuration] = autoClass.match(/\d+/);
-    isAuto = true;
-  }
-
-  block.setAttribute('role', 'region');
-  block.setAttribute('aria-roledescription', 'Carousel');
-
-  const rows = block.querySelectorAll(':scope > div');
-  const isMultiple = rows.length > 2;
-  const $slides = ul({ class: 'slides' });
-
-  rows.forEach((row, i) => {
-    // set default content
-    if (i === 0 && isMultiple) {
-      defaultContent = decorateSlideContent(row.querySelector(':scope > div').nextElementSibling);
-    } else {
-      $slides.appendChild(createSlide(row, !isMultiple ? 1 : i));
-    }
-  });
-
-  const $container = div({ class: 'slides-container' },
-    $slides,
-  );
-
-  // add buttons if multiple slides
+function createNavButtons(isMultiple, block, $container) {
   if (isMultiple) {
-    block.dataset.activeSlide = 0;
-    const $prev = button({ class: 'prev', 'aria-label': 'Previous Slide' });
+    block.dataset.activeSlide = '0';
+    const $prev = button({
+      class: 'prev',
+      'aria-label': 'Previous Slide',
+    });
     $prev.addEventListener('click', () => {
       showSlide(block, -1);
       if (isAuto) resetAuto(block);
     });
-    const $next = button({ class: 'next', 'aria-label': 'Next Slide' });
+    const $next = button({
+      class: 'next',
+      'aria-label': 'Next Slide',
+    });
     $next.addEventListener('click', () => {
       showSlide(block, 1);
       if (isAuto) resetAuto(block);
     });
     $container.append(div({ class: 'btns' }, $prev, $next));
   }
+}
+
+export default async function decorate(block) {
+  const autoClass = block.className.split(' ').find((className) => className.startsWith('auto-'));
+  const hasGallery = block.classList.contains('gallery-enabled');
+
+  // get duration from auto class
+  if (autoClass) {
+    // protect against bad input and see if we can find a number, if not default to 6000 ms
+    const match = autoClass.match(/\d+/);
+    const [duration] = match || [6000];
+    if (duration) {
+      autoDuration = Number.parseInt(duration, 10);
+    }
+    isAuto = true;
+  }
+
+  block.setAttribute('role', 'region');
+  block.setAttribute('aria-roledescription', 'Carousel');
+
+  let isMultiple = false;
+  const rows = block.querySelectorAll(':scope > div');
+  const $slides = ul({ class: 'slides' });
+
+  if (rows.length === 1) {
+    const $slide = createSlide(rows[0], 1);
+    $slides.appendChild($slide);
+  } else {
+    // check to see if there is any default content in the first row if there is no
+    // picture then we have default content
+    if (rows.length > 1 && !rows[0].querySelector(':scope > div picture')) {
+      defaultContent = getSlideText(rows[0].querySelector(':scope > div').nextElementSibling);
+    }
+
+    Array.from(rows).splice(1).forEach((row, i) => {
+      const index = i + 1;
+      const $slide = createSlide(row, index);
+      $slides.appendChild($slide);
+      isMultiple = i >= 1;
+    });
+  }
+
+  const $container = div(
+    { class: 'slides-container' },
+    $slides,
+  );
+
+  createNavButtons(isMultiple, block, $container);
+
+  if (hasGallery) {
+    createGallery($container, block);
+  }
 
   block.innerHTML = '';
   block.append($container);
 
   // auto slide functionality
-  if (isAuto && isMultiple) initAuto(block);
+  if (isAuto && isMultiple) {
+    initAuto(block);
+  }
+
+  if (hasGallery) {
+    initializeGallery(block);
+  }
 }

@@ -1,0 +1,33 @@
+.breadcrumbs {
+  .breadcrumb-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: .8em;
+    color: #c8c8c8;
+    padding: 8px 0;
+    user-select: none;
+
+    li {
+      margin: 10px 1px;
+
+      &::after {
+        content: ">";
+        margin-left: 5px;
+      }
+
+      &:last-child::after {
+        content: "";
+      }
+
+      a {
+        color: #aaa;
+        text-decoration: none;
+
+        &:hover {
+          color: #0055b9;
+        }
+      }
+    }
+  }
+}

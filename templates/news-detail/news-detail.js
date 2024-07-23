@@ -3,24 +3,20 @@ import { aside, div, p, a, strong, small, h3, hr, script } from '../../scripts/d
 import ArticleList from '../../scripts/article-list.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../../blocks/fragment/fragment.js';
-import { loadTemplate } from '../../scripts/scripts.js';
 import formatTimeStamp from '../../scripts/utils.js';
 
 export default async function decorate(doc) {
-  await loadTemplate(doc, 'default');
   const $page = doc.querySelector('main .section');
 
   const heroFrag = await loadFragment('/news/news-hero');
   const $hero = heroFrag.querySelector('.carousel-wrapper').cloneNode(true);
-
-  const $breadcrumbs = doc.querySelector('.breadcrumbs');
 
   const $mainContent = $page.cloneNode(true).querySelector('.default-content-wrapper');
   $page.innerHTML = '';
 
   // subhead
   const $postMeta = small({ class: 'post-metadata' },
-    strong('Posted: '), getMetadata('publisheddate'),
+    strong('Posted: '), getMetadata('published-date'),
     ' | ',
     strong('Categories: '), getMetadata('categories'),
   );
@@ -34,9 +30,8 @@ export default async function decorate(doc) {
     pic.replaceWith(opt);
   });
 
-  const $categories = div();
+  const $categoryFilter = div();
   const $recentNews = div();
-  // const $recentNewsArticle = (article) => li(a({ href: article.path }, article.title));
 
   const $recentNewsArticle = (article) => div({ class: 'card' },
     a({ class: 'thumb', href: article.path },
@@ -50,9 +45,12 @@ export default async function decorate(doc) {
         strong('Categories: '), article.categories.replace(/,/g, ' |'),
       ),
       p(article.description),
-      // a({ class: 'btn yellow', href: article.path }, 'Read Article'),
-      // hr(),
     ),
+  );
+
+  const $categoryList = div({ class: 'select' },
+    h3('Categories'),
+    $categoryFilter,
   );
 
   const $newsDetailPage = div({ class: 'section' },
@@ -66,8 +64,7 @@ export default async function decorate(doc) {
         ),
       ),
       aside(
-        h3('Categories'),
-        $categories,
+        $categoryList,
         hr(),
       ),
     ),
@@ -75,13 +72,12 @@ export default async function decorate(doc) {
 
   $page.append(
     $hero,
-    $breadcrumbs,
     $newsDetailPage,
   );
 
   const categories = new ArticleList({
     jsonPath: '/news/news-index.json',
-    categoryContainer: $categories,
+    categoryContainer: $categoryFilter,
     categoryPath: '/news/category/',
   });
   await categories.render();
@@ -99,5 +95,27 @@ export default async function decorate(doc) {
     src: '//platform-api.sharethis.com/js/sharethis.js#property=5cd459d83255ff0012e3808f&product=\'inline-share-buttons\'',
     async: true,
   });
+
   doc.head.appendChild(shareThisScript);
+
+  function filterDropdown() {
+    if ($categoryList.classList.contains('active')) {
+      $categoryList.classList.remove('active');
+    } else {
+      $categoryList.classList.add('active');
+    }
+  }
+
+  function mobileView(event) {
+    if (event.matches) {
+      // mobile view
+      $categoryList.addEventListener('click', filterDropdown);
+    } else {
+      $categoryList.removeEventListener('click', filterDropdown);
+      $categoryList.classList.remove('active');
+    }
+  }
+  const mobileMediaQuery = window.matchMedia('(max-width: 991px)');
+  mobileMediaQuery.addEventListener('change', mobileView);
+  mobileView(mobileMediaQuery);
 }

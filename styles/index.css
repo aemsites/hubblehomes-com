@@ -1,0 +1,32 @@
+.cards-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.cards-container .default-content-wrapper {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.cards-container h2 {
+  margin-bottom: 10px;
+  font-size: var(--heading-font-size-xxl);
+  font-weight: bold;
+  color: var(--blue);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.cards-container h2 em {
+  font-style: normal;
+  font-weight: bold;
+  color: var(--yellow);
+  display: inline-block;
+}
+
+.cards-container .default-content-wrapper p {
+  font-size: var(--heading-font-size-l);
+  line-height: 1;
+}
