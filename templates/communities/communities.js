@@ -335,7 +335,9 @@ export default async function decorate(doc) {
   specialistEl.forEach((el) => {
     specialistsSection.appendChild(el);
   });
-
+  if (specialistEl.length === 0) {
+    specialistBanner.classList.add('hidden');
+  }
   const twoCols = div(
     modelNameAddr,
     div({ class: 'repeating-grid' }, doc.querySelector('.description-wrapper'), div(overview)),
