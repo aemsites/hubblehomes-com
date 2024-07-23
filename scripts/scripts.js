@@ -215,6 +215,7 @@ async function loadEager(doc) {
     decorateMain(main);
     if (templateName) {
       await loadTemplate(doc, templateName);
+      await loadBreadcrumbs(doc);
     }
     document.body.classList.add('appear');
     await waitForLCP(LCP_BLOCKS);
@@ -243,7 +244,6 @@ async function loadLazy(doc) {
   if (hash && element) element.scrollIntoView();
 
   loadHeader(doc.querySelector('header'));
-  loadBreadcrumbs(document);
   loadFooter(doc.querySelector('footer'));
   loadTopBanner(doc);
 
