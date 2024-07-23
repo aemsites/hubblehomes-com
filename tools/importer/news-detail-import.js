@@ -1,6 +1,9 @@
-/* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars, no-undef */
+
+import {
+  getPageName,
+} from './common.js';
+
 /** Create Embed block */
 const createEmbedBlock = (document) => {
   const videoContainer = document.querySelector('.video-container');
@@ -39,13 +42,14 @@ const createAboutColumnBlock = (document) => {
     });
 
     const table = WebImporter.DOMUtils.createTable(cells, document);
-    panelGroups.forEach((panelGroup) => panelGroup.replaceWith(table)); // Replace the original panel groups with the new table
+    // Replace the original panel groups with the new table
+    panelGroups.forEach((panelGroup) => panelGroup.replaceWith(table));
   }
 };
 
 const getThumbnailImage = (url) => {
   const newsurl = new URL(url);
-  const pathname = newsurl.pathname;
+  const { pathname } = newsurl;
   let thumbnailUrl = null;
 
   // Synchronous XMLHttpRequest to fetch the mapping file
@@ -68,6 +72,9 @@ const getThumbnailImage = (url) => {
 const createMetadata = (main, document, url) => {
   const meta = {};
 
+  // Page Name for Breadcrumb
+  meta['Page Name'] = getPageName(document);
+
   // Title
   const title = document.querySelector('title');
   if (title) {
@@ -89,16 +96,34 @@ const createMetadata = (main, document, url) => {
   }
 
   // Published Date
-  const postDateElement = document.querySelector('.text-center small strong');
+  const postDateElement = document.querySelector('.sidebarbody .text-center small strong');
   if (postDateElement && postDateElement.textContent.includes('Posted:')) {
-    meta.PublishedDate = postDateElement.nextSibling.textContent.split('|')[0].trim();
+    const publishedDate = postDateElement.nextSibling.textContent.split('|')[0].trim();
+    if (publishedDate) {
+      meta['Published Date'] = publishedDate;
+    }
     postDateElement.remove();
+  } else {
+    const hohDates = {
+      '/heart-of-hubble/heart-detail/2020-hubble-hero-house-kickoff-event-13': 'July 29, 2020',
+      '/heart-of-hubble/heart-detail/2022-hubble-hero-house-32': 'November 29, 2022',
+      '/heart-of-hubble/heart-detail/2024-hubble-hero-home-50': 'February 16, 2024',
+      '/heart-of-hubble/heart-detail/companymatched-employee-donations-5': 'January 1, 2020',
+      '/heart-of-hubble/heart-detail/employee-matching-donation-to-hope-house-12': 'December 31, 2020',
+      '/heart-of-hubble/heart-detail/employee-matching-hubble-homes-and-the-least-join-the-fight-against-cancer-4': 'July 6, 2020',
+      '/heart-of-hubble/heart-detail/launch-pad-ministries-23': 'March 19, 2020',
+      '/heart-of-hubble/heart-detail/the-2020-hubble-hero-house-1': 'December 31, 2020',
+      '/heart-of-hubble/heart-detail/the-2021-hubble-hero-house-15': 'December 15, 2021',
+    };
+
+    const { pathname } = new URL(url);
+    if (hohDates[pathname]) {
+      meta['Published Date'] = hohDates[pathname];
+    }
   }
 
-  meta['Page Name'] = getPageName(document);
-
   // Categories
-  const categoriesElement = document.querySelector('.text-center small');
+  const categoriesElement = document.querySelector('.sidebarbody .text-center small');
   if (categoriesElement) {
     const categoriesText = categoriesElement.textContent;
     const categoriesLabelIndex = categoriesText.indexOf('Categories:');
@@ -112,18 +137,22 @@ const createMetadata = (main, document, url) => {
     categoriesElement.remove();
   }
 
+  if (url.includes('heart-detail')) {
+    meta.Categories = 'Heart of Hubble';
+  }
+
   // Create Metadata Block
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
-  main.append(block);
 
-  return meta;
+  return block;
 };
 
 const removeUnwantedSections = (document) => {
-  const tagsElements = Array.from(document.querySelectorAll('small strong')).filter((el) => el.textContent === 'Tags:');
-  if (tagsElements.length) {
-    tagsElements[0].parentElement.remove();
-  }
+  const tagsElements = Array.from(document.querySelectorAll('small strong')).filter((el) => ['Tags:', 'Categories:', 'Posted:'].includes(el.textContent));
+
+  tagsElements.forEach((el) => {
+    el.parentElement.remove();
+  });
 
   const leaveReplyHeaders = Array.from(document.querySelectorAll('h3')).filter((el) => el.textContent.toLowerCase() === 'leave a reply');
   if (leaveReplyHeaders.length) {
@@ -146,7 +175,6 @@ const removeUnwantedSections = (document) => {
   // remove recapcha badge
   const recaptchaElements = document.querySelector('.grecaptcha-badge');
   recaptchaElements?.remove();
-
 };
 
 export default {
@@ -157,6 +185,8 @@ export default {
     params,
   }) => {
     const main = document.body;
+
+    const metadataBlock = createMetadata(main, document, url);
 
     WebImporter.DOMUtils.remove(main, [
       '.navholder',
@@ -176,11 +206,11 @@ export default {
       '.homesearchmapwrapper',
     ]);
 
-
+    removeUnwantedSections(document);
     createAboutColumnBlock(document);
     createEmbedBlock(document);
-    removeUnwantedSections(document);›
-    createMetadata(main, document, url);
+    main.append(metadataBlock);
+
     return main;
   },
 
@@ -189,5 +219,13 @@ export default {
     url,
     html,
     params,
-  }) => WebImporter.FileUtils.sanitizePath(new URL(url).pathname.replace(/\.html$/, '').replace(/\/$/, '')),
+  }) => {
+    // if it is a heart of hubble page, then update the path, otherwise return the default path
+    if (url.includes('heart-detail')) {
+      const urlPath = new URL(url).pathname; // Get the pathname from the URL
+      const lastPart = urlPath.substring(urlPath.lastIndexOf('/') + 1).replace(/\.html$/, ''); // Extract the last part and remove .html if present
+      return WebImporter.FileUtils.sanitizePath(`news/news-detail/${lastPart}`);
+    }
+    return WebImporter.FileUtils.sanitizePath(new URL(url).pathname.replace(/\.html$/, '').replace(/\/$/, ''));
+  },
 };

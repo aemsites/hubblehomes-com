@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars, no-undef */
+
 import {
   createDisclaimerFragment,
   createLinksBlock,
@@ -7,31 +9,13 @@ import {
   createFloorplanTabsBlock,
   createEmbedBlock,
   createCarouselBlock,
-  getPageName,
+  updateCommonMetadata,
+  convertRelativeLinks,
 } from './common.js';
 
 const createMetadata = (main, document, url, html) => {
-  const meta = {};
-
-  // Title
-  const title = document.querySelector('title');
-  if (title) {
-    meta.Title = title.textContent.replace(/[\n\t]/gm, '');
-  }
-
-  // Description
-  const desc = document.querySelector("[property='og:description']");
-  if (desc) {
-    meta.Description = desc.content;
-  }
-
-  // Image
-  const img = document.querySelector("[property='og:image']");
-  if (img && img.content) {
-    const el = document.createElement('img');
-    el.src = img.content;
-    meta.Image = el;
-  }
+  // Get common metadata
+  const meta = updateCommonMetadata(document, url, html);
 
   // nameElement
   const nameElement = document.querySelector('.col-sm-6 h2');
@@ -39,50 +23,6 @@ const createMetadata = (main, document, url, html) => {
     meta.Name = nameElement.textContent.trim();
     nameElement.remove();
   }
-
-  // Parsing dataLayer script from html
-  const scriptMatch = html.match(/<script>(.*?)<\/script>/s);
-  if (scriptMatch) {
-    const scriptContent = scriptMatch[1];
-    const dataLayerMatch = scriptContent.match(
-      /dataLayer\s*=\s*(\[\{.*?\}\]);/s,
-    );
-    if (dataLayerMatch) {
-      try {
-        const jsonString = dataLayerMatch[1]
-          .replace(/'/g, '"')
-          .replace(/\s+/g, ' ')
-          .replace(/,\s*}/g, '}')
-          .replace(/,\s*\]/g, ']');
-
-        const dataLayer = JSON.parse(jsonString)[0];
-
-        meta.City = dataLayer.city || '';
-        meta.State = dataLayer.state || '';
-        meta.Metro = dataLayer.region || '';
-
-        if (dataLayer.community) {
-          const communityMatch = dataLayer.community.match(/\d+\s\|\s(.+)/);
-          if (communityMatch) {
-            meta.Community = communityMatch[1];
-          }
-        }
-
-        if (dataLayer.model) {
-          const modelMatch = dataLayer.model.match(/\d+\s\|\s(.+)/);
-          if (modelMatch) {
-            meta.Model = modelMatch[1];
-          }
-        }
-
-        meta.Spec = dataLayer.spec || '';
-      } catch (e) {
-        console.error('Error parsing dataLayer JSON:', e);
-      }
-    }
-  }
-
-  meta.Path = new URL(url).pathname;
 
   // Published Date
   const postDateElement = document.querySelector('.text-center small strong');
@@ -92,9 +32,6 @@ const createMetadata = (main, document, url, html) => {
       .trim();
     postDateElement.remove();
   }
-
-  meta['Page Name'] = getPageName(document);
-
 
   // Create Metadata Block
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
@@ -113,12 +50,14 @@ export default {
    * @param {object} params Object containing some parameters given by the import process.
    * @returns {HTMLElement} The root element to be transformed
    */
-  transformDOM: ({ document, url, html, params }) => {
+  transformDOM: ({
+    document, url, html, params,
+  }) => {
     // define the main element: the one that will be transformed to Markdown
     const main = document.body;
 
     // Use helper methods to create and append various blocks to the main element
-    createCarouselBlock(document, main, ['gallery']);
+    createCarouselBlock(document, main, ['gallery'], true);
     createDescriptionBlock(document, main);
     createOverviewBlock(document, main);
     createLinksBlock(document, main);
@@ -127,6 +66,8 @@ export default {
     createEmbedBlock(document, main);
     createDisclaimerFragment(document, main);
     createMetadata(main, document, url, html);
+
+    convertRelativeLinks(main);
 
     WebImporter.DOMUtils.remove(main, [
       ':scope > :not(table)',
@@ -150,8 +91,7 @@ export default {
     url,
     html,
     params,
-  }) =>
-    WebImporter.FileUtils.sanitizePath(
-      new URL(url).pathname.replace(/\.html$/, '').replace(/\/$/, ''),
-    ),
+  }) => WebImporter.FileUtils.sanitizePath(
+    new URL(url).pathname.replace(/\.html$/, '').replace(/\/$/, ''),
+  ),
 };

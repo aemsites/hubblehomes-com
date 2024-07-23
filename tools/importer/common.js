@@ -1,251 +1,351 @@
+/* eslint-disable no-undef,max-len,no-param-reassign  */
+
 const createDisclaimerFragment = (document, main) => {
-    const cells = [['Fragment (disclaimer)'], ['https://main--hubblehomes-com--aemsites.hlx.live/fragments/disclaimer']];
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    main.append(table);
-}
+  const cells = [['Fragment (disclaimer)'], ['https://main--hubblehomes-com--aemsites.hlx.live/fragments/disclaimer']];
+  const table = WebImporter.DOMUtils.createTable(cells, document);
+  main.append(table);
+};
 
 const cleanupImageSrc = (src) => {
-    const imgUrl = new URL(src);
-    return imgUrl.protocol + "//" + imgUrl.host + imgUrl.pathname;
-}
+  const imgUrl = new URL(src);
+  return `${imgUrl.protocol}//${imgUrl.host}${imgUrl.pathname}`;
+};
 
 const createLinksBlock = (document, main) => {
-    const linksContainer = document.querySelector('.detaillinks');
-    if (linksContainer) {
-        const links = Array.from(linksContainer.querySelectorAll('a'))
-            .map((link) => link.outerHTML)
-            .join('<br>');
+  const linksContainer = document.querySelector('.detaillinks');
+  if (linksContainer) {
+    const links = Array.from(linksContainer.querySelectorAll('a'))
+      .map((link) => link.outerHTML)
+      .join('<br>');
 
-        const cells = [['Links'], [links]];
-
-        const table = WebImporter.DOMUtils.createTable(cells, document);
-        main.append(table);
-    }
+    const cells = [['Links'], [links]];
+    const table = WebImporter.DOMUtils.createTable(cells, document);
+    main.append(table);
+  }
 };
 
 const createDescriptionBlock = (document, main) => {
-    const descriptionContainer = document.querySelector('.col-sm-6.col-xs-6');
+  const descriptionContainer = document.querySelector('.col-sm-6.col-xs-6');
 
-    descriptionContainer?.querySelector('h1')?.remove();
-    descriptionContainer?.querySelector('h4')?.remove();
-    descriptionContainer?.querySelectorAll('.row')?.forEach(el => el.remove());
+  descriptionContainer.querySelector('h1')?.remove();
+  descriptionContainer.querySelector('h4')?.remove();
+  descriptionContainer.querySelectorAll('.row')?.forEach((el) => el.remove());
 
-    const descriptionText = descriptionContainer?.innerHTML.trim();
+  const descriptionText = descriptionContainer.innerHTML.trim();
 
-    const cells = [['Description'], [descriptionText]];
-
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    main.append(table);
+  const cells = [['Description'], [descriptionText]];
+  const table = WebImporter.DOMUtils.createTable(cells, document);
+  main.append(table);
 };
 
 const createOverviewBlock = (document, main) => {
-    const overviewElement = document.querySelector('#overview');
+  const overviewElement = document.querySelector('#overview');
+  if (overviewElement) {
     const overviewCategories = Array.from(overviewElement.querySelectorAll('dt'))
-        .map((el) => {
-            let key = el.textContent.trim().toLowerCase();
-            if (key.includes('from') || key.includes('pricing')) {
-                key = 'price';
-            }
-            return key;
-        }).join(', ');
-    const tabContent = `${overviewCategories}`;
+      .map((el) => {
+        let key = el.textContent.trim().toLowerCase();
+        if (key.includes('from') || key.includes('pricing')) {
+          key = 'price';
+        }
+        return key;
+      }).join(', ');
 
-    const cells = [['Overview'], [tabContent]];
+    const cells = [['Overview'], [overviewCategories]];
     const table = WebImporter.DOMUtils.createTable(cells, document);
     main.append(table);
+  }
 };
 
 const createActionButtonBlock = (document, main) => {
-    // Select all elements matching '.row > .col-sm-12.text-center'
-    const buttonsRows = document.querySelectorAll('.row > .col-sm-12.text-center');
+  const buttonsRows = document.querySelectorAll('.row > .col-sm-12.text-center');
+  let tableAppended = false;
 
-    let tableAppended = false; // Flag to track if table was appended
+  buttonsRows.forEach((buttonsRow) => {
+    if (tableAppended) return;
 
-    // Iterate over each matching element
-    buttonsRows.forEach(buttonsRow => {
-        // Check if a table has already been appended
-        if (tableAppended) return;
+    const isValidChild = (child) => {
+      if (child.nodeType === Node.TEXT_NODE && !child.textContent.trim()) return true;
+      return ['BR', 'A'].includes(child.tagName);
+    };
 
-        // Check if all children are <br>, <a>, or whitespace text nodes
-        const isValidChild = (child) => {
-            // Ignore text nodes containing only whitespace
-            if (child.nodeType === Node.TEXT_NODE && !child.textContent.trim()) return true;
-            // Check for <br> or <a> elements
-            return ['BR', 'A'].includes(child.tagName);
-        };
+    if (Array.from(buttonsRow.childNodes).every(isValidChild)) {
+      const linksHtml = Array.from(buttonsRow.children)
+        .filter((child) => child.tagName === 'A')
+        .map((link) => `<div>${link.outerHTML}</div>`)
+        .join('');
 
-        // Validate children of current buttonsRow
-        if (Array.from(buttonsRow.childNodes).every(isValidChild)) {
-            // Extract and format anchor elements
-            const linksHtml = Array.from(buttonsRow.children)
-                .filter((child) => child.tagName === 'A') // Filter out <a> elements
-                .map((link) => `<div>${link.outerHTML}</div>`) // Wrap each <a> in <div>
-                .join(''); // Join all <div> elements into a single string
+      const cells = [['Action Buttons'], [linksHtml]];
+      const table = WebImporter.DOMUtils.createTable(cells, document);
+      main.append(table);
 
-            // Create table structure
-            const cells = [['Action Buttons'], [linksHtml]]; // Define table cells
-            const table = WebImporter.DOMUtils.createTable(cells, document); // Create table element
-
-            // Append table to the 'main' element
-            main.append(table);
-
-            tableAppended = true; // Set flag to true indicating table was appended
-        }
-    });
+      tableAppended = true;
+    }
+  });
 };
 
 const createFloorplanTabsBlock = (document, main) => {
-    const floorplanContainer = document.querySelector('.responsive-tabs');
-    if (floorplanContainer) {
-        const cells = [['Tabs (floorplan)']];
+  const floorplanContainer = document.querySelector('.responsive-tabs');
+  if (floorplanContainer) {
+    const cells = [['Tabs (floorplan)']];
 
-        // Floorplan levels
-        const levels = floorplanContainer.querySelectorAll('h4');
-        levels.forEach((level) => {
-            const img = level.nextElementSibling.querySelector('img');
-            if (img) {
-                cells.push([
-                    `${level.textContent}`,
-                    `<img src="${img.src}" alt="${img.alt}">`,
-                ]);
-            }
-        });
+    const levels = floorplanContainer.querySelectorAll('h4');
+    levels.forEach((level) => {
+      const img = level.nextElementSibling.querySelector('img');
+      if (img) {
+        cells.push([
+          `${level.textContent}`,
+          `<img src="${img.src}" alt="${img.alt}">`,
+        ]);
+      }
+    });
 
-        const table = WebImporter.DOMUtils.createTable(cells, document);
-        main.append(table); // Replace the original floorplan section with the new table
-    }
+    const table = WebImporter.DOMUtils.createTable(cells, document);
+    main.append(table);
+  }
 };
 
 const createEmbedBlock = (document, main) => {
-    const matterportIframe = document.querySelector(
-        '.embed-responsive-item[src*="matterport.com"]',
-    );
-    const matterportSrc = matterportIframe?.src;
-    if (matterportIframe) {
-        const cells = [['Embed (matterport)']];
-        cells.push(['URL', matterportSrc]);
-
-        const table = WebImporter.DOMUtils.createTable(cells, document);
-        const container = matterportIframe.closest('.container.topbuffer');
-        if (container) {
-            main.append(table);
-        }
-    }
+  const matterportIframe = document.querySelector('.embed-responsive-item[src*="matterport.com"]');
+  if (matterportIframe) {
+    const cells = [['Embed (matterport)'], ['URL', matterportIframe.src]];
+    const table = WebImporter.DOMUtils.createTable(cells, document);
+    main.append(table);
+  }
 };
 
 const getCarouselDefaultText = (carousel) => {
-    const communityTitleTop = carousel.querySelector('.communitytitle-top');
-    let communityTitleBottom = carousel.querySelector('.communitytitle-bottom');
-    if (communityTitleBottom) {
-        communityTitleBottom.querySelector('a')?.remove();
-    }
+  const communityTitleTop = carousel.querySelector('.communitytitle-top');
+  const communityTitleBottom = carousel.querySelector('.communitytitle-bottom');
+  communityTitleBottom?.querySelector('a')?.remove();
 
-    const defaultText = `Default Slide Text (optional)`;
+  const defaultText = 'Default Slide Text (optional)';
 
-    let title1Html = communityTitleTop
-        ? `<h2>${communityTitleTop.querySelector('#communitytitle-1')?.innerHTML || ''}</h2>
+  const title1Html = communityTitleTop
+    ? `<h2>${communityTitleTop.querySelector('#communitytitle-1')?.innerHTML || ''}</h2>
       ${communityTitleTop.querySelector('#communitytitle-2')?.innerHTML || ''}`
-        : '';
+    : '';
 
-    let title2Html = communityTitleBottom
-        ? `<h2>${communityTitleBottom.querySelector('#communitytitle-3')?.innerHTML || ''}</h2>
+  const title2Html = communityTitleBottom
+    ? `<h2>${communityTitleBottom.querySelector('#communitytitle-3')?.innerHTML || ''}</h2>
       ${communityTitleBottom.querySelector('#communitytitle-4')?.innerHTML || ''}`
-        : '';
+    : '';
 
-    let combinedTitleHtml;
+  const combinedTitleHtml = title1Html || title2Html
+    ? `${title1Html}<hr>${title2Html}`
+    : '';
 
-    if (title1Html || title2Html) {
-        combinedTitleHtml = `${title1Html}<hr>${title2Html}`;
-    }
+  communityTitleTop?.remove();
+  communityTitleBottom?.remove();
 
-    communityTitleTop?.remove();
-    communityTitleBottom?.remove()
-
-    return {
-        defaultText,
-        combinedTitleHtml
-    }
-}
+  return {
+    defaultText,
+    combinedTitleHtml,
+  };
+};
 
 const getGalleryImages = (document) => {
-    const imageGalleryElements = document.querySelectorAll('#imagegallery2 img');
-    let images = [];
-    if (imageGalleryElements.length > 0) {
-        imageGalleryElements.forEach((img) => {
-            const imgElement = `<img src="${cleanupImageSrc(img.src)}" alt="${img.alt}" style="display:block;">`;
-            images.push(imgElement);
-        });
-    }
-
-    return images;
-}
+  const imageGalleryElements = document.querySelectorAll('#imagegallery2 img');
+  return Array.from(imageGalleryElements).map((img) => `<img src="${cleanupImageSrc(img.src)}" alt="${img.alt}" style="display:block;">`);
+};
 
 const getCarouselImages = (carousel) => {
-    const items = carousel.querySelectorAll('.item');
-    let images = [];
-    items.forEach((item) => {
-        const picture = item.querySelector('picture img');
-        const imgSrc = picture ? picture.src : '';
-        const imgElement = `<img src="${cleanupImageSrc(imgSrc)}" alt="${picture?.alt || ''}">`;
-        images.push(imgElement);
-    });
+  const items = carousel.querySelectorAll('.item');
+  return Array.from(items).map((item) => {
+    const picture = item.querySelector('picture img');
+    const imgSrc = picture ? picture.src : '';
+    return `<img src="${cleanupImageSrc(imgSrc)}" alt="${picture?.alt || ''}">`;
+  });
+};
 
-    return images;
-}
-
-
-/** Create Carousel block */
-const createCarouselBlock = (document, main, imageSources) => {
-    const carousel = document.querySelector('.homesearchmapwrapper');
-    if (carousel) {
-        const cells = [['Carousel (auto-2000)']]; // Title row
-
-        const { defaultText, combinedTitleHtml } = getCarouselDefaultText(carousel);
-        cells.push([defaultText, combinedTitleHtml]);
-
-        if (imageSources.includes('carousel')) {
-            const carouselImages = getCarouselImages(carousel);
-            carouselImages.forEach((imgElement) => {
-                cells.push([imgElement, '']);
-            });
-        } else if (imageSources.includes('gallery')) {
-            const galleryImages = getGalleryImages(document);
-            galleryImages.forEach((imgElement) => {
-                cells.push([imgElement, '']);
-            });
-        }
-
-        const table = WebImporter.DOMUtils.createTable(cells, document);
-        main.append(table);
+const createCarouselBlock = (document, main, imageSources, galleryEnabled = false) => {
+  const carousel = document.querySelector('.homesearchmapwrapper');
+  if (carousel) {
+    const cells = [['Carousel']];
+    let variants = ' (auto-2000';
+    if (galleryEnabled) {
+      variants += ', gallery-enabled)';
+    } else {
+      variants += ')';
     }
+    cells[0][0] += variants;
+    const { defaultText, combinedTitleHtml } = getCarouselDefaultText(carousel);
+    cells.push([defaultText, combinedTitleHtml]);
+
+    if (imageSources.includes('carousel')) {
+      const carouselImages = getCarouselImages(carousel);
+      carouselImages.forEach((imgElement) => {
+        cells.push([imgElement, '']);
+      });
+    } else if (imageSources.includes('gallery')) {
+      const galleryImages = getGalleryImages(document);
+      galleryImages.forEach((imgElement) => {
+        cells.push([imgElement, '']);
+      });
+    }
+
+    const table = WebImporter.DOMUtils.createTable(cells, document);
+    main.append(table);
+  }
 };
 
 const getPageName = (document) => {
-    const breadcrumbElement = document.querySelector('.breadcrumb');
-    if (!breadcrumbElement) return '';
+  const breadcrumbElement = document.querySelector('.breadcrumb');
+  if (!breadcrumbElement) return '';
 
-    // Find the first non-empty text node and remove special characters
-    let textNode = Array.from(breadcrumbElement.childNodes)
-        .filter(node => node.nodeType === Node.TEXT_NODE && !/^\s*$/.test(node.nodeValue))
-        .map(node => node.nodeValue.trim().replace(/[^a-zA-Z0-9\s]/g, ''))
-        .filter(value => value !== '')[0];
+  const textNode = Array.from(breadcrumbElement.childNodes)
+    .filter((node) => node.nodeType === Node.TEXT_NODE && !/^\s*$/.test(node.nodeValue))
+    .map((node) => node.nodeValue.trim().replace(/[^a-zA-Z0-9\s]/g, ''))
+    .find((value) => value !== '');
 
-    // Return the cleaned text value or an empty string if not found
-    return textNode || '';
+  return textNode || '';
+};
 
-    debugger;
-    return textNode ? textNode.nodeValue.trim() : '';
+const processDataLayer = (jsonString) => {
+  const parts = jsonString.split(',');
+
+  const modifiedParts = parts.map((part) => {
+    let value = part.match(/:\s*(.*)/)?.[1];
+    const firstQuotePosition = value.indexOf("'");
+    const lastQuotePosition = value.lastIndexOf("'");
+
+    if (firstQuotePosition !== -1
+      && lastQuotePosition !== -1
+      && lastQuotePosition > firstQuotePosition) {
+      // Extract the substring to be replaced
+      let substringToReplace = value.substring(firstQuotePosition + 1, lastQuotePosition);
+      // Perform the replacement on the substring
+      substringToReplace = substringToReplace.replace(/'/g, "\\'");
+      // Reconstruct the part with the replaced substring
+      value = value.substring(0, firstQuotePosition + 1) + substringToReplace + value.substring(lastQuotePosition);
+      part = part.replace(/:\s*(.*)/, `: ${value}`);
+    }
+    // Replace only unescaped single quotes with double quotes
+    part = part.replace(/(?<!\\)'/g, '"');
+
+    return part;
+  });
+
+  return modifiedParts.join(',');
+};
+
+const extractWord = (str) => str.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g, '').trim();
+
+const updateCommonMetadata = (document, url, html) => {
+  const meta = {};
+
+  const title = document.querySelector('title');
+  if (title) {
+    meta.Title = title.textContent.replace(/[\n\t]/gm, '');
+  }
+
+  const desc = document.querySelector("[property='og:description']");
+  if (desc) {
+    meta.Description = desc.content;
+  }
+
+  const img = document.querySelector("[property='og:image']");
+  if (img && img.content) {
+    const el = document.createElement('img');
+    el.src = img.content;
+    meta.Image = el;
+  }
+
+  meta.Path = new URL(url).pathname;
+  meta['Page Name'] = getPageName(document);
+
+  const scriptMatch = html.match(/<script>(.*?)<\/script>/s);
+  if (scriptMatch) {
+    const scriptContent = scriptMatch[1];
+    const dataLayerMatch = scriptContent.match(/dataLayer\s*=\s*(\[\{.*?\}\]);/s);
+    if (dataLayerMatch) {
+      let jsonString = dataLayerMatch[1];
+
+      jsonString = processDataLayer(jsonString);
+
+      // combine the parts back together with a comma
+      jsonString = jsonString
+        .replace(/\s+/g, ' ')
+        .replace(/,\s*}/g, '}')
+        .replace(/,\s*\]/g, ']');
+
+      const dataLayer = JSON.parse(jsonString)[0];
+
+      const properties = ['city', 'state', 'region', 'spec'];
+      properties.forEach((prop) => {
+        if (dataLayer[prop]) {
+          if (prop === 'state' && dataLayer[prop] === 'ID') {
+            dataLayer[prop] = 'Idaho';
+          }
+          meta[prop.charAt(0).toUpperCase() + prop.slice(1)] = dataLayer[prop];
+        }
+      });
+
+      const matchProperties = {
+        community: 'Community',
+        model: 'Model',
+      };
+
+      Object.keys(matchProperties).forEach((prop) => {
+        if (dataLayer[prop]) {
+          const value = extractWord(dataLayer[prop]);
+          if (match) {
+            // eslint-disable-next-line prefer-destructuring
+            meta[matchProperties[prop]] = value;
+          }
+        }
+      });
+    }
+  }
+
+  return meta;
+};
+
+function sanitizeHref(href) {
+  // Decode any percent-encoded characters
+  let sanitizedPathname = decodeURIComponent(href);
+
+  // to lowercase
+  sanitizedPathname = sanitizedPathname.toLowerCase();
+
+  // Normalize path separators
+  sanitizedPathname = sanitizedPathname.replace(/\\/g, '/');
+
+  // Remove dot segments to prevent directory traversal attacks
+  const segments = sanitizedPathname.split('/').filter((segment) => segment !== '.' && segment !== '..');
+  sanitizedPathname = segments.join('/');
+
+  // This regex allows letters, digits, and a few special characters.
+  const whitelistPattern = /^[a-zA-Z0-9\-.~/]+$/;
+  if (!whitelistPattern.test(sanitizedPathname)) {
+    // Replace non-whitelisted characters with a hyphen
+    return sanitizedPathname.replace(/[^a-zA-Z0-9\-.~/]/g, '-');
+  }
+
+  return sanitizedPathname;
 }
+
+const convertRelativeLinks = (main) => {
+  const prefix = 'https://main--hubblehomes-com--aemsites.hlx.page/assets';
+  main.querySelectorAll('a').forEach((a) => {
+    const href = a.getAttribute('href');
+    if (href && !href.startsWith('http') && /(\.jpg|\.jpeg|\.png|\.gif|\.bmp|\.webp|\.mp4|\.avi|\.mov|\.mkv|\.mp3|\.wav|\.pdf)$/i.test(href)) {
+      a.href = prefix + sanitizeHref(href);
+    }
+  });
+  return main;
+};
 
 export {
-    createDisclaimerFragment,
-    createLinksBlock,
-    createDescriptionBlock,
-    createOverviewBlock,
-    createActionButtonBlock,
-    createFloorplanTabsBlock,
-    createEmbedBlock,
-    cleanupImageSrc,
-    createCarouselBlock,
-    getPageName,
-}
+  createDisclaimerFragment,
+  createLinksBlock,
+  createDescriptionBlock,
+  createOverviewBlock,
+  createActionButtonBlock,
+  createFloorplanTabsBlock,
+  createEmbedBlock,
+  cleanupImageSrc,
+  createCarouselBlock,
+  getPageName,
+  updateCommonMetadata,
+  convertRelativeLinks,
+};

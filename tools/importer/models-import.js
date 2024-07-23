@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import {
   createDisclaimerFragment,
   createLinksBlock,
@@ -8,9 +9,8 @@ import {
   createEmbedBlock,
   cleanupImageSrc,
   createCarouselBlock,
-  getPageName,
+  convertRelativeLinks,
 } from './common.js';
-
 
 const createElevationGalleryBlock = (document, main) => {
   const elevationGallerySection = document.querySelectorAll(
@@ -36,13 +36,10 @@ const createElevationGalleryBlock = (document, main) => {
 };
 
 // Function to extract only the words
-const extractWord = (str) => {
-  // Regular expression to match and remove non-alphabetical characters at the beginning and end
-  return str.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g, '').trim();
-};
+const extractWord = (str) => str.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g, '').trim();
 
 const createMetadata = (main, document, url, html) => {
-  const meta = {};
+  const meta = updateCommonMetadata(document, url, html);
 
   // Title
   const title = document.querySelector('title');
@@ -72,47 +69,42 @@ const createMetadata = (main, document, url, html) => {
       /dataLayer\s*=\s*(\[\{.*?\}\]);/s,
     );
     if (dataLayerMatch) {
-      try {
-        const jsonString = dataLayerMatch[1]
-          .replace(/'/g, '"')
-          .replace(/\s+/g, ' ')
-          .replace(/,\s*}/g, '}')
-          .replace(/,\s*\]/g, ']');
+      const jsonString = dataLayerMatch[1]
+        .replace(/'/g, '"')
+        .replace(/\s+/g, ' ')
+        .replace(/,\s*}/g, '}')
+        .replace(/,\s*\]/g, ']');
 
-        const dataLayer = JSON.parse(jsonString)[0];
+      const dataLayer = JSON.parse(jsonString)[0];
 
-        if (dataLayer.city) {
-          meta.City = dataLayer.city;
+      if (dataLayer.city) {
+        meta.City = dataLayer.city;
+      }
+
+      if (dataLayer.state) {
+        meta.State = dataLayer.state;
+      }
+
+      if (dataLayer.region) {
+        meta.Metro = dataLayer.region;
+      }
+
+      if (dataLayer.spec) {
+        meta.Spec = dataLayer.spec;
+      }
+
+      if (dataLayer.community) {
+        const community = extractWord(dataLayer.community);
+        if (community) {
+          meta.Community = community;
         }
+      }
 
-        if (dataLayer.state) {
-          meta.State = dataLayer.state;
+      if (dataLayer.model) {
+        const model = extractWord(dataLayer.model);
+        if (model) {
+          meta.Model = model;
         }
-
-        if (dataLayer.region) {
-          meta.Metro = dataLayer.region;
-        }
-
-        if (dataLayer.spec) {
-          meta.Spec = dataLayer.spec;
-        }
-
-        if (dataLayer.community) {
-          const community = extractWord(dataLayer.community);
-          if (community) {
-            meta.Community = community;
-          }
-        }
-
-        if (dataLayer.model) {
-          const model = extractWord(dataLayer.model);
-          if (model) {
-            meta.Model = model;
-          }
-        }
-
-      } catch (e) {
-        console.error('Error parsing dataLayer JSON:', e);
       }
     }
   }
@@ -124,9 +116,6 @@ const createMetadata = (main, document, url, html) => {
     meta.Homestyle = homeStyleElement.textContent.trim();
     homeStyleElement.remove();
   }
-
-  // Page Name
-  meta['Page Name'] = getPageName(document);
 
   // Create Metadata Block
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
@@ -144,14 +133,17 @@ export default {
    * @param {object} params Object containing some parameters given by the import process.
    * @returns {HTMLElement} The root element to be transformed
    */
-  transformDOM: ({ document, url, html, params }) => {
+  /* eslint-disable no-unused-vars */
+  transformDOM: ({
+    document, url, html, params,
+  }) => {
     // define the main element: the one that will be transformed to Markdown
     const main = document.body;
 
     const meta = createMetadata(main, document, url, html);
 
     // Use helper methods to create and append various blocks to the main element
-    createCarouselBlock(document, main, ['gallery', 'carousel']);
+    createCarouselBlock(document, main, ['gallery', 'carousel'], true);
     createDescriptionBlock(document, main);
     createOverviewBlock(document, main);
     createElevationGalleryBlock(document, main);
@@ -160,9 +152,9 @@ export default {
     createEmbedBlock(document, main);
     createLinksBlock(document, main);
     createDisclaimerFragment(document, main);
+    convertRelativeLinks(main);
 
     main.append(meta);
-
 
     WebImporter.DOMUtils.remove(main, [
       ':scope > :not(table)',
@@ -181,13 +173,9 @@ export default {
    * @return {string} The path
    */
   generateDocumentPath: ({
-    // eslint-disable-next-line no-unused-vars
     document,
     url,
     html,
     params,
-  }) =>
-    WebImporter.FileUtils.sanitizePath(
-      new URL(url).pathname.replace(/\.html$/, '').replace(/\/$/, ''),
-    ),
+  }) => WebImporter.FileUtils.sanitizePath(new URL(url).pathname.replace(/\.html$/, '').replace(/\/$/, '')),
 };
