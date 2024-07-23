@@ -244,7 +244,7 @@ async function loadLazy(doc) {
   if (hash && element) element.scrollIntoView();
 
   loadHeader(doc.querySelector('header'));
-  //loadBreadcrumbs(document);
+  // loadBreadcrumbs(document);
   loadFooter(doc.querySelector('footer'));
   loadTopBanner(doc);
 
