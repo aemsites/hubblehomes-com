@@ -10,6 +10,7 @@ import {
   cleanupImageSrc,
   createCarouselBlock,
   convertRelativeLinks,
+  updateCommonMetadata,
 } from './common.js';
 
 const createElevationGalleryBlock = (document, main) => {
@@ -35,81 +36,8 @@ const createElevationGalleryBlock = (document, main) => {
   }
 };
 
-// Function to extract only the words
-const extractWord = (str) => str.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g, '').trim();
-
 const createMetadata = (main, document, url, html) => {
   const meta = updateCommonMetadata(document, url, html);
-
-  // Title
-  const title = document.querySelector('title');
-  if (title) {
-    meta.Title = title.textContent.replace(/[\n\t]/gm, '');
-  }
-
-  // Description
-  const desc = document.querySelector("[property='og:description']");
-  if (desc) {
-    meta.Description = desc.content;
-  }
-
-  // Image
-  const img = document.querySelector("[property='og:image']");
-  if (img && img.content) {
-    const el = document.createElement('img');
-    el.src = img.content;
-    meta.Image = el;
-  }
-
-  // Parsing dataLayer script from html
-  const scriptMatch = html.match(/<script>(.*?)<\/script>/s);
-  if (scriptMatch) {
-    const scriptContent = scriptMatch[1];
-    const dataLayerMatch = scriptContent.match(
-      /dataLayer\s*=\s*(\[\{.*?\}\]);/s,
-    );
-    if (dataLayerMatch) {
-      const jsonString = dataLayerMatch[1]
-        .replace(/'/g, '"')
-        .replace(/\s+/g, ' ')
-        .replace(/,\s*}/g, '}')
-        .replace(/,\s*\]/g, ']');
-
-      const dataLayer = JSON.parse(jsonString)[0];
-
-      if (dataLayer.city) {
-        meta.City = dataLayer.city;
-      }
-
-      if (dataLayer.state) {
-        meta.State = dataLayer.state;
-      }
-
-      if (dataLayer.region) {
-        meta.Metro = dataLayer.region;
-      }
-
-      if (dataLayer.spec) {
-        meta.Spec = dataLayer.spec;
-      }
-
-      if (dataLayer.community) {
-        const community = extractWord(dataLayer.community);
-        if (community) {
-          meta.Community = community;
-        }
-      }
-
-      if (dataLayer.model) {
-        const model = extractWord(dataLayer.model);
-        if (model) {
-          meta.Model = model;
-        }
-      }
-    }
-  }
-
-  meta.Path = new URL(url).pathname;
 
   const homeStyleElement = document.querySelector('.col-sm-6 h2 + h4');
   if (homeStyleElement) {

@@ -288,7 +288,7 @@ const updateCommonMetadata = (document, url, html) => {
       Object.keys(matchProperties).forEach((prop) => {
         if (dataLayer[prop]) {
           const value = extractWord(dataLayer[prop]);
-          if (match) {
+          if (value) {
             // eslint-disable-next-line prefer-destructuring
             meta[matchProperties[prop]] = value;
           }
