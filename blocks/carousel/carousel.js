@@ -274,9 +274,7 @@ export default async function decorate(block) {
   rows.forEach((row, i) => {
     if (i === 0 && isMultiple) { // is more than 2 rows - get default content from 1st row
       defaultContent = decorateSlideContent(row.querySelector(':scope > div').nextElementSibling);
-    } else if (i === 0 && rows.length <= 2) { // is 2 rows - single slide
-      // do nothing if slide length is 2 or less
-    } else { // 2nd row or greater - decorate each slide
+    } else {
       $slides.appendChild(createSlide(row, !isMultiple ? 1 : i));
     }
   });
