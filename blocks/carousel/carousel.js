@@ -272,8 +272,7 @@ export default async function decorate(block) {
   const $slides = ul({ class: 'slides' });
 
   rows.forEach((row, i) => {
-    // set default content
-    if (i === 0 && isMultiple) {
+    if (i === 0 && isMultiple) { // is more than 2 rows - get default content from 1st row
       defaultContent = decorateSlideContent(row.querySelector(':scope > div').nextElementSibling);
     } else {
       $slides.appendChild(createSlide(row, !isMultiple ? 1 : i));
