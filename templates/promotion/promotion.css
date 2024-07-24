@@ -71,3 +71,22 @@
 .description > div {
   margin-bottom: 10px;
 }
+
+.bottom-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bottom-section .return-button {
+  color: #003264;
+  background-color: #fcd700;
+  border-color: #fcd700;
+  transition: all 0.3s ease-in-out;
+  border-radius: 3px;
+  width: fit-content;
+  text-align: center;
+  font-weight: 400;
+  padding:5px;
+  margin-top: 20px;
+}
