@@ -1,5 +1,5 @@
 /* eslint-disable object-curly-newline, function-paren-newline */
-import { div, img, a, form, label, input, small } from '../../scripts/dom-helpers.js';
+import { div, img, a } from '../../scripts/dom-helpers.js';
 
 export default async function decorate(block) {
   const footer = await fetch('/footer.plain.html');
