@@ -58,6 +58,15 @@
 }
 
 
+.fragment-wrapper {
+  margin-top: 20px;
+}
+
+.fragment-wrapper p {
+  font-size: var(--body-font-size-s);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
 
 .description > div {
   margin-bottom: 10px;
