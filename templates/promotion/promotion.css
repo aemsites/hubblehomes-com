@@ -1,0 +1,64 @@
+.promotion-section {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+  width: 1170px;
+}
+.promotion-section .left-column {      
+      width: 41.667%;
+      display: block;
+}
+.right-column {      
+      width: 58.333%;
+      display: block;
+      
+}
+
+.btn-container {
+  
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+  border-radius: 3px;
+  display: inline-block;
+  
+}
+
+.columns h3 {
+  font-weight: 600;
+  font-size: var(--body-font-size-m);
+  padding-bottom: 3px;
+}
+
+.columns a {
+  color: var(--text-color);
+  text-decoration: none;
+  display: block;
+}
+
+.btn, button {
+  color: #fff;
+  background-color: #4572b7;
+  border-color: #4572b7;
+  width: 100%;
+  padding: 6px 12px;
+  margin-bottom: 0;  
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;  
+  touch-action: manipulation;
+  cursor: pointer;  
+  user-select: none;  
+  border: 1px solid transparent;
+  &.fancy { 
+    font-style: normal;
+    font-size: 14px;
+    font-weight: 400;
+  }
+}
+
+
+
+.description > div {
+  margin-bottom: 10px;
+}

@@ -1,0 +1,9 @@
+.heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.heading > em {  
+  font-size: var(--body-font-size-m);  
+}
