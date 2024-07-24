@@ -112,12 +112,12 @@ async function setupAutocomplete() {
   const cityData = formatCities(regionsResult);
 
   const allSuggestions = [
-    ...communityData,
-    ...staffData,
+    ...communityData.sort((c1, c2) => c1.display.localeCompare(c2.display)),
+    ...staffData.sort((s1, s2) => s1.display.localeCompare(s2.display)),
     ...modelData.sort((m1, m2) => m1.display.localeCompare(m2.display)),
-    ...inventoryData,
+    ...inventoryData.sort((i1, i2) => i1.display.localeCompare(i2.display)),
     ...homePlanData.sort((p1, p2) => p1.display.localeCompare(p2.display)),
-    ...cityData,
+    ...cityData.sort((c1, c2) => c1.display.localeCompare(c2.display)),
   ];
 
   const handleInput = debounce(() => {
