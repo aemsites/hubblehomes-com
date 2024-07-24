@@ -27,6 +27,7 @@ import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import loadSVG from '../../scripts/svg-helper.js';
 import { loadWorkbook } from '../../scripts/workbook.js';
 import { getPageTitleForUrl } from '../../scripts/pages.js';
+import { safeAppend } from '../../scripts/block-helper.js';
 
 /**
  * Builds the inventory homes block.
@@ -328,13 +329,16 @@ export default async function decorate(doc) {
   const hasFeaturedModels = window.hh.current.models.length > 0;
   const featuredModels = div({ class: 'section featured' }, models);
 
-  const specialistBanner = div({ class: 'grey-divider full-width' }, `${community.name} New Home Specialists`);
-
-  const specialistsSection = div({ class: 'specialists fluid-flex full-width' });
-  const specialistEl = await createSpecialists(salesCenter.specialists);
-  specialistEl.forEach((el) => {
-    specialistsSection.appendChild(el);
-  });
+  let specialistsSection;
+  let specialistBanner;
+  if (salesCenter.specialists && salesCenter.specialists.length > 0) {
+    specialistBanner = div({ class: 'grey-divider full-width' }, `${community.name} New Home Specialists`);
+    specialistsSection = div({ class: 'specialists fluid-flex full-width' });
+    const specialistEl = await createSpecialists(salesCenter.specialists);
+    specialistEl.forEach((el) => {
+      specialistsSection.appendChild(el);
+    });
+  }
 
   const twoCols = div(
     modelNameAddr,
@@ -366,7 +370,8 @@ export default async function decorate(doc) {
     mainSection.append(plansAnchor, featuredPlansTitle, featuredModels);
   }
 
-  mainSection.append(
+  safeAppend(
+    mainSection,
     specialistBanner,
     specialistsSection,
     div({ class: 'section disclaimer' }, disclaimer),
