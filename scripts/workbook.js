@@ -8,6 +8,7 @@ const Sheets = {
   RATES: 'rates',
   MODELS: 'models',
   HOME_PLANS: 'home-plans',
+  CITIES: 'cities',
 };
 
 /**
@@ -103,6 +104,16 @@ async function getInventorySheet(property) {
 }
 
 /**
+ * Fetches the city sheet data, includes the total, offset, limit, and data fields.
+ * @param property the property of the sheet to return
+ * @returns {Promise<*>} the city sheet data.
+ */
+async function getCitySheet(property) {
+  const result = await getSheetData(property, Sheets.CITIES);
+  return result[Sheets.CITIES];
+}
+
+/**
  * Fetches the rates sheet data, includes the total, offset, limit, and data fields.
  * @returns {Promise<*|undefined>}
  */
@@ -139,6 +150,7 @@ async function loadWorkbook() {
     Sheets.RATES,
     Sheets.MODELS,
     Sheets.HOME_PLANS,
+    Sheets.CITIES,
   );
 }
 
@@ -156,4 +168,5 @@ export {
   getModelsSheet,
   getStaffAndSalesOffices,
   getHomePlansSheet,
+  getCitySheet,
 };

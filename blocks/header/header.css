@@ -97,6 +97,11 @@ input[type='text']::placeholder {
   0 0 8px rgb(102 175 233 / 60%);
 }
 
+#autocomplete-list {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
 /* Autocomplete styling */
 .autocomplete-items {
   position: absolute;
@@ -105,7 +110,7 @@ input[type='text']::placeholder {
   border-top: none;
   z-index: 3;
   top: calc(100% + 34px); /* Position just below the input, adjust the spacing as needed */
-  left: 472px;
+  left: 432px;
   background-color: #e9e9e9;
   width: 566px;
   box-shadow: 0 4px 6px rgb(0 0 0 / 10%); /* Add a shadow for better visibility */
@@ -116,23 +121,22 @@ input[type='text']::placeholder {
   position: relative; /* Ensure positioning context for autocomplete */
 }
 
-.autocomplete-items div {
+.search-item {
   cursor: default;
   border-radius: 6px;
 }
 
-.autocomplete-items div:hover {
-  background-color: #e9e9e9;
+.search-item.active,
+.search-item:hover {
+  background-color: #e4f1fb;
   border: 1px solid #74b2e2;
-  background: #e4f1fb url('/icons/bg-glass.png') 50% 50% repeat-x;
 }
 
-.autocomplete-items div:focus {
-  outline: 5px auto;
-  outline-offset: -2px;
+.search-item:focus {
+  outline: 0;
 }
 
-.autocomplete-items div a {
+.search-item a {
   text-decoration: none;
   color: #362b36;
   font-weight: 600;
@@ -143,7 +147,8 @@ input[type='text']::placeholder {
   zoom: 1;
 }
 
-.autocomplete-items div a:hover {
+.search-item.active a,
+.search-item a:hover {
   color: #2a6496;
   font-weight: normal;
 }
