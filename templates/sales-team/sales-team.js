@@ -50,7 +50,8 @@ async function createSpecialists(specialists) {
       content.communities = communities;
     }
     const specialistsBlock = createSpecialistBlock(content);
-    const blockWrapper = div({ class: 'specialists-wrapper' }, specialistsBlock);
+    const formattedName = content.name.toLowerCase().replace(/\s+/g, '-');
+    const blockWrapper = div({ class: 'specialists-wrapper' }, a({ id: `${formattedName}` }, specialistsBlock));
     promises.push(blockWrapper);
     agents.push(blockWrapper);
   });
