@@ -2,6 +2,7 @@
 
 import {
   getPageName,
+  convertRelativeLinks,
 } from './common.js';
 
 /** Create Embed block */
@@ -209,6 +210,7 @@ export default {
     removeUnwantedSections(document);
     createAboutColumnBlock(document);
     createEmbedBlock(document);
+    convertRelativeLinks(main);
     main.append(metadataBlock);
 
     return main;

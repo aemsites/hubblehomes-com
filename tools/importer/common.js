@@ -26,7 +26,6 @@ const createLinksBlock = (document, main) => {
 
 const createDescriptionBlock = (document, main) => {
   const descriptionContainer = document.querySelector('.col-sm-6.col-xs-6');
-
   descriptionContainer.querySelector('h1')?.remove();
   descriptionContainer.querySelector('h4')?.remove();
   descriptionContainer.querySelectorAll('.row')?.forEach((el) => el.remove());
@@ -233,16 +232,19 @@ const extractWord = (str) => str.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g, '').trim();
 const updateCommonMetadata = (document, url, html) => {
   const meta = {};
 
+  // title
   const title = document.querySelector('title');
   if (title) {
     meta.Title = title.textContent.replace(/[\n\t]/gm, '');
   }
 
+  // description
   const desc = document.querySelector("[property='og:description']");
   if (desc) {
     meta.Description = desc.content;
   }
 
+  // image
   const img = document.querySelector("[property='og:image']");
   if (img && img.content) {
     const el = document.createElement('img');
@@ -250,7 +252,10 @@ const updateCommonMetadata = (document, url, html) => {
     meta.Image = el;
   }
 
+  // path
   meta.Path = new URL(url).pathname;
+
+  // page name
   meta['Page Name'] = getPageName(document);
 
   const scriptMatch = html.match(/<script>(.*?)<\/script>/s);
@@ -262,11 +267,11 @@ const updateCommonMetadata = (document, url, html) => {
 
       jsonString = processDataLayer(jsonString);
 
-      // combine the parts back together with a comma
       jsonString = jsonString
-        .replace(/\s+/g, ' ')
-        .replace(/,\s*}/g, '}')
-        .replace(/,\s*\]/g, ']');
+        .replace(/\\'/g, "'") // Convert escaped single quotes to regular single quotes
+        .replace(/\s+/g, ' ') // Replace multiple whitespace characters (tabs, newlines) with a single space
+        .replace(/(?<=\s):\s/g, ': ') // Ensure space after colon
+        .replace(/\s+(?=,|{|}|:)/g, ''); // Remove extra spaces before certain characters
 
       const dataLayer = JSON.parse(jsonString)[0];
 
