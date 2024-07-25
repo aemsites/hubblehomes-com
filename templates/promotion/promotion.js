@@ -18,4 +18,3 @@ export default async function decorate(doc) {
   $page.append(divPromotion);
   $page.append(bottomsection);
 }
-
