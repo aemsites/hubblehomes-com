@@ -7,7 +7,7 @@
     position: relative;
     z-index: 1000;
   }
-  
+
   .top-banner.dismissed {
     max-height: 0;
     opacity: 0;
@@ -16,7 +16,7 @@
 
     /* pointer-events: none; */
   }
-  
+
   .top-banner-wrapper {
     max-width: var(--max-content-width);
     margin: 0 auto;
@@ -26,39 +26,23 @@
     align-items: center;
     position: relative;
   }
-  
+
   .top-banner-content {
     text-align: center;
   }
-  
+
   .top-banner-link {
     color: var(--light-color);
     text-decoration: none;
     font-weight: 600;
   }
-  
+
   .top-banner-link:hover {
     text-decoration: underline;
   }
-  
-  .top-banner-close {
-    background: none;
-    border: none;
-    color: var(--light-color);
-    font-size: 24px;
-    cursor: pointer;
-    padding: 0;
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 24px;
-    height: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    transition: opacity 0.3s ease-out;
+
+  .top-banner-wrapper > button {
+    margin-left: 20px;
   }
 
   .top-banner-close:hover {
@@ -67,10 +51,6 @@
 
   .top-banner.dismissed .top-banner-close {
     opacity: 0;
-  }
-  
-  .top-banner-close::before {
-    content: "\00D7"; /* Unicode for multiplication sign, looks like an "x" */
   }
 
   body.has-top-banner {

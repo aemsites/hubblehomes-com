@@ -43,6 +43,10 @@
     font-size: 14px;
   }
 
+  &.large {
+    width: 35px;
+  }
+
   &.fancy {
     font-family: minion-pro, serif;
     font-style: italic;
@@ -50,6 +54,10 @@
 
   &.square {
     border-radius: 0;
+  }
+
+  &.rounded {
+    border-radius: 50%;
   }
 
   &:hover {
@@ -129,6 +137,16 @@
     }
   }
 
+  &.white {
+    border-color: var(--white);
+    background: transparent;
+
+    &:hover {
+      background: var(--btn-light-blue-hover);
+      border-color: var(--btn-light-blue-hover)
+    }
+  }
+
   &.banner-blue {
     background: var(--blue-3);
     border-color: var(--blue-3);
@@ -140,5 +158,14 @@
       border-color: var(--dark-slate-blue);
       color: var(--background-color);
     }
+  }
+
+  /* Unicode for multiplication sign, looks like an "x" */
+  &.close {
+    height: 32px;
+  }
+
+  &.close::before {
+    content: "\00D7";
   }
 }
