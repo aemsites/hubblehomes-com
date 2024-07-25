@@ -43,11 +43,10 @@ function navigateOverlay(direction) {
   content.replaceChild(newOptimizedPicture, oldPicture);
 }
 
-function restoreScrollPosition() {
-  const scrollY = document.documentElement.style.top;
-  document.documentElement.style.position = '';
-  document.documentElement.style.top = '';
-  window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+function openGallery() {
+  const gallery = document.querySelector('.gallery');
+  gallery.classList.add('active');
+  document.body.classList.add('gallery-active');
 }
 
 /**
@@ -73,7 +72,6 @@ function createImageOverlay(index, title) {
     onclick: () => {
       // eslint-disable-next-line no-use-before-define
       document.body.removeChild(overlay);
-      restoreScrollPosition();
     },
   });
 
@@ -109,42 +107,33 @@ function createImageOverlay(index, title) {
   imageOverlayContent.addEventListener('dragstart', (e) => e.preventDefault());
 
   document.body.appendChild(overlay);
-  document.body.classList.add('gallery-active');
-  document.documentElement.style.top = `-${window.scrollY}px`;
-  document.documentElement.style.position = 'fixed';
 
-  // Adjust overlay position when top banner is present
-  const adjustOverlayPosition = () => {
-    const topBanner = document.querySelector('.top-banner');
-    if (topBanner) {
-      const topBannerHeight = topBanner.offsetHeight;
-      document.documentElement.style.setProperty('--top-banner-height', `${topBannerHeight}px`);
-    }
-  };
+  openGallery();
+}
 
-  adjustOverlayPosition();
-  window.addEventListener('resize', adjustOverlayPosition);
+function closeGallery() {
+  const gallery = document.querySelector('.gallery');
+  gallery.classList.remove('active');
+  document.body.classList.remove('gallery-active');
+  setTimeout(() => {
+    document.body.removeChild(gallery);
+  }, 300);
 }
 
 async function createGallery(images, title) {
-  const gallery = div({ class: 'gallery' });
-
   let titleEl;
   if (title) {
     titleEl = h2({ class: 'gallery-title' }, title);
   }
 
-  const closeButton = button({ class: 'close btn white rounded small', 'aria-label': 'Close banner' });
-  closeButton.addEventListener('click', () => {
-    gallery.classList.remove('active');
-    document.body.classList.remove('gallery-active');
-    restoreScrollPosition();
-    setTimeout(() => {
-      document.body.removeChild(gallery);
-    }, 300);
+  const closeButton = button({
+    class: 'close btn white rounded small',
+    'aria-label': 'Close banner',
+    onclick: () => closeGallery(),
   });
 
   const galleryHeader = div({ class: 'gallery-header' });
+
   safeAppend(galleryHeader, titleEl, closeButton);
 
   const galleryContent = div({ class: 'gallery-content' });
@@ -154,12 +143,6 @@ async function createGallery(images, title) {
 
   images.forEach((image, i) => {
     const galleryItem = div({ class: 'gallery-item' });
-    //
-    // const picture = document.createElement('picture');
-    // const img = document.createElement('img');
-    // img.src = image.src;
-    // img.alt = image.alt;
-    // picture.appendChild(img);
     const picture = createOptimizedPicture(
       image.src,
       image.alt,
@@ -183,28 +166,11 @@ async function createGallery(images, title) {
     galleryContent.appendChild(galleryItem);
   });
 
-  gallery.appendChild(galleryHeader);
-  gallery.appendChild(galleryContent);
-  return gallery;
+  return div({ class: 'gallery' }, galleryHeader, galleryContent);
 }
 
 export default async function initGallery(images, pageName) {
   const gallery = await createGallery(images, pageName);
   document.body.appendChild(gallery);
-  gallery.classList.add('active');
-  document.body.classList.add('gallery-active');
-  document.documentElement.style.top = `-${window.scrollY}px`;
-  document.documentElement.style.position = 'fixed';
-
-  // Adjust gallery position when top banner is present
-  const adjustGalleryPosition = () => {
-    const topBanner = document.querySelector('.top-banner');
-    if (topBanner) {
-      const topBannerHeight = topBanner.offsetHeight;
-      document.documentElement.style.setProperty('--top-banner-height', `${topBannerHeight}px`);
-    }
-  };
-
-  adjustGalleryPosition();
-  window.addEventListener('resize', adjustGalleryPosition);
+  openGallery();
 }

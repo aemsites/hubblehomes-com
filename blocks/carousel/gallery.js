@@ -23,8 +23,6 @@ function adjustGalleryPosition() {
   const navHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height'), 10);
   const adjustedNavHeight = navHeight + topBannerHeight;
 
-  document.documentElement.style.setProperty('--adjusted-nav-height', `${adjustedNavHeight}px`);
-
   const galleryElement = document.querySelector('.gallery.active');
   if (galleryElement) {
     galleryElement.style.top = `${adjustedNavHeight}px`;
@@ -39,6 +37,7 @@ function adjustGalleryPosition() {
 function openGallery() {
   const pageName = getMetadata('page-name');
   initGallery(galleryImages, pageName);
+
   setTimeout(() => {
     adjustGalleryPosition();
   }, 0);
@@ -69,11 +68,20 @@ function initializeGallery(block) {
     .map((img) => ({ src: img.src, alt: img.alt }));
 
   new MutationObserver((mutations) => {
-    if (mutations.some(({ addedNodes }) => Array.from(addedNodes)
-      .some((node) => node.classList?.contains('top-banner')))) {
-      adjustGalleryPosition();
-    }
-  }).observe(document.body, { childList: true, subtree: true });
+    mutations.some((mutation) => {
+      if (mutation.attributeName === 'class') {
+        const { classList } = mutation.target;
+        if (classList.contains('gallery-active')) {
+          adjustGalleryPosition();
+          return true;
+        }
+      }
+      return false;
+    });
+  }).observe(document.body, {
+    attributes: true,
+    attributeFilter: ['class'],
+  });
 
   window.addEventListener('hashchange', () => {
     if (window.location.hash === '#gallery') openGallery();
