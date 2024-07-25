@@ -1,0 +1,153 @@
+@media (max-width: 767px) {
+  .default-content-wrapper img {
+    width: 100%;
+    aspect-ratio: 16/9;
+  }
+
+  .promotion-section {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .promotion-section {
+    display: flex;
+    flex-direction: row;
+    margin: auto;    
+  }
+
+  .left-column {
+    padding-left: 0;
+    width: 41.667%;
+    display: block;
+
+  }
+
+  .right-column {
+
+    width: 58.333%;
+    display: block;
+
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .promotion-section {
+    display: flex;
+    flex-direction: row;
+    margin: auto;    
+  }
+
+  .promotion-section .left-column {
+    width: 41.667%;
+    display: block;
+    padding-left: 0;
+  }
+
+  .right-column {
+    width: 58.333%;
+    display: block;
+
+  }
+}
+
+@media (min-width: 1200px) {
+  .promotion-section {
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+    width: 1170px;
+  }
+
+  .promotion-section .left-column {
+    width: 41.667%;
+    display: block;
+    padding-left: 0;
+  }
+
+  .right-column {
+    width: 58.333%;
+    display: block;
+
+  }
+}
+
+.btn-container {
+
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+  border-radius: 3px;
+  display: inline-block;
+
+}
+
+.columns h3 {
+  font-weight: 600;
+  font-size: var(--body-font-size-m);
+  padding-bottom: 3px;
+}
+
+.columns a {
+  color: var(--text-color);
+  text-decoration: none;
+  display: block;
+}
+
+.btn,
+button {
+  color: #fff;
+  background-color: #4572b7;
+  border-color: #4572b7;
+  width: 100%;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  touch-action: manipulation;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+
+  &.fancy {
+    font-style: normal;
+    font-size: 14px;
+    font-weight: 400;
+  }
+}
+
+
+.fragment-wrapper {
+  margin-top: 20px;
+}
+
+.fragment-wrapper p {
+  font-size: var(--body-font-size-s);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.description>div {
+  margin-bottom: 10px;
+}
+
+.bottom-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bottom-section .return-button {
+  color: #003264;
+  background-color: #fcd700;
+  border-color: #fcd700;
+  transition: all 0.3s ease-in-out;
+  border-radius: 3px;
+  width: fit-content;
+  text-align: center;
+  font-weight: 400;
+  padding: 5px;
+  margin-top: 20px;
+}
