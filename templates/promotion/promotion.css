@@ -1,20 +1,25 @@
-@media (min-width: 768px) and (max-width: 991px) {
-  .promotion-section {
+
+@media (min-width: 768px) and (max-width: 991px) {  
+.promotion-section {
     display: flex;
     flex-direction: row;
     margin: auto;
     width: 750px;
-  }
+}
 
-  .promotion-section .left-column {
-    width: 41.667%;
-    display: block;
-  }
+.left-column {
+  
+  width: 313px;
+  display: block;
+  
+}
 
-  .right-column {
-    width: 58.333%;
+.right-column {
+  
+    width: 437px;
     display: block;
-  }
+   
+}
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {

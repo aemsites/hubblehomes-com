@@ -4,13 +4,12 @@
 import { div, a } from '../../scripts/dom-helpers.js';
 
 export default async function decorate(doc) {
-  const $page = doc.querySelector('main > .section');
+  const $page = doc.querySelector('main > .section');  
   const divPromotion = div({ class: 'promotion-section' });
   const leftSection = doc.querySelector('.left-column');
   const rightSection = doc.querySelector('.right-column');
   leftSection.style.display = 'block';
   rightSection.style.display = 'block';
-  
   divPromotion.append(leftSection);
   divPromotion.append(rightSection);
   const bottomsection = div({ class: 'bottom-section' });
