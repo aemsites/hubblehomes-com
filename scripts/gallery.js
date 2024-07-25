@@ -1,8 +1,7 @@
 import {
-  div, button, h2, img,
+  div, button, h2,
 } from './dom-helpers.js';
 import { createOptimizedPicture } from './aem.js';
-import loadSVG from './svg-helper.js';
 import { safeAppend } from './block-helper.js';
 
 let galleryImages = [];
@@ -16,24 +15,43 @@ function getItemClasses(index) {
   return ['small'];
 }
 
+function createOptimizedImage(image) {
+  return createOptimizedPicture(
+    image.src,
+    image.alt,
+    false,
+    [
+      {
+        media: '(min-width: 1024px)',
+        width: '2000',
+      },
+      {
+        media: '(max-width: 480px)',
+        width: '480',
+      },
+      {
+        media: '(min-width: 480px) and (max-width: 768px)',
+        width: '768',
+      },
+      {
+        media: '(min-width: 768px) and (max-width: 1024px)',
+        width: '1024',
+      },
+    ],
+  );
+}
+
+/**
+ * Navigate the overlay to the next or previous image.
+ * @param {number} direction - The direction to navigate. 1 for next, -1 for previous.
+ */
 function navigateOverlay(direction) {
   currentIndex = (currentIndex + direction + galleryImages.length) % galleryImages.length;
-
   const overlay = document.querySelector('.image-overlay');
   const content = overlay.querySelector('.image-overlay-content');
   const oldPicture = content.querySelector('picture');
 
-  const newOptimizedPicture = createOptimizedPicture(
-    galleryImages[currentIndex].src,
-    galleryImages[currentIndex].alt,
-    false,
-    [
-      { width: '1200' },
-      { width: '1600' },
-      { width: '2000' },
-    ],
-  );
-
+  const newOptimizedPicture = createOptimizedImage(galleryImages[currentIndex]);
   content.replaceChild(newOptimizedPicture, oldPicture);
 }
 
@@ -44,52 +62,55 @@ function restoreScrollPosition() {
   window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
 }
 
+/**
+ * Create the overlay container for the gallery.  This will display the image in a larger format.
+ * The overlay will contain the image, a title, and navigation buttons.
+ * @param index - The index of the image to display.
+ * @param title - The title of the gallery.
+ */
 function createImageOverlay(index, title) {
   currentIndex = index;
   const overlayHeader = div({ class: 'gallery-header' });
   const overlayHeaderContainer = div({ class: 'gallery-header-container' }, overlayHeader);
-  const content = div({ class: 'image-overlay-content' });
-
-  const optimizedPicture = createOptimizedPicture(
-    galleryImages[currentIndex].src,
-    galleryImages[currentIndex].alt,
-    false,
-    [
-      { width: '1200' },
-      { width: '1600' },
-      { width: '2000' },
-    ],
-  );
+  const optimizedPicture = createOptimizedImage(galleryImages[currentIndex]);
 
   let titleEl;
   if (title) {
     titleEl = h2({ class: 'gallery-title' }, title);
   }
 
-  const closeButton = button({ class: 'close btn white rounded small', 'aria-label': 'Close banner' });
-  closeButton.addEventListener('click', () => {
-    // eslint-disable-next-line no-use-before-define
-    document.body.removeChild(overlay);
-    document.body.classList.remove('gallery-active');
-    restoreScrollPosition();
+  const closeButton = button({
+    class: 'close btn white rounded small',
+    'aria-label': 'Close banner',
+    onclick: () => {
+      // eslint-disable-next-line no-use-before-define
+      document.body.removeChild(overlay);
+      document.body.classList.remove('gallery-active');
+      restoreScrollPosition();
+    },
   });
 
   safeAppend(overlayHeader, titleEl, closeButton);
 
-  const btnsContainer = div({ class: 'btns' });
-  const prevButton = button({ class: 'btn white rounded small', 'aria-label': 'Previous Image' });
-  const nextButton = button({ class: 'next', 'aria-label': 'Next Image' });
+  const prevButton = button({
+    class: 'btn white rounded small',
+    'aria-label': 'Previous Image',
+    onclick: () => navigateOverlay(-1),
+  });
 
-  prevButton.addEventListener('click', () => navigateOverlay(-1));
-  nextButton.addEventListener('click', () => navigateOverlay(1));
+  const nextButton = button({
+    class: 'next',
+    'aria-label': 'Next Image',
+    onclick: () => navigateOverlay(1),
+  });
 
-  btnsContainer.appendChild(prevButton);
-  btnsContainer.appendChild(nextButton);
+  const btnsContainer = div({ class: 'btns' }, prevButton, nextButton);
 
-  content.appendChild(optimizedPicture);
-  content.appendChild(btnsContainer);
-
-  const overlay = div({ class: 'image-overlay' }, overlayHeaderContainer, content);
+  const overlay = div(
+    { class: 'image-overlay' },
+    overlayHeaderContainer,
+    div({ class: 'image-overlay-content' }, optimizedPicture, btnsContainer),
+  );
 
   document.body.appendChild(overlay);
   document.body.classList.add('gallery-active');
