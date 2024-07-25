@@ -4,7 +4,7 @@
 import { div, a } from '../../scripts/dom-helpers.js';
 
 export default async function decorate(doc) {
-  const $page = doc.querySelector('main > .section');  
+  const $page = doc.querySelector('main > .section');
   const divPromotion = div({ class: 'promotion-section' });
   const leftSection = doc.querySelector('.left-column');
   const rightSection = doc.querySelector('.right-column');
@@ -14,7 +14,7 @@ export default async function decorate(doc) {
   divPromotion.append(rightSection);
   const bottomsection = div({ class: 'bottom-section' });
   const returnButton = a({ class: 'return-button', href: 'https://main--hubblehomes-com--aemsites.hlx.page/promotions' }, 'Return To Promotions');
-  bottomsection.append(returnButton);  
+  bottomsection.append(returnButton);
   $page.append(divPromotion);
   $page.append(bottomsection);
 }
