@@ -1,6 +1,7 @@
 .about-us {
   .btn-container {
     margin-top: 50px;
+    display: flex;
     justify-content: center;
   }
 }
