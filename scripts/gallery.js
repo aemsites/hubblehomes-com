@@ -43,6 +43,12 @@ function navigateOverlay(direction) {
   content.replaceChild(newOptimizedPicture, oldPicture);
 }
 
+function openGallery() {
+  const gallery = document.querySelector('.gallery');
+  gallery.classList.add('active');
+  document.body.classList.add('gallery-active');
+}
+
 /**
  * Create the overlay container for the gallery.  This will display the image in a larger format.
  * The overlay will contain the image, a title, and navigation buttons.
@@ -101,26 +107,8 @@ function createImageOverlay(index, title) {
   imageOverlayContent.addEventListener('dragstart', (e) => e.preventDefault());
 
   document.body.appendChild(overlay);
-  document.body.classList.add('gallery-active');
-  document.documentElement.style.position = 'fixed';
 
-  // Adjust overlay position when top banner is present
-  const adjustOverlayPosition = () => {
-    const topBanner = document.querySelector('.top-banner');
-    if (topBanner) {
-      const topBannerHeight = topBanner.offsetHeight;
-      document.documentElement.style.setProperty('--top-banner-height', `${topBannerHeight}px`);
-    }
-  };
-
-  adjustOverlayPosition();
-  window.addEventListener('resize', adjustOverlayPosition);
-}
-
-function openGallery() {
-  const gallery = document.querySelector('.gallery');
-  gallery.classList.add('active');
-  document.body.classList.add('gallery-active');
+  openGallery();
 }
 
 function closeGallery() {
