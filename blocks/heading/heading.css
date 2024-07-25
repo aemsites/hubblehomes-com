@@ -8,6 +8,7 @@
 
 .heading>em {
   font-size: var(--body-font-size-m);
+  font-style: normal;
 }
 
 @media (max-width: 767px) {
