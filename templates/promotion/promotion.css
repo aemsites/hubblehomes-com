@@ -14,15 +14,15 @@
   }
 
   .left-column {
-
-    width: 313px;
+    padding-left: 0;
+    width: 41.667%;
     display: block;
 
   }
 
   .right-column {
 
-    width: 437px;
+    width: 58.333%;
     display: block;
 
   }
@@ -39,6 +39,7 @@
   .promotion-section .left-column {
     width: 41.667%;
     display: block;
+    padding-left: 0;
   }
 
   .right-column {
@@ -59,6 +60,7 @@
   .promotion-section .left-column {
     width: 41.667%;
     display: block;
+    padding-left: 0;
   }
 
   .right-column {
