@@ -85,7 +85,6 @@ function createImageOverlay(index, title) {
     onclick: () => {
       // eslint-disable-next-line no-use-before-define
       document.body.removeChild(overlay);
-      document.body.classList.remove('gallery-active');
       restoreScrollPosition();
     },
   });
