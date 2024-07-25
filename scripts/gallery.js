@@ -91,8 +91,8 @@ function createImageOverlay(index, title) {
     onclick: () => navigateOverlay(1),
   });
 
-  const btnsContainer = div({ class: 'btns' }, prevButton, nextButton);
-  const imageOverlayContent = div({ class: 'image-overlay-content' }, optimizedPicture, btnsContainer);
+  const buttonContainer = div({ class: 'btns' }, prevButton, nextButton);
+  const imageOverlayContent = div({ class: 'image-overlay-content' }, buttonContainer, optimizedPicture);
 
   const overlay = div(
     { class: 'image-overlay' },

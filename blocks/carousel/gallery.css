@@ -113,9 +113,7 @@
   }
 
   .image-overlay img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+    width: 100vw;
   }
 
   .gallery-item.large img {
@@ -158,18 +156,22 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    height: auto;
+    left: 0;
+    width: 100vw;
+
+    picture {
+      width: 100%;
+    }
   }
 
   .image-overlay .btns {
-    position: absolute;
-    width: 100%;
-    max-width: 1200px;
-    height: auto;
     display: flex;
     justify-content: space-between;
+    position: absolute;
+    padding: 0 2.5%;
+    width: 100%;
     pointer-events: none;
-    padding: 10px;
   }
 
   .image-overlay .btns button {
@@ -219,12 +221,16 @@
       grid-gap: 10px;
     }
 
-    .image-overlay-content {
-      position: relative;
-    }
-
     .gallery-title {
       font-size: var(--heading-font-size-m);
+    }
+
+    .gallery-header-container {
+      transform: scale(0.8);
+    }
+    
+    .btns button {
+      transform: scale(0.6);
     }
   }
 
