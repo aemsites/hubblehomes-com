@@ -14,8 +14,7 @@
   .promotion-section {
     display: flex;
     flex-direction: row;
-    margin: auto;
-    width: 750px;
+    margin: auto;    
   }
 
   .left-column {
@@ -37,8 +36,7 @@
   .promotion-section {
     display: flex;
     flex-direction: row;
-    margin: auto;
-    width: 950px;
+    margin: auto;    
   }
 
   .promotion-section .left-column {
