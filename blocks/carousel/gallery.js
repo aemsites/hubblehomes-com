@@ -69,11 +69,20 @@ function initializeGallery(block) {
     .map((img) => ({ src: img.src, alt: img.alt }));
 
   new MutationObserver((mutations) => {
-    if (mutations.some(({ addedNodes }) => Array.from(addedNodes)
-      .some((node) => node.classList?.contains('top-banner')))) {
-      adjustGalleryPosition();
-    }
-  }).observe(document.body, { childList: true, subtree: true });
+    mutations.some((mutation) => {
+      if (mutation.attributeName === 'class') {
+        const { classList } = mutation.target;
+        if (classList.contains('gallery-active')) {
+          adjustGalleryPosition();
+          return true;
+        }
+      }
+      return false;
+    });
+  }).observe(document.body, {
+    attributes: true,
+    attributeFilter: ['class'],
+  });
 
   window.addEventListener('hashchange', () => {
     if (window.location.hash === '#gallery') openGallery();
