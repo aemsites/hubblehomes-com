@@ -1,25 +1,31 @@
+@media (max-width: 767px) {
+  .default-content-wrapper img {
+    width: 100%;
+    aspect-ratio: 16/9;
+  }
+}
 
-@media (min-width: 768px) and (max-width: 991px) {  
-.promotion-section {
+@media (min-width: 768px) and (max-width: 991px) {
+  .promotion-section {
     display: flex;
     flex-direction: row;
     margin: auto;
     width: 750px;
-}
+  }
 
-.left-column {
-  
-  width: 313px;
-  display: block;
-  
-}
+  .left-column {
 
-.right-column {
-  
+    width: 313px;
+    display: block;
+
+  }
+
+  .right-column {
+
     width: 437px;
     display: block;
-   
-}
+
+  }
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
