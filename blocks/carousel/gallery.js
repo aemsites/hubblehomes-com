@@ -68,14 +68,6 @@ function initializeGallery(block) {
   galleryImages = Array.from(block.querySelectorAll('.slide-image img'))
     .map((img) => ({ src: img.src, alt: img.alt }));
 
-  const galleryButton = createGalleryButton();
-  block.querySelector('.slides-container').appendChild(galleryButton)
-    .addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      openGallery();
-    });
-
   new MutationObserver((mutations) => {
     if (mutations.some(({ addedNodes }) => Array.from(addedNodes)
       .some((node) => node.classList?.contains('top-banner')))) {

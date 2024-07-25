@@ -6,6 +6,7 @@ import {
 } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { createGallery, initializeGallery } from './gallery.js';
+import registerTouchHandlers from './carousel-touch.js';
 
 let isAuto;
 let autoInterval;
@@ -167,6 +168,8 @@ function createSlide(row, i) {
         ];
         col.innerHTML = '';
         col.append(createOptimizedPicture(img.src, img.alt || `slide ${index}`, true, imgSizes));
+        // prevent the image from being dragged so that it doesn't interfere with the carousel
+        col.addEventListener('dragstart', (e) => e.preventDefault());
         $slideWrapper.append(col);
       }
     } else if (index === 1) {
@@ -227,6 +230,12 @@ export default async function decorate(block) {
   let isMultiple = false;
   const rows = block.querySelectorAll(':scope > div');
   const $slides = ul({ class: 'slides' });
+
+  registerTouchHandlers(
+    block,
+    () => showSlide(block, -1),
+    () => showSlide(block, 1),
+  );
 
   if (rows.length === 1) {
     const $slide = createSlide(rows[0], 1);
