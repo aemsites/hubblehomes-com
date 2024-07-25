@@ -194,7 +194,7 @@
 
 .gallery-button {
   position: absolute;
-  top: 20px;
+  bottom: 20px;
   left: 20px;
   background: rgb(255 255 255 / 80%);
   border: none;
@@ -219,6 +219,13 @@
 }
 
 @media (width <= 800px) {
+  .gallery-button {
+    top: 15px;
+    left: 5px;
+    bottom: inherit;
+    transform: scale(.85);
+  }
+
   .carousel .btns button::after { scale: 75% }
 
   .carousel-wrapper, .carousel {

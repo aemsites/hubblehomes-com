@@ -217,6 +217,10 @@
   }
 
   @media (max-width: 768px) {
+    .image-overlay {
+      padding:0;
+    }
+    
     .gallery-content {
       grid-gap: 10px;
     }
@@ -226,9 +230,15 @@
     }
 
     .gallery-header-container {
-      transform: scale(0.8);
+      padding: 0;
+
+      .gallery-header {
+        border-radius: 0;
+        margin-bottom: 0;
+      }
     }
-    
+
+
     .btns button {
       transform: scale(0.6);
     }
