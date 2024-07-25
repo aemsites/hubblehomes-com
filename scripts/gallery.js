@@ -3,6 +3,7 @@ import {
 } from './dom-helpers.js';
 import { createOptimizedPicture } from './aem.js';
 import { safeAppend } from './block-helper.js';
+import registerTouchHandlers from '../blocks/carousel/carousel-touch.js';
 
 let galleryImages = [];
 let currentIndex = 0;
@@ -20,23 +21,10 @@ function createOptimizedImage(image) {
     image.src,
     image.alt,
     false,
-    [
-      {
-        media: '(min-width: 1024px)',
-        width: '2000',
-      },
-      {
-        media: '(max-width: 480px)',
-        width: '480',
-      },
-      {
-        media: '(min-width: 480px) and (max-width: 768px)',
-        width: '768',
-      },
-      {
-        media: '(min-width: 768px) and (max-width: 1024px)',
-        width: '1024',
-      },
+    [{ media: '(min-width: 1024px)', width: '2000' },
+      { media: '(max-width: 480px)', width: '480' },
+      { media: '(min-width: 480px) and (max-width: 768px)', width: '768' },
+      { media: '(min-width: 768px) and (max-width: 1024px)', width: '1024' },
     ],
   );
 }
@@ -104,12 +92,21 @@ function createImageOverlay(index, title) {
   });
 
   const btnsContainer = div({ class: 'btns' }, prevButton, nextButton);
+  const imageOverlayContent = div({ class: 'image-overlay-content' }, optimizedPicture, btnsContainer);
 
   const overlay = div(
     { class: 'image-overlay' },
     overlayHeaderContainer,
-    div({ class: 'image-overlay-content' }, optimizedPicture, btnsContainer),
+    imageOverlayContent,
   );
+
+  registerTouchHandlers(
+    imageOverlayContent,
+    () => navigateOverlay(1),
+    () => navigateOverlay(-1),
+  );
+
+  imageOverlayContent.addEventListener('dragstart', (e) => e.preventDefault());
 
   document.body.appendChild(overlay);
   document.body.classList.add('gallery-active');
@@ -152,16 +149,27 @@ async function createGallery(images, title) {
 
   const galleryContent = div({ class: 'gallery-content' });
 
+  // cache the images for future lookup
   galleryImages = images;
 
   images.forEach((image, i) => {
     const galleryItem = div({ class: 'gallery-item' });
-
-    const picture = document.createElement('picture');
-    const img = document.createElement('img');
-    img.src = image.src;
-    img.alt = image.alt;
-    picture.appendChild(img);
+    //
+    // const picture = document.createElement('picture');
+    // const img = document.createElement('img');
+    // img.src = image.src;
+    // img.alt = image.alt;
+    // picture.appendChild(img);
+    const picture = createOptimizedPicture(
+      image.src,
+      image.alt,
+      true,
+      [{ media: '(min-width: 1024px)', width: '2000' },
+        { media: '(max-width: 480px)', width: '480' },
+        { media: '(min-width: 480px) and (max-width: 768px)', width: '768' },
+        { media: '(min-width: 768px) and (max-width: 1024px)', width: '1024' },
+      ],
+    );
 
     galleryItem.appendChild(picture);
 
