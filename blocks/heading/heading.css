@@ -6,7 +6,8 @@
   text-align: center;
 }
 
-.heading>em {
+.heading p > em
+ {  
   font-size: var(--body-font-size-m);
   font-style: normal;
 }
