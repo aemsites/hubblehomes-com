@@ -1,5 +1,9 @@
-import { div, button, h2 } from './dom-helpers.js';
+import {
+  div, button, h2, img,
+} from './dom-helpers.js';
 import { createOptimizedPicture } from './aem.js';
+import loadSVG from './svg-helper.js';
+import { safeAppend } from './block-helper.js';
 
 let galleryImages = [];
 let currentIndex = 0;
@@ -40,10 +44,10 @@ function restoreScrollPosition() {
   window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
 }
 
-function createImageOverlay(index) {
+function createImageOverlay(index, title) {
   currentIndex = index;
-  const overlay = div({ class: 'image-overlay' });
-  const overlayHeader = div({ class: 'image-overlay-header' });
+  const overlayHeader = div({ class: 'gallery-header' });
+  const overlayHeaderContainer = div({ class: 'gallery-header-container' }, overlayHeader);
   const content = div({ class: 'image-overlay-content' });
 
   const optimizedPicture = createOptimizedPicture(
@@ -57,17 +61,23 @@ function createImageOverlay(index) {
     ],
   );
 
-  const closeButton = button({ class: 'overlay-close' }, 'Close');
+  let titleEl;
+  if (title) {
+    titleEl = h2({ class: 'gallery-title' }, title);
+  }
+
+  const closeButton = button({ class: 'close btn white rounded small', 'aria-label': 'Close banner' });
   closeButton.addEventListener('click', () => {
+    // eslint-disable-next-line no-use-before-define
     document.body.removeChild(overlay);
     document.body.classList.remove('gallery-active');
     restoreScrollPosition();
   });
 
-  overlayHeader.appendChild(closeButton);
+  safeAppend(overlayHeader, titleEl, closeButton);
 
   const btnsContainer = div({ class: 'btns' });
-  const prevButton = button({ class: 'prev', 'aria-label': 'Previous Image' });
+  const prevButton = button({ class: 'btn white rounded small', 'aria-label': 'Previous Image' });
   const nextButton = button({ class: 'next', 'aria-label': 'Next Image' });
 
   prevButton.addEventListener('click', () => navigateOverlay(-1));
@@ -78,8 +88,9 @@ function createImageOverlay(index) {
 
   content.appendChild(optimizedPicture);
   content.appendChild(btnsContainer);
-  overlay.appendChild(overlayHeader);
-  overlay.appendChild(content);
+
+  const overlay = div({ class: 'image-overlay' }, overlayHeaderContainer, content);
+
   document.body.appendChild(overlay);
   document.body.classList.add('gallery-active');
   document.documentElement.style.top = `-${window.scrollY}px`;
@@ -98,15 +109,26 @@ function createImageOverlay(index) {
   window.addEventListener('resize', adjustOverlayPosition);
 }
 
-function createGallery(images) {
+async function createGallery(images, title) {
   const gallery = div({ class: 'gallery' });
-  const galleryHeader = div({ class: 'gallery-header' });
-  const closeButton = button({ class: 'gallery-close' }, 'Close');
+
+  let titleEl;
+  if (title) {
+    titleEl = h2({ class: 'gallery-title' }, title);
+  }
+
+  const closeButton = button({ class: 'close btn white rounded small', 'aria-label': 'Close banner' });
   closeButton.addEventListener('click', () => {
     gallery.classList.remove('active');
+    document.body.classList.remove('gallery-active');
+    restoreScrollPosition();
+    setTimeout(() => {
+      document.body.removeChild(gallery);
+    }, 300);
   });
 
-  galleryHeader.appendChild(closeButton);
+  const galleryHeader = div({ class: 'gallery-header' });
+  safeAppend(galleryHeader, titleEl, closeButton);
 
   const galleryContent = div({ class: 'gallery-content' });
 
@@ -127,7 +149,7 @@ function createGallery(images) {
     classes.forEach((cls) => galleryItem.classList.add(cls));
 
     galleryItem.addEventListener('click', () => {
-      createImageOverlay(i);
+      createImageOverlay(i, title);
     });
 
     galleryContent.appendChild(galleryItem);
@@ -138,29 +160,13 @@ function createGallery(images) {
   return gallery;
 }
 
-export default function initGallery(images, pageName) {
-  const gallery = createGallery(images);
+export default async function initGallery(images, pageName) {
+  const gallery = await createGallery(images, pageName);
   document.body.appendChild(gallery);
   gallery.classList.add('active');
   document.body.classList.add('gallery-active');
   document.documentElement.style.top = `-${window.scrollY}px`;
   document.documentElement.style.position = 'fixed';
-
-  const closeButton = gallery.querySelector('.gallery-close');
-  closeButton.addEventListener('click', () => {
-    gallery.classList.remove('active');
-    document.body.classList.remove('gallery-active');
-    restoreScrollPosition();
-    setTimeout(() => {
-      document.body.removeChild(gallery);
-    }, 300);
-  });
-
-  if (pageName) {
-    const galleryHeader = gallery.querySelector('.gallery-header');
-    const titleElement = h2({ class: 'gallery-title' }, pageName);
-    galleryHeader.insertBefore(titleElement, galleryHeader.firstChild);
-  }
 
   // Adjust gallery position when top banner is present
   const adjustGalleryPosition = () => {

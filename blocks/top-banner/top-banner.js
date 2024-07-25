@@ -46,7 +46,7 @@ export default function decorate(block) {
 
   let closeButton;
   if (variant === 'dismissible') {
-    closeButton = button({ class: 'top-banner-close', 'aria-label': 'Close banner' });
+    closeButton = button({ class: 'close btn white rounded small', 'aria-label': 'Close banner' });
     closeButton.addEventListener('click', () => {
       block.classList.add('dismissed');
       document.body.classList.remove('has-top-banner');

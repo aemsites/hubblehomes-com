@@ -1,10 +1,6 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword, declaration-block-single-line-max-declarations */
 
-@import url('../../styles/gallery.css');
-
-:root {
-  --gallery-gap: 30px;
-}
+@import url('gallery.css');
 
 .section.carousel-container { padding: 0 }
 
@@ -191,14 +187,14 @@
 
 .carousel .btns button.next::after {
   transform: rotate(180deg);
-  
+
   /* minus the width of the arrow */
   left: calc(70% - 30px)
 }
 
 .gallery-button {
   position: absolute;
-  bottom: 20px;
+  top: 20px;
   left: 20px;
   background: rgb(255 255 255 / 80%);
   border: none;

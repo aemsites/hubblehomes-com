@@ -93,7 +93,7 @@
   header {
     position: sticky;
     inset: 0;
-    z-index: 99;
+    z-index: 9999;
     height: var(--nav-height);
     background: #fff;
     box-shadow: 0 0 3px 0 rgb(0 0 0 / 10%);
