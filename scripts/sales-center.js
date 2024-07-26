@@ -9,7 +9,7 @@ import { getSalesOfficesSheet, getStaffSheet } from './workbook.js';
  */
 async function getSalesCentersForCommunityUrl(url) {
   const salesOffices = await getSalesOfficesSheet('data');
-  const staff = await getStaffSheet('data');
+  const staff = await getStaffSheet('sales');
 
   if (!url) {
     return {};

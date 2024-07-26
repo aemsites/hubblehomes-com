@@ -1,0 +1,24 @@
+.image-gallery {
+  padding-top: 30px;
+  display: grid;
+  grid-auto-columns: 33.3%;
+  grid-auto-rows: minmax(150px, auto);
+  grid-gap: 30px;
+  grid-auto-flow: row dense;
+  grid-template-columns: repeat(2, 1fr);
+
+  picture img {
+    border-radius: 8px;
+    height: 100%;
+    width: 100%;
+  }
+
+  picture.large-sibling {
+    grid-column-end: 1;
+  }
+
+  picture.large {
+    grid-column-end: span 2;
+    grid-row-end: span 2;
+  }
+}

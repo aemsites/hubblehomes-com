@@ -98,7 +98,7 @@ async function setupAutocomplete() {
   });
 
   const communityResult = await getCommunitiesSheet('data');
-  const staffResult = await getStaffSheet('data');
+  const staffResult = await getStaffSheet();
   const modelResult = await getModelsSheet('data');
   const homePlans = await getHomePlansSheet('data');
   const inventoryResult = await getInventorySheet('data');
