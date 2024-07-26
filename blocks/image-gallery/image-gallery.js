@@ -35,6 +35,10 @@ function buildOverlay(block) {
         <h1 class="title">Inspiration Gallery</h1>
         <button class="close btn rounded white-outlined"></button>  
       </div>
+      <div class='nav-buttons'>
+        <button class='prev btn rounded white-outlined'></button>
+        <button class='next btn rounded white-outlined'></button>
+      </div>
       <img id="overlay-img" src="" alt="">
     </div>
   `;

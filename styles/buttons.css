@@ -172,16 +172,26 @@
     }
   }
 
-  /* Unicode for multiplication sign, looks like an "x" */
-  &.close {
+  &.close,
+  &.prev,
+  &.next {
     height: 32px;
     width: 34px;
     font-size: 20px;
+  }
 
-    &::after {
-      content: "\00D7";
-      position: relative;
-      right: 2px;
-    }
+  &.close::after {
+    content: "\00D7";
+    position: relative;
+    right: 2px;
+  }
+
+  &.prev::after { content: "\003C" }
+  &.next::after { content: "\003E" }
+
+  &.prev::after,
+  &.next::after {
+    position: relative;
+    right: 2px;
   }
 }
