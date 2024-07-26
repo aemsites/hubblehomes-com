@@ -1,10 +1,14 @@
-import { button, div } from '../../scripts/dom-helpers.js';
+import { div } from '../../scripts/dom-helpers.js';
 
-function buildGallery(block) {
+let animating = false;
+let currentSlideIndex = 0;
+
+/**
+ * Builds a gallery layout for all images.  This is the main UI for the gallery.
+ * @param block - The block element to build the gallery in.
+ */
+function buildPicturesForGallery(block) {
   const pictures = block.querySelectorAll('picture');
-
-  block.innerHTML = '';
-
   const rowRules = [[0, 0, 1], [0, 0, 0], [1, 0, 0], [0, 0, 0]];
   let currentRulePtr = 0;
 
@@ -20,15 +24,50 @@ function buildGallery(block) {
     if (nextRule === 1) {
       picture.classList.add('large-sibling');
     }
-
     picture.classList.add(style);
   });
 
-  block.append(...pictures);
+  return pictures;
+}
+
+function animateAsync(element, keyframes, options) {
+  return new Promise((res) => {
+    element.animate(keyframes, options);
+    setTimeout(res, options.duration || 0);
+  });
+}
+
+function navigateSlide(index) {
+  if (index === currentSlideIndex || animating) {
+    return;
+  }
+
+  animating = true;
+  const imageContainer = document.querySelector('.image-container');
+  const currentSlide = imageContainer.children[currentSlideIndex];
+  const nextSlide = imageContainer.children[index];
+
+  const pos = index > currentSlideIndex ? '-100%' : '100%';
+
+  Promise.all([
+    animateAsync(nextSlide, [
+      { transform: `translate(${parseInt(pos, 10) * -1}%, 0)` },
+      { transform: 'translate(0, 0)' },
+    ], { duration: 300, easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)', fill: 'forwards' }),
+    animateAsync(currentSlide, [
+      { transform: 'translate(0, 0)' },
+      { transform: `translate(${pos}, 0)` },
+    ], { duration: 300, easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)', fill: 'forwards' }),
+  ]).then(() => {
+    currentSlideIndex = index;
+    currentSlide.classList.remove('active');
+    nextSlide.classList.add('active');
+    animating = false;
+  });
 }
 
 function buildOverlay(block) {
-  const overlay = div({ class: 'section overlay full-width', id: 'overlay' });
+  const overlay = div({ class: 'section overlay full-width' });
   overlay.innerHTML = `
     <div class="overlay-content">
       <div class="overlay-header">
@@ -39,30 +78,52 @@ function buildOverlay(block) {
         <button class='prev btn rounded white-outlined'></button>
         <button class='next btn rounded white-outlined'></button>
       </div>
-      <img id="overlay-img" src="" alt="">
-    </div>
-  `;
+      <div class="image-container">
+      </div>
+    </div>`;
+
+  const pictures = block.querySelectorAll('picture');
+
+  const nextBtn = overlay.querySelector('.next');
+  nextBtn.addEventListener('click', () => {
+    navigateSlide(Math.min(currentSlideIndex + 1, pictures.length - 1));
+  });
+
+  const prev = overlay.querySelector('.prev');
+  prev.addEventListener('click', () => {
+    navigateSlide(Math.max(0, currentSlideIndex - 1));
+  });
 
   const section = document.querySelector('main > .section');
   section.append(overlay);
 
-  const cards = block.querySelectorAll('picture');
-  const overlayImg = section.querySelector('#overlay-img');
+  const imageContainer = section.querySelector('.image-container');
   const closeBtn = section.querySelector('.close');
 
-  cards.forEach((card) => {
-    card.addEventListener('click', () => {
-      overlayImg.src = card.querySelector('img').src;
-      overlay.style.display = 'flex';
+  pictures.forEach((picture, index) => {
+    const clonedPicture = picture.cloneNode(true);
+    if (index === currentSlideIndex) clonedPicture.classList.add('active');
+    imageContainer.append(clonedPicture);
+
+    picture.addEventListener('click', () => {
+      const item = Array.from(pictures).findIndex((p) => p === picture);
+      overlay.classList.add('show');
+      navigateSlide(item);
     });
   });
 
   closeBtn.addEventListener('click', () => {
-    overlay.style.display = 'none';
+    pictures.forEach((card) => {
+      card.classList.remove('active');
+    });
+    overlay.classList.remove('show');
   });
 }
 
 export default async function decorate(block) {
-  buildGallery(block);
+  const pictures = buildPicturesForGallery(block);
+  block.innerHTML = '';
+
+  block.append(...pictures);
   buildOverlay(block);
 }
