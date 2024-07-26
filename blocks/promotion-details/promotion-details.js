@@ -1,5 +1,5 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { div, a, h1 } from '../../scripts/dom-helpers.js';
+import { h1 } from '../../scripts/dom-helpers.js';
 
 export default function decorate(block) {
   /* change to ul, li */
@@ -11,21 +11,28 @@ export default function decorate(block) {
       const link = child.querySelector('a').href;
       child.classList.add('promo-card-content');
       const picture = child.querySelector('picture');
-      const divImage = div({ class: 'promo-card-image' });
+      const divImage = document.createElement('div');
+      divImage.classList.add('promo-card-image');
       if (picture) {
-        const imageLink = a({ href: link }, '');
+        const imageLink = document.createElement('a');
+        imageLink.href = link;
         imageLink.append(picture);
         divImage.append(imageLink);
         li.prepend(divImage);
       }
-      const learnMore = a({ class: 'learn-more-btn', href: link }, 'Learn More');
+      const learnMore = document.createElement('a');
+      learnMore.href = link;
+      learnMore.textContent = 'Learn More';
+      learnMore.classList.add('learn-more-btn');
       child.append(learnMore);
     });
     ul.append(li);
   });
   ul.querySelectorAll('img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
   block.textContent = '';
-  const promotiontext = div({ class: 'promo-text' }, h1('Promotions'));
+  const promotiontext = document.createElement('div');
+  promotiontext.classList.add('promotion-text');
+  promotiontext.append(h1('Promotions'));
   block.append(promotiontext);
   block.append(ul);
 }
