@@ -1,4 +1,6 @@
-export default async function decorate(block) {
+import { button, div } from '../../scripts/dom-helpers.js';
+
+function buildGallery(block) {
   const pictures = block.querySelectorAll('picture');
 
   block.innerHTML = '';
@@ -23,4 +25,40 @@ export default async function decorate(block) {
   });
 
   block.append(...pictures);
+}
+
+function buildOverlay(block) {
+  const overlay = div({ class: 'section overlay full-width', id: 'overlay' });
+  overlay.innerHTML = `
+    <div class="overlay-content">
+      <div class="overlay-header">
+        <h1 class="title">Inspiration Gallery</h1>
+        <button class="close btn rounded white-outlined"></button>  
+      </div>
+      <img id="overlay-img" src="" alt="">
+    </div>
+  `;
+
+  const section = document.querySelector('main > .section');
+  section.append(overlay);
+
+  const cards = block.querySelectorAll('picture');
+  const overlayImg = section.querySelector('#overlay-img');
+  const closeBtn = section.querySelector('.close');
+
+  cards.forEach((card) => {
+    card.addEventListener('click', () => {
+      overlayImg.src = card.querySelector('img').src;
+      overlay.style.display = 'flex';
+    });
+  });
+
+  closeBtn.addEventListener('click', () => {
+    overlay.style.display = 'none';
+  });
+}
+
+export default async function decorate(block) {
+  buildGallery(block);
+  buildOverlay(block);
 }

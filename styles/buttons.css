@@ -147,6 +147,18 @@
     }
   }
 
+  &.white-outlined {
+    color: var(--text-color);
+    border-color: var(--btn-light-gray);
+    background: transparent;
+
+    &:hover {
+      background: var(--btn-light-blue-hover);
+      border-color: var(--btn-light-blue-hover);
+      color: white;
+    }
+  }
+
   &.banner-blue {
     background: var(--blue-3);
     border-color: var(--blue-3);
@@ -163,9 +175,13 @@
   /* Unicode for multiplication sign, looks like an "x" */
   &.close {
     height: 32px;
-  }
+    width: 34px;
+    font-size: 20px;
 
-  &.close::before {
-    content: "\00D7";
+    &::after {
+      content: "\00D7";
+      position: relative;
+      right: 2px;
+    }
   }
 }
