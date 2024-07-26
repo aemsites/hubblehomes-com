@@ -2,7 +2,6 @@
   padding-top: 30px;
   display: grid;
   grid-auto-columns: 33.3%;
-  grid-auto-rows: minmax(150px, auto);
   grid-gap: 30px;
   grid-auto-flow: row dense;
   grid-template-columns: repeat(2, 1fr);
