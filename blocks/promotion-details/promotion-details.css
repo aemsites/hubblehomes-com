@@ -4,7 +4,7 @@
 }
 
 .promotion-details li {
-  border-bottom: 1px solid #717171;
+  border-bottom: 1px solid var(--link-light-gray);
   margin-top: 20px;
   margin-left: 8.3333%;
   width: 83.3333%;
@@ -41,7 +41,7 @@
 
   h2 {
     font-family: var(--body-font-family);
-    color: #383838;
+    color: var(--gray);
     font-size: 30px;
     line-height: 1.1;
   }
@@ -62,8 +62,8 @@
   .learn-more-btn {
     background-image: none;
     color: #003264;
-    background-color: #fcd700;
-    border-color: #fcd700;
+    background-color: var(--yellow);
+    border-color: var(--yellow);
     transition: all 0.3s ease-in-out;
     padding: 5px 10px;
     font-size: 12px;
