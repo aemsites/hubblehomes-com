@@ -1,0 +1,31 @@
+import { createOptimizedPicture } from '../../scripts/aem.js';
+import { div, a, h1 } from '../../scripts/dom-helpers.js';
+
+export default function decorate(block) {
+  /* change to ul, li */
+  const ul = document.createElement('ul');
+  [...block.children].forEach((row) => {
+    const li = document.createElement('li');
+    while (row.firstElementChild) li.append(row.firstElementChild);
+    [...li.children].forEach((child) => {
+      const link = child.querySelector('a').href;
+      child.classList.add('promo-card-content');
+      const picture = child.querySelector('picture');
+      const divImage = div({ class: 'promo-card-image' });
+      if (picture) {
+        const imageLink = a({ href: link }, '');
+        imageLink.append(picture);
+        divImage.append(imageLink);
+        li.prepend(divImage);
+      }
+      const learnMore = a({ class: 'learn-more-btn', href: link }, 'Learn More');
+      child.append(learnMore);
+    });
+    ul.append(li);
+  });
+  ul.querySelectorAll('img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
+  block.textContent = '';
+  const promotiontext = div({ class: 'promo-text' }, h1('Promotions'));
+  block.append(promotiontext);
+  block.append(ul);
+}
