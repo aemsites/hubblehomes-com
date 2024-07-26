@@ -31,7 +31,7 @@ export default function decorate(block) {
   ul.querySelectorAll('img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
   block.textContent = '';
   const promotiontext = document.createElement('div');
-  promotiontext.classList.add('promotion-text');
+  promotiontext.classList.add('promo-text');
   promotiontext.append(h1('Promotions'));
   block.append(promotiontext);
   block.append(ul);
