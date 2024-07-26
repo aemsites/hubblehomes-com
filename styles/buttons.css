@@ -163,6 +163,7 @@
   /* Unicode for multiplication sign, looks like an "x" */
   &.close {
     height: 32px;
+    flex: 0;
   }
 
   &.close::before {
