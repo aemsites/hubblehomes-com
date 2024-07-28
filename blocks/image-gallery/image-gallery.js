@@ -108,6 +108,7 @@ function buildOverlay(block) {
     picture.addEventListener('click', () => {
       const item = Array.from(pictures).findIndex((p) => p === picture);
       overlay.classList.add('show');
+      document.body.classList.add('no-scroll');
       navigateSlide(item);
     });
   });
@@ -117,6 +118,7 @@ function buildOverlay(block) {
       card.classList.remove('active');
     });
     overlay.classList.remove('show');
+    document.body.classList.remove('no-scroll');
   });
 }
 

@@ -385,4 +385,6 @@ main > .section > *:not(.carousel-wrapper) {
   }
 }
 
-
+.no-scroll {
+  overflow: hidden;
+}

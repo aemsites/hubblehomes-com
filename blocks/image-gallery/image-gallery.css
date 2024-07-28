@@ -135,14 +135,20 @@
 
 @media (max-width: 768px) {
   .overlay .overlay-content {
+    width: 100%;
+    padding: 0;
     position: relative;
+
+    & .image-container picture {
+      padding: 0;
+    }
   }
 
   .overlay .overlay-content .nav-buttons {
     justify-content: center;
     gap: 30px;
     top: initial;
-    bottom: calc(-1 * var(--button-height));
+    bottom: calc(-1 * var(--button-height) - 20px);
   }
 }
 
