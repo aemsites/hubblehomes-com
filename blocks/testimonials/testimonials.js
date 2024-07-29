@@ -1,4 +1,9 @@
-import { div, blockquote, p, cite } from '../../scripts/dom-helpers.js';
+import {
+  div,
+  blockquote,
+  p,
+  cite,
+} from '../../scripts/dom-helpers.js';
 
 function parseTestimonial(text) {
   const lastDashIndex = text.lastIndexOf(' - ');
@@ -9,7 +14,7 @@ function parseTestimonial(text) {
   const quoteText = text.substring(0, lastDashIndex).trim();
   const authorPart = text.substring(lastDashIndex + 3).trim();
 
-  const [name, year] = authorPart.split('|').map(s => s.trim());
+  const [name, year] = authorPart.split('|').map((s) => s.trim());
 
   return { quoteText, name, year };
 }
@@ -21,7 +26,7 @@ export default function decorate(block) {
 
   quotes.forEach((quote) => {
     const { quoteText, name, year } = parseTestimonial(quote.textContent);
-    
+
     // Create a unique key for each quote
     const quoteKey = `${quoteText}|${name}|${year}`;
 
@@ -33,8 +38,8 @@ export default function decorate(block) {
         { class: 'testimonial-item' },
         blockquote(
           p(quoteText),
-          cite(name && year ? `${name} | ${year}` : name || year)
-        )
+          cite(name && year ? `${name} | ${year}` : name || year),
+        ),
       );
 
       quotesList.appendChild(quoteElement);
