@@ -248,11 +248,14 @@
     opacity: .7;
   }
 
-  .image-overlay .btns button:hover::after,
-  .image-overlay .btns button:focus:hover::after {
-    opacity: 1;
-    background-color: rgb(255 255 255 / 90%);
+  @media (hover: hover) {
+    .image-overlay .btns button:hover::after,
+    .image-overlay .btns button:focus:hover::after {
+      opacity: 1;
+      background-color: rgb(255 255 255 / 90%);
+    }
   }
+
 
   body.gallery-active {
     overflow: hidden;
