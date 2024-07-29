@@ -50,7 +50,7 @@
   flex-basis: 260px;
 }
 
-.inspiration-gallery .specialists-sales-team {
+.inspiration-gallery .specialists-design-team {
   flex-wrap: wrap;
   column-gap: 30px;
   justify-content: center;
@@ -104,7 +104,7 @@
 
 @media screen and (max-width: 768px) {
   .inspiration-gallery {
-    .specialists-sales-team {
+    .specialists-design-team {
       justify-content: center;
     }
 

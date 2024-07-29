@@ -4,28 +4,19 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import { getStaffSheet } from '../../scripts/workbook.js';
 
-function createSpecialistBlock(specialist) {
-  const agent = div(
+function createDesignerBlock(designer) {
+  return div(
     { class: 'specialist' },
-    div({ class: 'photo' }, createOptimizedPicture(specialist.photo, specialist.name, false, [{ width: '750' }, { width: '400' }])),
+    div({ class: 'photo' }, createOptimizedPicture(designer.photo, designer.name, false, [{ width: '750' }, { width: '400' }])),
     div(
       { class: 'info' },
-      div({ class: 'name' }, specialist.name),
-      div({ class: 'designation' }, specialist.designation),
+      div({ class: 'name' }, designer.name),
+      div({ class: 'designation' }, designer.designation),
       div({ class: 'line-break' }),
-      div({ class: 'phone' }, a({ href: `tel:${specialist.phone}` }, `${formatPhoneNumber(specialist.phone)} ${small('Direct').innerHTML}`)),
-      div({ class: 'email' }, a({ href: `mailto:${specialist.email}` }, specialist.email)),
+      div({ class: 'phone' }, a({ href: `tel:${designer.phone}` }, `${formatPhoneNumber(designer.phone)} ${small('Direct').innerHTML}`)),
+      div({ class: 'email' }, a({ href: `mailto:${designer.email}` }, designer.email)),
     ),
   );
-  if (specialist.communities !== '' && specialist.communities !== undefined) {
-    const communityBlock = div({ class: 'communities' }, div({ class: 'communityheader' }, 'Communities'));
-    const communitiesArray = specialist.communities.split(',');
-    communitiesArray.forEach((community) => {
-      communityBlock.appendChild(div({ class: 'community' }, community));
-    });
-    agent.appendChild(communityBlock);
-  }
-  return agent;
 }
 
 async function createDesigner(specialists) {
@@ -39,7 +30,7 @@ async function createDesigner(specialists) {
     content.phone = specialist.phone;
     content.photo = specialist.headshot;
     content.email = specialist.email;
-    const specialistsBlock = createSpecialistBlock(content);
+    const specialistsBlock = createDesignerBlock(content);
     const anchor = content.name.toLowerCase().replace(/\s+/g, '-');
     const blockWrapper = div({ class: 'specialists-wrapper' }, a({ id: `${anchor}` }, specialistsBlock));
     promises.push(blockWrapper);
@@ -54,6 +45,6 @@ export default async function decorate(doc) {
   const $page = doc.querySelector('main .section');
   const designers = await getStaffSheet('design');
   const designersEl = await createDesigner(designers);
-  const specialistsSection = div({ class: 'specialists-sales-team fluid-flex' }, ...designersEl);
+  const specialistsSection = div({ class: 'specialists-design-team fluid-flex' }, ...designersEl);
   $page.append(specialistsSection);
 }
