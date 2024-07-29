@@ -1,4 +1,5 @@
 import { div } from '../../scripts/dom-helpers.js';
+import registerTouchHandlers from '../carousel/carousel-touch.js';
 
 let animating = false;
 let currentSlideIndex = 0;
@@ -37,16 +38,14 @@ function animateAsync(element, keyframes, options) {
   });
 }
 
-function navigateSlide(index) {
-  if (index === currentSlideIndex || animating) return;
-
-  const imageContainer = document.querySelector('.image-container');
-
+function navigateSlide(index, duration = 300) {
   const next = document.querySelector('.next');
   const prev = document.querySelector('.prev');
-
+  const imageContainer = document.querySelector('.image-container');
   next.disabled = index === imageContainer.children.length - 1;
   prev.disabled = index === 0;
+
+  if (index === currentSlideIndex || animating) return;
 
   animating = true;
   const currentSlide = imageContainer.children[currentSlideIndex];
@@ -58,11 +57,11 @@ function navigateSlide(index) {
     animateAsync(nextSlide, [
       { transform: `translate(${parseInt(pos, 10) * -1}%, 0)` },
       { transform: 'translate(0, 0)' },
-    ], { duration: 300, easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)', fill: 'forwards' }),
+    ], { duration, easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)', fill: 'forwards' }),
     animateAsync(currentSlide, [
       { transform: 'translate(0, 0)' },
       { transform: `translate(${pos}, 0)` },
-    ], { duration: 300, easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)', fill: 'forwards' }),
+    ], { duration, easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)', fill: 'forwards' }),
   ]).then(() => {
     currentSlideIndex = index;
     currentSlide.classList.remove('active');
@@ -103,6 +102,13 @@ function buildOverlay(block) {
   section.append(overlay);
 
   const imageContainer = section.querySelector('.image-container');
+
+  registerTouchHandlers(
+    imageContainer,
+    () => navigateSlide(Math.max(0, currentSlideIndex - 1)),
+    () => navigateSlide(Math.min(currentSlideIndex + 1, pictures.length - 1)),
+  );
+
   const closeBtn = section.querySelector('.close');
 
   pictures.forEach((picture, index) => {
@@ -112,9 +118,9 @@ function buildOverlay(block) {
 
     picture.addEventListener('click', () => {
       const item = Array.from(pictures).findIndex((p) => p === picture);
+      navigateSlide(item, 0);
       overlay.classList.add('show');
       document.body.classList.add('no-scroll');
-      navigateSlide(item);
     });
   });
 

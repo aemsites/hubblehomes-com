@@ -65,4 +65,5 @@ export default function registerTouchHandlers(block, nextSlide, prevSlide) {
   block.addEventListener('mousedown', handleMouseDown, false);
   block.addEventListener('mousemove', handleMouseMove, false);
   block.addEventListener('mouseup', () => handleMouseUp(block, nextSlide, prevSlide), false);
+  block.addEventListener('dragstart', (e) => e.preventDefault());
 }
