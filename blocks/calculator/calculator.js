@@ -2,13 +2,27 @@ import {getRatesSheet, } from './../../scripts/workbook.js';
 import {formatPrice } from './../../scripts/currency-formatter.js';
 
 function calculatePayment() {
+  const event = new Event('invalid');
   const housePrice = document.getElementById('purchase_price').value;
   const rate = document.getElementById('interest_rate').value;
   const down_payment = document.getElementById('down_payment').value;
   const term = document.getElementById('number_of_years').value;
+  if (!housePrice) {
+    document.getElementById('purchase_price').reportValidity();
+    return;
+  } else if (!rate) {
+    document.getElementById('interest_rate').reportValidity();
+    return;
+  } else if (!down_payment) {
+    document.getElementById('down_payment').reportValidity();
+    return;
+  } else if (!term) {
+    document.getElementById('number_of_years').reportValidity();
+    return;
+  }
   const monthlyInterestRate = rate / 100 / 12;
   const loanTermMonths = term * 12;
-
+  const loanAmount = housePrice - down_payment;
   // Calculate the monthly payment using the loan amortization formula
   const monthlyPayment = loanAmount
     * ((monthlyInterestRate * (1 + monthlyInterestRate) ** loanTermMonths)
@@ -61,7 +75,14 @@ export default async function decorate(block) {
     else textbox.setAttribute('name', field.label);    
     textbox.classList.add('form-control');
     if (field.label) textbox.setAttribute('placeholder', field.label);
-    formGroup.appendChild(textbox);
+    textbox.addEventListener('keyup', (e) => {      
+      e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    });
+    textbox.addEventListener('invalid', (e) => {      
+      textbox.reportValidity();
+    });
+    textbox.required = true;
+    formGroup.appendChild(textbox);    
   });
   const calculateButton = document.createElement('button');
   calculateButton.textContent = 'Calculate Payment';
