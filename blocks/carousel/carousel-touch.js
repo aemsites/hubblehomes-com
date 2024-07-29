@@ -59,17 +59,20 @@ function handleMouseUp(b, nextSlide, prevSlide) {
 }
 
 export default function registerTouchHandlers(block, nextSlide, prevSlide) {
+  function isButtonOrAnchor(event) {
+    // if the event target is a button or anchor then ignore it allow those handlers to fire
+    return (event.target.tagName === 'BUTTON' || event.target.tagName === 'A');
+  }
+
   block.addEventListener('touchstart', handleTouchStart, false);
   block.addEventListener('touchmove', handleTouchMove, false);
-  block.addEventListener('touchend', () => handleTouchEnd(block, nextSlide, prevSlide), false);
+  block.addEventListener('touchend', (e) => {
+    if (!isButtonOrAnchor(e)) handleTouchEnd(block, nextSlide, prevSlide);
+  }, false);
   block.addEventListener('mousedown', handleMouseDown, false);
   block.addEventListener('mousemove', handleMouseMove, false);
   block.addEventListener('mouseup', (e) => {
-    // if the event target is a button or anchor then ignore it allow those handlers to fire
-    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
-      return;
-    }
-    handleMouseUp(block, nextSlide, prevSlide);
+    if (!isButtonOrAnchor(e)) handleMouseUp(block, nextSlide, prevSlide);
   }, false);
   block.addEventListener('dragstart', (e) => e.preventDefault());
 }
