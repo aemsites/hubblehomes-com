@@ -4,7 +4,7 @@
 }
 
 .columns img {
-  width: 100%;
+  width: 100%;  
 }
 
 .columns > div > div {
@@ -161,6 +161,29 @@
         font-weight: normal;
       }
       &:hover p { color: var(--light-blue) }
+    }
+  }
+}
+
+.columns.finance {
+  margin-top: 20px;
+  img {
+    width: 50%;
+  }
+  >div >div {
+    flex: unset;
+  }
+  >div > div:nth-of-type(1) {
+    width: 40%;
+    text-align: center;
+  }
+  >div > div:nth-of-type(2) {
+    width: 60%;
+    p {
+      font-size: 16px;
+      line-height: 2em;
+      color: var(--link-color);
+      font-weight: normal;
     }
   }
 }
