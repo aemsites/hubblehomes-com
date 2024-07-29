@@ -64,6 +64,12 @@ export default function registerTouchHandlers(block, nextSlide, prevSlide) {
   block.addEventListener('touchend', () => handleTouchEnd(block, nextSlide, prevSlide), false);
   block.addEventListener('mousedown', handleMouseDown, false);
   block.addEventListener('mousemove', handleMouseMove, false);
-  block.addEventListener('mouseup', () => handleMouseUp(block, nextSlide, prevSlide), false);
+  block.addEventListener('mouseup', (e) => {
+    // if the event target is a button or anchor then ignore it allow those handlers to fire
+    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
+      return;
+    }
+    handleMouseUp(block, nextSlide, prevSlide);
+  }, false);
   block.addEventListener('dragstart', (e) => e.preventDefault());
 }
