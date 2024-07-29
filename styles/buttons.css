@@ -178,6 +178,7 @@
     height: 32px;
     width: 34px;
     font-size: 20px;
+    flex: 0;
   }
 
   &.close::after {
