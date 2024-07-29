@@ -102,20 +102,27 @@
   }
 }
 
-@media screen and (max-width: 1024px) {
-  .inspiration-gallery .specialists-sales-team {
-    justify-content: left;
-  }
-}
-
 @media screen and (max-width: 768px) {
   .inspiration-gallery {
     .specialists-sales-team {
-      justify-content: left;
+      justify-content: center;
     }
 
-    .specialist .photo img {
-      width: 130px;
+    .specialist {
+      .info {
+        .phone,
+        .email {
+          font-size: var(--heading-font-size-s);
+        }
+      }
+
+      .photo {
+        float: right;
+
+        img {
+          width: 67px;
+        }
+      }
     }
   }
 }

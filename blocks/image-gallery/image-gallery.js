@@ -38,12 +38,17 @@ function animateAsync(element, keyframes, options) {
 }
 
 function navigateSlide(index) {
-  if (index === currentSlideIndex || animating) {
-    return;
-  }
+  if (index === currentSlideIndex || animating) return;
+
+  const imageContainer = document.querySelector('.image-container');
+
+  const next = document.querySelector('.next');
+  const prev = document.querySelector('.prev');
+
+  next.disabled = index === imageContainer.children.length - 1;
+  prev.disabled = index === 0;
 
   animating = true;
-  const imageContainer = document.querySelector('.image-container');
   const currentSlide = imageContainer.children[currentSlideIndex];
   const nextSlide = imageContainer.children[index];
 
@@ -119,6 +124,7 @@ function buildOverlay(block) {
     });
     overlay.classList.remove('show');
     document.body.classList.remove('no-scroll');
+    document.querySelector('#chat-widget-container').style.visibility = 'hidden';
   });
 }
 
