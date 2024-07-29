@@ -157,6 +157,10 @@
     }
   }
 
+  .overlay button {
+    transform: scale(0.7);
+  }
+
   .overlay .overlay-content .nav-buttons {
     justify-content: center;
     gap: 30px;
