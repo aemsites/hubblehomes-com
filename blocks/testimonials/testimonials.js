@@ -12,13 +12,11 @@ export default function decorate(block) {
   testimonials.forEach((testimonial) => {
     const [quoteDiv, authorDiv] = testimonial.children;
     const quoteText = quoteDiv.textContent.trim();
-    const [name, year] = authorDiv.textContent.split('|').map((s) => s.trim());
-
     const quoteElement = div(
       { class: 'testimonial-item' },
       blockquote(
         p(quoteText),
-        cite(`${name} | ${year}`),
+        cite(`${authorDiv.textContent}`),
       ),
     );
     block.appendChild(quoteElement);
