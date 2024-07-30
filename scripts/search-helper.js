@@ -6,6 +6,7 @@
 export const formatCommunities = (data) => data.map((item) => ({
   display: `${item.name} - Community`,
   value: item.name,
+  path: item.path,
 }));
 
 /**
@@ -23,24 +24,12 @@ export const formatStaff = (data) => data.map((item) => {
 });
 
 /**
- * Formats data from the Sales Offices sheet for autocomplete.
- * @param {Array} data - The array of data objects from the Sales Offices sheet.
- * @returns {Array} Formatted suggestions.
- */
-export const formatSalesOffices = (data) => data.map((item) => ({
-  display: `${item.name} - Sales Office`,
-  value: item.name,
-}));
-
-/**
  * Formats data from the Models sheet for autocomplete.
  * @param {Array} data - The array of data objects from the Models sheet.
  * @returns {Array} Formatted suggestions.
  */
 export const formatModels = (data) => data.map((item) => ({
-  display: `${item['model name']} - ${item[
-    'home style'
-  ].toLowerCase()} home in ${item.community}`,
+  display: `${item['model name']} - Home in ${item.community}`,
   value: item['model name'],
   path: item.path,
 }));
@@ -51,33 +40,60 @@ export const formatModels = (data) => data.map((item) => ({
  * @returns {Array} Formatted suggestions.
  */
 export const formatInventory = (data) => data.map((item) => ({
-  display: `${item.address} - MLS ${item.mls} - ${item.status} plan`,
+  display: `${item['model name']} - ${item.address} - MLS ${item.mls}`,
   value: item.address,
   path: item.path,
 }));
 
-/**
- * Throttle function to limit the rate at which a function can be executed.
- * @param {Function} func - The function to throttle.
- * @param {number} limit - The number of milliseconds to wait
- * before allowing the function to be called again.
- * @returns {Function} The throttled function.
- */
-export const throttle = (func, limit) => {
-  let lastFunc;
-  let lastRan;
-  return (...args) => {
-    if (!lastRan) {
-      func.apply(this, args);
-      lastRan = Date.now();
-    } else {
-      clearTimeout(lastFunc);
-      lastFunc = setTimeout(() => {
-        if (Date.now() - lastRan >= limit) {
-          func.apply(this, args);
-          lastRan = Date.now();
-        }
-      }, limit - (Date.now() - lastRan));
-    }
-  };
-};
+export const formatHomePlans = (data) => data.map((item) => ({
+  display: `${item['model name']} - Floor Plan`,
+  value: item['model name'],
+  path: item.path,
+}));
+
+export const formatCities = (data) => data.map((item) => ({
+  display: `${item.state} - ${item.name}`,
+  value: item.name,
+  path: item.path,
+}));
+
+// Function to handle keydown events for navigation
+export function handleSearchNav(e) {
+  const autocompleteList = document.querySelector('#autocomplete-list');
+  const items = autocompleteList.querySelectorAll('.search-item');
+  if (!items.length) return;
+
+  let newIndex;
+  const activeItem = document.querySelector('.search-item.active');
+
+  switch (e.key) {
+    case 'Enter':
+      if (activeItem) {
+        e.preventDefault();
+        activeItem.querySelector('a').click();
+      }
+      break;
+    case 'Tab':
+      e.preventDefault();
+      autocompleteList.innerHTML = '';
+      document.querySelector('#search').focus();
+      break;
+    case 'ArrowDown':
+      e.preventDefault();
+      newIndex = activeItem ? Array.from(items).indexOf(activeItem) + 1 : 0;
+      break;
+    case 'ArrowUp':
+      e.preventDefault();
+      newIndex = activeItem ? Array.from(items).indexOf(activeItem) - 1 : items.length - 1;
+      break;
+    default:
+      e.preventDefault();
+      return;
+  }
+
+  if (newIndex !== undefined && newIndex >= 0 && newIndex < items.length) {
+    if (activeItem) activeItem.classList.remove('active');
+    items[newIndex].classList.add('active');
+    items[newIndex].focus();
+  }
+}

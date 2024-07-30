@@ -20,25 +20,31 @@ footer {
       strong & { font-weight: 700 }
     }
 
-
     h4 {
-      font-size: 1.1em;
       font-family: var(--heading-font-family);
       font-weight: 400;
       margin: 16px 0;
       a:hover { color: #fff }
     }
 
+    .col-2 ul,
+    .col-3 ul {
+      column-count: 2;
+    }
+
     ul {
-      list-style: none;
       width: 100%;
       li {
-        display: inline-block;
-        width: calc(50% - 12px);
         line-height: 1.7em;
         font-size: .8em;
         white-space: nowrap;
         padding-right: 10px;
+
+        ul li {
+          padding-left: 8px;
+          display: block;
+          font-size: 1em;
+        }
       }
     }
 
@@ -75,13 +81,11 @@ footer {
 
     .col-1, .col-2, .col-3 {
       width: 33%;
-      height: 260px;
       padding: 0 30px 0 50px;
       position: relative;
+
       p {
-        width: 80%;
-        position: absolute;
-        bottom: 0;
+        padding-top: 30px;
       }
     }
 
@@ -111,77 +115,6 @@ footer {
       &::after {
         left: auto;
         right: 0;
-      }
-
-      form.subscribe {
-        position: absolute;
-        bottom: 0;
-        width: 75%;
-        small {
-          display: block;
-          width: inherit;
-          text-align: center;
-          padding: 4px 0;
-          font-size: .7em;
-          font-weight: 600;
-          white-space: nowrap;
-        }
-        input {
-          display: inline-block;
-          box-sizing: border-box;
-          height: 30px;
-          width: calc(50% - 2px);
-          font: inherit;
-          font-family: inherit;
-          padding: 6px 12px;
-          margin: 1px;
-          font-size: .9em;
-          line-height: 1.5;
-          color: #555;
-          background: #fff;
-          border-radius: 4px;
-          border: none;
-          vertical-align: middle;
-          outline: none;
-          transition: all ease-in-out .15s;
-          &::placeholder { color: #999 }
-          &.email {
-            width: 70%;
-            border-radius: 4px 0 0 4px;
-            margin-right: 0;
-          }
-          &.submit {
-            width: calc(30% - 2px);
-            border-radius: 0 4px 4px 0;
-            padding: 0;
-            text-align: center;
-            margin-left: 0;
-            cursor: pointer;
-            color: var(--dark-blue);
-            background: var(--yellow);
-            transition: all ease-in-out .15s;
-            border: 1px solid var(--yellow);
-            &:hover {
-              background: var(--dark-blue);
-              color: #fff;
-              border: 1px solid #fff;
-            }
-          }
-          &:focus {
-            border-color: #66afe9;
-            outline: 0;
-            box-shadow: inset 0 1px 1px rgb(102 175 233 / 60%), 0 0 8px rgb(102 175 233 / 60%);
-          }
-        }
-      }
-    }
-
-    .col-3 {
-      .btn {
-        width: 80%;
-        background: var(--light-blue);
-        font-family: 'times new roman', times, serif;
-        font-style: italic;
       }
     }
   }
@@ -249,62 +182,40 @@ footer {
 
 }
 
-
-
-
-
 @media (width < 1000px) {
   footer {
     .top {
-      h4, ul { margin-left: 10% }
-      > div { flex-direction: column }
+      > div {
+        padding: 0 50px;
+        flex-direction: column
+      }
 
       .col-1, .col-2, .col-3 {
-        width: clamp(300px, 60%, 600px);
-        margin: 0 auto;
-        height: auto;
-        padding: 0 40px 60px;
-        margin-bottom: 60px;
+        width: 100%;
+        padding: 10px 40px;
+
+        ul {
+          li {
+            display: block;
+          }
+        }
+
         p {
           width: 100%;
-          text-align: center;
-          margin-left: -40px
         }
       }
 
-      .col-1 .btn {
-        width: 30%;
-        &:nth-child(1) {
-          margin: 0 8% 0 -2%;
+      .col-1 {
+        padding: 0 50px;
+        ul {
+          column-count: 1;
         }
       }
-
 
       .col-2 {
-        padding-bottom: 120px;
-
-        /* horozontal lines */
         &::before, &::after {
-          background: linear-gradient(90deg, rgba(255 255 255 / 0%) 0%, rgba(27 75 133 / 100%) 50%, rgba(255 255 255 / 0%) 100%);
-          width: 100%;
-          height: 1px;
-          top: -20px;
-          bottom: auto;
-          left: 0;
-          min-width: 70px;
-          min-height: 1px;
+          display: none;
         }
-        &::after {
-          top: auto;
-          bottom: -40px;
-        }
-
-        form.subscribe { width: calc(100% - 80px) }
-      }
-
-      .col-3 {
-        margin-bottom: 20px;
-        .btn { width: 70% }
       }
     }
   }
@@ -313,26 +224,39 @@ footer {
 @media (width < 700px) {
   footer {
     .top {
+      > div {
+        padding: 0 10px;
+      }
+
       h4 {
-        text-align: center;
+        text-align: left;
         margin-left: 0;
       }
 
-      ul { margin-left: 8% }
+      .col-1, .col-2, .col-3 {
+        padding: 10px 0;
+      }
 
-      .col-2 {
-        padding-bottom: 200px;
-        form.subscribe {
-          text-align: center;
-          small { white-space: wrap }
-          input {
-            margin: 4px 0;
-            &.firstname, &.lastname, &.email { width: 100% }
-            &.email, &.submit { border-radius: 4px }
-            &.submit { min-width: 100px }
+      .col-1 {
+        ul {
+          column-count: 1;
+        }
+
+        p {
+          padding-left: 0;
+          flex-direction: row;
+          .btn {
+            flex: none;
           }
         }
       }
+
+      .col-2 ul,
+      .col-3 ul {
+        column-count: 2;
+      }
+
+      ul { margin-left: 5px; }
     }
 
     .bottom {
@@ -361,7 +285,12 @@ footer {
         width: 100%;
         &:empty { display: none }
       }
-      .col-1, .col-2, .col-3 { width: auto }
+      .col-1, .col-2, .col-3 {
+        width: auto;
+        ul {
+          column-count: 1;
+        }
+      }
     }
   }
 }

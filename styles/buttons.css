@@ -43,6 +43,10 @@
     font-size: 14px;
   }
 
+  &.large {
+    width: 35px;
+  }
+
   &.fancy {
     font-family: minion-pro, serif;
     font-style: italic;
@@ -50,6 +54,10 @@
 
   &.square {
     border-radius: 0;
+  }
+
+  &.rounded {
+    border-radius: 50%;
   }
 
   &:hover {
@@ -129,6 +137,35 @@
     }
   }
 
+  &.white {
+    border-color: var(--white);
+    background: transparent;
+
+    &:hover {
+      background: var(--btn-light-blue-hover);
+      border-color: var(--btn-light-blue-hover)
+    }
+  }
+
+  &.white-outlined {
+    color: var(--text-color);
+    border-color: var(--btn-light-gray);
+    background: transparent;
+
+    /*
+     On mobile devices, buttons that are used for navigation, like the gallery that stay in
+     view after being clicked, do not support hover. In this scenario we want to only apply
+     the hover affect on non touch devices.
+     */
+    @media (hover: hover) {
+      &:hover {
+        background: var(--btn-light-blue-hover);
+        border-color: var(--btn-light-blue-hover);
+        color: white;
+      }
+    }
+  }
+
   &.banner-blue {
     background: var(--blue-3);
     border-color: var(--blue-3);
@@ -141,4 +178,28 @@
       color: var(--background-color);
     }
   }
+
+  &.close,
+  &.prev,
+  &.next {
+    height: 32px;
+    width: 34px;
+    font-size: 20px;
+  }
+
+  &.close::after {
+    content: "\00D7";
+    position: relative;
+    right: 2px;
+  }
+
+  &.prev::after { content: "\003C" }
+  &.next::after { content: "\003E" }
+
+  &.prev::after,
+  &.next::after {
+    position: relative;
+    right: 2px;
+  }
+
 }

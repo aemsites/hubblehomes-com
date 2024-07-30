@@ -8,6 +8,7 @@ const Sheets = {
   RATES: 'rates',
   MODELS: 'models',
   HOME_PLANS: 'home-plans',
+  CITIES: 'cities',
 };
 
 /**
@@ -77,11 +78,12 @@ async function getCommunitiesSheet(property) {
 
 /**
  * Fetches the staff sheet data, includes the total, offset, limit, and data fields.
+ * @param role the role of the staff to filter by
  * @returns {Promise<*|undefined>}
  */
-async function getStaffSheet(property) {
-  const result = await getSheetData(property, Sheets.STAFF);
-  return result[Sheets.STAFF];
+async function getStaffSheet(role = 'sales') {
+  const result = await getSheetData('data', Sheets.STAFF);
+  return result[Sheets.STAFF].filter((staff) => staff.role.toLowerCase() === role.toLowerCase());
 }
 
 /**
@@ -100,6 +102,16 @@ async function getSalesOfficesSheet(property = undefined) {
 async function getInventorySheet(property) {
   const result = await getSheetData(property, Sheets.INVENTORY);
   return result[Sheets.INVENTORY];
+}
+
+/**
+ * Fetches the city sheet data, includes the total, offset, limit, and data fields.
+ * @param property the property of the sheet to return
+ * @returns {Promise<*>} the city sheet data.
+ */
+async function getCitySheet(property) {
+  const result = await getSheetData(property, Sheets.CITIES);
+  return result[Sheets.CITIES];
 }
 
 /**
@@ -139,6 +151,7 @@ async function loadWorkbook() {
     Sheets.RATES,
     Sheets.MODELS,
     Sheets.HOME_PLANS,
+    Sheets.CITIES,
   );
 }
 
@@ -156,4 +169,5 @@ export {
   getModelsSheet,
   getStaffAndSalesOffices,
   getHomePlansSheet,
+  getCitySheet,
 };

@@ -50,7 +50,8 @@ async function createSpecialists(specialists) {
       content.communities = communities;
     }
     const specialistsBlock = createSpecialistBlock(content);
-    const blockWrapper = div({ class: 'specialists-wrapper' }, specialistsBlock);
+    const formattedName = content.name.toLowerCase().replace(/\s+/g, '-');
+    const blockWrapper = div({ class: 'specialists-wrapper' }, a({ id: `${formattedName}` }, specialistsBlock));
     promises.push(blockWrapper);
     agents.push(blockWrapper);
   });
@@ -65,7 +66,7 @@ export default async function decorate(doc) {
   const $text = $page.querySelector('.default-content-wrapper');
   const specialistsSection = div({ class: 'specialists-sales-team' });
   specialistsSection.append($text);
-  const staffData = await getStaffSheet('data');
+  const staffData = await getStaffSheet();
   staffData.sort((x, y) => x.name.localeCompare(y.name));
   const specialistEl = await createSpecialists(staffData);
   specialistsSection.append(...specialistEl);

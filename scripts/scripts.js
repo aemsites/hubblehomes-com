@@ -215,8 +215,8 @@ async function loadEager(doc) {
     decorateMain(main);
     if (templateName) {
       await loadTemplate(doc, templateName);
-      await loadBreadcrumbs(doc);
     }
+    await loadBreadcrumbs(doc);
     document.body.classList.add('appear');
     await waitForLCP(LCP_BLOCKS);
   }
