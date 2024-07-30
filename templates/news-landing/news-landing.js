@@ -16,7 +16,7 @@ export default async function decorate(doc) {
   const articlesPerPage = Number(getMetadata('articles-per-page'));
   const paginationMaxBtns = Number(getMetadata('pagination-max-buttons'));
 
-  const $pagination = div({ class: 'pagination' });
+  const $pagination = div({ class: 'article-pagination' });
   const $categoryFilter = div();
   const $articles = div({ class: 'articles' });
 

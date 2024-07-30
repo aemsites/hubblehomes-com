@@ -108,7 +108,7 @@ export default class ArticleList {
 
     const p = document.createDocumentFragment();
 
-    const $prev = button({ class: 'prev' }, '«');
+    const $prev = button({ class: 'prev' });
     $prev.addEventListener('click', () => {
       if (this.currentPage > 0) {
         this.currentPage -= 1;
@@ -158,7 +158,7 @@ export default class ArticleList {
       }
     }
 
-    const $next = button({ class: 'next' }, '»');
+    const $next = button({ class: 'next' });
     $next.addEventListener('click', () => {
       if (this.currentPage < totalPages - 1) {
         this.currentPage += 1;
