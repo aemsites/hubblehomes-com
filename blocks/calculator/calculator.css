@@ -14,7 +14,7 @@
   }
 }
 
-@media (max-width: 954px) and (min-width: 768px) {
+@media (max-width: 1050px) and (min-width: 768px) {
   label {
     height: 55px;
   }
