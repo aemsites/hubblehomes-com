@@ -189,9 +189,12 @@ export default class ArticleList {
 
     Object.keys(categories).sort().forEach((category) => {
       const cat = category.toLowerCase().replace(/\s+/g, '-');
-      const $a = a({ href: this.categoryPath + cat }, `${category} `, small(`(${categories[category]})`));
-      const $li = li({ class: this.category === cat ? 'active' : '' }, $a);
-      $a.addEventListener('click', (event) => {
+      const $li = li({ class: this.category === cat ? 'active' : '' },
+        a({
+          href: this.categoryPath + cat,
+        }, `${category} `,
+        small(`(${categories[category]})`)));
+      $li.addEventListener('click', (event) => {
         if (this.articleCard && this.articleContainer) event.preventDefault();
         this.category = cat;
         this.currentPage = 0;
