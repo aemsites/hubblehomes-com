@@ -108,7 +108,7 @@ export default class ArticleList {
 
     const p = document.createDocumentFragment();
 
-    const $prev = button({ class: 'prev' }, '«');
+    const $prev = button({ class: 'prev' });
     $prev.addEventListener('click', () => {
       if (this.currentPage > 0) {
         this.currentPage -= 1;
@@ -158,7 +158,7 @@ export default class ArticleList {
       }
     }
 
-    const $next = button({ class: 'next' }, '»');
+    const $next = button({ class: 'next' });
     $next.addEventListener('click', () => {
       if (this.currentPage < totalPages - 1) {
         this.currentPage += 1;
@@ -189,9 +189,12 @@ export default class ArticleList {
 
     Object.keys(categories).sort().forEach((category) => {
       const cat = category.toLowerCase().replace(/\s+/g, '-');
-      const $a = a({ href: this.categoryPath + cat }, `${category} `, small(`(${categories[category]})`));
-      const $li = li({ class: this.category === cat ? 'active' : '' }, $a);
-      $a.addEventListener('click', (event) => {
+      const $li = li({ class: this.category === cat ? 'active' : '' },
+        a({
+          href: this.categoryPath + cat,
+        }, `${category} `,
+        small(`(${categories[category]})`)));
+      $li.addEventListener('click', (event) => {
         if (this.articleCard && this.articleContainer) event.preventDefault();
         this.category = cat;
         this.currentPage = 0;
