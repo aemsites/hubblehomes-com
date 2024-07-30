@@ -1,0 +1,95 @@
+.careers-template main .default-content-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-bottom: 0;
+  }
+  
+  .careers-template main .default-content-wrapper h1 {
+    color: var(--text-color);
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+
+  .careers-template main .default-content-wrapper p {
+    text-align: left;
+  }
+  
+  /* .careers-template .job-listings {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px 0;
+    border-top: 1px solid #717171;
+  }
+  
+  .careers-template .columns > div {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+  } */
+  
+  /* .careers-template .columns > div > div {
+    border-bottom: 1px solid #717171;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .careers-template .columns h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: var(--text-color);
+  }
+  
+  .careers-template .columns p {
+    margin-bottom: 15px;
+  }
+  
+  .careers-template .columns .button-container {
+    margin-top: 20px;
+  } */
+  
+  /* .careers-template .columns .button-container a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--yellow) !important;
+    color: var(--dark-blue) !important;
+    text-decoration: none !important;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+  } */
+
+  /* .btn {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: var(--yellow);
+    border: 1px solid var(--yellow);
+    color: var(--dark-blue);
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    font-family: inherit;
+    font-style: normal;
+    width: auto;
+    text-align: center;
+  }
+  
+  .btn:hover {
+    background-color: var(--dark-blue);
+    color: white;
+  } */
+  
+  /* .btn.fancy {
+    font-family: inherit;
+    font-style: normal;
+  }
+  
+  .careers-template .columns .button-container a:hover {
+    background-color: var(--dark-blue) !important;
+    color: white !important;
+  }
+
+  #open-positions {
+    padding-top: 20px;
+    font-weight: 400;
+  } */
