@@ -73,7 +73,7 @@
   }
 }
 
-.btn-container {
+.promotion-section .btn-container {
 
   transition: all 0.3s ease-in-out;
   width: 100%;
@@ -94,8 +94,7 @@
   display: block;
 }
 
-.btn,
-button {
+.promotion-section .btn-container .btn {
   color: #fff;
   background-color: #4572b7;
   border-color: #4572b7;
