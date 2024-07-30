@@ -78,11 +78,12 @@ async function getCommunitiesSheet(property) {
 
 /**
  * Fetches the staff sheet data, includes the total, offset, limit, and data fields.
+ * @param role the role of the staff to filter by
  * @returns {Promise<*|undefined>}
  */
-async function getStaffSheet(property) {
-  const result = await getSheetData(property, Sheets.STAFF);
-  return result[Sheets.STAFF];
+async function getStaffSheet(role = 'sales') {
+  const result = await getSheetData('data', Sheets.STAFF);
+  return result[Sheets.STAFF].filter((staff) => staff.role.toLowerCase() === role.toLowerCase());
 }
 
 /**

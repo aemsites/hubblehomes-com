@@ -132,8 +132,7 @@
 }
 
 .carousel .content .button::after {
-  display: inline-block;
-  content: '\e072';
+  display: inline-block;  
   font-family: glyphicons;
   font-style: normal;
   padding-left: 6px;
