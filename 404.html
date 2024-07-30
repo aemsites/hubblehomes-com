@@ -16,6 +16,19 @@
     ></script>
     <script src="/scripts/aem.js" type="module"></script>
     <link rel="stylesheet" href="/styles/styles.css" />
+    <script>
+      dataLayer = window.dataLayer || [];
+      dataLayer.push({
+        'pageType'    : '404',
+        'city'        : '',
+        'state'        : '',
+        'region'    : '',
+        'community'    : '',
+        'model'        : '',
+        'spec'        : ''
+      });
+    </script>
+    </script>
     <style>
       main.error {
         min-height: calc(100vh - var(--nav-height));
@@ -64,7 +77,7 @@
       .error-link span {
         font-weight: bold;
       }
-    
+
       @media (max-width: 900px) {
         .error-links {
           flex-direction: column;
@@ -80,7 +93,7 @@
           height: 120px;
         }
       }
-    
+
       @media (max-width: 600px) {
         .error-title {
           font-size: 36px;
