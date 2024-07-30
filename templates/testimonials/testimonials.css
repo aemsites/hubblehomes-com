@@ -3,3 +3,8 @@
     margin-bottom: 30px;
     color: var(--blue);
 }
+
+.testimonials-container {
+    width: 100%;
+    max-width: none;
+}
