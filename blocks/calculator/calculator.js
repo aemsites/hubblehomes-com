@@ -4,23 +4,21 @@ import { formatPrice } from '../../scripts/currency-formatter.js';
 function calculatePayment() {
   const fields = ['purchase_price', 'interest_rate', 'down_payment', 'number_of_years'];
   const values = {};
-  let returnFlag = false;
-  fields.forEach((field) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const field of fields) {
     const element = document.getElementById(field);
     values[field] = element.value;
     if (!values[field]) {
       element.reportValidity();
-      returnFlag = true;
       return;
     }
     // eslint-disable-next-line no-restricted-globals
     if (isNaN(values[field])) {
       element.setCustomValidity('Please enter a valid number');
       element.reportValidity();
-      returnFlag = true;
+      return;
     }
-  });
-  if (returnFlag) return;
+  }
   const monthlyInterestRate = values.interest_rate / 100 / 12;
   const loanTermMonths = values.number_of_years * 12;
   const loanAmount = values.purchase_price - values.down_payment;
@@ -38,8 +36,8 @@ function calculatePayment() {
 }
 
 export default async function decorate(block) {
-  const ratesData = await getRatesSheet(null);
-  const rates = ratesData.data[0];
+  const ratesData = await getRatesSheet('data');
+  const rates = ratesData[0];
   const fields = [
     {
       id: 'purchase_price',
