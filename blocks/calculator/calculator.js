@@ -102,13 +102,8 @@ export default async function decorate(block) {
     if (field.label) textbox.setAttribute('placeholder', field.label);
 
     textbox.addEventListener('keyup', (e) => {
-      e.target.value = e.target.value.replace(/[^0-9]/g, '');
+      e.target.value = e.target.value.replace(/[^0-9 .]/g, '');
     });
-
-    textbox.addEventListener('invalid', () => {
-      textbox.reportValidity();
-    });
-
     textbox.required = true;
     formGroup.appendChild(textbox);
   });
