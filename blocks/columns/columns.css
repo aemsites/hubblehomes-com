@@ -165,20 +165,31 @@
   }
 }
 
+@media (min-width: 768px) {
 .columns.finance {
   margin-top: 20px;
+
   img {
     width: 50%;
   }
+
+  > div {
+    display: flex;
+    flex-direction: row;    
+  }
+
   >div >div {
     flex: unset;
   }
+
   >div > div:nth-of-type(1) {
     width: 40%;
     text-align: center;
   }
+
   >div > div:nth-of-type(2) {
     width: 60%;
+
     p {
       font-size: 16px;
       line-height: 2em;
@@ -187,3 +198,39 @@
     }
   }
 }
+}
+
+@media (max-width: 768px) {
+  .columns.finance {
+    margin-top: 20px;
+    
+    img {
+      width: 80%;
+    }
+
+    > div {
+      display: flex;
+      flex-direction: column-reverse;    
+    }
+
+    >div >div {
+      flex: unset;
+    }
+
+    >div > div:nth-of-type(1) {      
+      text-align: center;
+    }
+
+    >div > div:nth-of-type(2) {
+      padding-top: 20px; 
+         
+      p {
+        font-size: 16px;
+        line-height: 2em;
+        color: var(--link-color);
+        font-weight: normal;
+        text-align: center;
+      }
+    }
+  }
+  }
