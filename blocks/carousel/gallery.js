@@ -17,30 +17,9 @@ function createGalleryButton() {
   );
 }
 
-function adjustGalleryPosition() {
-  const topBanner = document.querySelector('.top-banner');
-  const topBannerHeight = topBanner ? topBanner.offsetHeight : 0;
-  const navHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height'), 10);
-  const adjustedNavHeight = navHeight + topBannerHeight;
-
-  const galleryElement = document.querySelector('.gallery.active');
-  if (galleryElement) {
-    galleryElement.style.top = `${adjustedNavHeight}px`;
-  }
-
-  const imageOverlay = document.querySelector('.image-overlay');
-  if (imageOverlay) {
-    imageOverlay.style.top = `${adjustedNavHeight}px`;
-  }
-}
-
 function openGallery() {
   const pageName = getMetadata('page-name');
   initGallery(galleryImages, pageName);
-
-  setTimeout(() => {
-    adjustGalleryPosition();
-  }, 0);
 }
 
 function createGallery($container, block) {
@@ -72,7 +51,6 @@ function initializeGallery(block) {
       if (mutation.attributeName === 'class') {
         const { classList } = mutation.target;
         if (classList.contains('gallery-active')) {
-          adjustGalleryPosition();
           return true;
         }
       }

@@ -1,4 +1,11 @@
 /* stylelint-disable declaration-block-single-line-max-declarations, no-descending-specificity, declaration-block-no-shorthand-property-overrides */
+header {
+  position: sticky;
+  inset: 0;
+  z-index: 9999;
+  background: #fff;
+  box-shadow: 0 0 3px 0 rgb(0 0 0 / 10%);
+}
 
 header * {
   padding: 0;
@@ -10,28 +17,18 @@ header * {
   margin: auto;
   z-index: 9;
   max-width: var(--max-content-width);
-  height: inherit;
   font-family: var(--body-font-family);
   font-size: 16px;
-}
+  padding: 10px;
+  height: var(--nav-height);
 
-body.has-top-banner header {
-  top: 46px;
+  a {
+    text-decoration: none !important;
+  }
 }
 
 body.has-top-banner .bgr-btn {
   bottom: 20px;
-}
-
-.header a {
-  text-decoration: none !important;
-}
-
-#logo {
-  position: absolute;
-  top: 18px;
-  left: 40px;
-  display: inline-block;
 }
 
 /* phone */
@@ -109,16 +106,12 @@ input[type='text']::placeholder {
   border-bottom: none;
   border-top: none;
   z-index: 3;
-  top: calc(100% + 34px); /* Position just below the input, adjust the spacing as needed */
+  top: 32px;
   left: 432px;
   background-color: #e9e9e9;
   width: 566px;
   box-shadow: 0 4px 6px rgb(0 0 0 / 10%); /* Add a shadow for better visibility */
   border-radius: 6px;
-}
-
-#search {
-  position: relative; /* Ensure positioning context for autocomplete */
 }
 
 .search-item {

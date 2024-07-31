@@ -20,7 +20,7 @@ function createOptimizedImage(image) {
   return createOptimizedPicture(
     image.src,
     image.alt,
-    false,
+    true,
     [{ media: '(min-width: 1024px)', width: '2000' },
       { media: '(max-width: 480px)', width: '480' },
       { media: '(min-width: 480px) and (max-width: 768px)', width: '768' },
@@ -38,7 +38,6 @@ function navigateOverlay(direction) {
   const overlay = document.querySelector('.image-overlay');
   const content = overlay.querySelector('.image-overlay-content');
   const oldPicture = content.querySelector('picture');
-
   const newOptimizedPicture = createOptimizedImage(galleryImages[currentIndex]);
   content.replaceChild(newOptimizedPicture, oldPicture);
 }
@@ -70,8 +69,7 @@ function createImageOverlay(index, title) {
     class: 'close btn white rounded small',
     'aria-label': 'Close banner',
     onclick: () => {
-      // eslint-disable-next-line no-use-before-define
-      document.body.removeChild(overlay);
+      document.querySelector('.image-overlay').remove();
     },
   });
 
@@ -90,7 +88,7 @@ function createImageOverlay(index, title) {
   });
 
   const buttonContainer = div({ class: 'btns' }, prevButton, nextButton);
-  const imageOverlayContent = div({ class: 'image-overlay-content' }, buttonContainer, optimizedPicture);
+  const imageOverlayContent = div({ class: 'image-overlay-content' }, optimizedPicture, buttonContainer);
 
   const overlay = div(
     { class: 'image-overlay' },
@@ -106,7 +104,8 @@ function createImageOverlay(index, title) {
 
   imageOverlayContent.addEventListener('dragstart', (e) => e.preventDefault());
 
-  document.body.appendChild(overlay);
+  document.querySelector('main').prepend(overlay);
+  // document.body.appendChild(overlay);
 
   openGallery();
 }
@@ -115,8 +114,9 @@ function closeGallery() {
   const gallery = document.querySelector('.gallery');
   gallery.classList.remove('active');
   document.body.classList.remove('gallery-active');
+
   setTimeout(() => {
-    document.body.removeChild(gallery);
+    gallery.remove();
   }, 300);
 }
 
@@ -171,6 +171,20 @@ async function createGallery(images, title) {
 
 export default async function initGallery(images, pageName) {
   const gallery = await createGallery(images, pageName);
-  document.body.appendChild(gallery);
+  document.querySelector('main').prepend(gallery);
+
+  // create a MutationObserver to watch the header element for height changes
+  const observer = new MutationObserver(() => {
+    const header = document.querySelector('header');
+    if (header) {
+      gallery.style.height = `calc(100vh - ${header.clientHeight}px)`;
+    }
+  });
+
+  observer.observe(
+    document.querySelector('header'),
+    { childList: true, subtree: true },
+  );
+
   openGallery();
 }

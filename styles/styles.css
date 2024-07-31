@@ -90,14 +90,7 @@
     display: block;
   }
 
-  header {
-    position: sticky;
-    inset: 0;
-    z-index: 9999;
-    height: var(--nav-height);
-    background: #fff;
-    box-shadow: 0 0 3px 0 rgb(0 0 0 / 10%);
-  }
+
 
   helix-sidekick[pushdown] ~ header { top: 49px }
 
@@ -335,6 +328,17 @@
 
   .strike-through {
     text-decoration: line-through;
+  }
+}
+
+
+/* when the body contains gallery-active hide all children of the main section but the first child, and the footer should be removed */
+body.gallery-active {
+  overflow: hidden;
+
+  main > *:not(:first-child),
+  footer {
+    display: none;
   }
 }
 
