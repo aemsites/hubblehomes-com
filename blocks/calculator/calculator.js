@@ -2,6 +2,9 @@ import { getRatesSheet } from '../../scripts/workbook.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
 
 function calculatePayment() {
+  const resultContainer = document.getElementById('result');
+  resultContainer.style.display = 'block';
+  resultContainer.innerHTML = '';
   const fields = ['purchase_price', 'interest_rate', 'down_payment', 'number_of_years'];
   const values = {};
   // eslint-disable-next-line no-restricted-syntax
@@ -18,20 +21,30 @@ function calculatePayment() {
       element.reportValidity();
       return;
     }
+    if (field === 'interest_rate' && (values[field] < 0 || values[field] > 100)) {
+      element.setCustomValidity('Interest rate must be between 0 and 100');
+      element.reportValidity();
+      return;
+    }
+    if (field === 'number_of_years' && (values[field] < 0 || values[field] > 100)) {
+      element.setCustomValidity('Number of years must be a positive number');
+      element.reportValidity();
+      return;
+    }
   }
   const monthlyInterestRate = values.interest_rate / 100 / 12;
   const loanTermMonths = values.number_of_years * 12;
   const loanAmount = values.purchase_price - values.down_payment;
-
+  if (loanAmount <= 0) {
+    document.getElementById('down_payment').setCustomValidity('Down payment must be less than purchase price');
+    document.getElementById('down_payment').reportValidity();
+    return;
+  }
   // Calculate the monthly payment using the loan amortization formula
   const monthlyPayment = loanAmount * ((monthlyInterestRate
     * (1 + monthlyInterestRate) ** loanTermMonths)
   / ((1 + monthlyInterestRate) ** loanTermMonths - 1));
-
   Math.round(monthlyPayment.toFixed(2));
-
-  const resultContainer = document.getElementById('result');
-  resultContainer.style.display = 'block';
   resultContainer.innerHTML = `<p>Estimated Monthly Payment = ${formatPrice(monthlyPayment, 'full')}</p>`;
 }
 
@@ -114,6 +127,5 @@ export default async function decorate(block) {
   const resultContainer = document.createElement('div');
   resultContainer.setAttribute('id', 'result');
   resultContainer.classList.add('result-container');
-  resultContainer.style.display = 'none';
   formContainer.appendChild(resultContainer);
 }
