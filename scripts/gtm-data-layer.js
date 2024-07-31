@@ -6,10 +6,12 @@ import { getMetadata } from './aem.js';
  * @returns {string|string} The page type or an empty string if not found.
  */
 function getPageType() {
-  return getMetadata('page-type')
-    || getMetadata('template')
-    || getMetadata('page-name')
-    || (window.location.pathname === '/') ? 'Home' : '';
+  const p = getMetadata('page-type');
+  const t = getMetadata('template');
+  const n = getMetadata('page-name');
+  const w = (window.location.pathname === '/') ? 'Home' : '';
+
+  return p || t || n || w;
 }
 
 const dataLayer = {
