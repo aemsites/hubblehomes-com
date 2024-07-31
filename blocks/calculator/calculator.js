@@ -27,7 +27,7 @@ function calculatePayment() {
       return;
     }
     if (field === 'number_of_years' && (values[field] < 0 || values[field] > 100)) {
-      element.setCustomValidity('Number of years must be a positive number');
+      element.setCustomValidity('Number of years must be between 0 and 100');
       element.reportValidity();
       return;
     }
