@@ -68,11 +68,11 @@ export default function registerTouchHandlers(block, nextSlide, prevSlide) {
   block.addEventListener('touchmove', handleTouchMove, { passive: true });
   block.addEventListener('touchend', (e) => {
     if (!isButtonOrAnchor(e)) handleTouchEnd(block, nextSlide, prevSlide);
-  }, false);
+  }, { passive: true });
   block.addEventListener('mousedown', handleMouseDown, { passive: true });
   block.addEventListener('mousemove', handleMouseMove, { passive: true });
   block.addEventListener('mouseup', (e) => {
     if (!isButtonOrAnchor(e)) handleMouseUp(block, nextSlide, prevSlide);
-  }, false);
-  block.addEventListener('dragstart', (e) => e.preventDefault());
+  }, { passive: true });
+  block.addEventListener('dragstart', (e) => e.preventDefault(), { passive: true });
 }
