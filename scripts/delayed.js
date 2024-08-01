@@ -1,8 +1,9 @@
 /* eslint-disable object-curly-newline */
-import { sampleRUM } from './aem.js';
-
-// Core Web Vitals RUM collection
-sampleRUM('cwv');
+import {
+  sampleRUM,
+  hasForms,
+  buildForms,
+} from './aem.js';
 
 async function liveChat() {
   const script = document.createElement('script');
@@ -35,3 +36,30 @@ async function liveChat() {
   document.head.appendChild(script);
 }
 liveChat();
+
+function loadHubSpot() {
+  const hsScriptEl = document.createElement('script');
+  hsScriptEl.type = 'text/javascript';
+  hsScriptEl.async = true;
+  hsScriptEl.setAttribute('id', 'hs-script-loader');
+  hsScriptEl.src = 'https://js.hsforms.net/forms/embed/v2.js';
+  document.querySelector('head').append(hsScriptEl);
+  hsScriptEl.addEventListener('load', () => {
+    buildForms(hbspt); // eslint-disable-line
+  });
+}
+
+async function loadDelayed() {
+  // Core Web Vitals RUM collection
+  sampleRUM('cwv');
+
+  // add more delayed functionality here
+  liveChat();
+
+  // only load this if there is a hubspot embed block
+  if (hasForms()) {
+    loadHubSpot();
+  }
+}
+
+loadDelayed();
