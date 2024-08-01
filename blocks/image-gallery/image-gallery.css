@@ -89,6 +89,7 @@
       padding: 0 30px;
 
       button {
+        flex: 0 0 auto;
         width: 52px;
         height: var(--button-height);
 
