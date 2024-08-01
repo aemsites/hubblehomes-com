@@ -64,13 +64,13 @@ export default function registerTouchHandlers(block, nextSlide, prevSlide) {
     return (event.target.tagName === 'BUTTON' || event.target.tagName === 'A');
   }
 
-  block.addEventListener('touchstart', handleTouchStart, false);
-  block.addEventListener('touchmove', handleTouchMove, false);
+  block.addEventListener('touchstart', handleTouchStart, { passive: true });
+  block.addEventListener('touchmove', handleTouchMove, { passive: true });
   block.addEventListener('touchend', (e) => {
     if (!isButtonOrAnchor(e)) handleTouchEnd(block, nextSlide, prevSlide);
   }, false);
-  block.addEventListener('mousedown', handleMouseDown, false);
-  block.addEventListener('mousemove', handleMouseMove, false);
+  block.addEventListener('mousedown', handleMouseDown, { passive: true });
+  block.addEventListener('mousemove', handleMouseMove, { passive: true });
   block.addEventListener('mouseup', (e) => {
     if (!isButtonOrAnchor(e)) handleMouseUp(block, nextSlide, prevSlide);
   }, false);
