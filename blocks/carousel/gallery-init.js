@@ -1,20 +1,13 @@
 import {
   div, button, h2,
-} from './dom-helpers.js';
-import { createOptimizedPicture } from './aem.js';
-import { safeAppend } from './block-helper.js';
-import registerTouchHandlers from '../blocks/carousel/carousel-touch.js';
+} from '../../scripts/dom-helpers.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
+import { safeAppend } from '../../scripts/block-helper.js';
+import registerTouchHandlers from './carousel-touch.js';
+import rebuildImageStyles from '../../scripts/gallery-rules.js';
 
 let galleryImages = [];
 let currentIndex = 0;
-
-function getItemClasses(index) {
-  const position = index % 9;
-  if (position === 2 || position === 6) {
-    return ['large'];
-  }
-  return ['small'];
-}
 
 function createOptimizedImage(image) {
   return createOptimizedPicture(
@@ -42,7 +35,17 @@ function navigateOverlay(direction) {
   content.replaceChild(newOptimizedPicture, oldPicture);
 }
 
+/**
+ * Rebuild the styles for the images in the gallery.  The window width will determine the rule to
+ * apply to the images.
+ */
+function buildStyles() {
+  const pictures = document.querySelectorAll('.image-gallery picture');
+  rebuildImageStyles(pictures);
+}
+
 function openGallery() {
+  buildStyles();
   const gallery = document.querySelector('.gallery');
   gallery.classList.add('active');
   document.body.classList.add('gallery-active');
@@ -120,6 +123,22 @@ function closeGallery() {
   }, 300);
 }
 
+function setGalleryPlacement(gallery) {
+  const header = document.querySelector('header');
+  gallery.style.height = `calc(100vh - ${header.clientHeight}px)`;
+
+  const observer = new MutationObserver(() => {
+    if (header) {
+      gallery.style.height = `calc(100vh - ${header.clientHeight}px)`;
+    }
+  });
+
+  observer.observe(
+    document.querySelector('header'),
+    { childList: true, subtree: true },
+  );
+}
+
 async function createGallery(images, title) {
   let titleEl;
   if (title) {
@@ -136,13 +155,17 @@ async function createGallery(images, title) {
 
   safeAppend(galleryHeader, titleEl, closeButton);
 
-  const galleryContent = div({ class: 'gallery-content' });
+  const galleryContent = div({ class: 'image-gallery' });
 
   // cache the images for future lookup
   galleryImages = images;
 
-  images.forEach((image, i) => {
-    const galleryItem = div({ class: 'gallery-item' });
+  // register a listener for the window resize event
+  window.addEventListener('resize', () => {
+    buildStyles();
+  });
+
+  images.forEach((image, index) => {
     const picture = createOptimizedPicture(
       image.src,
       image.alt,
@@ -154,16 +177,11 @@ async function createGallery(images, title) {
       ],
     );
 
-    galleryItem.appendChild(picture);
-
-    const classes = getItemClasses(i);
-    classes.forEach((cls) => galleryItem.classList.add(cls));
-
-    galleryItem.addEventListener('click', () => {
-      createImageOverlay(i, title);
+    picture.addEventListener('click', () => {
+      createImageOverlay(index, title);
     });
 
-    galleryContent.appendChild(galleryItem);
+    galleryContent.appendChild(picture);
   });
 
   return div({ class: 'gallery' }, galleryHeader, galleryContent);
@@ -173,18 +191,7 @@ export default async function initGallery(images, pageName) {
   const gallery = await createGallery(images, pageName);
   document.querySelector('main').prepend(gallery);
 
-  // create a MutationObserver to watch the header element for height changes
-  const observer = new MutationObserver(() => {
-    const header = document.querySelector('header');
-    if (header) {
-      gallery.style.height = `calc(100vh - ${header.clientHeight}px)`;
-    }
-  });
-
-  observer.observe(
-    document.querySelector('header'),
-    { childList: true, subtree: true },
-  );
-
   openGallery();
+
+  setGalleryPlacement(gallery);
 }

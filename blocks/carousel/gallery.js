@@ -1,5 +1,5 @@
 import { getMetadata } from '../../scripts/aem.js';
-import initGallery from '../../scripts/gallery.js';
+import initGallery from './gallery-init.js';
 import { button, span } from '../../scripts/dom-helpers.js';
 
 let galleryImages = [];
@@ -22,7 +22,7 @@ function openGallery() {
   initGallery(galleryImages, pageName);
 }
 
-function createGallery($container, block) {
+function createGallery($container) {
   const galleryButton = createGalleryButton();
   $container.appendChild(galleryButton);
 
@@ -31,13 +31,6 @@ function createGallery($container, block) {
     e.preventDefault();
     openGallery();
   });
-
-  // Collect all images for the gallery
-  galleryImages = Array.from(block.querySelectorAll('.slide-image img'))
-    .map((img) => ({
-      src: img.src,
-      alt: img.alt,
-    }));
 }
 
 function initializeGallery(block) {

@@ -90,8 +90,6 @@
     display: block;
   }
 
-
-
   helix-sidekick[pushdown] ~ header { top: 49px }
 
   strong {
@@ -332,22 +330,23 @@
 }
 
 
-/* when the body contains gallery-active hide all children of the main section but the first child, and the footer should be removed */
-body.gallery-active {
-  overflow: hidden;
-
-  main > *:not(:first-child),
-  footer {
-    display: none;
-  }
-}
-
 /* pad all sections */
 main > .section > *:not(.carousel-wrapper) {
   padding: 0 20px;
 
   @media (max-width: 768px) {
     padding: 0 10px;
+  }
+}
+
+/* when the body contains gallery-active hide all children of the
+main section but the first child, and the footer should be removed */
+body.gallery-active {
+  overflow: hidden;
+
+  main > *:not(:first-child),
+  footer {
+    display: none;
   }
 }
 
