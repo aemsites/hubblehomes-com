@@ -6,10 +6,8 @@
 import {
   div,
 } from '../../scripts/dom-helpers.js';
-
-import {
-  addFormConfiguration,
-} from '../../scripts/aem.js';
+import { addFormConfiguration } from '../../scripts/forms-helper.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
 
 // Utility function to load external scripts
 const loadScript = (url, callback, type = 'text/javascript') => {
@@ -75,6 +73,14 @@ const embedHubSpot = (formId, uniqueId) => {
   });
 };
 
+const embedAnimoto = (url, autoplay) => {
+  const embedHTML = `<div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;">
+      <iframe src="${url.href}" style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;"
+      allowfullscreen allow="${autoplay ? 'autoplay;' : ''} fullscreen" title="Hubble Homes Video Player" id="vp1GeZMS"></iframe>
+    </div>`;
+  return embedHTML;
+};
+
 // Decorates the HubSpot block with a form container
 const decorateHubSpot = (block, uniqueId) => {
   const formContainer = div({ class: 'hubspot-form', id: uniqueId });
@@ -91,6 +97,7 @@ const loadEmbed = (block, embedSrc, autoplay) => {
     { match: ['youtube', 'youtu.be'], embed: embedYouTube },
     { match: ['vimeo'], embed: embedVimeo },
     { match: ['twitter'], embed: embedTwitter },
+    { match: ['animoto'], embed: embedAnimoto },
     { match: ['hubspot'], embed: embedHubSpot, decorate: decorateHubSpot },
   ];
 
@@ -135,10 +142,15 @@ export default async function decorate(block) {
   block.textContent = '';
 
   if (placeholder) {
+    const imgSizes = [
+      { media: '(max-width: 480px)', width: '400' },
+      { media: '(min-width: 480px)', width: '720' },
+    ];
+    const optimizedPicture = createOptimizedPicture(placeholder.querySelector('img').src, placeholder.alt, placeholder.title, imgSizes);
     const wrapper = document.createElement('div');
     wrapper.className = 'embed-placeholder';
     wrapper.innerHTML = '<div class="embed-placeholder-play"><button type="button" title="Play"></button></div>';
-    wrapper.prepend(placeholder);
+    wrapper.prepend(optimizedPicture);
     wrapper.addEventListener('click', () => {
       loadEmbed(block, embedSrc, true);
     });
