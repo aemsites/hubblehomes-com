@@ -231,12 +231,6 @@ export default async function decorate(block) {
   const rows = block.querySelectorAll(':scope > div');
   const $slides = ul({ class: 'slides' });
 
-  registerTouchHandlers(
-    block,
-    () => showSlide(block, -1),
-    () => showSlide(block, 1),
-  );
-
   if (rows.length === 1) {
     const $slide = createSlide(rows[0], 1);
     $slides.appendChild($slide);
@@ -253,6 +247,14 @@ export default async function decorate(block) {
       $slides.appendChild($slide);
       isMultiple = i >= 1;
     });
+  }
+
+  if (isMultiple) {
+    registerTouchHandlers(
+      block,
+      () => showSlide(block, -1),
+      () => showSlide(block, 1),
+    );
   }
 
   const $container = div(

@@ -62,7 +62,7 @@ header nav > div > ul > li > ul {
   display: none;
   color: var(--yellow);
   position: absolute;
-  top: 50px;
+  top: 49px;
   margin-left: -14px;
   padding: 4px 14px 14px;
   background: var(--dark-blue);
@@ -104,6 +104,7 @@ header nav>div>ul>li>ul>li:not(:has(> ul)) > a /* headings w/out children */ {
 }
 
 .header {
+  height: var(--nav-height);
   position: relative;
   margin: auto;
   z-index: 9;
