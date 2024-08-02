@@ -6,10 +6,7 @@
 import {
   div,
 } from '../../scripts/dom-helpers.js';
-
-import {
-  addFormConfiguration,
-} from '../../scripts/aem.js';
+import { addFormConfiguration } from '../../scripts/forms-helper.js';
 
 // Utility function to load external scripts
 const loadScript = (url, callback, type = 'text/javascript') => {
@@ -75,10 +72,10 @@ const embedHubSpot = (formId, uniqueId) => {
   });
 };
 
-const embedAWS = (url) => {
+const embedAnimoto = (url, autoplay) => {
   const embedHTML = `<div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;">
-      <iframe src="${url.href}" style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;" 
-      allowfullscreen title="Video Player" id="vp1GeZMS"></iframe>
+      <iframe src="${url.href}" style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;"
+      allowfullscreen allow="${autoplay ? 'autoplay;' : ''} fullscreen" title="Hubble Homes Video Player" id="vp1GeZMS"></iframe>
     </div>`;
   return embedHTML;
 };
@@ -99,7 +96,7 @@ const loadEmbed = (block, embedSrc, autoplay) => {
     { match: ['youtube', 'youtu.be'], embed: embedYouTube },
     { match: ['vimeo'], embed: embedVimeo },
     { match: ['twitter'], embed: embedTwitter },
-    { match: ['aws'], embed: embedAWS },
+    { match: ['animoto'], embed: embedAnimoto },
     { match: ['hubspot'], embed: embedHubSpot, decorate: decorateHubSpot },
   ];
 
