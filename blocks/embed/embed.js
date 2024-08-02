@@ -7,6 +7,7 @@ import {
   div,
 } from '../../scripts/dom-helpers.js';
 import { addFormConfiguration } from '../../scripts/forms-helper.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
 
 // Utility function to load external scripts
 const loadScript = (url, callback, type = 'text/javascript') => {
@@ -141,10 +142,15 @@ export default async function decorate(block) {
   block.textContent = '';
 
   if (placeholder) {
+    const imgSizes = [
+      { media: '(max-width: 480px)', width: '400' },
+      { media: '(min-width: 480px)', width: '720' },
+    ];
+    const optimizedPicture = createOptimizedPicture(placeholder.querySelector('img').src, placeholder.alt, placeholder.title, imgSizes);
     const wrapper = document.createElement('div');
     wrapper.className = 'embed-placeholder';
     wrapper.innerHTML = '<div class="embed-placeholder-play"><button type="button" title="Play"></button></div>';
-    wrapper.prepend(placeholder);
+    wrapper.prepend(optimizedPicture);
     wrapper.addEventListener('click', () => {
       loadEmbed(block, embedSrc, true);
     });
