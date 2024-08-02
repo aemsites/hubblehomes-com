@@ -1,8 +1,8 @@
-/* eslint-disable function-call-argument-newline, object-curly-newline, function-paren-newline */
 import { aside, div, p, a, strong, small, h3, hr, script } from '../../scripts/dom-helpers.js';
 import ArticleList from '../../scripts/article-list.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../../blocks/fragment/fragment.js';
+import { createNewsletterLink } from '../../scripts/newsletter-link.js';
 import formatTimeStamp from '../../scripts/utils.js';
 
 export default async function decorate(doc) {
@@ -53,6 +53,8 @@ export default async function decorate(doc) {
     $categoryFilter,
   );
 
+  const $newsletterLink = createNewsletterLink();
+
   const $newsDetailPage = div({ class: 'section' },
     div({ class: 'content-wrapper' },
       div({ class: 'content' },
@@ -66,6 +68,7 @@ export default async function decorate(doc) {
       aside(
         $categoryList,
         hr(),
+        $newsletterLink,
       ),
     ),
   );

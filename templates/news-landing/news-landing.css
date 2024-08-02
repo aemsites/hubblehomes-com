@@ -2,3 +2,16 @@
 @import url('/styles/sidebar.css');
 @import url('/templates/news-detail/news-detail.css');
 @import url('/styles/articles.css');
+
+.newsletter-link {
+    display: block;
+    margin-top: 20px;
+    color: var(--link-color);
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .newsletter-link:hover {
+    text-decoration: underline;
+  }
+  

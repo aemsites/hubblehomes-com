@@ -160,4 +160,16 @@
   }
 }
 
+.newsletter-link {
+  display: block;
+  margin-top: 20px;
+  color: var(--link-color);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.newsletter-link:hover {
+  text-decoration: underline;
+}
+
 
