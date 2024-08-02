@@ -99,7 +99,7 @@ const loadEmbed = (block, embedSrc, autoplay) => {
     { match: ['youtube', 'youtu.be'], embed: embedYouTube },
     { match: ['vimeo'], embed: embedVimeo },
     { match: ['twitter'], embed: embedTwitter },
-    { match: ['AWS'], embed: embedAWS },
+    { match: ['aws'], embed: embedAWS },
     { match: ['hubspot'], embed: embedHubSpot, decorate: decorateHubSpot },
   ];
 
