@@ -75,6 +75,14 @@ const embedHubSpot = (formId, uniqueId) => {
   });
 };
 
+const embedAWS = (url) => {
+  const embedHTML = `<div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;">
+      <iframe src="${url.href}" style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;" 
+      allowfullscreen title="Video Player" id="vp1GeZMS"></iframe>
+    </div>`;
+  return embedHTML;
+};
+
 // Decorates the HubSpot block with a form container
 const decorateHubSpot = (block, uniqueId) => {
   const formContainer = div({ class: 'hubspot-form', id: uniqueId });
@@ -91,6 +99,7 @@ const loadEmbed = (block, embedSrc, autoplay) => {
     { match: ['youtube', 'youtu.be'], embed: embedYouTube },
     { match: ['vimeo'], embed: embedVimeo },
     { match: ['twitter'], embed: embedTwitter },
+    { match: ['AWS'], embed: embedAWS },
     { match: ['hubspot'], embed: embedHubSpot, decorate: decorateHubSpot },
   ];
 
