@@ -35,6 +35,9 @@ export default function decorate(block) {
       block.classList.add('dismissed');
       block.remove();
       sessionStorage.setItem('topBannerDismissed', 'true');
+
+      // set the css variable --banner-height to 0
+      document.documentElement.style.setProperty('--banner-height', '0px');
     });
   }
 

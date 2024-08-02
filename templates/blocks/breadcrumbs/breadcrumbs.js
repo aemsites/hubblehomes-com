@@ -20,7 +20,8 @@ async function buildBreadcrumbs() {
   const homeLink = a({ href: '/' }, 'Home');
   const homeCrumb = li(homeLink);
   const crumbList = ul({ class: 'breadcrumb-list' }, homeCrumb);
-  const breadcrumbContainer = div({ class: 'section breadcrumbs' }, crumbList);
+  // const breadcrumbContainer = div({ class: 'section breadcrumbs' }, crumbList);
+  const breadcrumbContainer = crumbList;
 
   pathParts.forEach((part, index) => {
     currentPath += `/${part}`;
@@ -70,12 +71,13 @@ async function buildBreadcrumbs() {
 export default async function decorate(block) {
   const breadcrumbs = await buildBreadcrumbs();
   block.innerHTML = '';
+  block.appendChild(breadcrumbs);
 
   const main = document.querySelector('main > div.section');
   const $carousel = main.querySelector('.carousel-wrapper');
   if ($carousel) {
-    $carousel.insertAdjacentElement('afterend', breadcrumbs);
+    $carousel.insertAdjacentElement('afterend', block);
   } else {
-    main.insertAdjacentElement('afterbegin', breadcrumbs);
+    main.insertAdjacentElement('afterbegin', block);
   }
 }

@@ -14,10 +14,99 @@ header {
   }
 }
 
-header * {
-  padding: 0;
-  margin: 0;
+
+/* nav */
+header nav {
+  position: absolute;
+  bottom: 35px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  user-select: none;
 }
+
+header nav a {
+  display: block;
+}
+
+header nav ul {
+  list-style: none;
+  position: relative;
+  white-space: nowrap;
+
+}
+
+/* top level */
+header nav > div > ul > li {
+  color: var(--link-light-gray);
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  height: 50px;
+  padding: 0 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  float: left;
+
+  &:hover,
+  &.on {
+    background: var(--dark-blue);
+    color: #fff;
+  }
+}
+
+/* dropdown menus */
+header nav > div > ul > li > ul {
+  text-transform: none;
+  display: none;
+  color: var(--yellow);
+  position: absolute;
+  top: 50px;
+  margin-left: -14px;
+  padding: 4px 14px 14px;
+  background: var(--dark-blue);
+  box-shadow: 0 6px 12px rgb(0 0 0 / 17%);
+}
+
+/* show the menu when the class on is set */
+header nav > div > ul > li.on > ul {
+  display: block;
+}
+
+/* 2nd level styles */
+header nav > div > ul > li > ul > li {
+  padding: 4px 0 3px;
+  font-size: 0.90em;
+  font-weight: 600;
+}
+
+header nav > div > ul > li > ul > li a {
+  padding: 0 12px;
+  cursor: pointer;
+  color: #fff;
+}
+
+header nav > div > ul > li > ul > li a:hover {
+  background: var(--light-blue);
+}
+
+/* headings */
+header nav > div > ul > li > ul > li > a {
+  font-weight: 600;
+  color: var(--yellow);
+}
+
+header nav>div>ul>li>ul>li>ul>li>a, /* all 3rd level links */
+header nav>div>ul>li>ul>li:not(:has(> ul)) > a /* headings w/out children */ {
+  font-weight: 400 !important;
+  color: #fff;
+}
+
+/*header * {*/
+/*  padding: 0;*/
+/*  margin: 0;*/
+/*}*/
 
 .header {
   position: relative;
@@ -27,7 +116,6 @@ header * {
   font-family: var(--body-font-family);
   font-size: 16px;
   padding: 10px;
-  height: var(--nav-height);
 
   a {
     text-decoration: none !important;
@@ -161,93 +249,6 @@ input[type='text']::placeholder {
   cursor: pointer;
 }
 
-/* nav */
-header nav {
-  position: absolute;
-  bottom: 35px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  user-select: none;
-}
-
-header nav a {
-  display: block;
-}
-
-header nav ul {
-  list-style: none;
-  position: relative;
-  white-space: nowrap;
-
-}
-
-/* top level */
-header nav > div > ul > li {
-  color: var(--link-light-gray);
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: center;
-  cursor: pointer;
-  height: 50px;
-  padding: 0 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-  float: left;
-
-  &:hover,
-  &.on {
-    background: var(--dark-blue);
-    color: #fff;
-  }
-}
-
-/* dropdown menus */
-header nav > div > ul > li > ul {
-  text-transform: none;
-  display: none;
-  color: var(--yellow);
-  position: absolute;
-  top: 50px;
-  margin-left: -14px;
-  padding: 4px 14px 14px;
-  background: var(--dark-blue);
-  box-shadow: 0 6px 12px rgb(0 0 0 / 17%);
-}
-
-/* show the menu when the class on is set */
-header nav > div > ul > li.on > ul {
-  display: block;
-}
-
-/* 2nd level styles */
-header nav > div > ul > li > ul > li {
-  padding: 4px 0 3px;
-  font-size: 0.90em;
-  font-weight: 600;
-}
-
-header nav > div > ul > li > ul > li a {
-  padding: 0 12px;
-  cursor: pointer;
-  color: #fff;
-}
-
-header nav > div > ul > li > ul > li a:hover {
-  background: var(--light-blue);
-}
-
-/* headings */
-header nav > div > ul > li > ul > li > a {
-  font-weight: 600;
-  color: var(--yellow);
-}
-
-header nav>div>ul>li>ul>li>ul>li>a, /* all 3rd level links */
-header nav>div>ul>li>ul>li:not(:has(> ul)) > a /* headings w/out children */ {
-  font-weight: 400 !important;
-  color: #fff;
-}
 
 /* hamburger button */
 .bgr-btn {
@@ -310,7 +311,6 @@ header nav>div>ul>li>ul>li:not(:has(> ul)) > a /* headings w/out children */ {
   }
 
   .mobile-nav-open {
-    position: fixed;
     overflow-y: scroll;
 
     #chat-widget-container {

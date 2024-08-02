@@ -15,8 +15,14 @@ import {
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 
-function clearTopBannerDismissedOnLoad() {
-  if (performance.getEntriesByType('navigation')[0].type === 'reload') {
+/**
+ * Any session storage that needs to managed before loading the page
+ * should be done here.
+ */
+function manageSessionStorage() {
+  // if the page is reloaded on localhost
+  if (performance.getEntriesByType('navigation')[0].type === 'reload'
+    && window.location.hostname === 'localhost') {
     sessionStorage.removeItem('topBannerDismissed');
   }
 }
@@ -190,7 +196,7 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  loadTopBanner(doc);
+  await loadTopBanner(doc);
   loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
 
@@ -270,10 +276,9 @@ if (sk) {
 }
 
 async function loadPage() {
-  clearTopBannerDismissedOnLoad();
+  manageSessionStorage();
   setupGlobalVars();
   await loadEager(document);
-
   await loadLazy(document);
   loadDelayed();
 }

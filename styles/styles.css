@@ -66,7 +66,9 @@
 
     /* sizes */
     --nav-height: 90px;
+    --banner-height: 60px;
     --max-content-width: 1170px;
+    --header-height: calc(var(--nav-height) + var(--banner-height));
   }
 
   @font-face {
@@ -88,6 +90,15 @@
 
   body.appear {
     display: block;
+  }
+
+  body.mobile-nav-open {
+    overflow: hidden !important;
+  }
+
+  header {
+    height: var(--header-height);
+    width: 100vw;
   }
 
   helix-sidekick[pushdown] ~ header { top: 49px }
