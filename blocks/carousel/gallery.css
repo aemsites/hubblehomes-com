@@ -62,6 +62,10 @@
     width: 100%;
     pointer-events: none;
     transform: translate(0, -50%);
+
+    button {
+      flex-basis: 50px;
+    }
   }
 
   .image-overlay-content {
