@@ -15,8 +15,14 @@ import {
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 
-function clearTopBannerDismissedOnLoad() {
-  if (performance.getEntriesByType('navigation')[0].type === 'reload') {
+/**
+ * Any session storage that needs to managed before loading the page
+ * should be done here.
+ */
+function manageSessionStorage() {
+  // if the page is reloaded on localhost
+  if (performance.getEntriesByType('navigation')[0].type === 'reload'
+    && window.location.hostname === 'localhost') {
     sessionStorage.removeItem('topBannerDismissed');
   }
 }
@@ -137,56 +143,6 @@ export async function loadTemplate(doc, templateName) {
   }
 }
 
-function handleTopBanner(topBanner) {
-  if (topBanner && !topBanner.classList.contains('dismissed')) {
-    const header = document.querySelector('header');
-    const bannerHeight = topBanner.offsetHeight;
-
-    document.body.classList.add('has-top-banner');
-    document.body.style.paddingTop = `${bannerHeight}px`;
-
-    if (header) {
-      header.style.top = `${bannerHeight}px`;
-    }
-  } else {
-    document.body.classList.remove('has-top-banner');
-    document.body.style.paddingTop = '0';
-
-    const header = document.querySelector('header');
-    if (header) {
-      header.style.top = '';
-    }
-  }
-}
-
-function setupTopBannerObserver() {
-  const header = document.querySelector('header');
-
-  // watch for changes in the header
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.type === 'childList') {
-        const topBanner = document.querySelector('.top-banner');
-        if (topBanner) {
-          handleTopBanner(topBanner);
-          observer.disconnect(); // Stop observing once we've handled the banner
-        }
-      }
-    });
-  });
-
-  // observing the header for changes
-  observer.observe(header, { childList: true, subtree: true });
-
-  // listen for the custom event
-  window.addEventListener('topbannerloaded', () => {
-    const topBanner = document.querySelector('.top-banner');
-    if (topBanner) {
-      handleTopBanner(topBanner);
-    }
-  }, { once: true });
-}
-
 async function loadTopBanner(doc) {
   const topBannerFragment = await loadFragment('/fragments/top-banner');
   if (topBannerFragment) {
@@ -194,9 +150,6 @@ async function loadTopBanner(doc) {
     if (topBanner) {
       const header = doc.querySelector('header');
       header?.prepend(topBanner);
-
-      // Dispatch a custom event when the banner is added
-      window.dispatchEvent(new CustomEvent('topbannerloaded'));
     }
   }
 }
@@ -243,9 +196,9 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
+  await loadTopBanner(doc);
   loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
-  loadTopBanner(doc);
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
@@ -323,11 +276,9 @@ if (sk) {
 }
 
 async function loadPage() {
-  setupTopBannerObserver();
-  clearTopBannerDismissedOnLoad();
+  manageSessionStorage();
   setupGlobalVars();
   await loadEager(document);
-
   await loadLazy(document);
   loadDelayed();
 }

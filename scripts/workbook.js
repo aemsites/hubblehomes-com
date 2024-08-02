@@ -1,5 +1,3 @@
-const { hh } = window;
-
 const Sheets = {
   COMMUNITIES: 'communities',
   SALES_OFFICES: 'sales-offices',
@@ -33,9 +31,10 @@ async function fetchWorkbook(sheetNames) {
  */
 async function getSheet(sheetNames) {
   const sheets = Array.isArray(sheetNames) ? sheetNames : [sheetNames];
-  const cachedSheets = sheets.filter((sheetName) => hh[sheetName]);
+
+  const cachedSheets = sheets.filter((sheetName) => window.hh[sheetName]);
   if (cachedSheets.length === sheets.length) {
-    return Object.fromEntries(cachedSheets.map((sheetName) => [sheetName, hh[sheetName]]));
+    return Object.fromEntries(cachedSheets.map((sheetName) => [sheetName, window.hh[sheetName]]));
   }
 
   const data = await fetchWorkbook(sheets.length === Object.keys(Sheets).length ? 'all' : sheets);
@@ -43,16 +42,16 @@ async function getSheet(sheetNames) {
   // we could look at the sheets.length to determine if we have a single sheet or multi sheet
   // workbook but the result also tells us that it's a sheet, or multi-sheet response
   if (data[':type'] === 'sheet') {
-    hh[sheets[0]] = data;
+    window.hh[sheets[0]] = data;
     return { [sheets[0]]: data };
   }
 
   // we have a multi sheet workbook
   Object.entries(data).forEach(([key, value]) => {
-    if (!key.startsWith(':')) hh[key] = value;
+    if (!key.startsWith(':')) window.hh[key] = value;
   });
 
-  return Object.fromEntries(sheets.map((sheetName) => [sheetName, hh[sheetName]]));
+  return Object.fromEntries(sheets.map((sheetName) => [sheetName, window.hh[sheetName]]));
 }
 
 /**

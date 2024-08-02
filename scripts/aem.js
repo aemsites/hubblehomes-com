@@ -721,7 +721,7 @@ async function loadFooter(footer) {
 
 async function loadBreadcrumbs(doc) {
   const breadcrumbBlock = buildBlock('breadcrumbs', '');
-  const mainEl = doc.querySelector('main');
+  const mainEl = doc.querySelector('main > .section');
   mainEl.prepend(breadcrumbBlock);
   decorateBlock(breadcrumbBlock);
   return loadBlock(breadcrumbBlock, true);
@@ -747,6 +747,32 @@ async function waitForLCP(lcpBlocks) {
     } else {
       resolve();
     }
+  });
+}
+
+const formConfigurations = [];
+
+/**
+ * Checks if there are any form configurations.
+ * @returns {boolean} True if there are form configurations, otherwise false.
+ */
+function hasForms() {
+  return formConfigurations.length > 0;
+}
+
+function addFormConfiguration(formConfig) {
+  formConfigurations.push(formConfig);
+}
+
+function buildForms(hbspt) {
+  formConfigurations.forEach((formConfiguration) => {
+    const config = {
+      region: 'na1',
+      portalId: '21555329',
+      formId: formConfiguration.formId,
+      target: `.hubspot-form#${formConfiguration.targetElementId}`,
+    };
+    hbspt.forms.create(config);
   });
 }
 
@@ -778,4 +804,7 @@ export {
   updateSectionsStatus,
   waitForLCP,
   wrapTextNodes,
+  hasForms,
+  addFormConfiguration,
+  buildForms,
 };

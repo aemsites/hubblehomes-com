@@ -167,7 +167,7 @@ function createSlide(row, i) {
           { media: '(min-width: 1024px)', width: '1920' },
         ];
         col.innerHTML = '';
-        col.append(createOptimizedPicture(img.src, img.alt || `slide ${index}`, true, imgSizes));
+        col.append(createOptimizedPicture(img.src, img.alt || `slide ${index}`, false, imgSizes));
         // prevent the image from being dragged so that it doesn't interfere with the carousel
         col.addEventListener('dragstart', (e) => e.preventDefault());
         $slideWrapper.append(col);
@@ -231,12 +231,6 @@ export default async function decorate(block) {
   const rows = block.querySelectorAll(':scope > div');
   const $slides = ul({ class: 'slides' });
 
-  registerTouchHandlers(
-    block,
-    () => showSlide(block, -1),
-    () => showSlide(block, 1),
-  );
-
   if (rows.length === 1) {
     const $slide = createSlide(rows[0], 1);
     $slides.appendChild($slide);
@@ -253,6 +247,14 @@ export default async function decorate(block) {
       $slides.appendChild($slide);
       isMultiple = i >= 1;
     });
+  }
+
+  if (isMultiple) {
+    registerTouchHandlers(
+      block,
+      () => showSlide(block, -1),
+      () => showSlide(block, 1),
+    );
   }
 
   const $container = div(
