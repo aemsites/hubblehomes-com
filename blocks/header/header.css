@@ -103,11 +103,6 @@ header nav>div>ul>li>ul>li:not(:has(> ul)) > a /* headings w/out children */ {
   color: #fff;
 }
 
-/*header * {*/
-/*  padding: 0;*/
-/*  margin: 0;*/
-/*}*/
-
 .header {
   position: relative;
   margin: auto;

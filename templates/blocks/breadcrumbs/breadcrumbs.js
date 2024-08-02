@@ -1,6 +1,6 @@
 import { fetchPageIndex } from '../../../scripts/pages.js';
 import {
-  a, div, li, span, ul,
+  a, li, span, ul,
 } from '../../../scripts/dom-helpers.js';
 
 async function buildBreadcrumbs() {
