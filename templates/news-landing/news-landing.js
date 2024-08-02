@@ -4,7 +4,7 @@
 import { div, h3, p, small, aside, h1, a, strong, hr } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../../blocks/fragment/fragment.js';
-import { createNewsletterLink } from '../../scripts/newsletter-link.js';
+import createNewsletterLink from '../../scripts/newsletter-link.js';
 import formatTimeStamp from '../../scripts/utils.js';
 import ArticleList from '../../scripts/article-list.js';
 
