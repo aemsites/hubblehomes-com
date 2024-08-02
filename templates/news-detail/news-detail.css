@@ -70,12 +70,6 @@
     }
   }
 
-  h1 {
-    text-align: center;
-    padding-bottom: 20px !important;
-  }
-
-
   .post-metadata {
     display: block;
     font-weight: 400;
@@ -159,5 +153,3 @@
     }
   }
 }
-
-

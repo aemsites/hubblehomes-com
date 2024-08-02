@@ -43,6 +43,7 @@
     --grey-bar: #e9eae9;
     --light-gray: #847b75;
     --light-gray-dark: #69625d;
+    --light-gray-form: #555;
 
     /* fonts */
     --body-font-family: 'lato', 'lato-fallback';
@@ -126,6 +127,8 @@
     font-weight: 900;
     font-size: var(--heading-font-size-xxl);
     color: var(--light-blue);
+    text-align: center;
+    padding-bottom: 20px;
   }
   h2 { font-size: var(--heading-font-size-xl) }
   h3 { font-size: var(--heading-font-size-l) }
