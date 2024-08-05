@@ -2,14 +2,14 @@
   "name": "xml-feed",
   "version": "1.0.0",
   "description": "XML feed for Hubble Homes",
-  "main": "generate-xml-feed.js",
-  "type": "module",
+  "main": "generate-xml-feed.js",  
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "vmitra",
   "license": "ISC",
   "dependencies": {
-    "fast-xml-parser": "^4.0.12"
+    "fast-xml-parser": "^4.0.12",
+    "jsdom": "^24.1.1"
   }
 }
