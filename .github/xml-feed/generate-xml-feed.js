@@ -1,27 +1,102 @@
-const {XMLParser, XMLBuilder, XMLValidator} = require('fast-xml-parser');
+const { XMLParser, XMLBuilder, XMLValidator } = require('fast-xml-parser');
 const fs = require('fs');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
 const Sheets = {
   COMMUNITIES: 'communities',
-  SALES_OFFICES: 'sales-offices', 
-  INVENTORY: 'inventory',  
+  SALES_OFFICES: 'sales-offices',
+  INVENTORY: 'inventory',
   MODELS: 'models',
-  HOME_PLANS: 'home-plans',  
+  HOME_PLANS: 'home-plans',
   CORPORATION: 'corporation',
   SUBDIVISION: 'subdivision',
 };
 
-
+let salesOfficehelper = [];
 async function fetchWorkbook(sheetNames) {
-  const sheets = Array.isArray(sheetNames) ? sheetNames : [sheetNames];console.log(sheets);
-  const url = `https://main--hubblehomes-com--aemsites.hlx.live/data/hubblehomes.json?${sheets.map((sheetName) => `sheet=${sheetName}`).join('&')}`;console.log(url);
+  const sheets = Array.isArray(sheetNames) ? sheetNames : [sheetNames];
+  const url = `https://main--hubblehomes-com--aemsites.hlx.live/data/hubblehomes.json?${sheets.map((sheetName) => `sheet=${sheetName}`).join('&')}`;
   const request = await fetch(url);
   if (request.ok) {
     return request.json();
   }
   throw new Error('Failed to fetch workbook');
+}
+
+async function addInventoryData(model, community) {
+  const inventoryData = await fetchWorkbook(Sheets.INVENTORY);
+  let inventoryXml = '';
+  for (const inventoryhome of inventoryData.data) {
+    if (inventoryhome.community.toLowerCase() === community.toLowerCase() && inventoryhome['model name'].toLowerCase() === model.toLowerCase()) {
+      inventoryXml += ` <Spec Type="SingleFamily">
+        <SpecNumber>${inventoryhome.mls}</SpecNumber>
+        <SpecAddress>
+        <SpecLot>${inventoryhome.address}</SpecLot>
+        <SpecStreet1>${inventoryhome.address}</SpecStreet1>
+        <SpecCity>${salesOfficehelper['city']}</SpecCity>
+        <SpecState>${salesOfficehelper['zip-code-abbr']}</SpecState>
+        <SpecZIP>${salesOfficehelper['zipcode']}</SpecZIP>
+        <SpecCountry>USA</SpecCountry>
+        <SpecGeocode>
+        <SpecLatitude>${inventoryhome.latitude}</SpecLatitude>
+        <SpecLongitude>${inventoryhome.longitude}</SpecLongitude>
+        </SpecGeocode>
+        </SpecAddress>
+        <SpecStatus>${inventoryhome.status}</SpecStatus>
+        <SpecPrice>${inventoryhome.price}</SpecPrice>
+        <SpecSqft>${inventoryhome['square feet']}</SpecSqft>
+        <SpecBaths>${inventoryhome.baths}</SpecBaths>
+        <SpecHalfBaths></SpecHalfBaths>
+        <SpecBedrooms MasterBedLocation="${inventoryhome['primary bed']}">${inventoryhome.beds}</SpecBedrooms>
+        <SpecGarage>${inventoryhome.cars}</SpecGarage>`;
+      const pageURL = "https://main--hubblehomes-com--aemsites.hlx.live" + inventoryhome.path + ".plain.html";
+      const response = await fetch(pageURL);
+      const pageText = await response.text();
+      const dom = new JSDOM(pageText);
+      const body = dom.window.document.getElementsByTagName("body")[0];
+      const allImageTags = body.querySelectorAll(".carousel > div > div > picture > img ");
+      let imagexml = '';
+      let elevations = '';
+      allImageTags.forEach((img, index) => {
+        const imgsrc = (img.src.substring(1)).split('?');
+        imagexml += `<SpecInteriorImage SequencePosition="${index + 1}" Title="" 
+          Caption="${model} New Home Plan by Hubble Homes Boise, Idaho" ReferenceType="URL">
+          ${(`https://main--hubblehomes-com--aemsites.hlx.live${inventoryhome.path}${imgsrc[0]}`)}</SpecInteriorImage>`;
+        if (index === 0) {
+          elevations = `<SpecElevationImage SequencePosition="1" Title="${model}" Caption="" ReferenceType="URL">${(`https://main--hubblehomes-com--aemsites.hlx.live${inventoryhome.path}${imgsrc[0]}`)}</SpecElevationImage>`;
+        }
+      });
+      imagexml += elevations;
+      let description = '<SpecDescription>';
+      const ptags = body.querySelectorAll(".description > div > div > p ");
+      ptags.forEach((p) => description += p.innerHTML);
+      description += '</SpecDescription>';
+      let floorPlanImages = '';
+      const FloorPlanDiv = body.querySelectorAll(".floorplan > div");
+      FloorPlanDiv.forEach((div, index) => {
+        const label = div.querySelector(' div').innerHTML;
+        const img = div.querySelector(' div > picture > img');
+        const imgsrc = (img.src.substring(1)).split('?');
+        floorPlanImages += `<SpecFloorPlanImage SequencePosition="${index}" Caption="${label}" Title="${label}" ReferenceType="URL">
+          ${`https://main--hubblehomes-com--aemsites.hlx.live${inventoryhome.path}${imgsrc[0]}`}</SpecFloorPlanImage>`
+      });
+      let matterportURL;
+      const linksblock = body.querySelectorAll(".links > div > div > a");
+      linksblock.forEach((a) => {
+        if (a.href.includes('matterport')) {
+          matterportURL = a.href;
+        }
+      });
+      const links = `<SpecInteractiveMedia Type="InteractiveFloorplan" Title="${model} Interactive Floorplan" IsFlash="0">
+        <WebsiteURL>${matterportURL}</WebsiteURL>
+        </SpecInteractiveMedia>
+        <SpecWebsite>https://www.hubblehomes.com${inventoryhome.path}</SpecWebsite>
+        </Spec>`;
+      inventoryXml = `${inventoryXml}${description}${imagexml}${floorPlanImages}${links}`;
+    }
+  }
+  return inventoryXml;
 }
 
 async function addImagesDescription(path, modelName) {
@@ -47,9 +122,9 @@ async function addImagesDescription(path, modelName) {
   allElevationdiv.forEach((div, index) => {
     const label = div.querySelector('div').innerHTML;
     const img = div.querySelector('div > picture > img');
-    const imgsrc = (img.src.substring(1)).split('?');    
+    const imgsrc = (img.src.substring(1)).split('?');
     elevations = `<ElevationImage SequencePosition="${index}" Caption="${label}" Title="${label}" ReferenceType="URL">
-    ${(`https://main--hubblehomes-com--aemsites.hlx.live${path}${imgsrc[0]}`)}</ElevationImage>`    
+    ${(`https://main--hubblehomes-com--aemsites.hlx.live${path}${imgsrc[0]}`)}</ElevationImage>`
   });
   let floorPlanImages = '';
   const FloorPlanDiv = body.querySelectorAll(".floorplan > div");
@@ -58,9 +133,20 @@ async function addImagesDescription(path, modelName) {
     const img = div.querySelector(' div > picture > img');
     const imgsrc = (img.src.substring(1)).split('?');
     floorPlanImages += `<FloorPlanImage SequencePosition="${index}" Caption="${label}" Title="${label}" ReferenceType="URL">
-    ${`https://main--hubblehomes-com--aemsites.hlx.live${path}${imgsrc[0]}`}</FloorPlanImage>`    
+    ${`https://main--hubblehomes-com--aemsites.hlx.live${path}${imgsrc[0]}`}</FloorPlanImage>`
   });
-  return `${description}<PlanImages>${elevations}${floorPlanImages}${imagexml}</PlanImages>`;
+  let matterportURL;
+  let contradovipURL;
+  const linksblock = body.querySelectorAll(".links > div > div > a");
+  linksblock.forEach((a) => {
+    if (a.href.includes('contradovip')) {
+      contradovipURL = a.href;
+    } else if (a.href.includes('matterport')) {
+      matterportURL = a.href;
+    }
+  });
+  const links = `<VirtualTour>${matterportURL}</VirtualTour><PlanViewer>${contradovipURL}</PlanViewer>`;
+  return `${description}<PlanImages>${elevations}${floorPlanImages}${imagexml}</PlanImages>${links}`;
 }
 
 async function addCarouselImages(path) {
@@ -82,19 +168,20 @@ async function addCarouselImages(path) {
 async function addPlanInfo(community) {
   const data = await fetchWorkbook([Sheets.MODELS, Sheets.HOME_PLANS]);
   const modelHomePlanMap = new Map();
-  
-  for (const model of data.models.data) {    
-      if (model.community === community) {
-        for (const homeplan of data['home-plans']['data']) {
-            if (homeplan['model name'] === model['model name']) {
-              modelHomePlanMap.set(model, homeplan);
-            }
+
+  for (const model of data.models.data) {
+    if (model.community === community) {
+      for (const homeplan of data['home-plans']['data']) {
+        if (homeplan['model name'] === model['model name']) {
+          modelHomePlanMap.set(model, homeplan);
+        }
       }
-    }    
+    }
   }
   let homePlanInfo = '';
   for (const [key, value] of modelHomePlanMap.entries()) {
-    const imagedata = await addImagesDescription(value['path'],key['model name']);
+    const imagedata = await addImagesDescription(value['path'], key['model name']);
+    const inventoryHome = await addInventoryData(key['model name'], key['community']);
     homePlanInfo += `<Plan Type="${value['Type']}">
             <PlanNumber>${value['PlanNumber']}</PlanNumber>
             <PlanName>${key['model name']}</PlanName>
@@ -104,9 +191,10 @@ async function addPlanInfo(community) {
             <Stories>${key['home style']}</Stories>
             <Baths>${key['baths']}</Baths>            
             <Bedrooms MasterBedLocation="${key['primary bed']}">${key['beds']}</Bedrooms>
-            <Garage>${key['cars']}</Garage>
-          <Description></Description>
+            <Garage>${key['cars']}</Garage>         
           ${imagedata}
+          <PlanWebsite>https://www.hubblehomes.com${value['path']}</PlanWebsite>
+          ${inventoryHome}
           </Plan>`;
   }
   return homePlanInfo;
@@ -116,13 +204,13 @@ async function addSubDivison(subdivision, salesoffice, carouselImages) {
   let subImage = '';
   let planXML = await addPlanInfo(subdivision['SubdivisionName']);
   carouselImages.forEach((image, index) => {
-    if (index+1 == 1) {
-    subImage += `<SubImage Type="Standard" SequencePosition="${index+1}" Title="" 
+    if (index + 1 == 1) {
+      subImage += `<SubImage Type="Standard" SequencePosition="${index + 1}" Title="" 
                   Caption="" ReferenceType="URL" 
                   IsPreferredSubImage="1">${image}
                   </SubImage>`;
     } else {
-      subImage += `<SubImage Type="Standard" SequencePosition="${index+1}" Title="" 
+      subImage += `<SubImage Type="Standard" SequencePosition="${index + 1}" Title="" 
                   Caption="" ReferenceType="URL">
                   ${image}
                   </SubImage>`;
@@ -171,18 +259,17 @@ async function addSubDivison(subdivision, salesoffice, carouselImages) {
     <SubWebsite>https://www.hubblehomes.com${subdivision['Path']}</SubWebsite>
     ${planXML}
     </Subdivision>`;
-    
-    return subdivisionXML;
+
+  return subdivisionXML;
 }
 
-async function main() {
-fs.writeFileSync('./test.xml', 'output');
-const dateGenerated = new Date().toJSON();
-const corporation = await fetchWorkbook([Sheets.CORPORATION]);
-const filename = 'HubbleHomes_zillow_feed.xml'
-let corporationXML;
-corporation.data.forEach((entry) => {
-  corporationXML = `<Corporation>
+async function main() {  
+  const dateGenerated = new Date().toJSON();
+  const corporation = await fetchWorkbook([Sheets.CORPORATION]);
+  const filename = 'HubbleHomes_zillow_feed.xml'
+  let corporationXML;
+  corporation.data.forEach((entry) => {
+    corporationXML = `<Corporation>
     <CorporateBuilderNumber>${entry['CorporateBuilderNumber']}</CorporateBuilderNumber>
     <CorporateState>${entry['CorporateState']}</CorporateState>
     <CorporateName>${entry['CorporateName']}</CorporateName>
@@ -192,32 +279,32 @@ corporation.data.forEach((entry) => {
         <ReportingName>${entry['ReportingName']}</ReportingName>
         <DefaultLeadsEmail LeadsPerMessage="1">${entry['DefaultLeadsEmail']}</DefaultLeadsEmail>
         <BuilderWebsite>${entry['BuilderWebsite']}</BuilderWebsite>`;
-});
-const subdivisionData = await fetchWorkbook([Sheets.SUBDIVISION, Sheets.SALES_OFFICES]);
-let subdivisionXML ='';
-for (const subdivision of subdivisionData.subdivision.data)
-{
-  const carouselImages = await addCarouselImages(subdivision['Path']);
-  for (const salesoffice of subdivisionData['sales-offices']['data']) {
-      if (salesoffice['community'].toLowerCase() === subdivision['SubdivisionName'].toLowerCase()) {                
+  });
+  const subdivisionData = await fetchWorkbook([Sheets.SUBDIVISION, Sheets.SALES_OFFICES]);
+  let subdivisionXML = '';
+  for (const subdivision of subdivisionData.subdivision.data) {
+    const carouselImages = await addCarouselImages(subdivision['Path']);
+    for (const salesoffice of subdivisionData['sales-offices']['data']) {
+      if (salesoffice['community'].toLowerCase() === subdivision['SubdivisionName'].toLowerCase()) {
+        salesOfficehelper = salesoffice;
         subdivisionXML += await addSubDivison(subdivision, salesoffice, carouselImages);
       }
+    }
   }
-}
 
 
-const XMLdata = `<Builders DateGenerated = "${dateGenerated}">
+  const XMLdata = `<Builders DateGenerated = "${dateGenerated}">
   ${corporationXML}
   ${subdivisionXML}
   </Builder>
 </Corporation>
 </Builders>`;
-const parser = new XMLParser();
-let jObj = parser.parse(XMLdata);
-const builder = new XMLBuilder();
-const xmlContent = builder.build(jObj);
-const xml = `<?xml version="1.0"?>${xmlContent}`;
-fs.writeFileSync(`../../admin/aIncludeInZillow/${filename}`, XMLdata);
+  const parser = new XMLParser();
+  let jObj = parser.parse(XMLdata);
+  const builder = new XMLBuilder();
+  const xmlContent = builder.build(jObj);
+  const xml = `<?xml version="1.0"?>${xmlContent}`;
+  fs.writeFileSync(`../../admin/aIncludeInZillow/${filename}`, XMLdata);
 }
 
 exports.main = main();
