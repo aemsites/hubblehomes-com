@@ -1,37 +1,125 @@
 /* stylelint-disable declaration-block-single-line-max-declarations, no-descending-specificity, declaration-block-no-shorthand-property-overrides */
+header {
+  position: sticky;
+  inset: 0;
+  z-index: 9999;
+  background: #fff;
+  box-shadow: 0 0 3px 0 rgb(0 0 0 / 10%);
 
-header * {
-  padding: 0;
-  margin: 0;
+  .btn.yellow {
+    float: right;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 6px 12px;
+  }
+}
+
+
+/* nav */
+header nav {
+  position: absolute;
+  bottom: 35px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  user-select: none;
+}
+
+header nav a {
+  display: block;
+}
+
+header nav ul {
+  list-style: none;
+  position: relative;
+  white-space: nowrap;
+
+}
+
+/* top level */
+header nav > div > ul > li {
+  color: var(--link-light-gray);
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  height: 50px;
+  padding: 0 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  float: left;
+
+  &:hover,
+  &.on {
+    background: var(--dark-blue);
+    color: #fff;
+  }
+}
+
+/* dropdown menus */
+header nav > div > ul > li > ul {
+  text-transform: none;
+  display: none;
+  color: var(--yellow);
+  position: absolute;
+  top: 49px;
+  margin-left: -14px;
+  padding: 4px 14px 14px;
+  background: var(--dark-blue);
+  box-shadow: 0 6px 12px rgb(0 0 0 / 17%);
+}
+
+/* show the menu when the class on is set */
+header nav > div > ul > li.on > ul {
+  display: block;
+}
+
+/* 2nd level styles */
+header nav > div > ul > li > ul > li {
+  padding: 4px 0 3px;
+  font-size: 0.90em;
+  font-weight: 600;
+}
+
+header nav > div > ul > li > ul > li a {
+  padding: 0 12px;
+  cursor: pointer;
+  color: #fff;
+}
+
+header nav > div > ul > li > ul > li a:hover {
+  background: var(--light-blue);
+}
+
+/* headings */
+header nav > div > ul > li > ul > li > a {
+  font-weight: 600;
+  color: var(--yellow);
+}
+
+header nav>div>ul>li>ul>li>ul>li>a, /* all 3rd level links */
+header nav>div>ul>li>ul>li:not(:has(> ul)) > a /* headings w/out children */ {
+  font-weight: 400 !important;
+  color: #fff;
 }
 
 .header {
+  height: var(--nav-height);
   position: relative;
   margin: auto;
   z-index: 9;
   max-width: var(--max-content-width);
-  height: inherit;
   font-family: var(--body-font-family);
   font-size: 16px;
-}
+  padding: 10px;
 
-body.has-top-banner header {
-  top: 46px;
+  a {
+    text-decoration: none !important;
+  }
 }
 
 body.has-top-banner .bgr-btn {
   bottom: 20px;
-}
-
-.header a {
-  text-decoration: none !important;
-}
-
-#logo {
-  position: absolute;
-  top: 18px;
-  left: 40px;
-  display: inline-block;
 }
 
 /* phone */
@@ -109,16 +197,12 @@ input[type='text']::placeholder {
   border-bottom: none;
   border-top: none;
   z-index: 3;
-  top: calc(100% + 34px); /* Position just below the input, adjust the spacing as needed */
+  top: 32px;
   left: 432px;
   background-color: #e9e9e9;
   width: 566px;
   box-shadow: 0 4px 6px rgb(0 0 0 / 10%); /* Add a shadow for better visibility */
   border-radius: 6px;
-}
-
-#search {
-  position: relative; /* Ensure positioning context for autocomplete */
 }
 
 .search-item {
@@ -161,102 +245,6 @@ input[type='text']::placeholder {
   cursor: pointer;
 }
 
-/* nav */
-header nav {
-  position: absolute;
-  bottom: 35px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  user-select: none;
-}
-
-header nav a {
-  display: block;
-}
-
-header nav ul {
-  list-style: none;
-  position: relative;
-  white-space: nowrap;
-
-}
-
-/* top level */
-header nav > div > ul > li {
-  color: var(--link-light-gray);
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: center;
-  cursor: pointer;
-  height: 50px;
-  padding: 0 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-  float: left;
-
-  &:hover,
-  &.on {
-    background: var(--dark-blue);
-    color: #fff;
-  }
-}
-
-/* dropdown menus */
-header nav > div > ul > li > ul {
-  text-transform: none;
-  display: none;
-  color: var(--yellow);
-  position: absolute;
-  top: 50px;
-  margin-left: -14px;
-  padding: 4px 14px 14px;
-  background: var(--dark-blue);
-  box-shadow: 0 6px 12px rgb(0 0 0 / 17%);
-}
-
-/* show the menu when the class on is set */
-header nav > div > ul > li.on > ul {
-  display: block;
-}
-
-/* 2nd level styles */
-header nav > div > ul > li > ul > li {
-  padding: 4px 0 3px;
-  font-size: 0.90em;
-  font-weight: 600;
-}
-
-header nav > div > ul > li > ul > li a {
-  padding: 0 12px;
-  cursor: pointer;
-  color: #fff;
-}
-
-header nav > div > ul > li > ul > li a:hover {
-  background: var(--light-blue);
-}
-
-/* headings */
-header nav > div > ul > li > ul > li > a {
-  font-weight: 600;
-  color: var(--yellow);
-}
-
-header nav>div>ul>li>ul>li>ul>li>a, /* all 3rd level links */
-header nav>div>ul>li>ul>li:not(:has(> ul)) > a /* headings w/out children */ {
-  font-weight: 400 !important;
-  color: #fff;
-}
-
-header {
-  .btn.yellow {
-    float: right;
-    font-size: 14px;
-    font-weight: 400;
-    padding: 6px 12px;
-  }
-}
 
 /* hamburger button */
 .bgr-btn {
@@ -319,7 +307,6 @@ header {
   }
 
   .mobile-nav-open {
-    position: fixed;
     overflow-y: scroll;
 
     #chat-widget-container {

@@ -1,5 +1,6 @@
 import { div } from '../../scripts/dom-helpers.js';
 import registerTouchHandlers from '../carousel/carousel-touch.js';
+import rebuildImageStyles from '../../scripts/gallery-rules.js';
 
 let animating = false;
 let currentSlideIndex = 0;
@@ -10,24 +11,7 @@ let currentSlideIndex = 0;
  */
 function buildPicturesForGallery(block) {
   const pictures = block.querySelectorAll('picture');
-  const rowRules = [[0, 0, 1], [0, 0, 0], [1, 0, 0], [0, 0, 0]];
-  let currentRulePtr = 0;
-
-  pictures.forEach((picture, index) => {
-    if (index !== 0) {
-      currentRulePtr = Math.floor((index / 3) % 4);
-    }
-    const rule = rowRules[currentRulePtr][index % 3];
-    const style = rule === 0 ? 'small' : 'large';
-
-    // is the next rule a large rule
-    const nextRule = rowRules[currentRulePtr][(index + 1) % 3];
-    if (nextRule === 1) {
-      picture.classList.add('large-sibling');
-    }
-    picture.classList.add(style);
-  });
-
+  rebuildImageStyles(pictures);
   return pictures;
 }
 
