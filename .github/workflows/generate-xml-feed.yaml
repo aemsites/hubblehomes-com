@@ -1,6 +1,10 @@
 name: Generate XML Feed
 on:
   workflow_dispatch:
+pull_request:
+    paths:
+      - '.github/xml-feed/**'
+      - '.github/workflows/generate-xml-feedsyaml'
 jobs:
   update_runbook_info_script:
     runs-on: ubuntu-latest
@@ -34,5 +38,5 @@ jobs:
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          file_pattern: 'xml/*.xml'
+          file_pattern: 'admin/aIncludeInZillow/*.xml'
           commit_message: "Update XML Feed"
