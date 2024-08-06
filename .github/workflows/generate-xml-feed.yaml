@@ -6,7 +6,7 @@ on:
       - '.github/xml-feed/**'
       - '.github/workflows/generate-xml-feeds.yaml'
 jobs:
-  update_runbook_info_script:
+  update_zillow_feed:
     runs-on: ubuntu-latest
     permissions:
       statuses: read
