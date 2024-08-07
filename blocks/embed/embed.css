@@ -65,15 +65,18 @@
   max-width: 750px;
   margin: auto;
   font-size: var(--body-font-size-m);
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
+  display: block;
+
+  >* {
+    padding: 10px;
+  }
 
   .hs-form-field label {
-    display: inline-block;
     max-width: 100%;
     margin-bottom: 5px;
     font-weight: 700;
+    display: block;
+    text-align: left;
   }
 
   .hs-input {
@@ -95,16 +98,8 @@
     outline: 0;
   }
 
-  .hs-fieldtype-select,
   .hs-fieldtype-textarea,
-  .hs-fieldtype-checkbox,
-  .hs-form-booleancheckbox,
-  .hs-recaptcha,
-  .hs-submit {
-    grid-column: span 4;
-  }
-
-  .hs-fieldtype-textarea {
+  input[type="file"] {
     height: initial;
   }
 
@@ -148,16 +143,6 @@
       border-radius: 3px;
       font-weight: 400;
       text-shadow: 0 -1px 0 rgba(0 0 0 / 20%);
-    }
-  }
-}
-
-@media (max-width: 750px) {
-  .embed .hubspot-form form {
-    display: block;
-
-    >* {
-      padding: 10px;
     }
   }
 }
