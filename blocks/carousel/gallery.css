@@ -4,7 +4,7 @@
   --gallery-gap-default: 30px;
 }
 
-.gallery {
+.carousel .gallery {
   background: var(--background-color);
   z-index: 1000;
   display: none;
@@ -16,7 +16,7 @@
   }
 }
 
-.gallery-header {
+.carousel-gallery-header {
   background-color: var(--light-blue);
   color: white;
   display: flex;
@@ -48,7 +48,7 @@
     justify-content: center;
     width: 100%;
 
-    .gallery-header {
+    .carousel-gallery-header {
       margin: 0;
     }
   }
@@ -159,7 +159,7 @@
   .gallery-header-container {
     padding: 0;
 
-    .gallery-header {
+    .carousel-gallery-header {
       border-radius: 0;
       margin-bottom: 0;
     }

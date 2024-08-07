@@ -122,24 +122,6 @@ body.has-top-banner .bgr-btn {
   bottom: 20px;
 }
 
-/* phone */
-a#phone {
-  position: absolute;
-  color: var(--link-light-gray);
-  font-size: 1em;
-  font-weight: 600;
-  transition: all 0.3s ease-in-out;
-  line-height: 0.9em;
-  top: 0;
-  left: 764px;
-  padding: 8px;
-}
-
-a:hover#phone {
-  background: var(--dark-blue);
-  color: #fff;
-}
-
 /* search form */
 #search input,
 .search-icon {
@@ -237,15 +219,6 @@ input[type='text']::placeholder {
   font-weight: normal;
 }
 
-/* chat */
-.chat {
-  position: absolute;
-  top: 4px;
-  right: 183px;
-  cursor: pointer;
-}
-
-
 /* hamburger button */
 .bgr-btn {
   display: none;
@@ -276,9 +249,8 @@ input[type='text']::placeholder {
 }
 
 @media (width <= 1170px) {
-  #search,
-  #phone,
-  .chat {
+  #search
+  {
     display: none;
   }
 
@@ -307,11 +279,7 @@ input[type='text']::placeholder {
   }
 
   .mobile-nav-open {
-    overflow-y: scroll;
-
-    #chat-widget-container {
-      display: none;
-    }
+    overflow-y: scroll;  
   } /* disable content scrolling */
 
   .mobile-nav-open nav > div {
