@@ -17,8 +17,18 @@ function createGalleryButton() {
   );
 }
 
-function openGallery() {
+export function getTitle() {
   const pageName = getMetadata('page-name');
+  if (pageName) {
+    return pageName;
+  }
+
+  const { location } = window;
+  return location.href === 'about:srcdoc' ? 'Carousel Gallery' : '';
+}
+
+function openGallery() {
+  const pageName = getTitle();
   initGallery(galleryImages, pageName);
 }
 

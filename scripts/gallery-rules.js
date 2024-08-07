@@ -33,7 +33,7 @@ export default function rebuildImageStyles(pictures) {
     const style = rule === 0 ? 'small' : 'large';
     const nextRule = rowRules[currentRulePtr][(index + 1) % rowRules[0].length];
 
-    if (nextRule === 1) picture.classList.add('large-sibling');
+    if (nextRule === 1 && pictures.length !== index + 1) picture.classList.add('large-sibling');
     picture.classList.add(style);
   });
 }

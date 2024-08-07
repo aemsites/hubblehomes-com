@@ -2,7 +2,7 @@ import {
   div,
   ul,
   li,
-  button,
+  button, p,
 } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { createGallery, initializeGallery } from './gallery.js';
@@ -104,34 +104,43 @@ function initAuto(block) {
  */
 function getSlideText(col) {
   const frag = document.createDocumentFragment();
-  let topText = '';
-  let bottomText = '';
-  let isTop = true;
+  const topText = col.querySelector('h2');
+  const bottomText = col.querySelector('h3');
 
   // decorate CTA
   col.querySelectorAll('a').forEach((cta) => cta.classList.add('button'));
 
-  // decorate top & bottom content
-  col.childNodes.forEach((node) => {
-    if (node.nodeType === Node.ELEMENT_NODE && node.tagName.toLowerCase() === 'hr') {
-      // if node is an <hr> switch to the bottom section
-      isTop = false;
-    } else if (isTop) {
-      topText += node.outerHTML || node.textContent;
-    } else {
-      bottomText += node.outerHTML || node.textContent;
-    }
-  });
+  // collect all the siblings of the h2 up to the h3 element if it exists
+  const topNodes = [];
+  let currentNode = topText ? topText.nextElementSibling : null;
+  while (currentNode && currentNode !== bottomText) {
+    topNodes.push(currentNode);
+    currentNode = currentNode.nextElementSibling;
+  }
 
-  if (topText.trim()) {
+  // collect all the siblings of the h3
+  const bottomNodes = [];
+  currentNode = bottomText ? bottomText.nextElementSibling : null;
+  while (currentNode) {
+    bottomNodes.push(currentNode);
+    currentNode = currentNode.nextElementSibling;
+  }
+
+  if (topText) {
     const $top = div({ class: 'content top' });
-    $top.innerHTML = topText.trim();
+    if (topText.textContent.trim()) {
+      $top.append(p(topText));
+    }
+    topNodes.forEach((node) => $top.append(node));
     frag.append($top);
   }
 
-  if (bottomText.trim() || !isTop) {
+  if (bottomText) {
     const $bottom = div({ class: 'content bottom' });
-    $bottom.innerHTML = bottomText.trim();
+    if (bottomText.textContent.trim()) {
+      $bottom.append(p(bottomText));
+    }
+    bottomNodes.forEach((node) => $bottom.append(node));
     frag.append($bottom);
   }
 
@@ -211,7 +220,7 @@ function createNavButtons(isMultiple, block, $container) {
 
 export default async function decorate(block) {
   const autoClass = block.className.split(' ').find((className) => className.startsWith('auto-'));
-  const hasGallery = block.classList.contains('gallery-enabled');
+  const hasGallery = block.classList.contains('gallery');
 
   // get duration from auto class
   if (autoClass) {
