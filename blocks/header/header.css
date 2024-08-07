@@ -249,9 +249,8 @@ input[type='text']::placeholder {
 }
 
 @media (width <= 1170px) {
-  #search,
-  #phone,
-  .chat {
+  #search
+  {
     display: none;
   }
 
@@ -280,11 +279,7 @@ input[type='text']::placeholder {
   }
 
   .mobile-nav-open {
-    overflow-y: scroll;
-
-    #chat-widget-container {
-      display: none;
-    }
+    overflow-y: scroll;  
   } /* disable content scrolling */
 
   .mobile-nav-open nav > div {
