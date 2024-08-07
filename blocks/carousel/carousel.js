@@ -220,7 +220,7 @@ function createNavButtons(isMultiple, block, $container) {
 
 export default async function decorate(block) {
   const autoClass = block.className.split(' ').find((className) => className.startsWith('auto-'));
-  const hasGallery = block.classList.contains('gallery-enabled');
+  const hasGallery = block.classList.contains('gallery');
 
   // get duration from auto class
   if (autoClass) {
