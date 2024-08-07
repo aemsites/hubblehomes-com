@@ -9,7 +9,7 @@ indices:
       - '/fragments/**'
       - '/nav/**'
       - '/news/news-hero'
-    target: /query-index.json
+    target: /page-query-index.json
     properties:
       title:
         select: head > meta[name="title"]
