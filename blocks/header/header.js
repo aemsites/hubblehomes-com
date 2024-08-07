@@ -198,28 +198,6 @@ export default async function decorate(block) {
     }),
     div({ id: 'autocomplete-list', class: 'autocomplete-items' }),
   );
-
-  const $phone = a(
-    {
-      id: 'phone',
-      href: 'tel:208-620-2607',
-    },
-    '208-620-2607',
-  );
-
-  const $chat = div(
-    {
-      class: 'chat livechat_button',
-      'data-id': 'TeyAs9pDGZ1',
-    },
-    img({
-      src: '/icons/lets-chat.png',
-      width: '81',
-      height: '38',
-      alt: "Let's chat with Hubble Homes and get all the info you need for your next new home.",
-    }),
-  );
-
   const $bgrBtn = div({ class: 'bgr-btn' }, span(), span(), span());
   $bgrBtn.addEventListener('click', () => {
     const navTransitionTime = 600;
@@ -236,5 +214,5 @@ export default async function decorate(block) {
   buildNav();
   setupAutocomplete();
 
-  block.append($logo, $search, $phone, $chat, $bgrBtn);
+  block.append($logo, $search, $bgrBtn);
 }
