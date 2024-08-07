@@ -721,7 +721,7 @@ async function loadFooter(footer) {
 
 async function loadBreadcrumbs(doc) {
   const breadcrumbBlock = buildBlock('breadcrumbs', '');
-  const mainEl = doc.querySelector('main');
+  const mainEl = doc.querySelector('main > .section');
   mainEl.prepend(breadcrumbBlock);
   decorateBlock(breadcrumbBlock);
   return loadBlock(breadcrumbBlock, true);

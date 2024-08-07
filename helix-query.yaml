@@ -1,5 +1,34 @@
 version: 1
 indices:
+  default:
+    include:
+      - '/**'
+    exclude:
+      - '/drafts/**'
+      - '/footer'
+      - '/fragments/**'
+      - '/nav/**'
+      - '/news/news-hero'
+    target: /query-index.json
+    properties:
+      title:
+        select: head > meta[name="title"]
+        value: attribute(el, 'content')
+      description:
+        select: head > meta[name="description"]
+        value: attribute(el, 'content')
+      image:
+        select: head > meta[property="og:image"]
+        value: attribute(el, 'content')
+      template:
+        select: head > meta[name="template"]
+        value: attribute(el, 'content')
+      path:
+        select: head > meta[name="path"]
+        value: attribute(el, 'content')
+      pageName:
+        select: head > meta[name="page-name"]
+        value: attribute(el, 'content')
   news:
     include:
       - '/news/news-detail/*'
@@ -34,3 +63,5 @@ indices:
       pageName:
         select: head > meta[name="page-name"]
         value: attribute(el, "content")
+
+

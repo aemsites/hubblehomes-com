@@ -43,6 +43,7 @@
     --grey-bar: #e9eae9;
     --light-gray: #847b75;
     --light-gray-dark: #69625d;
+    --light-gray-form: #555;
 
     /* fonts */
     --body-font-family: 'lato', 'lato-fallback';
@@ -66,7 +67,9 @@
 
     /* sizes */
     --nav-height: 90px;
+    --banner-height: 60px;
     --max-content-width: 1170px;
+    --header-height: calc(var(--nav-height) + var(--banner-height));
   }
 
   @font-face {
@@ -90,13 +93,13 @@
     display: block;
   }
 
+  body.mobile-nav-open {
+    overflow: hidden !important;
+  }
+
   header {
-    position: sticky;
-    inset: 0;
-    z-index: 9999;
-    height: var(--nav-height);
-    background: #fff;
-    box-shadow: 0 0 3px 0 rgb(0 0 0 / 10%);
+    height: var(--header-height);
+    width: 100vw;
   }
 
   helix-sidekick[pushdown] ~ header { top: 49px }
@@ -124,6 +127,8 @@
     font-weight: 900;
     font-size: var(--heading-font-size-xxl);
     color: var(--light-blue);
+    text-align: center;
+    padding-bottom: 20px;
   }
   h2 { font-size: var(--heading-font-size-xl) }
   h3 { font-size: var(--heading-font-size-l) }
@@ -338,12 +343,24 @@
   }
 }
 
+
 /* pad all sections */
 main > .section > *:not(.carousel-wrapper) {
   padding: 0 20px;
 
   @media (max-width: 768px) {
     padding: 0 10px;
+  }
+}
+
+/* when the body contains gallery-active hide all children of the
+main section but the first child, and the footer should be removed */
+body.gallery-active {
+  overflow: hidden;
+
+  main > *:not(:first-child),
+  footer {
+    display: none;
   }
 }
 

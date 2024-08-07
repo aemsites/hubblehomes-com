@@ -1,5 +1,5 @@
 import { getMetadata } from '../../scripts/aem.js';
-import initGallery from '../../scripts/gallery.js';
+import initGallery from './gallery-init.js';
 import { button, span } from '../../scripts/dom-helpers.js';
 
 let galleryImages = [];
@@ -17,33 +17,12 @@ function createGalleryButton() {
   );
 }
 
-function adjustGalleryPosition() {
-  const topBanner = document.querySelector('.top-banner');
-  const topBannerHeight = topBanner ? topBanner.offsetHeight : 0;
-  const navHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height'), 10);
-  const adjustedNavHeight = navHeight + topBannerHeight;
-
-  const galleryElement = document.querySelector('.gallery.active');
-  if (galleryElement) {
-    galleryElement.style.top = `${adjustedNavHeight}px`;
-  }
-
-  const imageOverlay = document.querySelector('.image-overlay');
-  if (imageOverlay) {
-    imageOverlay.style.top = `${adjustedNavHeight}px`;
-  }
-}
-
 function openGallery() {
   const pageName = getMetadata('page-name');
   initGallery(galleryImages, pageName);
-
-  setTimeout(() => {
-    adjustGalleryPosition();
-  }, 0);
 }
 
-function createGallery($container, block) {
+function createGallery($container) {
   const galleryButton = createGalleryButton();
   $container.appendChild(galleryButton);
 
@@ -52,13 +31,6 @@ function createGallery($container, block) {
     e.preventDefault();
     openGallery();
   });
-
-  // Collect all images for the gallery
-  galleryImages = Array.from(block.querySelectorAll('.slide-image img'))
-    .map((img) => ({
-      src: img.src,
-      alt: img.alt,
-    }));
 }
 
 function initializeGallery(block) {
@@ -72,7 +44,6 @@ function initializeGallery(block) {
       if (mutation.attributeName === 'class') {
         const { classList } = mutation.target;
         if (classList.contains('gallery-active')) {
-          adjustGalleryPosition();
           return true;
         }
       }

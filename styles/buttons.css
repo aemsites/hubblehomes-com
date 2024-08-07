@@ -183,6 +183,7 @@
   &.prev,
   &.next {
     height: 32px;
+    flex: 0;
     width: 34px;
     font-size: 20px;
   }
