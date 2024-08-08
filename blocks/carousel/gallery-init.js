@@ -46,7 +46,7 @@ function buildStyles() {
 
 function openGallery() {
   buildStyles();
-  const gallery = document.querySelector('.gallery');
+  const gallery = document.querySelector('.carousel-gallery');
   gallery.classList.add('active');
   document.body.classList.add('gallery-active');
 }
@@ -59,7 +59,7 @@ function openGallery() {
  */
 function createImageOverlay(index, title) {
   currentIndex = index;
-  const overlayHeader = div({ class: 'gallery-header' });
+  const overlayHeader = div({ class: 'carousel-gallery-header' });
   const overlayHeaderContainer = div({ class: 'gallery-header-container' }, overlayHeader);
   const optimizedPicture = createOptimizedImage(galleryImages[currentIndex]);
 
@@ -114,7 +114,7 @@ function createImageOverlay(index, title) {
 }
 
 function closeGallery() {
-  const gallery = document.querySelector('.gallery');
+  const gallery = document.querySelector('.carousel-gallery');
   gallery.classList.remove('active');
   document.body.classList.remove('gallery-active');
 
@@ -151,7 +151,7 @@ async function createGallery(images, title) {
     onclick: () => closeGallery(),
   });
 
-  const galleryHeader = div({ class: 'gallery-header' });
+  const galleryHeader = div({ class: 'carousel-gallery-header' });
 
   safeAppend(galleryHeader, titleEl, closeButton);
 
@@ -184,7 +184,7 @@ async function createGallery(images, title) {
     galleryContent.appendChild(picture);
   });
 
-  return div({ class: 'gallery' }, galleryHeader, galleryContent);
+  return div({ class: 'carousel-gallery' }, galleryHeader, galleryContent);
 }
 
 export default async function initGallery(images, pageName) {
