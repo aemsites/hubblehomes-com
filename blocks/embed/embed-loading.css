@@ -1,3 +1,7 @@
+:root {
+  --form-min-height: 800px;
+}
+
 .embed.embed-hubspot {
   width: 100%;
   margin: 0 auto;
@@ -5,12 +9,13 @@
 
 .hubspot-form {
   width: 100%;
-  min-height: 1130px;
+  min-height: var(--form-min-height);
 }
 
 .loading-container {
   width: 100%;
   max-width: 800px;
+  min-height: var(--form-min-height);
   background-color: var(--color-background-primary);
   padding: 20px;
   border-radius: 5px;
@@ -92,6 +97,16 @@
   border-radius: 3px;
   margin-top: 20px;
   animation: pulse 1.5s infinite ease-in-out;
+}
+
+.form-load-error {
+  color: var(--color-text-primary);
+  background-color: var(--color-background-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 4px;
+  padding: 15px;
+  margin-top: 20px;
+  text-align: center;
 }
 
 @keyframes pulse {

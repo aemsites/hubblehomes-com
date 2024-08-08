@@ -8,11 +8,15 @@ import {
   span,
 } from '../../scripts/dom-helpers.js';
 import { addFormConfiguration } from '../../scripts/forms-helper.js';
+import { getFormConfig } from '../../scripts/form-config.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
 function createLoadingSkeleton() {
+  const currentPath = window.location.pathname;
+  const { minHeight } = getFormConfig(currentPath);
+
   const formStructure = div(
-    { class: 'form-loading-placeholder' },
+    { class: 'form-loading-placeholder', style: `min-height: ${minHeight}px;` },
     div(
       { class: 'form-row' },
       div(
@@ -88,7 +92,7 @@ function createLoadingSkeleton() {
   );
 
   return div(
-    { class: 'loading-container' },
+    { class: 'loading-container', style: `min-height: ${minHeight}px;` },
     formStructure,
     span({ class: 'sr-only' }, 'Loading form...'),
   );
@@ -151,12 +155,16 @@ const embedTwitter = (url) => {
 };
 
 // Adds a HubSpot form configuration
-const embedHubSpot = (formId, uniqueId) => {
+function embedHubSpot(formId, uniqueId) {
+  const currentPath = window.location.pathname;
+  const { minHeight } = getFormConfig(currentPath);
+
   addFormConfiguration({
     formId,
     targetElementId: uniqueId,
+    minHeight,
   });
-};
+}
 
 const embedAnimoto = (url, autoplay) => {
   const embedHTML = `<div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;">

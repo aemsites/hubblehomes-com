@@ -1,5 +1,7 @@
 import { buildForms, hasForms } from './forms-helper.js';
 
+const FORM_LOAD_TIMEOUT = 20000;
+
 function initializeForms() {
   buildForms(window.hbspt);
 
@@ -9,18 +11,24 @@ function initializeForms() {
     if (formContainer) {
       container.classList.add('fade-out');
 
+      let formLoaded = false;
+      let timeoutOccurred = false;
+
       // Set up a mutation observer to detect when the form is added to the DOM
       const observer = new MutationObserver((mutations) => {
         mutations.some((mutation) => {
           if (mutation.type === 'childList') {
             return Array.from(mutation.addedNodes).some((node) => {
               if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'FORM') {
-                // Form has been added, fade it in
-                requestAnimationFrame(() => {
-                  container.style.display = 'none';
-                  node.classList.add('fade-in');
-                });
-                observer.disconnect();
+                formLoaded = true;
+                if (!timeoutOccurred) {
+                  // Form has been added, fade it in
+                  requestAnimationFrame(() => {
+                    container.style.display = 'none';
+                    node.classList.add('fade-in');
+                  });
+                  observer.disconnect();
+                }
                 return true;
               }
               return false;
@@ -32,13 +40,18 @@ function initializeForms() {
 
       observer.observe(formContainer, { childList: true, subtree: true });
 
-      // Set a timeout to hide the loading container if the form doesn't load
+      // Set a timeout to handle the case when the form doesn't load
       setTimeout(() => {
-        if (container.style.display !== 'none') {
+        if (!formLoaded) {
+          timeoutOccurred = true;
+          observer.disconnect();
           container.style.display = 'none';
+          const errorMessage = document.createElement('div');
+          errorMessage.className = 'form-load-error';
+          errorMessage.textContent = 'There was a problem loading the form. Please try refreshing the page.';
+          formContainer.appendChild(errorMessage);
         }
-        observer.disconnect();
-      }, 10000);
+      }, FORM_LOAD_TIMEOUT);
     }
   });
 }
@@ -65,6 +78,6 @@ export default function loadHubSpot() {
     // Set a timeout to prevent infinite checking
     setTimeout(() => {
       clearInterval(checkHubSpotReady);
-    }, 10000);
+    }, FORM_LOAD_TIMEOUT);
   });
 }
