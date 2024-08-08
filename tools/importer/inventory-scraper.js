@@ -78,8 +78,10 @@ export default {
     data = getAddressBlockData(document, data);
 
     // go through the list of excel keys and get the data and format it in a csv format, one per line
-    const excelKeys = ['path', 'community', 'model name', 'price', 'square feet', 'beds', 'baths', 'cars', 'primary bed', 'home style', 'full bed on first', 'full bath main', 'status', 'mls', 'address', 'latitude', 'longitude', 'youmayalsolike' ];
-    result += excelKeys.map((key) => data[key] || '').join(',') + '\n';
+    const excelKeys = ['path', 'community', 'model name', 'price', 'square feet', 'beds', 'baths', 'cars', 'primary bed', 'home style', 'full bed on first', 'full bath main', 'status', 'mls', 'address', 'latitude', 'longitude'];
+    result += `${excelKeys.map((key) => data[key] || '').join(',')}\n`;
+
+    // eslint-disable-next-line no-console
     console.log(result);
 
     return main;
