@@ -11,13 +11,14 @@ function addFormConfiguration(formConfig) {
   formConfigurations.push(formConfig);
 }
 
-function buildForms(hbspt) {
+function buildForms(hbspt, minHeight) {
   formConfigurations.forEach((formConfiguration) => {
     const config = {
       region: 'na1',
       portalId: '21555329',
       formId: formConfiguration.formId,
       target: `.hubspot-form#${formConfiguration.targetElementId}`,
+      css: `min-height: ${minHeight}px;`,
     };
     hbspt.forms.create(config);
   });
