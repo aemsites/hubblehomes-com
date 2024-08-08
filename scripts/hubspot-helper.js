@@ -68,17 +68,14 @@ export default function loadHubSpot() {
   document.querySelector('head').append(hsScriptEl);
 
   hsScriptEl.addEventListener('load', () => {
-    // Wait for HubSpot's hbspt object to be available
-    const checkHubSpotReady = setInterval(() => {
+    const checkHubSpotReady = () => {
+      console.log('Checking HubSpot ready');
       if (window.hbspt) {
-        clearInterval(checkHubSpotReady);
         initializeForms();
+      } else {
+        setTimeout(checkHubSpotReady, 200);
       }
-    }, 100);
-
-    // Set a timeout to prevent infinite checking
-    setTimeout(() => {
-      clearInterval(checkHubSpotReady);
-    }, FORM_LOAD_TIMEOUT);
+    };
+    checkHubSpotReady();
   });
 }
