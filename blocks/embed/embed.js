@@ -15,6 +15,9 @@ function createLoadingSkeleton() {
   const currentPath = window.location.pathname;
   const { minHeight } = getFormConfig(currentPath);
 
+  // Create a DocumentFragment to build the skeleton off-DOM
+  const fragment = document.createDocumentFragment();
+
   const formStructure = div(
     { class: 'form-loading-placeholder', style: `min-height: ${minHeight}px;` },
     div(
@@ -89,11 +92,15 @@ function createLoadingSkeleton() {
     ),
   );
 
-  return div(
+  const loadingContainer = div(
     { class: 'loading-container', style: `min-height: ${minHeight}px;` },
     formStructure,
     span({ class: 'sr-only' }, 'Loading form...'),
   );
+
+  fragment.appendChild(loadingContainer);
+
+  return fragment;
 }
 
 // Utility function to load external scripts

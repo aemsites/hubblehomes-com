@@ -62,6 +62,7 @@ export default function loadHubSpot() {
   const hsScriptEl = document.createElement('script');
   hsScriptEl.type = 'text/javascript';
   hsScriptEl.async = true;
+  hsScriptEl.defer = true;
   hsScriptEl.setAttribute('id', 'hs-script-loader');
   hsScriptEl.src = 'https://js.hsforms.net/forms/embed/v2.js';
   document.querySelector('head').append(hsScriptEl);
