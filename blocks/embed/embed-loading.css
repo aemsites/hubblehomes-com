@@ -1,6 +1,5 @@
 .embed.embed-hubspot {
   width: 100%;
-  max-width: 1170px;
   margin: 0 auto;
 }
 
@@ -11,10 +10,12 @@
 
 .loading-container {
   width: 100%;
+  max-width: 800px;
   background-color: var(--color-background-primary);
   padding: 20px;
   border-radius: 5px;
   opacity: 1;
+  box-sizing: border-box;
   transition: opacity 0.5s ease-out;
 }
 
@@ -41,11 +42,13 @@
   flex-wrap: wrap;
   margin-bottom: 20px;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .form-field {
   flex: 0 0 calc(50% - 20px);
   margin: 0 10px;
+  box-sizing: border-box;
 }
 
 .form-field.full-width {
