@@ -1,19 +1,34 @@
-.block.embed.embed-hubspot {
+.embed.embed-hubspot {
   width: 100%;
-  max-width: 800px;
+  max-width: 1170px;
   margin: 0 auto;
 }
 
 .hubspot-form {
   width: 100%;
-  min-height: 1100px;
+  min-height: 1130px;
 }
 
 .loading-container {
   width: 100%;
-  background-color: var(--color-background-primary);
+  background-color: #ffffff;
   padding: 20px;
   border-radius: 5px;
+  opacity: 1;
+  transition: opacity 0.5s ease-out;
+}
+
+.loading-container.fade-out {
+  opacity: 0;
+}
+
+.hubspot-form form {
+  opacity: 0;
+  transition: opacity 0.5s ease-in;
+}
+
+.hubspot-form form.fade-in {
+  opacity: 1;
 }
 
 .form-loading-placeholder {
