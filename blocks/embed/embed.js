@@ -5,9 +5,94 @@
  */
 import {
   div,
+  span,
 } from '../../scripts/dom-helpers.js';
 import { addFormConfiguration } from '../../scripts/forms-helper.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
+
+function createLoadingSkeleton() {
+  const formStructure = div(
+    { class: 'form-loading-placeholder' },
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input' }),
+      ),
+      div(
+        { class: 'form-field' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input' }),
+      ),
+      div(
+        { class: 'form-field' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input checkbox-input' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'captcha-placeholder' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'form-submit' }),
+      ),
+    ),
+  );
+
+  return div(
+    { class: 'loading-container' },
+    formStructure,
+    span({ class: 'sr-only' }, 'Loading form...'),
+  );
+}
 
 // Utility function to load external scripts
 const loadScript = (url, callback, type = 'text/javascript') => {
@@ -84,6 +169,8 @@ const embedAnimoto = (url, autoplay) => {
 // Decorates the HubSpot block with a form container
 const decorateHubSpot = (block, uniqueId) => {
   const formContainer = div({ class: 'hubspot-form', id: uniqueId });
+  const loadingSkeleton = createLoadingSkeleton();
+  formContainer.appendChild(loadingSkeleton);
   block.appendChild(formContainer);
 };
 
