@@ -1,6 +1,6 @@
 export const formConfig = {
-  '/contact-us': { minHeight: 1130 },
-  '/warranty': { minHeight: 920 },
+  '/contact-us': { minHeight: 1170 },
+  '/warranty': { minHeight: 960 },
   default: { minHeight: 800 },
 };
 

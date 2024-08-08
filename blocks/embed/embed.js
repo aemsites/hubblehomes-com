@@ -20,25 +20,7 @@ function createLoadingSkeleton() {
     div(
       { class: 'form-row' },
       div(
-        { class: 'form-field' },
-        div({ class: 'form-label' }),
-        div({ class: 'form-input' }),
-      ),
-      div(
-        { class: 'form-field' },
-        div({ class: 'form-label' }),
-        div({ class: 'form-input' }),
-      ),
-    ),
-    div(
-      { class: 'form-row' },
-      div(
-        { class: 'form-field' },
-        div({ class: 'form-label' }),
-        div({ class: 'form-input' }),
-      ),
-      div(
-        { class: 'form-field' },
+        { class: 'form-field full-width' },
         div({ class: 'form-label' }),
         div({ class: 'form-input' }),
       ),
@@ -51,6 +33,23 @@ function createLoadingSkeleton() {
         div({ class: 'form-input' }),
       ),
     ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input' }),
+      ),
+    ),
+    // Remaining fields
     div(
       { class: 'form-row' },
       div(

@@ -70,7 +70,7 @@
 }
 
 .form-input {
-  height: 80px;
+  height: 48px;
   width: 100%;
   background-color: #e0e0e0;
   border-radius: 3px;
@@ -78,7 +78,7 @@
 }
 
 .checkbox-input {
-  height: 32px;
+  height: 36px;
 }
 
 .form-submit {
