@@ -69,7 +69,6 @@ export default function loadHubSpot() {
 
   hsScriptEl.addEventListener('load', () => {
     const checkHubSpotReady = () => {
-      console.log('Checking HubSpot ready');
       if (window.hbspt) {
         initializeForms();
       } else {
