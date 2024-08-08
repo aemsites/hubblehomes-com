@@ -57,7 +57,7 @@ export default {
     const main = document.body;
 
     // Use helper methods to create and append various blocks to the main element
-    createCarouselBlock(document, main, ['gallery'], true);
+    createCarouselBlock(document, main, ['gallery'], true, false);
     createDescriptionBlock(document, main);
     createOverviewBlock(document, main);
     createLinksBlock(document, main);

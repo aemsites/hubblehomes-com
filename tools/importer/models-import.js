@@ -71,7 +71,7 @@ export default {
     const meta = createMetadata(main, document, url, html);
 
     // Use helper methods to create and append various blocks to the main element
-    createCarouselBlock(document, main, ['gallery', 'carousel'], true);
+    createCarouselBlock(document, main, ['gallery', 'carousel'], true, false);
     createDescriptionBlock(document, main);
     createOverviewBlock(document, main);
     createElevationGalleryBlock(document, main);

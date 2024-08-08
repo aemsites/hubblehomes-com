@@ -120,17 +120,17 @@ const getCarouselDefaultText = (carousel) => {
   const defaultText = 'Default Slide Text (optional)';
 
   const title1Html = communityTitleTop
-    ? `<h2>${communityTitleTop.querySelector('#communitytitle-1')?.innerHTML || ''}</h2>
-      ${communityTitleTop.querySelector('#communitytitle-2')?.innerHTML || ''}`
+    ? `<h2>${communityTitleTop.querySelector('.communitytitle-large')?.innerHTML || ''}</h2>
+      ${communityTitleTop.querySelector('.communitytitle-small')?.innerHTML || ''}`
     : '';
 
   const title2Html = communityTitleBottom
-    ? `<h2>${communityTitleBottom.querySelector('#communitytitle-3')?.innerHTML || ''}</h2>
-      ${communityTitleBottom.querySelector('#communitytitle-4')?.innerHTML || ''}`
+    ? `<h3>${communityTitleBottom.querySelector('.communitytitle-large')?.innerHTML || ''}</h3>
+      ${communityTitleBottom.querySelector('.communitytitle-medium')?.innerHTML || ''}`
     : '';
 
   const combinedTitleHtml = title1Html || title2Html
-    ? `${title1Html}<hr>${title2Html}`
+    ? `${title1Html}${title2Html}`
     : '';
 
   communityTitleTop?.remove();
@@ -156,19 +156,21 @@ const getCarouselImages = (carousel) => {
   });
 };
 
-const createCarouselBlock = (document, main, imageSources, galleryEnabled = false) => {
+const createCarouselBlock = (document, main, imageSources, galleryEnabled = false, includeDefaultText = true) => {
   const carousel = document.querySelector('.homesearchmapwrapper');
   if (carousel) {
     const cells = [['Carousel']];
-    let variants = ' (auto-2000';
+    let variants = ' (auto 4000';
     if (galleryEnabled) {
-      variants += ', gallery-enabled)';
+      variants += ', gallery)';
     } else {
       variants += ')';
     }
     cells[0][0] += variants;
-    const { defaultText, combinedTitleHtml } = getCarouselDefaultText(carousel);
-    cells.push([defaultText, combinedTitleHtml]);
+    if (includeDefaultText) {
+      const { defaultText, combinedTitleHtml } = getCarouselDefaultText(carousel);
+      cells.push([defaultText, combinedTitleHtml]);
+    }
 
     if (imageSources.includes('carousel')) {
       const carouselImages = getCarouselImages(carousel);
