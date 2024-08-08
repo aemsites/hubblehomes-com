@@ -6,6 +6,7 @@
 
 .hubspot-form {
   width: 100%;
+  min-height: 1100px;
 }
 
 .loading-container {
