@@ -1,0 +1,108 @@
+.block.embed.embed-hubspot {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hubspot-form {
+  width: 100%;
+}
+
+.loading-container {
+  width: 100%;
+  background-color: var(--color-background-primary);
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.form-loading-placeholder {
+  width: 100%;
+  opacity: 1;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.form-field {
+  flex: 0 0 calc(50% - 20px);
+  margin: 0 10px;
+}
+
+.form-field.full-width {
+  flex: 0 0 calc(100% - 20px);
+}
+
+.form-label {
+  height: 36px;
+  width: 120px;
+  background-color: #e0e0e0;
+  margin-bottom: 8px;
+  border-radius: 3px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.form-input {
+  height: 80px;
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 3px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.checkbox-input {
+  height: 32px;
+}
+
+.form-submit {
+  height: 64px;
+  width: 200px;
+  background-color: #e0e0e0;
+  border-radius: 3px;
+  margin-top: 15px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.captcha-placeholder {
+  height: 110px;
+  width: 300px;
+  background-color: #e0e0e0;
+  border-radius: 3px;
+  margin-top: 20px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  
+  50% {
+    opacity: 1;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@media (max-width: 768px) {
+  .form-field {
+    flex: 0 0 calc(100% - 20px);
+  }
+
+  .loading-container {
+    padding: 10px;
+  }
+}
