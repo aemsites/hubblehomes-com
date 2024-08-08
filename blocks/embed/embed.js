@@ -49,7 +49,6 @@ function createLoadingSkeleton() {
         div({ class: 'form-input' }),
       ),
     ),
-    // Remaining fields
     div(
       { class: 'form-row' },
       div(
