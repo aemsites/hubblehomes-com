@@ -15,7 +15,7 @@ indices:
         select: head > meta[name="path"]
         value: attribute(el, 'content')
       title:
-        select: head > meta[name="twitter:title"]
+        select: head > meta[name="og:title"]
         value: attribute(el, 'content')
       description:
         select: head > meta[name="description"]
