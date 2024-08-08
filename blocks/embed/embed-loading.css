@@ -11,7 +11,7 @@
 
 .loading-container {
   width: 100%;
-  background-color: #ffffff;
+  background-color: var(--color-background-primary);
   padding: 20px;
   border-radius: 5px;
   opacity: 1;
