@@ -8,8 +8,8 @@ export default async function decorate(doc) {
 
   const fragment = doc.querySelector('.fragment-wrapper');
   fragment.classList.add('disclaimer');
-
-  window.hh.current.inventory = await getInventorySheet('data');
+  const inventoryHomes = await getInventorySheet('data');
+  window.hh.current.inventory = inventoryHomes.filter((home) => home.status === 'Under Construction');
   window.hh.current.sale_center = await getSalesOfficesSheet('data');
   const modelsBlock = buildBlock('cards', []);
   modelsBlock.classList.add('inventory');
