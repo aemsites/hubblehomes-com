@@ -125,11 +125,16 @@ function closeGallery() {
 
 function setGalleryPlacement(gallery) {
   const header = document.querySelector('header');
-  gallery.style.height = `calc(100vh - ${header.clientHeight}px)`;
+  const { scrollY } = window;
+  const galleryGap = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--gallery-gap-default'), 10) || 0;
+
+  gallery.style.height = `calc(100vh - ${header.clientHeight + galleryGap}px)`;
+  gallery.style.top = `${header.clientHeight + scrollY}px`;
 
   const observer = new MutationObserver(() => {
     if (header) {
-      gallery.style.height = `calc(100vh - ${header.clientHeight}px)`;
+      gallery.style.height = `calc(100vh - ${header.clientHeight + galleryGap}px)`;
+      gallery.style.top = `${header.clientHeight + window.scrollY}px`;
     }
   });
 
