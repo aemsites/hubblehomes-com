@@ -8,6 +8,7 @@
     padding: 0 16px;
     border: 1px solid var(--dark-color);
     overflow: auto;
+    text-align: center;
 
     &[aria-hidden="true"] {
       display: none;
