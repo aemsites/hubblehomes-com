@@ -6,4 +6,24 @@
   .cards > ul > li {
     min-height: 400px;
   }
+
+
+.load-more {   
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  text-align: center;
+  margin-top: 20px; 
+  .load-more-btn {
+    min-width: 44px;
+    padding: 10px 12px;
+    background-color: var(--light-blue);
+    color: var(--text-color);
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+  }
+}
+
 }
