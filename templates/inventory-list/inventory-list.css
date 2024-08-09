@@ -17,10 +17,9 @@
     min-width: 44px;
     padding: 10px 12px;
     background-color: var(--light-blue);
-    color: var(--text-color);
+    color: var(--white);
     border: 1px solid #ddd;
-    border-radius: 3px;
-    border-radius: 0;
+    border-radius: 3px;   
     cursor: pointer;
     transition: all 200ms ease-in-out;
     font-weight: 400;

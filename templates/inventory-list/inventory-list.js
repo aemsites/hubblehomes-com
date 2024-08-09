@@ -24,7 +24,7 @@ export default async function decorate(doc) {
   const fragment = doc.querySelector('.fragment-wrapper');
   fragment.classList.add('disclaimer');
   const inventoryHomes = await getInventorySheet('data');
-  const loadMoreBtn = button({ class: 'load-more-btn' }, 'Load More');
+  const loadMoreBtn = button({ class: 'load-more-btn' }, 'See More');
   const loadMore = div({ class: 'load-more' }, loadMoreBtn);
   await displayCards(inventoryHomes, fragment);
   loadMoreBtn.addEventListener(('click'), async () => {
