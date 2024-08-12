@@ -274,7 +274,7 @@ export default async function decorate(doc) {
       filters,
       div({ class: 'scroll-container' },
         div({ class: 'listings-wrapper' },
-          ...buildInventoryCards(inventory.slice(0, 20)),
+          ...buildInventoryCards(inventory.slice(0, 10)),
         ),
         $footer,
       ),
@@ -294,7 +294,7 @@ export default async function decorate(doc) {
   // adjustMapFilterHeight(doc);
 
   const $scrollContainer = document.querySelector('.scroll-container');
-  let currentIndex = 20;
+  let currentIndex = 10;
   let isLoading = false;
   $scrollContainer.addEventListener('scroll', debounce(async () => {
     if (isLoading) return;
@@ -304,12 +304,12 @@ export default async function decorate(doc) {
 
     if (scrollPosition >= scrollThreshold && currentIndex < inventory.length) {
       isLoading = true;
-      const nextBatch = inventory.slice(currentIndex, currentIndex + 20);
+      const nextBatch = inventory.slice(currentIndex, currentIndex + 10);
       if (nextBatch.length > 0) {
         const $listingsWrapper = document.querySelector('.listings-wrapper');
         const newCards = buildInventoryCards(nextBatch, currentIndex);
         newCards.forEach((card) => $listingsWrapper.appendChild(card));
-        currentIndex += 20;
+        currentIndex += 10;
 
         // Update map markers
         await addMapMarkers(inventory.slice(0, currentIndex));
