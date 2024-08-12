@@ -227,6 +227,118 @@
         width: 100%;
         overflow-y: auto;
         scroll-behavior: smooth;
+        
+        footer {
+          .top {
+              > div {
+                padding: 0 50px;
+                flex-direction: column
+              }
+        
+              .col-1, .col-2, .col-3 {
+                width: 100%;
+                padding: 10px 40px;
+        
+                ul {
+                  li {
+                    display: block;
+                  }
+                }
+        
+                p {
+                  width: 100%;
+                }
+              }
+        
+              .col-1 {
+                padding: 0 50px;
+                ul {
+                  column-count: 1;
+                }
+              }
+        
+              .col-2 {
+                &::before, &::after {
+                  display: none;
+                }
+              }
+            }
+          }
+        
+        @media (width < 1400px) {
+          footer {
+            .top {
+              > div {
+                padding: 0 10px;
+              }
+        
+              h4 {
+                text-align: left;
+                margin-left: 0;
+              }
+        
+              .col-1, .col-2, .col-3 {
+                padding: 10px 0;
+              }
+        
+              .col-1 {
+                ul {
+                  column-count: 1;
+                }
+        
+                p {
+                  padding-left: 0;
+                  flex-direction: row;
+                  .btn {
+                    flex: none;
+                  }
+                }
+              }
+        
+              .col-2 ul,
+              .col-3 ul {
+                column-count: 2;
+              }
+        
+              ul { margin-left: 5px; }
+            }
+        
+            .bottom {
+              .icon-row {
+                flex-direction: column;
+                align-items: center;
+        
+                .logo { margin: 0 0 20px }
+        
+                div {
+                  width: 100%;
+                  display: flex;
+                  justify-content: center;
+                  flex-wrap: wrap;
+                }
+              }
+            }
+          }
+        }
+        
+        
+        @media (width < 800px) {
+          footer {
+            .top {
+              ul li {
+                width: 100%;
+                &:empty { display: none }
+              }
+              .col-1, .col-2, .col-3 {
+                width: auto;
+                ul {
+                  column-count: 1;
+                }
+              }
+            }
+          }
+        }
+        
       }
 
       .listings-wrapper {
