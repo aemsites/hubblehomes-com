@@ -1,4 +1,3 @@
-const { XMLParser, XMLBuilder, XMLValidator } = require('fast-xml-parser');
 const fs = require('fs');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
@@ -14,6 +13,39 @@ const Sheets = {
 };
 
 let salesOfficehelper = [];
+
+function encodeString(text) {
+  return text.replace(/&/g, '&amp;')
+               .replace(/</g, '&lt;')
+               .replace(/>/g, '&gt;')
+               .replace(/"/g, '&quot;')
+               .replace(/'/g, '&apos;');
+}
+
+function formatPhoneNumber(phoneNumber) {
+  // Remove all non-numeric characters
+  const cleaned = (`${phoneNumber}`).replace(/\D/g, '');
+
+  // Check if the input is of correct length
+  if (cleaned.length === 10) {
+    // Group the numbers appropriately
+    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      return [match[1], match[2], match[3]];
+    }
+  } else if (cleaned.length === 11 && cleaned.charAt(0) === '1') {
+    // Check for and handle country code 1
+    const match = cleaned.match(/^1(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      return [match[1], match[2], match[3]];;
+    }
+  }
+
+  // Return the cleaned input if it doesn't match any format
+  return phoneNumber;
+}
+
+
 async function fetchWorkbook(sheetNames) {
   const sheets = Array.isArray(sheetNames) ? sheetNames : [sheetNames];
   const url = `https://main--hubblehomes-com--aemsites.hlx.live/data/hubblehomes.json?${sheets.map((sheetName) => `sheet=${sheetName}`).join('&')}`;
@@ -70,7 +102,7 @@ async function addInventoryData(model, community) {
       imagexml += elevations;
       let description = '<SpecDescription>';
       const ptags = body.querySelectorAll(".description > div > div > p ");
-      ptags.forEach((p) => description += p.innerHTML);
+      ptags.forEach((p) => description += encodeString(p.innerHTML));
       description += '</SpecDescription>';
       let floorPlanImages = '';
       const FloorPlanDiv = body.querySelectorAll(".floorplan > div");
@@ -115,7 +147,7 @@ async function addImagesDescription(path, modelName) {
   });
   let description = '<Description>';
   const ptags = body.querySelectorAll(".description > div > div > p ");
-  ptags.forEach((p) => description += p.innerHTML);
+  ptags.forEach((p) => description += encodeString(p.innerHTML));
   description += '</Description>';
   let elevations = ''
   const allElevationdiv = body.querySelectorAll(".elevations > div ");
@@ -216,6 +248,7 @@ async function addSubDivison(subdivision, salesoffice, carouselImages) {
                   </SubImage>`;
     }
   });
+  const phoneNumber = formatPhoneNumber(salesoffice['phone']);
   const subdivisionXML = `
   <Subdivision Status="Active">
     <SubdivisionNumber>${subdivision['SubdivisionNumber']}</SubdivisionNumber>
@@ -236,9 +269,9 @@ async function addSubDivison(subdivision, salesoffice, carouselImages) {
     </Geocode>
     </Address>
     <Phone>
-      <AreaCode>${salesoffice['phone']}</AreaCode>
-      <Prefix>${salesoffice['phone']}</Prefix>
-      <Suffix>${salesoffice['phone']}</Suffix>
+      <AreaCode>${phoneNumber[0]}</AreaCode>
+      <Prefix>${phoneNumber[1]}</Prefix>
+      <Suffix>${phoneNumber[2]}</Suffix>
     </Phone>
     <Hours>${salesoffice['hours']}</Hours>
     </SalesOffice>
@@ -252,14 +285,13 @@ async function addSubDivison(subdivision, salesoffice, carouselImages) {
     <SubLongitude>${salesoffice['longitude']}</SubLongitude>
     </SubGeocode>
     </SubAddress>
-    <DrivingDirections>${salesoffice['DrivingDirections']}</DrivingDirections>
-    <SubDescription>${subdivision['SubDescription']}</SubDescription>
+    <DrivingDirections>${encodeString(salesoffice['DrivingDirections'])}</DrivingDirections>
+    <SubDescription>${encodeString(subdivision['SubDescription'])}</SubDescription>
     ${subImage} 
     <SubVideoTour Title="Tour of ${subdivision['SubdivisionName']}">${subdivision['SubVideoTour']}</SubVideoTour>
     <SubWebsite>https://www.hubblehomes.com${subdivision['Path']}</SubWebsite>
     ${planXML}
-    </Subdivision>`;
-
+    </Subdivision>`;  
   return subdivisionXML;
 }
 
@@ -297,13 +329,8 @@ async function main() {
   ${corporationXML}
   ${subdivisionXML}
   </Builder>
-</Corporation>
-</Builders>`;
-  const parser = new XMLParser();
-  let jObj = parser.parse(XMLdata);
-  const builder = new XMLBuilder();
-  const xmlContent = builder.build(jObj);
-  const xml = `<?xml version="1.0"?>${xmlContent}`;
+  </Corporation>
+  </Builders>`; 
   fs.writeFileSync(`../../admin/aIncludeInZillow/${filename}`, XMLdata);
 }
 
