@@ -4,7 +4,7 @@ html, body { height: 100vh}
 .map-view {
   overflow-y: hidden;
 
-  #chat-widget-container, .breadcrumbs { display: none }
+  .breadcrumbs { display: none }
 
   .map-filter-container {
     position: relative;
@@ -222,7 +222,7 @@ html, body { height: 100vh}
 
       .scroll-container {
         height: calc(100% - 56px); /* subtract filter height */
-        width: inherit;
+        width: 100%;
         overflow-y: auto;
         scroll-behavior: smooth;
 
