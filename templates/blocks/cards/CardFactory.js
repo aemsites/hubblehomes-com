@@ -10,7 +10,6 @@ class CardFactory {
       type = ['featured', 'home-plans', 'inventory', 'community'].find((t) => cardType.contains(t))
         || 'community';
     }
-
     switch (type) {
       case 'featured':
         return new FeaturedCard(data, community);
