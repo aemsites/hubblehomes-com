@@ -1,5 +1,6 @@
 .top-banner {
   height: var(--banner-height);
+  width: 100%;
   background-color: var(--light-blue);
   color: var(--dark-blue);
   max-height: 60px;

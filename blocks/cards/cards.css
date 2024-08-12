@@ -13,6 +13,12 @@
 
       &:hover {
         transform: translateY(-5px);
+
+        > a {
+          .btn.fancy {
+            background-color: var(--blue);
+          }
+        }
       }
     }
   }

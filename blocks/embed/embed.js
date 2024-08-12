@@ -5,9 +5,103 @@
  */
 import {
   div,
+  span,
 } from '../../scripts/dom-helpers.js';
 import { addFormConfiguration } from '../../scripts/forms-helper.js';
+import { getFormConfig } from '../../scripts/form-config.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
+
+function createLoadingSkeleton() {
+  const currentPath = window.location.pathname;
+  const { minHeight } = getFormConfig(currentPath);
+
+  // Create a DocumentFragment to build the skeleton off-DOM
+  const fragment = document.createDocumentFragment();
+
+  const formStructure = div(
+    { class: 'form-loading-placeholder', style: `min-height: ${minHeight}px;` },
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'form-label' }),
+        div({ class: 'form-input checkbox-input' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'captcha-placeholder' }),
+      ),
+    ),
+    div(
+      { class: 'form-row' },
+      div(
+        { class: 'form-field full-width' },
+        div({ class: 'form-submit' }),
+      ),
+    ),
+  );
+
+  const loadingContainer = div(
+    { class: 'loading-container', style: `min-height: ${minHeight}px;` },
+    formStructure,
+    span({ class: 'sr-only' }, 'Loading form...'),
+  );
+
+  fragment.appendChild(loadingContainer);
+
+  return fragment;
+}
 
 // Utility function to load external scripts
 const loadScript = (url, callback, type = 'text/javascript') => {
@@ -66,12 +160,16 @@ const embedTwitter = (url) => {
 };
 
 // Adds a HubSpot form configuration
-const embedHubSpot = (formId, uniqueId) => {
+function embedHubSpot(formId, uniqueId) {
+  const currentPath = window.location.pathname;
+  const { minHeight } = getFormConfig(currentPath);
+
   addFormConfiguration({
     formId,
     targetElementId: uniqueId,
+    minHeight,
   });
-};
+}
 
 const embedAnimoto = (url, autoplay) => {
   const embedHTML = `<div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;">
@@ -84,6 +182,8 @@ const embedAnimoto = (url, autoplay) => {
 // Decorates the HubSpot block with a form container
 const decorateHubSpot = (block, uniqueId) => {
   const formContainer = div({ class: 'hubspot-form', id: uniqueId });
+  const loadingSkeleton = createLoadingSkeleton();
+  formContainer.appendChild(loadingSkeleton);
   block.appendChild(formContainer);
 };
 
