@@ -14,7 +14,7 @@
     color: var(--text-color);       
 }
 
-.btn, button {
+.description .btn, button {
     &.fancy {
         font-style: normal;
         color: var(--white);
