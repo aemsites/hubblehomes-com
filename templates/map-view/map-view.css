@@ -466,3 +466,18 @@
     }
   }
 }
+
+#google-map {
+  width: 100%;
+  height: 400px;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  color: #666;
+}
+
+#google-map::before {
+  content: 'Loading map...';
+}

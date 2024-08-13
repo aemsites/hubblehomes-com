@@ -11,6 +11,7 @@ import { debounce } from '../../scripts/utils.js';
 let map;
 let bounds;
 let markers = [];
+let mapInitialized = false;
 
 function setAllMarkers(m) {
   markers.forEach((markerData) => {
@@ -86,6 +87,8 @@ function fitMarkerWithinBounds(marker) {
 }
 
 async function addMapMarkers(inventory) {
+  if (!mapInitialized) return;
+
   const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
   bounds = new google.maps.LatLngBounds();
 
@@ -121,6 +124,34 @@ async function addMapMarkers(inventory) {
   });
 
   map.fitBounds(bounds, { top: 220, right: 100, bottom: 40, left: 100 });
+}
+
+async function initMap() {
+  const { Map, StyledMapType } = await google.maps.importLibrary('maps');
+
+  map = new Map(document.getElementById('google-map'), {
+    center: { lat: 43.696, lng: -116.641 },
+    zoom: 12,
+    mapId: 'IM_IMPORTANT',
+    disableDefaultUI: true,
+    zoomControl: true,
+    streetViewControl: true,
+    fullscreenControl: true,
+    gestureHandling: 'greedy',
+  });
+
+  const mapStyle = [{
+    featureType: 'poi',
+    elementType: 'labels',
+    stylers: [{ visibility: 'off' }],
+  }];
+  const mapType = new StyledMapType(mapStyle, { name: 'Grayscale' });
+  map.mapTypes.set('grey', mapType);
+  map.setMapTypeId('grey');
+
+  mapInitialized = true;
+  const inventory = await getAllInventoryHomes(null);
+  await addMapMarkers(inventory);
 }
 
 async function buildMap() {
@@ -348,4 +379,16 @@ export default async function decorate(doc) {
       event.preventDefault();
     }
   }, true);
+
+  // Use Intersection Observer to lazy load the map
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && !mapInitialized) {
+        initMap();
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  observer.observe(document.getElementById('google-map'));
 }
