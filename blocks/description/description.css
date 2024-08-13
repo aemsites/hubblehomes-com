@@ -14,13 +14,6 @@
     color: var(--text-color);       
 }
 
-.description .btn, button {
-    &.fancy {
-        font-style: normal;
-        color: var(--white);
-    }
-}
-
 .description p em {    
     /* styles for <em> tags inside .description */
     font-style: italic;
