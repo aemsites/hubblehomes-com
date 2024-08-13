@@ -56,6 +56,10 @@ For hubblehomes.com, page-index.xlsx is available in sharepoint and the JSON is 
 Furthermore, a news index containing data for all news article is available at https://main--hubblehomes-com--aemsites.hlx.live/news/news-index.json. 
 Also, Index definition for hubblehomes.com is available in the github, See helix-query.yaml
 
+```
+Index definitions are auto updated. These files should not be modified or removed by the author/end user. 
+```
+
 In context of Hubble Homes, [Hubble Homes Master Spreadsheet](https://main--hubblehomes-com--aemsites.hlx.live/data/hubblehomes.json) is used to build
 - Homepage, Communities, Home Plans, Inventory pages
 - Search
