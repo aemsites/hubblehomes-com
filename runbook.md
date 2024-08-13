@@ -63,11 +63,6 @@ In context of Hubble Homes, [Hubble Homes Master Spreadsheet](https://main--hubb
 
 Please review the official documentation around Indexing on AEM Edge delivery services : https://www.aem.live/developer/indexing
 
-### Index Web-workers
-
-We're also using a web worker to query and filter article data (see #65 for discussion). This will improve pages that use the worker by offloading the computationally expensive operation from the main thread. The querying and processing won't block the site's content from loading, and ultimately helps improve LHS.
-
-
 ### Search
 Search on Hubble Homes is driven by [Hubble Homes Master Spreadsheet](https://main--hubblehomes-com--aemsites.hlx.live/data/hubblehomes.json). As the Communities, Home Plans, Inventory pages etc are added to the master sheet, new data is available for use across the site. 
 
