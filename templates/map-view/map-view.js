@@ -267,6 +267,10 @@ export default async function decorate(doc) {
       if (nextBatch.length > 0) {
         const $listingsWrapper = document.querySelector('.listings-wrapper');
 
+        // Remember the current scroll position and height
+        const initialScrollTop = $scrollContainer.scrollTop;
+        const initialScrollHeight = $scrollContainer.scrollHeight;
+
         // Create a temporary container for new cards
         const tempContainer = document.createElement('div');
         const newCards = buildInventoryCards(nextBatch, currentIndex);
@@ -278,14 +282,21 @@ export default async function decorate(doc) {
         await addMapMarkers(inventory.slice(0, currentIndex + batchSize));
 
         if (isMobile) {
-          // Force scroll to bottom
-          setTimeout(() => {
-            $scrollContainer.scrollTop = $scrollContainer.scrollHeight;
-          }, 100);
+          // calculate how much new content was added
+          const newContentHeight = $scrollContainer.scrollHeight - initialScrollHeight;
+
+          // scroll back up to show some of the new content
+          const newScrollPosition = initialScrollTop + (newContentHeight - 800);
+
+          // Use smooth scrolling for a nicer effect
+          $scrollContainer.scrollTo({
+            top: newScrollPosition,
+            behavior: 'smooth',
+          });
         } else {
-          // For desktop, keep some space from the bottom
-          const newScrollPosition = $scrollContainer.scrollHeight
-          - $scrollContainer.clientHeight - 800;
+          // desktop behavior
+          const newScrollPosition = $scrollContainer.scrollTop
+          + ($scrollContainer.scrollHeight - initialScrollHeight) - 800;
           $scrollContainer.scrollTop = Math.max(newScrollPosition, 0);
         }
 
@@ -301,13 +312,13 @@ export default async function decorate(doc) {
       isLoading = false;
       $loadingIndicator.classList.remove('loading');
 
-      // Check if we've reached the end of the inventory
+      // check if we've reached the end of the inventory
       if (currentIndex >= inventory.length) {
         reachedEnd = true;
         $loadingIndicator.style.display = 'none';
       }
 
-      // Short delay to ensure smooth transition
+      // delay for smooth transition
       setTimeout(() => {
         isInfiniteScrolling = false;
       }, 100);
