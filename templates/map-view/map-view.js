@@ -1,6 +1,6 @@
-/* eslint-disable no-use-before-define, no-undef */
+/* eslint-disable no-use-before-define, no-undef, no-promise-executor-return */
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { script, div, aside, a, strong, p, h3, h4, h5, span, ul, li, button } from '../../scripts/dom-helpers.js';
+import { div, aside, a, strong, p, h3, span, ul, li, button, img } from '../../scripts/dom-helpers.js';
 import { getAllInventoryHomes } from '../../scripts/inventory.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import buildFilters from './map-filters.js';
@@ -9,36 +9,14 @@ import { calculateMonthlyPayment, loadRates } from '../../scripts/mortgage.js';
 import { debounce } from '../../scripts/utils.js';
 
 let map;
-let bounds;
-let markers = [];
+const markers = [];
 let reachedEnd = false;
 
-function setAllMarkers(m) {
-  markers.forEach((markerData) => {
-    markerData.marker.setMap(m);
-  });
-}
-
-function hideMarkers() {
-  setAllMarkers(null);
-}
-
-function deleteMapMarkers() {
-  hideMarkers();
-  markers = [];
-}
-
-function createMarker(home, i) {
-  return div({ class: `marker marker-${i}`, 'data-marker': i },
-    span(formatPrice(home.price, 'rounded')),
-    div({ class: 'details' },
-      h4(home['model name']),
-      h5(home.address),
-      createOptimizedPicture(home.image),
-      p({ class: 'price' }, formatPrice(home.price)),
-      a({ class: 'btn yellow', href: home.path }, 'Details'),
-    ),
+function createMapSkeleton() {
+  const skeleton = div({ class: 'map-skeleton' },
+    img({ src: '/icons/map-placeholder.jpg', alt: 'Map loading' }),
   );
+  return skeleton;
 }
 
 function fitMarkerWithinBounds(marker) {
@@ -87,95 +65,14 @@ function fitMarkerWithinBounds(marker) {
 }
 
 async function addMapMarkers(inventory) {
-  if (!mapInitialized) return;
-
-  const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
-  bounds = new google.maps.LatLngBounds();
-
-  deleteMapMarkers();
-
-  if (inventory.length === 0) {
-    buildMap();
-    return;
+  if (typeof window.addMapMarkers === 'function') {
+    await window.addMapMarkers(inventory);
   }
-
-  inventory.forEach((home, i) => {
-    const lat = Number(home.latitude);
-    const lng = Number(home.longitude);
-    const position = { lat, lng };
-    const marker = new AdvancedMarkerElement({
-      map,
-      position,
-      content: createMarker(home, i),
-    });
-
-    markers.push({ marker, position });
-    bounds.extend(new google.maps.LatLng(lat, lng));
-
-    marker.addListener('click', () => {});
-
-    marker.content.addEventListener('click', () => {
-      highlightActiveHome(i);
-    });
-
-    map.addListener('click', () => {
-      resetActiveHomes();
-    });
-  });
-
-  map.fitBounds(bounds, { top: 220, right: 100, bottom: 40, left: 100 });
-}
-
-async function initMap() {
-  const { Map, StyledMapType } = await google.maps.importLibrary('maps');
-
-  map = new Map(document.getElementById('google-map'), {
-    center: { lat: 43.696, lng: -116.641 },
-    zoom: 12,
-    mapId: 'IM_IMPORTANT',
-    disableDefaultUI: true,
-    zoomControl: true,
-    streetViewControl: true,
-    fullscreenControl: true,
-    gestureHandling: 'greedy',
-  });
-
-  const mapStyle = [{
-    featureType: 'poi',
-    elementType: 'labels',
-    stylers: [{ visibility: 'off' }],
-  }];
-  const mapType = new StyledMapType(mapStyle, { name: 'Grayscale' });
-  map.mapTypes.set('grey', mapType);
-  map.setMapTypeId('grey');
-
-  mapInitialized = true;
-  const inventory = await getAllInventoryHomes(null);
-  await addMapMarkers(inventory);
 }
 
 async function buildMap() {
-  const { Map, StyledMapType } = await google.maps.importLibrary('maps');
-
-  map = new Map(document.getElementById('google-map'), {
-    center: { lat: 43.696, lng: -116.641 },
-    zoom: 12,
-    mapId: 'IM_IMPORTANT',
-    disableDefaultUI: true,
-    zoomControl: true,
-    streetViewControl: true,
-    fullscreenControl: true,
-    gestureHandling: 'greedy',
-  });
-
-  const mapStyle = [{
-    featureType: 'poi',
-    elementType: 'labels',
-    stylers: [{ visibility: 'off' }],
-  }];
-  const mapType = new StyledMapType(mapStyle, { name: 'Grayscale' });
-  map.mapTypes.set('grey', mapType);
-  map.setMapTypeId('grey');
+  const mapContainer = document.getElementById('google-map');
+  mapContainer.appendChild(createMapSkeleton());
 }
 
 function filterListeners() {
@@ -201,7 +98,6 @@ function highlightActiveHome(i) {
   resetActiveHomes();
 
   const $card = document.querySelector(`[data-card="${i}"]`);
-  // Add null check here
   if ($card) {
     $card.classList.add('active');
 
@@ -224,18 +120,22 @@ function highlightActiveHome(i) {
   const $marker = document.querySelector(`[data-marker="${i}"]`);
 
   if (!$marker) {
-    const { position } = markers[i];
-    if (position) {
-      map.panTo(position);
+    if (map && markers[i] && markers[i].position) {
+      map.panTo(markers[i].position);
       setTimeout(() => {
         isHighlighting = false;
         highlightActiveHome(i);
       }, 100);
+    } else {
+      // Map or marker not loaded yet, just reset the highlighting
+      isHighlighting = false;
     }
   } else {
     $marker.classList.add('active');
     $marker.parentNode.parentNode.style.zIndex = '999';
-    fitMarkerWithinBounds($marker);
+    if (map) {
+      fitMarkerWithinBounds($marker);
+    }
     isHighlighting = false;
   }
 }
@@ -307,14 +207,6 @@ function createLoadingIndicator() {
 }
 
 export default async function decorate(doc) {
-  const googleMapScript = script(`
-    (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=\`https://maps.googleapis.com/maps/api/js?\`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
-      key: "AIzaSyAL5wQ_SKxuuRXFk3c2Ipxto9C_AKZNq6M",
-      v: "weekly",
-    });
-  `);
-  doc.head.appendChild(googleMapScript);
-
   filterListeners();
   await loadRates();
   const inventory = await getAllInventoryHomes(null);
@@ -339,7 +231,7 @@ export default async function decorate(doc) {
         div({ class: 'listings-wrapper' },
           ...buildInventoryCards(inventory.slice(0, 10)),
         ),
-        createLoadingIndicator(), // Move the loading indicator here
+        createLoadingIndicator(),
         $footer,
       ),
     ),
@@ -354,7 +246,6 @@ export default async function decorate(doc) {
   });
 
   buildMap();
-  addMapMarkers(inventory);
   adjustMapFilterHeight(doc);
 
   const $scrollContainer = document.querySelector('.scroll-container');
@@ -376,13 +267,29 @@ export default async function decorate(doc) {
       const nextBatch = inventory.slice(currentIndex, currentIndex + 10);
       if (nextBatch.length > 0) {
         const $listingsWrapper = document.querySelector('.listings-wrapper');
+
+        // Create a marker element
+        const $scrollMarker = document.createElement('div');
+        $scrollMarker.classList.add('scroll-marker');
+        $listingsWrapper.appendChild($scrollMarker);
+
         const newCards = buildInventoryCards(nextBatch, currentIndex);
         newCards.forEach((card) => $listingsWrapper.appendChild(card));
         currentIndex += 10;
 
         // Update map markers
         await addMapMarkers(inventory.slice(0, currentIndex));
-        $scrollContainer.scrollTop += 200;
+
+        // Scroll to the marker element
+        $scrollMarker.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Remove the marker element after scrolling
+        setTimeout(() => {
+          $scrollMarker.remove();
+        }, 1000);
+
+        // Wait for the DOM to update
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
       isLoading = false;
@@ -405,16 +312,4 @@ export default async function decorate(doc) {
       event.preventDefault();
     }
   }, true);
-
-  // Use Intersection Observer to lazy load the map
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting && !mapInitialized) {
-        initMap();
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-
-  observer.observe(document.getElementById('google-map'));
 }
