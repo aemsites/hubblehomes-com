@@ -1,5 +1,4 @@
 /* stylelint-disable no-descending-specificity */
-html, body { height: 100vh}
 
 .map-view {
   overflow-y: hidden;

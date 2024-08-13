@@ -300,7 +300,6 @@ function adjustMapFilterHeight(doc) {
     const observer = new MutationObserver((mutationsList) => mutationsList.forEach(() => {
       const $mapFilterContainer = doc.querySelector('.map-filter-container');
       const height = $header.offsetHeight;
-      console.log(height);
       $mapFilterContainer.style.height = `calc(100vh - ${height}px)`;
     }));
     observer.observe($header, { childList: true });
