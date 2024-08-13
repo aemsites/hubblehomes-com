@@ -57,7 +57,9 @@ Furthermore, a news index containing data for all news article is available at h
 Also, Index definition for hubblehomes.com is available in the github, See helix-query.yaml
 
 ```
-Index definitions are auto updated. These files should not be modified or removed by the author/end user. 
+Index definitions are auto updated. 
+
+page-index.xlsx and news-index.xlsx files should not be modified or removed by the author/end user. 
 ```
 
 In context of Hubble Homes, [Hubble Homes Master Spreadsheet](https://main--hubblehomes-com--aemsites.hlx.live/data/hubblehomes.json) is used to build
