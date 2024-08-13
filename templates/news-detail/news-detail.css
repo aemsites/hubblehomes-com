@@ -10,11 +10,6 @@
 
 .news-detail, .news-landing {
   .content-wrapper {
-    h1 {
-      text-align: center;
-      padding-bottom: 20px !important;
-    }
-
     /* reverse order so filter is displayed at the top */
     @media (width <= 991px) {
       display: flex;
