@@ -2,8 +2,10 @@
 @import url("/styles/buttons.css");
 
 .inventory {
-  .inventory-details {
-    padding-bottom: 30px;
+  @media (max-width: 992px) {
+    .inventory-details {
+      padding: 20px 0;
+    }
   }
 
   .page-info {
@@ -19,11 +21,9 @@
     }
 
     h1 {
-      font-size: 30px;
-      color: var(--link-color);
-      margin-bottom: 0;
-      font-family: inherit;
-      font-weight: 500;
+      text-align: left;
+      margin: 0;
+      padding: 0;
     }
 
     h4::after {
@@ -84,6 +84,10 @@
   h4 {
     font-size: var(--body-font-size-s);
     font-weight: 400;
+  }
+
+  @media (max-width: 480px) {
+    display: none;
   }
 }
 

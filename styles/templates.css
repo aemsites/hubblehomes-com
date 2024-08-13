@@ -3,6 +3,10 @@
     --template-left-width: 65%;
     --template-right-width: 35%;
 
+    h1 {
+      text-align: center;
+    }
+
     main div .section {
       padding: 0 20px;
 
