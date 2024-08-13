@@ -6,7 +6,7 @@ import {
 } from './aem.js';
 import loadHubSpot from './hubspot-helper.js';
 import {
-  div, span, h4, h5, p, a,
+  script, div, span, h4, h5, p, a,
 } from './dom-helpers.js';
 import { getAllInventoryHomes } from './inventory.js';
 import { formatPrice } from './currency-formatter.js';
