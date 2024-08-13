@@ -3,13 +3,6 @@
 @import url('/styles/sidebar.css');
 @import url('/styles/articles.css');
 
-.heart-of-hubble {
-  h1 {
-    text-align: center;
-    padding-bottom: 0 !important;
-  }
-}
-
 .default-content-wrapper > p {
   margin-bottom: 30px;
   text-align: center;

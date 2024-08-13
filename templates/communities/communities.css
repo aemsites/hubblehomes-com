@@ -1,4 +1,8 @@
 .communities {
+  h1 {
+    text-align: left;
+  }
+
   .cards-wrapper {
     margin-top: 30px;
   }

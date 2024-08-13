@@ -1,25 +1,7 @@
 .careers-template main .default-content-wrapper {
     max-width: 800px;
     margin: 0 auto;
-    padding: 0 0 40px 0;
-  }
-  
-  .careers-template main .default-content-wrapper h1 {
-    color: var(--text-color);
-    font-size: 36px;
-    margin-bottom: 20px;
-  }
-
-  .careers-template main .default-content-wrapper h1 strong {
-    font-weight: 900;
-  }
-
-  .careers-template main .default-content-wrapper p {
-    text-align: left;
-  }
-  
-  .careers-template #careers {
-    text-align: center;
+    padding: 0 0 40px;
   }
 
   /* .careers-template .job-listings {
@@ -28,33 +10,33 @@
     padding: 20px 0;
     border-top: 1px solid #717171;
   }
-  
+
   .careers-template .columns > div {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
   } */
-  
+
   /* .careers-template .columns > div > div {
     border-bottom: 1px solid #717171;
     padding-bottom: 20px;
     margin-bottom: 20px;
   }
-  
+
   .careers-template .columns h3 {
     font-size: 24px;
     margin-bottom: 10px;
     color: var(--text-color);
   }
-  
+
   .careers-template .columns p {
     margin-bottom: 15px;
   }
-  
+
   .careers-template .columns .button-container {
     margin-top: 20px;
   } */
-  
+
   /* .careers-template .columns .button-container a {
     display: inline-block;
     padding: 10px 20px;
@@ -80,17 +62,17 @@
     width: auto;
     text-align: center;
   }
-  
+
   .btn:hover {
     background-color: var(--dark-blue);
     color: white;
   } */
-  
+
   /* .btn.fancy {
     font-family: inherit;
     font-style: normal;
   }
-  
+
   .careers-template .columns .button-container a:hover {
     background-color: var(--dark-blue) !important;
     color: white !important;
