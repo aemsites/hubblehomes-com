@@ -128,10 +128,10 @@ export default async function decorate(doc) {
   const pricingContainer = await createPricingInformation(homeDetails);
   const listingHeader = div({ class: 'fluid-flex inventory-details' }, address, pricingContainer);
 
-  const buttons = div(
-    { class: 'button-container' },
-    button({ class: 'fancy yellow' }, 'Request Information'),
-  );
+  const buttons = div({ class: 'request-btns' }, a({
+    class: 'btn yellow fancy',
+    href: '/contact-us',
+  }, 'Request Information'));
 
   const twoCols = div(
     listingHeader,
