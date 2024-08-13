@@ -1,23 +1,9 @@
 .default-content-wrapper {
-    h1 {
-        text-align: center;       
-    }
-
-    strong {
-        font-weight: 900;        
-    }
-
-    p {
-        margin-top: 30px;
-        text-align: center;
-        font-size: var(--body-font-size-m);
-    }
-
     h1:nth-of-type(2) {
         margin-top: 30px;
         margin-bottom: 30px;
         color: var(--light-gray);
-        font-weight: 400;        
+        font-weight: 400;
     }
 
     h1:nth-of-type(2) > strong {
@@ -66,7 +52,7 @@
         column-gap: 5rem;
         margin-left: auto;
         margin-right: auto;
-        align-items: center;        
+        align-items: center;
     }
 }
 
@@ -123,9 +109,8 @@
 
 .communities {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;    
+    flex-flow: row wrap;
+    width: 100%;
 }
 
 .communities .communityheader {
@@ -185,7 +170,7 @@
         justify-content: left;
         column-gap: 2rem;
         margin-left: 0;
-        margin-right: 0;        
+        margin-right: 0;
     }
 
     .sales-team .specialists-sales-team .specialists-wrapper {
@@ -200,5 +185,5 @@
         margin-left: 16.66666667%;
         margin-right: 16.66666667%;
     }
-   
+
 }
