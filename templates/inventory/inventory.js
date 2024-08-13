@@ -2,7 +2,6 @@ import {
   aside,
   div,
   a,
-  button,
   h2,
   h3,
   h4,
