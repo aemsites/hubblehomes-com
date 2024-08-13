@@ -5,7 +5,6 @@ import {
   createLinksBlock,
   createDescriptionBlock,
   createOverviewBlock,
-  createActionButtonBlock,
   createFloorplanTabsBlock,
   createEmbedBlock,
   createCarouselBlock,
@@ -61,7 +60,6 @@ export default {
     createDescriptionBlock(document, main);
     createOverviewBlock(document, main);
     createLinksBlock(document, main);
-    createActionButtonBlock(document, main);
     createFloorplanTabsBlock(document, main);
     createEmbedBlock(document, main);
     createDisclaimerFragment(document, main);

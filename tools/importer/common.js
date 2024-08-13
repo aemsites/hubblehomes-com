@@ -13,14 +13,16 @@ const cleanupImageSrc = (src) => {
 
 const createLinksBlock = (document, main) => {
   const linksContainer = document.querySelector('.detaillinks');
+
   if (linksContainer) {
     const links = Array.from(linksContainer.querySelectorAll('a'))
-      .map((link) => link.outerHTML)
-      .join('<br>');
+      .filter((link) => !link.textContent.toLowerCase().includes('interactive')) // Fix: Exclude "interactive" links
+      .map((link) => link.outerHTML) // Get the outer HTML of each link
+      .join('<br>'); // Join them with a line break
 
-    const cells = [['Links'], [links]];
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    main.append(table);
+    const cells = [['Links'], [links]]; // Create cells for the table
+    const table = WebImporter.DOMUtils.createTable(cells, document); // Create the table
+    main.append(table); // Append the table to the main container
   }
 };
 

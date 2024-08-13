@@ -4,7 +4,6 @@ import {
   createLinksBlock,
   createDescriptionBlock,
   createOverviewBlock,
-  createActionButtonBlock,
   createFloorplanTabsBlock,
   createEmbedBlock,
   cleanupImageSrc,
@@ -75,7 +74,6 @@ export default {
     createDescriptionBlock(document, main);
     createOverviewBlock(document, main);
     createElevationGalleryBlock(document, main);
-    createActionButtonBlock(document, main);
     createFloorplanTabsBlock(document, main);
     createEmbedBlock(document, main);
     createLinksBlock(document, main);
