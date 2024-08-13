@@ -252,12 +252,11 @@ function buildInventoryCards(homes, startIndex = 0) {
  * Adjust map-filter-container element height if dynamic header changes
  */
 function adjustMapFilterHeight(doc) {
-  const $header = document.querySelector('header');
+  const $header = doc.querySelector('header');
   if ($header) {
     const observer = new MutationObserver((mutationsList) => mutationsList.forEach(() => {
-      const $banner = doc.querySelector('.top-banner');
-      const $mapFilterContainer = document.querySelector('.map-filter-container');
-      const height = ($banner) ? $header.offsetHeight + $banner.offsetHeight : $header.offsetHeight;
+      const $mapFilterContainer = doc.querySelector('.map-filter-container');
+      const height = $header.offsetHeight;
       $mapFilterContainer.style.height = `calc(100vh - ${height}px)`;
     }));
     observer.observe($header, { childList: true });
