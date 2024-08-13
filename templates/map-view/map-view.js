@@ -11,6 +11,7 @@ import { debounce } from '../../scripts/utils.js';
 let map;
 let bounds;
 let markers = [];
+let reachedEnd = false;
 
 function setAllMarkers(m) {
   markers.forEach((markerData) => {
@@ -263,6 +264,18 @@ function adjustMapFilterHeight(doc) {
   }
 }
 
+function createLoadingIndicator() {
+  return div({ class: 'loading-indicator' },
+    span('See More Homes'),
+    div({ class: 'ellipsis' },
+      span('.'),
+      span('.'),
+      span('.'),
+    ),
+    div({ class: 'spinner' }),
+  );
+}
+
 export default async function decorate(doc) {
   const googleMapScript = script(`
     (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=\`https://maps.googleapis.com/maps/api/js?\`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
@@ -296,6 +309,7 @@ export default async function decorate(doc) {
         div({ class: 'listings-wrapper' },
           ...buildInventoryCards(inventory.slice(0, 10)),
         ),
+        createLoadingIndicator(), // Move the loading indicator here
         $footer,
       ),
     ),
@@ -316,15 +330,19 @@ export default async function decorate(doc) {
   const $scrollContainer = document.querySelector('.scroll-container');
   let currentIndex = 10;
   let isLoading = false;
+  const $loadingIndicator = $scrollContainer.querySelector('.loading-indicator');
+
   $scrollContainer.addEventListener('scroll', debounce(async () => {
-    if (isLoading) return;
+    if (isLoading || reachedEnd) return;
 
     const scrollPosition = $scrollContainer.scrollTop + $scrollContainer.clientHeight;
-    const scrollThreshold = $scrollContainer.scrollHeight - 200;
+    const scrollThreshold = $scrollContainer.scrollHeight - 400;
 
     if (scrollPosition >= scrollThreshold && currentIndex < inventory.length) {
       isLoading = true;
       isInfiniteScrolling = true;
+      $loadingIndicator.classList.add('loading');
+
       const nextBatch = inventory.slice(currentIndex, currentIndex + 10);
       if (nextBatch.length > 0) {
         const $listingsWrapper = document.querySelector('.listings-wrapper');
@@ -334,11 +352,20 @@ export default async function decorate(doc) {
 
         // Update map markers
         await addMapMarkers(inventory.slice(0, currentIndex));
+        $scrollContainer.scrollTop += 200;
       }
+
       isLoading = false;
+      $loadingIndicator.classList.remove('loading');
       setTimeout(() => {
         isInfiniteScrolling = false;
       }, 100);
+
+      // Check if we've reached the end of the inventory
+      if (currentIndex >= inventory.length) {
+        reachedEnd = true;
+        $loadingIndicator.style.display = 'none';
+      }
     }
   }, 200));
 
