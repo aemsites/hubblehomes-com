@@ -1,5 +1,12 @@
 import { getHomePlansSheet, getInventorySheet } from './workbook.js';
 import { getCityForCommunity } from './communities.js';
+import { getSalesCenterForCommunity } from './sales-center.js';
+
+const SearchFilters = {
+  READY_NOW: 'ready-now',
+  UNDER_CONSTRUCTION: 'under-construction',
+  TO_BE_BUILT: 'to-be-built',
+};
 
 const filters = [
   { category: 'label', value: '', label: 'Price' },
@@ -317,7 +324,11 @@ const filters = [
  * @throws {Error} If the fetch request fails.
  */
 async function getInventoryData() {
-  return getInventorySheet('data');
+  const inventory = await getInventorySheet('data');
+  return Promise.all(inventory.map(async (home) => {
+    home.salesCenter = await getSalesCenterForCommunity(home.community);
+    return home;
+  }));
 }
 
 /**
@@ -482,4 +493,5 @@ export {
   getHeaderTitleForFilter,
   filterHomes,
   filters,
+  SearchFilters,
 };

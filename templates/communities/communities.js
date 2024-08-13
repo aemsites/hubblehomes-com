@@ -28,31 +28,7 @@ import loadSVG from '../../scripts/svg-helper.js';
 import { loadWorkbook } from '../../scripts/workbook.js';
 import { getPageTitleForUrl } from '../../scripts/pages.js';
 import { safeAppend } from '../../scripts/block-helper.js';
-
-/**
- * Builds the inventory homes block.
- *
- * @returns {Promise<Element>} The inventory homes block wrapped in a div.
- */
-async function buildInventoryHomes(community, filter) {
-  window.hh.current.models = await getInventoryHomesForCommunity(community.name, filter);
-  const modelsBlock = buildBlock('cards', []);
-  modelsBlock.classList.add('inventory');
-  const blockWrapper = div(modelsBlock);
-  decorateBlock(modelsBlock);
-  await loadBlock(modelsBlock, true);
-  return blockWrapper;
-}
-
-async function buildFeaturedPlans(communityName) {
-  window.hh.current.models = await getModelsByCommunity(communityName);
-  const modelsBlock = buildBlock('cards', []);
-  modelsBlock.classList.add('featured');
-  const blockWrapper = div(modelsBlock);
-  decorateBlock(modelsBlock);
-  await loadBlock(modelsBlock, true);
-  return blockWrapper;
-}
+import renderCards from '../blocks/cards/Card.js';
 
 async function fetchRequiredPageData() {
   await loadWorkbook();
@@ -60,9 +36,6 @@ async function fetchRequiredPageData() {
 
   const salesCenter = await getSalesCentersForCommunityUrl(window.location);
   const community = await getCommunityForUrl(window.location.pathname);
-
-  window.hh.current.sale_center = salesCenter.sales_center;
-  window.hh.current.community = community;
 
   return {
     salesCenter: salesCenter.sales_center,
@@ -302,7 +275,8 @@ export default async function decorate(doc) {
   }
 
   const filterSectionTitle = div({ class: 'grey-divider full-width' }, getHeaderTitleForFilter(filter));
-  const inventory = await buildInventoryHomes(community, filter);
+  const data = await getInventoryHomesForCommunity(community.name, filter);
+  const inventory = await renderCards('inventory', data);
 
   const modelNameAddr = div({ class: 'page-info' }, h1(community.name), a({
     class: 'directions',
@@ -325,9 +299,12 @@ export default async function decorate(doc) {
   const inventoryEl = div({ class: 'section inventory' }, inventory);
   const disclaimer = doc.querySelector('.fragment-wrapper');
   const featuredPlansTitle = div({ class: 'grey-divider featured full-width' }, 'Featured Plans');
-  const models = await buildFeaturedPlans(community.name);
-  const hasFeaturedModels = window.hh.current.models.length > 0;
-  const featuredModels = div({ class: 'section featured' }, models);
+  // const models = await buildFeaturedPlans(community.name);
+
+  const featured = await getModelsByCommunity(community.name);
+  const featuredCards = await renderCards('featured', featured);
+  const hasFeaturedModels = featured.length > 0;
+  const featuredModels = div({ class: 'section featured' }, featuredCards);
 
   let specialistsSection;
   let specialistBanner;

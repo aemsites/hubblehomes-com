@@ -221,9 +221,7 @@ class BaseCard {
    */
   // eslint-disable-next-line class-methods-use-this
   renderMiddleRowOfDetailsContainer_left(gridContainer) {
-    const { phone } = window.hh.current.sale_center[this.community]
-      ? window.hh.current.sale_center[this.community]
-      : window.hh.current.sale_center;
+    const { phone } = this.cardData.salesCenter;
     const link = a({ class: 'btn yellow square', href: `tel:${phone}` }, formatPhoneNumber(phone));
     gridContainer.appendChild(link);
   }

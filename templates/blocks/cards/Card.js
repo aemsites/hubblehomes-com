@@ -19,7 +19,7 @@ import { loadCSS } from '../../../scripts/aem.js';
 export default async function renderCards(type, items) {
   await loadCSS(`${window.hlx.codeBasePath}/templates/blocks/cards/cards.css`);
 
-  if (items.length === 0) {
+  if (!items || items.length === 0) {
     return p({ class: 'no-results' }, 'Sorry, no homes match your criteria.');
   }
 
