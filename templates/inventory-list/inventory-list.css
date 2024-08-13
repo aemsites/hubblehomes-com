@@ -1,0 +1,33 @@
+.inventory-list-template{
+  main div .cards-wrapper {
+    padding-top: 30px;
+  }
+
+  .cards > ul > li {
+    min-height: 400px;
+  }
+
+
+.load-more {   
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  text-align: center;
+  margin-top: 20px; 
+  .load-more-btn {
+    min-width: 44px;
+    padding: 10px 12px;
+    background-color: var(--light-blue);
+    color: var(--white);
+    border: 1px solid #ddd;
+    border-radius: 3px;   
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+    font-weight: 400;
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+}

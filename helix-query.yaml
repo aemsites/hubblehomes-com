@@ -11,8 +11,11 @@ indices:
       - '/news/news-hero'
     target: /query-index.json
     properties:
+      path:
+        select: head > meta[name="path"]
+        value: attribute(el, 'content')
       title:
-        select: head > meta[name="title"]
+        select: head > meta[name="og:title"]
         value: attribute(el, 'content')
       description:
         select: head > meta[name="description"]
@@ -22,9 +25,6 @@ indices:
         value: attribute(el, 'content')
       template:
         select: head > meta[name="template"]
-        value: attribute(el, 'content')
-      path:
-        select: head > meta[name="path"]
         value: attribute(el, 'content')
       pageName:
         select: head > meta[name="page-name"]
