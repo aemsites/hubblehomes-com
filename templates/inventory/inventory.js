@@ -2,6 +2,7 @@ import {
   aside,
   div,
   a,
+  button,
   h2,
   h3,
   h4,
@@ -127,10 +128,18 @@ export default async function decorate(doc) {
   const pricingContainer = await createPricingInformation(homeDetails);
   const listingHeader = div({ class: 'fluid-flex inventory-details' }, address, pricingContainer);
 
-  const buttons = div({ class: 'request-btns' }, a({
-    class: 'btn yellow fancy',
-    href: '/contact-us',
-  }, 'Request Information'));
+  const buttons = div(
+    { class: 'button-container' },
+    button(
+      {
+        class: 'fancy yellow',
+        onclick: () => {
+          window.location.href = '/contact-us';
+        },
+      },
+      'Request Information',
+    ),
+  );
 
   const twoCols = div(
     listingHeader,
