@@ -220,10 +220,12 @@
       }
 
       .scroll-container {
-        height: calc(100% - 56px); /* subtract filter height */
+        height: calc(100vh - 56px); /* Ensure it fits within the viewport */
         width: 100%;
         overflow-y: auto;
         scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
 
         footer {
           .top {
@@ -470,19 +472,50 @@
 }
 
 .loading-indicator {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  font-size: 16px;
-  color: #333;
-  margin: 20px auto;
-  width: 100%;
-  text-align: center;
   position: sticky;
   bottom: 0;
-  background-color: #fff;
-  z-index: 10;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  background-color: white;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-indicator span {
+  margin-right: 5px;
+}
+
+.ellipsis {
+  display: inline-block;
+  letter-spacing: 2px;
+  animation: ellipsis 1.5s infinite;
+}
+
+@keyframes ellipsis {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+.spinner {
+  /* Add your spinner styles here */
+  margin-left: 5px;
+}
+
+.listings-wrapper {
+  padding-bottom: 50px;
+}
+
+body {
+  overflow: hidden;
+}
+
+.map-filter-container {
+  height: 100vh;
+  overflow-y: auto;
 }
 
 @media (max-width: 767px) {
@@ -500,58 +533,6 @@
     margin-left: 0;
     margin-top: 5px;
   }
-}
-
-.loading-indicator .ellipsis {
-  display: flex;
-  margin-left: 5px;
-}
-
-.loading-indicator .ellipsis span {
-  opacity: 0;
-  animation: ellipsis 1.4s infinite;
-}
-
-.loading-indicator .ellipsis span:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.loading-indicator .ellipsis span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.loading-indicator .ellipsis span:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-.loading-indicator .spinner {
-  display: none;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid #3498db;
-  border-radius: 50%;
-  margin-left: 10px;
-  animation: spin 1s linear infinite;
-}
-
-.loading-indicator.loading .ellipsis {
-  display: none;
-}
-
-.loading-indicator.loading .spinner {
-  display: block;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes ellipsis {
-  0% { opacity: 0; }
-  50% { opacity: 1; }
-  100% { opacity: 0; }
 }
 
 .load-more-btn {

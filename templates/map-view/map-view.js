@@ -197,11 +197,7 @@ function adjustMapFilterHeight(doc) {
 function createLoadingIndicator() {
   return div({ class: 'loading-indicator' },
     span('See More Homes'),
-    div({ class: 'ellipsis' },
-      span('.'),
-      span('.'),
-      span('.'),
-    ),
+    span({ class: 'ellipsis' }, '...'),
     div({ class: 'spinner' }),
   );
 }
@@ -268,41 +264,46 @@ export default async function decorate(doc) {
       if (nextBatch.length > 0) {
         const $listingsWrapper = document.querySelector('.listings-wrapper');
 
-        // Create a marker element
-        const $scrollMarker = document.createElement('div');
-        $scrollMarker.classList.add('scroll-marker');
-        $listingsWrapper.appendChild($scrollMarker);
-
+        // Create a temporary container for new cards
+        const tempContainer = document.createElement('div');
         const newCards = buildInventoryCards(nextBatch, currentIndex);
-        newCards.forEach((card) => $listingsWrapper.appendChild(card));
+        newCards.forEach((card) => tempContainer.appendChild(card));
+
+        const initialScrollHeight = $scrollContainer.scrollHeight;
+
+        // Append new cards
+        $listingsWrapper.appendChild(tempContainer);
+
+        await addMapMarkers(inventory.slice(0, currentIndex + 10));
+
+        // Calculate the height difference
+        const scrollHeightDifference = $scrollContainer.scrollHeight - initialScrollHeight;
+
+        // Adjust scroll position to the bottom of the cards
+        $scrollContainer.scrollTop += scrollHeightDifference;
+
         currentIndex += 10;
 
-        // Update map markers
-        await addMapMarkers(inventory.slice(0, currentIndex));
-
-        // Scroll to the marker element
-        $scrollMarker.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        // Remove the marker element after scrolling
-        setTimeout(() => {
-          $scrollMarker.remove();
-        }, 1000);
-
-        // Wait for the DOM to update
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        // Remove the temporary container and move its children to the listings wrapper
+        while (tempContainer.firstChild) {
+          $listingsWrapper.appendChild(tempContainer.firstChild);
+        }
+        tempContainer.remove();
       }
 
       isLoading = false;
       $loadingIndicator.classList.remove('loading');
-      setTimeout(() => {
-        isInfiniteScrolling = false;
-      }, 100);
 
       // Check if we've reached the end of the inventory
       if (currentIndex >= inventory.length) {
         reachedEnd = true;
         $loadingIndicator.style.display = 'none';
       }
+
+      // Short delay to ensure smooth transition
+      setTimeout(() => {
+        isInfiniteScrolling = false;
+      }, 100);
     }
   }, 200));
 
