@@ -220,12 +220,13 @@
       }
 
       .scroll-container {
-        height: calc(100vh - 56px); /* Ensure it fits within the viewport */
+        height: calc(100vh - 56px);
         width: 100%;
         overflow-y: auto;
         scroll-behavior: smooth;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior-y: contain;
+        padding-bottom: 100px;
 
         footer {
           .top {
@@ -339,7 +340,7 @@
         }
 
         .listings-wrapper {
-          padding: 0 0 40px;
+          padding: 0 0 40px; /* Adjust this value as needed */
           width: 100%;
           display: flex;
           flex-direction: column;

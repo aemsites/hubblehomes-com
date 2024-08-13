@@ -260,7 +260,10 @@ export default async function decorate(doc) {
       isInfiniteScrolling = true;
       $loadingIndicator.classList.add('loading');
 
-      const nextBatch = inventory.slice(currentIndex, currentIndex + 10);
+      const isMobile = window.innerWidth <= 990;
+      const batchSize = isMobile ? inventory.length - currentIndex : 10;
+      const nextBatch = inventory.slice(currentIndex, currentIndex + batchSize);
+
       if (nextBatch.length > 0) {
         const $listingsWrapper = document.querySelector('.listings-wrapper');
 
@@ -269,20 +272,24 @@ export default async function decorate(doc) {
         const newCards = buildInventoryCards(nextBatch, currentIndex);
         newCards.forEach((card) => tempContainer.appendChild(card));
 
-        const initialScrollHeight = $scrollContainer.scrollHeight;
-
         // Append new cards
         $listingsWrapper.appendChild(tempContainer);
 
-        await addMapMarkers(inventory.slice(0, currentIndex + 10));
+        await addMapMarkers(inventory.slice(0, currentIndex + batchSize));
 
-        // Calculate the height difference
-        const scrollHeightDifference = $scrollContainer.scrollHeight - initialScrollHeight;
+        if (isMobile) {
+          // Force scroll to bottom
+          setTimeout(() => {
+            $scrollContainer.scrollTop = $scrollContainer.scrollHeight;
+          }, 100);
+        } else {
+          // For desktop, keep some space from the bottom
+          const newScrollPosition = $scrollContainer.scrollHeight
+          - $scrollContainer.clientHeight - 800;
+          $scrollContainer.scrollTop = Math.max(newScrollPosition, 0);
+        }
 
-        // Adjust scroll position to the bottom of the cards
-        $scrollContainer.scrollTop += scrollHeightDifference;
-
-        currentIndex += 10;
+        currentIndex += batchSize;
 
         // Remove the temporary container and move its children to the listings wrapper
         while (tempContainer.firstChild) {
@@ -313,4 +320,15 @@ export default async function decorate(doc) {
       event.preventDefault();
     }
   }, true);
+
+  // adjust the scroll container height for footer behavior
+  function adjustScrollContainerHeight() {
+    const header = document.querySelector('header');
+    const windowHeight = window.innerHeight;
+    const headerHeight = header ? header.offsetHeight : 0;
+    $scrollContainer.style.height = `${windowHeight - headerHeight}px`;
+  }
+
+  window.addEventListener('load', adjustScrollContainerHeight);
+  window.addEventListener('resize', adjustScrollContainerHeight);
 }
