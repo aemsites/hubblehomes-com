@@ -161,6 +161,7 @@ function filterListeners() {
 }
 
 let isHighlighting = false;
+let isInfiniteScrolling = false;
 
 function highlightActiveHome(i) {
   if (isHighlighting) return;
@@ -169,21 +170,24 @@ function highlightActiveHome(i) {
   resetActiveHomes();
 
   const $card = document.querySelector(`[data-card="${i}"]`);
-  $card.classList.add('active');
+  // Add null check here
+  if ($card) {
+    $card.classList.add('active');
 
-  const $scrollContainer = document.querySelector('.scroll-container');
-  const scrollContainerRect = $scrollContainer.getBoundingClientRect();
-  const activeCardRect = $card.getBoundingClientRect();
-  const isVisible = (
-    activeCardRect.top >= scrollContainerRect.top
-    && activeCardRect.bottom <= scrollContainerRect.bottom
-  );
+    const $scrollContainer = document.querySelector('.scroll-container');
+    const scrollContainerRect = $scrollContainer.getBoundingClientRect();
+    const activeCardRect = $card.getBoundingClientRect();
+    const isVisible = (
+      activeCardRect.top >= scrollContainerRect.top
+      && activeCardRect.bottom <= scrollContainerRect.bottom
+    );
 
-  if (!isVisible) {
-    // Only scroll if the card is not visible
-    const scrollOffset = activeCardRect.top - scrollContainerRect.top
-    - (scrollContainerRect.height / 2) + (activeCardRect.height / 2);
-    $scrollContainer.scrollBy({ top: scrollOffset, behavior: 'smooth' });
+    if (!isVisible && !isInfiniteScrolling) {
+      // Only scroll if the card is not visible and we're not in infinite scroll
+      const scrollOffset = activeCardRect.top - scrollContainerRect.top
+        - (scrollContainerRect.height / 2) + (activeCardRect.height / 2);
+      $scrollContainer.scrollBy({ top: scrollOffset, behavior: 'smooth' });
+    }
   }
 
   const $marker = document.querySelector(`[data-marker="${i}"]`);
@@ -321,6 +325,7 @@ export default async function decorate(doc) {
 
     if (scrollPosition >= scrollThreshold && currentIndex < inventory.length) {
       isLoading = true;
+      isInfiniteScrolling = true;
       const nextBatch = inventory.slice(currentIndex, currentIndex + 10);
       if (nextBatch.length > 0) {
         const $listingsWrapper = document.querySelector('.listings-wrapper');
@@ -332,6 +337,9 @@ export default async function decorate(doc) {
         await addMapMarkers(inventory.slice(0, currentIndex));
       }
       isLoading = false;
+      setTimeout(() => {
+        isInfiniteScrolling = false;
+      }, 100);
     }
   }, 200));
 
