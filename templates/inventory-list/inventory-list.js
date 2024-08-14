@@ -12,6 +12,7 @@ async function displayCards(inventoryHomes, fragment) {
   window.hh.current.inventory = inventoryHomes.slice(startIndex, endIndex);
   const modelsBlock = buildBlock('cards', []);
   modelsBlock.classList.add('inventory');
+  modelsBlock.classList.add('block');
   const blockWrapper = div(modelsBlock);
   decorateBlock(modelsBlock);
   await loadBlock(modelsBlock, true);
