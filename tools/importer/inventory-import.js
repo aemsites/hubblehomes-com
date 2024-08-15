@@ -13,24 +13,7 @@ import {
 } from './common.js';
 
 const createMetadata = (main, document, url, html) => {
-  // Get common metadata
   const meta = updateCommonMetadata(document, url, html);
-
-  // nameElement
-  const nameElement = document.querySelector('.col-sm-6 h2');
-  if (nameElement) {
-    meta.Name = nameElement.textContent.trim();
-    nameElement.remove();
-  }
-
-  // Published Date
-  const postDateElement = document.querySelector('.text-center small strong');
-  if (postDateElement && postDateElement.textContent.includes('Posted:')) {
-    meta.PublishedDate = postDateElement.nextSibling.textContent
-      .split('|')[0]
-      .trim();
-    postDateElement.remove();
-  }
 
   // Create Metadata Block
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);

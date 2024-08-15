@@ -16,7 +16,6 @@ const createLinksBlock = (document, main) => {
 
   if (linksContainer) {
     const links = Array.from(linksContainer.querySelectorAll('a'))
-      .filter((link) => !link.textContent.toLowerCase().includes('interactive')) // Fix: Exclude "interactive" links
       .map((link) => link.outerHTML) // Get the outer HTML of each link
       .join('<br>'); // Join them with a line break
 

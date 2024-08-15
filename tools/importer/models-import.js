@@ -35,13 +35,12 @@ const createElevationGalleryBlock = (document, main) => {
   }
 };
 
-const createMetadata = (main, document, url, html) => {
+const createMetadata = (document, url, html) => {
   const meta = updateCommonMetadata(document, url, html);
 
   const homeStyleElement = document.querySelector('.col-sm-6 h2 + h4');
   if (homeStyleElement) {
     meta.Homestyle = homeStyleElement.textContent.trim();
-    homeStyleElement.remove();
   }
 
   // Create Metadata Block
@@ -67,7 +66,7 @@ export default {
     // define the main element: the one that will be transformed to Markdown
     const main = document.body;
 
-    const meta = createMetadata(main, document, url, html);
+    const meta = createMetadata(document, url, html);
 
     // Use helper methods to create and append various blocks to the main element
     createCarouselBlock(document, main, ['gallery', 'carousel'], true, false);

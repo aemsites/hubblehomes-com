@@ -157,14 +157,6 @@ const createMinimalTabsBlock = (document, main) => {
 const createMetadata = (document, url, html) => {
   const meta = updateCommonMetadata(document, url, html);
 
-  // Community Name
-  const nameElement = document.querySelector('h1.h1');
-  meta.Name = nameElement?.textContent.trim();
-  nameElement?.remove();
-
-  // const location = document.querySelector('h4 .gtm-drivingdirections');
-  // location?.remove();
-
   // Create Metadata Block
   return WebImporter.Blocks.getMetadataBlock(document, meta);
 };
