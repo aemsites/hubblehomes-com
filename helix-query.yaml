@@ -1,3 +1,11 @@
+.excludes: &excludes
+  - '/drafts/**'
+  - '/fragments/**'
+  - '/tools/**'
+  - '/footer'
+  - '/nav/**'
+  - '/news/news-hero'
+
 version: 1
 indices:
   default:
@@ -51,13 +59,8 @@ indices:
         value: attribute(el, "content")
   pages:
     include:
-      - '/**'
-    exclude:
-      - '/drafts/**'
-      - '/footer'
-      - '/fragments/**'
-      - '/nav/**'
-      - '/news/news-hero'
+      - /**
+    exclude: *excludes
     target: /data/page-index.json
     properties:
       pageName:

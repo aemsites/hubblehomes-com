@@ -130,7 +130,15 @@ export default async function decorate(doc) {
 
   const buttons = div(
     { class: 'button-container' },
-    button({ class: 'fancy yellow' }, 'Request Information'),
+    button(
+      {
+        class: 'fancy yellow',
+        onclick: () => {
+          window.location.href = '/contact-us';
+        },
+      },
+      'Request Information',
+    ),
   );
 
   const twoCols = div(

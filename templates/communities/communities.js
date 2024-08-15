@@ -312,7 +312,7 @@ export default async function decorate(doc) {
 
   const requestButtons = div({ class: 'request-btns' }, a({
     class: 'btn yellow fancy',
-    href: `/contact-us/sales-info?communityid=${community.name}`,
+    href: '/contact-us',
   }, 'Request Information'));
 
   const overview = doc.querySelector('.overview-wrapper');
