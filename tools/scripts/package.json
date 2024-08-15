@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "models": "node models.js"
+    "models": "node models.js",
+    "homeplans": "node home-plans.js"
   },
   "author": "",
   "license": "ISC",
