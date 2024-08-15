@@ -10,8 +10,8 @@ export default async function decorate(doc) {
   const fragment = doc.querySelector('.fragment-wrapper');
   fragment.classList.add('disclaimer');
 
-  const singleFamilyPlans = homePlans.filter((plan) => plan.Type === 'Single Family');
-  const towneHomePlans = homePlans.filter((plan) => plan.Type === 'Townhome');
+  const singleFamilyPlans = homePlans.filter((plan) => plan.type === 'Single Family');
+  const towneHomePlans = homePlans.filter((plan) => plan.type === 'Townhome');
 
   const singleCards = await renderCards('home-plans', singleFamilyPlans);
   const cards = div({ class: 'section featured' }, h3('Single Family Homes'), singleCards);
