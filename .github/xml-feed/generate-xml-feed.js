@@ -100,10 +100,10 @@ async function addInventoryData(model, community) {
         }
       });
       imagexml += elevations;
-      let description = '<SpecDescription>';
+      let description = '<SpecDescription><![CDATA[';
       const ptags = body.querySelectorAll(".description > div > div > p ");
-      ptags.forEach((p) => description += encodeString(p.innerHTML));
-      description += '</SpecDescription>';
+      ptags.forEach((p) => description += (p.innerHTML));
+      description += ']]></SpecDescription>';
       let floorPlanImages = '';
       const FloorPlanDiv = body.querySelectorAll(".floorplan > div");
       FloorPlanDiv.forEach((div, index) => {
@@ -145,10 +145,10 @@ async function addImagesDescription(path, modelName) {
     Caption="${modelName} New Home Plan by Hubble Homes Boise, Idaho" ReferenceType="URL">
     ${(`https://main--hubblehomes-com--aemsites.hlx.live${path}${imgsrc[0]}`)}</InteriorImage>`;
   });
-  let description = '<Description>';
+  let description = '<Description><![CDATA[';
   const ptags = body.querySelectorAll(".description > div > div > p ");
-  ptags.forEach((p) => description += encodeString(p.innerHTML));
-  description += '</Description>';
+  ptags.forEach((p) => description += (p.innerHTML));
+  description += ']]></Description>';
   let elevations = ''
   const allElevationdiv = body.querySelectorAll(".elevations > div ");
   allElevationdiv.forEach((div, index) => {
@@ -171,8 +171,8 @@ async function addImagesDescription(path, modelName) {
   let contradovipURL;
   const linksblock = body.querySelectorAll(".links > div > div > a");
   linksblock.forEach((a) => {
-    if (a.href.includes('contradovip')) {
-      contradovipURL = a.href;
+    if (a.href.includes('pdf')) {
+      contradovipURL = `https://main--hubblehomes-com--aemsites.hlx.live${a.href}`;
     } else if (a.href.includes('matterport')) {
       matterportURL = a.href;
     }
@@ -225,7 +225,7 @@ async function addPlanInfo(community) {
             <Bedrooms MasterBedLocation="${key['primary bed']}">${key['beds']}</Bedrooms>
             <Garage>${key['cars']}</Garage>         
           ${imagedata}
-          <PlanWebsite>https://www.hubblehomes.com${value['path']}</PlanWebsite>
+          <PlanWebsite>https://www.hubblehomes.com${key['path']}</PlanWebsite>
           ${inventoryHome}
           </Plan>`;
   }
@@ -234,7 +234,7 @@ async function addPlanInfo(community) {
 
 async function addSubDivison(subdivision, salesoffice, carouselImages) {
   let subImage = '';
-  let planXML = await addPlanInfo(subdivision['SubdivisionName']);
+  let planXML = await addPlanInfo(subdivision['name']);
   carouselImages.forEach((image, index) => {
     if (index + 1 == 1) {
       subImage += `<SubImage Type="Standard" SequencePosition="${index + 1}" Title="" 
@@ -248,12 +248,20 @@ async function addSubDivison(subdivision, salesoffice, carouselImages) {
                   </SubImage>`;
     }
   });
+  const pageURL = "https://main--hubblehomes-com--aemsites.hlx.live" + subdivision.path + ".plain.html";
+  const response = await fetch(pageURL);
+  const pageText = await response.text();
+  const dom = new JSDOM(pageText);
+  const body = dom.window.document.getElementsByTagName("body")[0];
+  let description = '';
+  const ptags = body.querySelectorAll(".description > div > div > p ");
+  ptags.forEach((p) => description += (p.innerHTML));  
   const phoneNumber = formatPhoneNumber(salesoffice['phone']);
   const subdivisionXML = `
   <Subdivision Status="Active">
     <SubdivisionNumber>${subdivision['SubdivisionNumber']}</SubdivisionNumber>
-    <SubdivisionName>${subdivision['SubdivisionName']}</SubdivisionName>
-    <SubParentName>${subdivision['SubParentName']}</SubParentName>
+    <SubdivisionName>${subdivision['name']}</SubdivisionName>
+    <SubParentName>${subdivision['name']}</SubParentName>
     <UseDefaultLeadsEmail>${subdivision['UseDefaultLeadsEmail']}</UseDefaultLeadsEmail>
     <BuildOnYourLot>${subdivision['BuildOnYourLot']}</BuildOnYourLot>
     <SalesOffice>
@@ -286,10 +294,10 @@ async function addSubDivison(subdivision, salesoffice, carouselImages) {
     </SubGeocode>
     </SubAddress>
     <DrivingDirections>${encodeString(salesoffice['DrivingDirections'])}</DrivingDirections>
-    <SubDescription>${encodeString(subdivision['SubDescription'])}</SubDescription>
+    <SubDescription><![CDATA[${description}]]></SubDescription>
     ${subImage} 
-    <SubVideoTour Title="Tour of ${subdivision['SubdivisionName']}">${subdivision['SubVideoTour']}</SubVideoTour>
-    <SubWebsite>https://www.hubblehomes.com${subdivision['Path']}</SubWebsite>
+    <SubVideoTour Title="Tour of ${subdivision['name']}">${subdivision['videotour']}</SubVideoTour>
+    <SubWebsite>https://www.hubblehomes.com${subdivision['path']}</SubWebsite>
     ${planXML}
     </Subdivision>`;  
   return subdivisionXML;
@@ -312,12 +320,16 @@ async function main() {
         <DefaultLeadsEmail LeadsPerMessage="1">${entry['DefaultLeadsEmail']}</DefaultLeadsEmail>
         <BuilderWebsite>${entry['BuilderWebsite']}</BuilderWebsite>`;
   });
-  const subdivisionData = await fetchWorkbook([Sheets.SUBDIVISION, Sheets.SALES_OFFICES]);
+  const subdivisionData = await fetchWorkbook([Sheets.COMMUNITIES, Sheets.SALES_OFFICES]);
   let subdivisionXML = '';
-  for (const subdivision of subdivisionData.subdivision.data) {
-    const carouselImages = await addCarouselImages(subdivision['Path']);
+  const communities = subdivisionData.communities.data.filter((community) => community['XML Feed'] === 'TRUE');
+  communities.sort(function(a,b){
+    return a.SubdivisionNumber - b.SubdivisionNumber;
+  });
+  for (const subdivision of communities) {
+    const carouselImages = await addCarouselImages(subdivision['path']);
     for (const salesoffice of subdivisionData['sales-offices']['data']) {
-      if (salesoffice['community'].toLowerCase() === subdivision['SubdivisionName'].toLowerCase()) {
+      if (salesoffice['community'].toLowerCase() === subdivision['name'].toLowerCase()) {
         salesOfficehelper = salesoffice;
         subdivisionXML += await addSubDivison(subdivision, salesoffice, carouselImages);
       }
@@ -325,7 +337,8 @@ async function main() {
   }
 
 
-  const XMLdata = `<Builders DateGenerated = "${dateGenerated}">
+  const XMLdata = `<?xml version='1.0' encoding='UTF-8'?>
+  <Builders DateGenerated = "${dateGenerated}">
   ${corporationXML}
   ${subdivisionXML}
   </Builder>
