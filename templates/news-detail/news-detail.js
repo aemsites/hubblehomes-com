@@ -1,52 +1,31 @@
 /* eslint-disable function-call-argument-newline, object-curly-newline, function-paren-newline */
-import { strong, small, div, h3, a, aside, hr, p, script } from '../../scripts/dom-helpers.js';
+import { aside, div, p, a, strong, small, h3, hr, script } from '../../scripts/dom-helpers.js';
+import ArticleList from '../../scripts/article-list.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../../blocks/fragment/fragment.js';
 import formatTimeStamp from '../../scripts/utils.js';
-import ArticleList from '../../scripts/article-list.js';
-
-function getSiblingsAfter(element) {
-  const siblings = [];
-  let nextSibling = element.nextElementSibling;
-
-  while (nextSibling) {
-    siblings.push(nextSibling);
-    nextSibling = nextSibling.nextElementSibling;
-  }
-
-  return siblings;
-}
 
 export default async function decorate(doc) {
-  const mainSection = doc.querySelector('main .section');
+  const $mainSection = doc.querySelector('main .section');
+
+  const heroFrag = await loadFragment('/news/news-hero');
+  const $hero = heroFrag.querySelector('.carousel-wrapper').cloneNode(true);
+
+  const $mainContent = $mainSection.cloneNode(true);
+  $mainSection.innerHTML = '';
 
   // subhead
-  const subhead = small({ class: 'post-metadata' },
+  const $postMeta = small({ class: 'post-metadata' },
     strong('Posted: '), getMetadata('published-date'),
     ' | ',
     strong('Categories: '), getMetadata('categories'),
   );
 
-  // load the hero and insert it at the top of the main section
-  const heroFrag = await loadFragment('/news/news-hero');
-  const $hero = heroFrag.querySelector('.carousel-wrapper');
-  mainSection.prepend($hero);
-
-  // pluck the title from the default-content-wrapper
-  const title = mainSection.querySelector('.default-content-wrapper h1');
-  const childrenOfDefaultWrapper = mainSection.querySelector('.default-content-wrapper').children || [];
-
-  // insert the subhead after the title
-  title.insertAdjacentElement('afterend', subhead);
-
-  // get all the siblings of the default-content-wrapper selector
-  let content = [];
-  if (mainSection.querySelectorAll('.default-content-wrapper').length > 1) {
-    content = getSiblingsAfter(mainSection.querySelector('.default-content-wrapper'));
-  }
+  const $h1 = $mainContent.querySelector('h1');
+  $h1.insertAdjacentElement('afterend', $postMeta);
 
   // optimize images
-  mainSection.querySelectorAll('picture').forEach((pic) => {
+  $mainContent.querySelectorAll('picture').forEach((pic) => {
     const image = pic.querySelector('img');
     const opt = createOptimizedPicture(image.src, 'alt', true, [{ width: '900' }]);
     pic.replaceWith(opt);
@@ -78,8 +57,7 @@ export default async function decorate(doc) {
   const $newsDetailPage = div({ class: 'section' },
     div({ class: 'content-wrapper' },
       div({ class: 'content' },
-        ...childrenOfDefaultWrapper,
-        ...content,
+        ...$mainContent.children,
         div({ class: 'sharethis sharethis-inline-share-buttons' }),
         div({ class: 'recent-news' },
           h3('Recent News'),
@@ -93,7 +71,10 @@ export default async function decorate(doc) {
     ),
   );
 
-  doc.querySelector('main').append(mainSection, $newsDetailPage);
+  $mainSection.append(
+    $hero,
+    $newsDetailPage,
+  );
 
   const categories = new ArticleList({
     jsonPath: '/news/news-index.json',
