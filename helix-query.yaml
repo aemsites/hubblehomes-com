@@ -5,37 +5,33 @@
   - '/footer'
   - '/nav/**'
   - '/news/news-hero'
+  - '/heart-of-hubble/hero'
 
 version: 1
 indices:
   default:
     include:
-      - '/**'
-    exclude:
-      - '/drafts/**'
-      - '/footer'
-      - '/fragments/**'
-      - '/nav/**'
-      - '/news/news-hero'
+      - /**
+    exclude: *excludes
     target: /query-index.json
     properties:
       path:
         select: head > meta[name="path"]
         value: attribute(el, 'content')
       title:
-        select: head > meta[name="og:title"]
+        select: head > meta[property="og:title"]
         value: attribute(el, 'content')
       description:
         select: head > meta[name="description"]
-        value: attribute(el, 'content')
-      image:
-        select: head > meta[property="og:image"]
         value: attribute(el, 'content')
       template:
         select: head > meta[name="template"]
         value: attribute(el, 'content')
       pageName:
         select: head > meta[name="page-name"]
+        value: attribute(el, 'content')
+      image:
+        select: head > meta[property="og:image"]
         value: attribute(el, 'content')
   news:
     include:
