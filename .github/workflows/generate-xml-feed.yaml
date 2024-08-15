@@ -1,6 +1,9 @@
 name: Generate XML Feed
 on:
   workflow_dispatch:
+  schedule:
+    # Runs daily in case any event was missed
+    - cron: '30 0 * * *'
   pull_request:
     paths:
       - '.github/xml-feed/**'
