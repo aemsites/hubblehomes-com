@@ -1,4 +1,10 @@
-.home-plans-template{
+.home-plans-template {
+  text-align: center;
+
+  .section.featured:not(:first-child) {
+    padding: 30px 0;
+  }
+
   main div .cards-wrapper {
     padding-top: 30px;
   }
