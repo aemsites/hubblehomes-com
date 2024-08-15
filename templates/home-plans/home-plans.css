@@ -1,5 +1,8 @@
 .home-plans-template {
-  text-align: center;
+  h3,
+  .default-content-wrapper {
+    text-align: center;
+  }
 
   .section.featured:not(:first-child) {
     padding: 30px 0;
