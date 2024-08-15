@@ -11,14 +11,15 @@ export default async function decorate(doc) {
   fragment.classList.add('disclaimer');
 
   const singleFamilyPlans = homePlans.filter((plan) => plan.type === 'Single Family');
-  const towneHomePlans = homePlans.filter((plan) => plan.type === 'Townhome');
+  const townHomePlans = homePlans.filter((plan) => plan.type === 'Townhome');
 
   const singleCards = await renderCards('home-plans', singleFamilyPlans);
   const cards = div({ class: 'section featured' }, h3('Single Family Homes'), singleCards);
-
-  const townHomeCards = await renderCards('home-plans', towneHomePlans);
-  const tcards = div({ class: 'section featured' }, h3('Townhome Plans'), townHomeCards);
-
   fragment.insertAdjacentElement('beforebegin', cards);
-  fragment.insertAdjacentElement('beforebegin', tcards);
+
+  if (townHomePlans && townHomePlans.length > 0) {
+    const townHomeCards = await renderCards('home-plans', townHomePlans);
+    const tcards = div({ class: 'section featured' }, h3('Townhome Plans'), townHomeCards);
+    fragment.insertAdjacentElement('beforebegin', tcards);
+  }
 }
