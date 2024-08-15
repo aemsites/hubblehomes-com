@@ -12,6 +12,12 @@ export default async function decorate(doc) {
   const $hero = heroFrag.querySelector('.carousel-wrapper').cloneNode(true);
 
   const $mainContent = $mainSection.cloneNode(true);
+
+  // throw out the auto blocked links that were flipped to buttons
+  [...$mainContent.querySelectorAll('a.btn')].forEach((button) => {
+    button.classList.remove('btn', 'fancy');
+  });
+
   $mainSection.innerHTML = '';
 
   // subhead
