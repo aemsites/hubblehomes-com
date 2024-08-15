@@ -1,10 +1,10 @@
 .excludes: &excludes
-  - '**/drafts/**'
-  - '**/fragments/**'
-  - '**/tools/**'
-  - '**/footer'
-  - '**/nav/**'
-  - '**/news/news-hero'
+  - '/drafts/**'
+  - '/fragments/**'
+  - '/tools/**'
+  - '/footer'
+  - '/nav/**'
+  - '/news/news-hero'
 
 version: 1
 indices:
