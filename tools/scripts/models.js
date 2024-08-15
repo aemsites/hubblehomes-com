@@ -76,7 +76,7 @@ async function fetchAndParseHTML(community, url) {
     const beds = findValue('Beds');
     const baths = findValue('Baths');
     const cars = findValue('Cars');
-    const dens = findValue('Den/Loft');
+    const dens = findValue('Den/Study');
     const primaryBed = findValue('Primary Bed');
     const fullBedOnFirst = findValue('Full Bed on First');
     const fullBathOnMain = findValue('Full Bath Main');
