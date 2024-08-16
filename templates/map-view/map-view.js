@@ -152,7 +152,7 @@ function resetActiveHomes() {
 function buildInventoryCards(homes, startIndex = 0) {
   return homes.map((home, i) => {
     const globalIndex = startIndex + i;
-    const $home = div({ class: `item-listing listing-${globalIndex}`, 'data-card': globalIndex },
+    const $home = div({ class: `item-listing listing-${globalIndex}`, 'data-card': globalIndex, 'data-mls': home.mls },
       createOptimizedPicture(home.image, home.address, false, [{ width: '300' }]),
       div({ class: 'listing-info' },
         h3(home.address),
@@ -342,4 +342,48 @@ export default async function decorate(doc) {
 
   window.addEventListener('load', adjustScrollContainerHeight);
   window.addEventListener('resize', adjustScrollContainerHeight);
+  window.addEventListener('markerClicked', async (event) => {
+    const { index, mls } = event.detail;
+    const $listingsWrapper = document.querySelector('.listings-wrapper');
+    let existingCard = $listingsWrapper.querySelector(`[data-mls="${mls}"]`);
+
+    if (!existingCard) {
+      isLoading = true;
+      isInfiniteScrolling = true;
+      $loadingIndicator.classList.add('loading');
+
+      let newCards = [];
+      while (currentIndex < inventory.length && !existingCard) {
+        const batchSize = 10;
+        const nextBatch = inventory.slice(currentIndex, currentIndex + batchSize);
+
+        if (nextBatch.length > 0) {
+          newCards = newCards.concat(buildInventoryCards(nextBatch, currentIndex));
+          currentIndex += batchSize;
+
+          existingCard = newCards.find((card) => card.dataset.mls === mls);
+        } else {
+          break;
+        }
+      }
+
+      if (newCards.length > 0) {
+        newCards.forEach((card) => $listingsWrapper.appendChild(card));
+        await addMapMarkers(inventory.slice(0, currentIndex));
+      }
+
+      isLoading = false;
+      $loadingIndicator.classList.remove('loading');
+
+      if (currentIndex >= inventory.length) {
+        reachedEnd = true;
+        $loadingIndicator.style.display = 'none';
+      }
+    }
+
+    if (existingCard) {
+      highlightActiveHome(index);
+      existingCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  });
 }

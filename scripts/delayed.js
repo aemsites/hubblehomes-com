@@ -57,6 +57,9 @@ function createMarker(home, i) {
   markerElement.addEventListener('click', (e) => {
     e.stopPropagation();
     highlightActiveHome(i);
+    // load more results if needed
+    const event = new CustomEvent('markerClicked', { detail: { index: i, mls: home.mls } });
+    window.dispatchEvent(event);
   });
 
   return markerElement;
