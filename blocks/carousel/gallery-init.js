@@ -4,7 +4,7 @@ import {
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { safeAppend } from '../../scripts/block-helper.js';
 import registerTouchHandlers from './carousel-touch.js';
-import rebuildImageStyles from '../../scripts/gallery-rules.js';
+import rebuildImageStyles, { galleryReset } from '../../scripts/gallery-rules.js';
 
 let galleryImages = [];
 let currentIndex = 0;
@@ -119,29 +119,9 @@ function closeGallery() {
   document.body.classList.remove('gallery-active');
 
   setTimeout(() => {
+    galleryReset();
     gallery.remove();
   }, 300);
-}
-
-function setGalleryPlacement(gallery) {
-  const header = document.querySelector('header');
-  const { scrollY } = window;
-  const galleryGap = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--gallery-gap-default'), 10) || 0;
-
-  gallery.style.height = `calc(100vh - ${header.clientHeight + galleryGap}px)`;
-  gallery.style.top = `${header.clientHeight + scrollY}px`;
-
-  const observer = new MutationObserver(() => {
-    if (header) {
-      gallery.style.height = `calc(100vh - ${header.clientHeight + galleryGap}px)`;
-      gallery.style.top = `${header.clientHeight + window.scrollY}px`;
-    }
-  });
-
-  observer.observe(
-    document.querySelector('header'),
-    { childList: true, subtree: true },
-  );
 }
 
 async function createGallery(images, title) {
@@ -195,8 +175,5 @@ async function createGallery(images, title) {
 export default async function initGallery(images, pageName) {
   const gallery = await createGallery(images, pageName);
   document.querySelector('main').prepend(gallery);
-
   openGallery();
-
-  setGalleryPlacement(gallery);
 }
