@@ -10,6 +10,10 @@
 
 .news-detail, .news-landing {
   .content-wrapper {
+    .default-content-wrapper picture {
+      float: right;
+    }
+
     /* reverse order so filter is displayed at the top */
     @media (width <= 991px) {
       display: flex;
