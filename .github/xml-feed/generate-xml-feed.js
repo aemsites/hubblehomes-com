@@ -1,7 +1,7 @@
 const fs = require('fs');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
-
+const {XMLParser, XMLBuilder, XMLValidator} = require('fast-xml-parser');
 const Sheets = {
   COMMUNITIES: 'communities',
   SALES_OFFICES: 'sales-offices',
@@ -61,26 +61,26 @@ async function addInventoryData(model, community) {
   let inventoryXml = '';
   for (const inventoryhome of inventoryData.data) {
     if (inventoryhome.community.toLowerCase() === community.toLowerCase() && inventoryhome['model name'].toLowerCase() === model.toLowerCase()) {
-      inventoryXml += ` <Spec Type="SingleFamily">
-        <SpecNumber>${inventoryhome.mls}</SpecNumber>
-        <SpecAddress>
-        <SpecLot>${inventoryhome.address}</SpecLot>
-        <SpecStreet1>${inventoryhome.address}</SpecStreet1>
-        <SpecCity>${salesOfficehelper['city']}</SpecCity>
-        <SpecState>${salesOfficehelper['zip-code-abbr']}</SpecState>
-        <SpecZIP>${salesOfficehelper['zipcode']}</SpecZIP>
-        <SpecCountry>USA</SpecCountry>
-        <SpecGeocode>
-        <SpecLatitude>${inventoryhome.latitude}</SpecLatitude>
-        <SpecLongitude>${inventoryhome.longitude}</SpecLongitude>
-        </SpecGeocode>
-        </SpecAddress>
-        <SpecStatus>${inventoryhome.status}</SpecStatus>
-        <SpecPrice>${inventoryhome.price}</SpecPrice>
-        <SpecSqft>${inventoryhome['square feet']}</SpecSqft>
-        <SpecBaths>${inventoryhome.baths}</SpecBaths>
-        <SpecHalfBaths></SpecHalfBaths>
-        <SpecBedrooms MasterBedLocation="${inventoryhome['primary bed']}">${inventoryhome.beds}</SpecBedrooms>
+      inventoryXml += ` <Spec Type="SingleFamily"> 
+        <SpecNumber>${inventoryhome.mls}</SpecNumber> 
+        <SpecAddress> 
+        <SpecLot>${inventoryhome.address}</SpecLot> 
+        <SpecStreet1>${inventoryhome.address}</SpecStreet1> 
+        <SpecCity>${salesOfficehelper['city']}</SpecCity> 
+        <SpecState>${salesOfficehelper['zip-code-abbr']}</SpecState> 
+        <SpecZIP>${salesOfficehelper['zipcode']}</SpecZIP> 
+        <SpecCountry>USA</SpecCountry> 
+        <SpecGeocode> 
+        <SpecLatitude>${inventoryhome.latitude}</SpecLatitude> 
+        <SpecLongitude>${inventoryhome.longitude}</SpecLongitude> 
+        </SpecGeocode> 
+        </SpecAddress> 
+        <SpecStatus>${inventoryhome.status}</SpecStatus> 
+        <SpecPrice>${inventoryhome.price}</SpecPrice> 
+        <SpecSqft>${inventoryhome['square feet']}</SpecSqft> 
+        <SpecBaths>${inventoryhome.baths}</SpecBaths> 
+        <SpecHalfBaths></SpecHalfBaths> 
+        <SpecBedrooms MasterBedLocation="${inventoryhome['primary bed']}">${inventoryhome.beds}</SpecBedrooms> 
         <SpecGarage>${inventoryhome.cars}</SpecGarage>`;
       const pageURL = "https://main--hubblehomes-com--aemsites.hlx.live" + inventoryhome.path + ".plain.html";
       const response = await fetch(pageURL);
@@ -110,8 +110,8 @@ async function addInventoryData(model, community) {
         const label = div.querySelector(' div').innerHTML;
         const img = div.querySelector(' div > picture > img');
         const imgsrc = (img.src.substring(1)).split('?');
-        floorPlanImages += `<SpecFloorPlanImage SequencePosition="${index}" Caption="${label}" Title="${label}" ReferenceType="URL">
-          ${`https://main--hubblehomes-com--aemsites.hlx.live${inventoryhome.path}${imgsrc[0]}`}</SpecFloorPlanImage>`
+        floorPlanImages += `<SpecFloorPlanImage SequencePosition="${index}" Caption="${label}" Title="${label}" ReferenceType="URL"> 
+          ${`https://main--hubblehomes-com--aemsites.hlx.live${inventoryhome.path}${imgsrc[0]}`}</SpecFloorPlanImage>` 
       });
       let matterportURL;
       const linksblock = body.querySelectorAll(".links > div > div > a");
@@ -120,11 +120,11 @@ async function addInventoryData(model, community) {
           matterportURL = a.href;
         }
       });
-      const links = `<SpecInteractiveMedia Type="InteractiveFloorplan" Title="${model} Interactive Floorplan" IsFlash="0">
-        <WebsiteURL>${matterportURL}</WebsiteURL>
-        </SpecInteractiveMedia>
-        <SpecWebsite>https://www.hubblehomes.com${inventoryhome.path}</SpecWebsite>
-        </Spec>`;
+      const links = `<SpecInteractiveMedia Type="InteractiveFloorplan" Title="${model} Interactive Floorplan" IsFlash="0"> 
+        <WebsiteURL>${matterportURL}</WebsiteURL> 
+        </SpecInteractiveMedia> 
+        <SpecWebsite>https://www.hubblehomes.com${inventoryhome.path}</SpecWebsite> 
+        </Spec> `;
       inventoryXml = `${inventoryXml}${description}${imagexml}${floorPlanImages}${links}`;
     }
   }
@@ -214,20 +214,20 @@ async function addPlanInfo(community) {
   for (const [key, value] of modelHomePlanMap.entries()) {
     const imagedata = await addImagesDescription(value['path'], key['model name']);
     const inventoryHome = await addInventoryData(key['model name'], key['community']);
-    homePlanInfo += `<Plan Type="${value['Type']}">
-            <PlanNumber>${value['PlanNumber']}</PlanNumber>
-            <PlanName>${key['model name']}</PlanName>
-            <PlanTypeName>Single Family</PlanTypeName>
-            <BasePrice>${key['price']}</BasePrice>
-            <BaseSqft>${key['square feet']}</BaseSqft>
-            <Stories>${key['home style']}</Stories>
-            <Baths>${key['baths']}</Baths>            
-            <Bedrooms MasterBedLocation="${key['primary bed']}">${key['beds']}</Bedrooms>
-            <Garage>${key['cars']}</Garage>         
-          ${imagedata}
-          <PlanWebsite>https://www.hubblehomes.com${key['path']}</PlanWebsite>
-          ${inventoryHome}
-          </Plan>`;
+    homePlanInfo += `<Plan Type="${value['type']}"> 
+            <PlanNumber>${value['plan number']}</PlanNumber> 
+            <PlanName>${key['model name']}</PlanName> 
+            <PlanTypeName>Single Family</PlanTypeName> 
+            <BasePrice>${key['price']}</BasePrice> 
+            <BaseSqft>${key['square feet']}</BaseSqft> 
+            <Stories>${key['home style']}</Stories> 
+            <Baths>${key['baths']}</Baths> 
+            <Bedrooms MasterBedLocation="${key['primary bed']}">${key['beds']}</Bedrooms> 
+            <Garage>${key['cars']}</Garage> 
+          ${imagedata} 
+          <PlanWebsite>https://www.hubblehomes.com${key['path']}</PlanWebsite> 
+          ${inventoryHome} 
+          </Plan> `;
   }
   return homePlanInfo;
 }
@@ -240,12 +240,12 @@ async function addSubDivison(subdivision, salesoffice, carouselImages) {
       subImage += `<SubImage Type="Standard" SequencePosition="${index + 1}" Title="" 
                   Caption="" ReferenceType="URL" 
                   IsPreferredSubImage="1">${image}
-                  </SubImage>`;
+                  </SubImage> `;
     } else {
       subImage += `<SubImage Type="Standard" SequencePosition="${index + 1}" Title="" 
                   Caption="" ReferenceType="URL">
                   ${image}
-                  </SubImage>`;
+                  </SubImage> `;
     }
   });
   const pageURL = "https://main--hubblehomes-com--aemsites.hlx.live" + subdivision.path + ".plain.html";
@@ -258,48 +258,53 @@ async function addSubDivison(subdivision, salesoffice, carouselImages) {
   ptags.forEach((p) => description += (p.innerHTML));  
   const phoneNumber = formatPhoneNumber(salesoffice['phone']);
   const subdivisionXML = `
-  <Subdivision Status="Active">
-    <SubdivisionNumber>${subdivision['SubdivisionNumber']}</SubdivisionNumber>
-    <SubdivisionName>${subdivision['name']}</SubdivisionName>
-    <SubParentName>${subdivision['name']}</SubParentName>
-    <UseDefaultLeadsEmail>${subdivision['UseDefaultLeadsEmail']}</UseDefaultLeadsEmail>
-    <BuildOnYourLot>${subdivision['BuildOnYourLot']}</BuildOnYourLot>
-    <SalesOffice>
-    <Address OutOfCommunity="0">
-    <Street1>${salesoffice['address']}</Street1>
-    <City>${salesoffice['city']}</City>
-    <State>${salesoffice['zip-code-abbr']}</State>
-    <ZIP>${salesoffice['zipcode']}</ZIP>
-    <Country>USA</Country>
-    <Geocode>
-      <Latitude>${salesoffice['latitude']}</Latitude>
+  <Subdivision Status="Active"> 
+    <SubdivisionNumber>${subdivision['SubdivisionNumber']}</SubdivisionNumber> 
+    <SubdivisionName>${subdivision['name']}</SubdivisionName> 
+    <SubParentName>${subdivision['name']}</SubParentName> 
+    <UseDefaultLeadsEmail>${subdivision['UseDefaultLeadsEmail']}</UseDefaultLeadsEmail> 
+    <BuildOnYourLot>${subdivision['BuildOnYourLot']}</BuildOnYourLot> 
+    <SalesOffice> 
+    <Address OutOfCommunity="0"> 
+    
+    <Street1>${salesoffice['address']}</Street1> 
+    <City>${salesoffice['city']}</City> 
+    <State>${salesoffice['zip-code-abbr']}</State> 
+    <ZIP>${salesoffice['zipcode']}</ZIP> 
+    <Country>USA</Country> 
+    
+    <Geocode> 
+      <Latitude>${salesoffice['latitude']}</Latitude> 
       <Longitude>${salesoffice['longitude']}</Longitude>
-    </Geocode>
-    </Address>
-    <Phone>
-      <AreaCode>${phoneNumber[0]}</AreaCode>
-      <Prefix>${phoneNumber[1]}</Prefix>
-      <Suffix>${phoneNumber[2]}</Suffix>
-    </Phone>
-    <Hours>${salesoffice['hours']}</Hours>
-    </SalesOffice>
-    <SubAddress>
-    <SubStreet1>${salesoffice['address']}</SubStreet1>
-    <SubCity>${salesoffice['city']}</SubCity>
-    <SubState>${salesoffice['zip-code-abbr']}</SubState>
-    <SubZIP>${salesoffice['zipcode']}</SubZIP>
-    <SubGeocode>
-    <SubLatitude>${salesoffice['latitude']}</SubLatitude>
-    <SubLongitude>${salesoffice['longitude']}</SubLongitude>
-    </SubGeocode>
-    </SubAddress>
-    <DrivingDirections>${encodeString(salesoffice['DrivingDirections'])}</DrivingDirections>
-    <SubDescription><![CDATA[${description}]]></SubDescription>
-    ${subImage} 
-    <SubVideoTour Title="Tour of ${subdivision['name']}">${subdivision['videotour']}</SubVideoTour>
-    <SubWebsite>https://www.hubblehomes.com${subdivision['path']}</SubWebsite>
-    ${planXML}
-    </Subdivision>`;  
+     </Geocode> 
+    
+    </Address> 
+    
+    <Phone> 
+      <AreaCode>${phoneNumber[0]}</AreaCode> 
+      <Prefix>${phoneNumber[1]}</Prefix> 
+      <Suffix>${phoneNumber[2]}</Suffix> 
+    </Phone> 
+    
+    <Hours>${salesoffice['hours']}</Hours> 
+    </SalesOffice>  
+    <SubAddress> 
+    <SubStreet1>${salesoffice['address']}</SubStreet1> 
+    <SubCity>${salesoffice['city']}</SubCity>  
+    <SubState>${salesoffice['zip-code-abbr']}</SubState> 
+    <SubZIP>${salesoffice['zipcode']}</SubZIP> 
+    <SubGeocode> 
+    <SubLatitude>${salesoffice['latitude']}</SubLatitude> 
+    <SubLongitude>${salesoffice['longitude']}</SubLongitude> 
+    </SubGeocode> 
+    </SubAddress> 
+    <DrivingDirections>${encodeString(salesoffice['DrivingDirections'])}</DrivingDirections> 
+    <SubDescription><![CDATA[${description}]]></SubDescription> 
+    ${subImage} v
+    <SubVideoTour Title="Tour of ${subdivision['name']}">${subdivision['videotour']}</SubVideoTour> 
+    <SubWebsite>https://www.hubblehomes.com${subdivision['path']}</SubWebsite> 
+    ${planXML} 
+    </Subdivision> `;  
   return subdivisionXML;
 }
 
@@ -309,16 +314,16 @@ async function main() {
   const filename = 'HubbleHomes_zillow_feed.xml'
   let corporationXML;
   corporation.data.forEach((entry) => {
-    corporationXML = `<Corporation>
-    <CorporateBuilderNumber>${entry['CorporateBuilderNumber']}</CorporateBuilderNumber>
-    <CorporateState>${entry['CorporateState']}</CorporateState>
-    <CorporateName>${entry['CorporateName']}</CorporateName>
-      <Builder>
-        <BuilderNumber>${entry['BuilderNumber']}</BuilderNumber>
-        <BrandName>${entry['BrandName']}</BrandName>
-        <ReportingName>${entry['ReportingName']}</ReportingName>
-        <DefaultLeadsEmail LeadsPerMessage="1">${entry['DefaultLeadsEmail']}</DefaultLeadsEmail>
-        <BuilderWebsite>${entry['BuilderWebsite']}</BuilderWebsite>`;
+    corporationXML = `<Corporation> 
+    <CorporateBuilderNumber>${entry['CorporateBuilderNumber']}</CorporateBuilderNumber> 
+    <CorporateState>${entry['CorporateState']}</CorporateState> 
+    <CorporateName>${entry['CorporateName']}</CorporateName> 
+      <Builder> 
+        <BuilderNumber>${entry['BuilderNumber']}</BuilderNumber> 
+        <BrandName>${entry['BrandName']}</BrandName> 
+        <ReportingName>${entry['ReportingName']}</ReportingName> 
+        <DefaultLeadsEmail LeadsPerMessage="1">${entry['DefaultLeadsEmail']}</DefaultLeadsEmail> 
+        <BuilderWebsite>${entry['BuilderWebsite']}</BuilderWebsite> `;
   });
   const subdivisionData = await fetchWorkbook([Sheets.COMMUNITIES, Sheets.SALES_OFFICES]);
   let subdivisionXML = '';
@@ -337,14 +342,29 @@ async function main() {
   }
 
 
-  const XMLdata = `<?xml version='1.0' encoding='UTF-8'?>
-  <Builders DateGenerated = "${dateGenerated}">
-  ${corporationXML}
-  ${subdivisionXML}
-  </Builder>
-  </Corporation>
-  </Builders>`; 
-  fs.writeFileSync(`../../admin/aIncludeInZillow/${filename}`, XMLdata);
+  const XMLdata = `<?xml version='1.0' encoding='UTF-8'?> 
+  <Builders DateGenerated = "${dateGenerated}"> 
+  ${corporationXML} 
+  ${subdivisionXML} 
+  </Builder> 
+  </Corporation> 
+  </Builders>`;
+  if(XMLValidator.validate(XMLdata)){
+    const options = {
+      ignoreAttributes : false,
+      preserveOrder: true,
+      unpairedTags: ["CR"],
+      alwaysCreateTextNode: true,
+      format: true
+  };
+    const parser = new XMLParser(options);
+    let jsonObj = parser.parse(XMLdata);
+    
+    const builder = new XMLBuilder(options);
+    let sampleXmlData = builder.build(jsonObj);
+    fs.writeFileSync(`../../admin/aIncludeInZillow/${filename}`, sampleXmlData);
+}
+  
 }
 
 exports.main = main();
