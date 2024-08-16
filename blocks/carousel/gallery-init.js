@@ -116,12 +116,9 @@ function createImageOverlay(index, title) {
 function closeGallery() {
   const gallery = document.querySelector('.carousel-gallery');
   gallery.classList.remove('active');
+  galleryReset();
+  gallery.remove();
   document.body.classList.remove('gallery-active');
-
-  setTimeout(() => {
-    galleryReset();
-    gallery.remove();
-  }, 300);
 }
 
 async function createGallery(images, title) {
