@@ -97,13 +97,23 @@ export default async function decorate(doc) {
   });
   await recentNews.render();
 
-  const shareThisScript = script({
-    type: 'text/javascript',
-    src: '//platform-api.sharethis.com/js/sharethis.js#property=5cd459d83255ff0012e3808f&product=\'inline-share-buttons\'',
-    async: true,
+  // delay loading the share script until the user scrolls to the sharethis element
+  const observer = new IntersectionObserver((entries) => {
+    if (entries.some((entry) => entry.isIntersecting)) {
+      const shareThisScript = script({
+        type: 'text/javascript',
+        src: '//platform-api.sharethis.com/js/sharethis.js#property=5cd459d83255ff0012e3808f&product=\'inline-share-buttons\'',
+        async: true,
+      });
+      doc.head.appendChild(shareThisScript);
+      observer.disconnect();
+    }
+  }, {
+    root: null,
+    rootMargin: '200px 0px 0px 0px', // trigger when the element is 200px from the top of the viewport
+    threshold: 0, // trigger as soon as any part of the element is visible
   });
-
-  doc.head.appendChild(shareThisScript);
+  observer.observe(doc.querySelector('.sharethis'));
 
   function filterDropdown() {
     if ($categoryList.classList.contains('active')) {
