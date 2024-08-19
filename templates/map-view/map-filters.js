@@ -111,20 +111,30 @@ function buildOptions(allFilters) {
 /**
  * Return a select element with the given options.  When the select element is changed, the
  * chosenFilters array is updated with the selected filter.
- *
+ * @param category {string} - The category of the select element.
  * @param options {Array} - An array of option elements to be added to the select element.
  * @returns {Element} - A select element with the given options.
  */
-function buildSelect(options) {
+function buildSelect(category, options) {
   return select({
+    'data-category': category,
     // eslint-disable-next-line no-unused-vars
     onchange: (event) => {
-      const filter = resolveFilter(event.target.value);
-      const index = chosenFilters.findIndex((f) => f.category === filter.category);
-      if (index !== -1) {
-        chosenFilters[index] = filter;
+      const { value } = event.target;
+      const dataCategory = event.target.getAttribute('data-category');
+
+      if (value.trim() !== '') {
+        const filter = resolveFilter(value);
+        const index = chosenFilters.findIndex((f) => f.category === filter.category);
+        if (index !== -1) {
+          chosenFilters[index] = filter;
+        } else {
+          chosenFilters.push(filter);
+        }
+        event.target.querySelector(`option[value="${value}"]`).setAttribute('selected', 'selected');
       } else {
-        chosenFilters.push(filter);
+        event.target.querySelector('option[selected="selected"]').removeAttribute('selected');
+        chosenFilters.splice(chosenFilters.findIndex((f) => f.category === dataCategory), 1);
       }
     },
   }, ...options);
@@ -154,7 +164,7 @@ function buildHomeTypeFilter() {
       ...filters.filter((f) => f.category === 'label' && f.label === 'Home Type'),
       ...filters.filter((f) => f.category === 'homestyle')],
   );
-  return buildSelect(homeTypeOptions);
+  return buildSelect('homestyle', homeTypeOptions);
 }
 
 function buildPriceFilter() {
@@ -163,7 +173,7 @@ function buildPriceFilter() {
       ...filters.filter((f) => f.category === 'label' && f.label === 'Price'),
       ...filters.filter((f) => f.category === 'price')],
   );
-  return buildSelect(priceOptions);
+  return buildSelect('price', priceOptions);
 }
 
 function buildBedFilter() {
@@ -172,7 +182,7 @@ function buildBedFilter() {
       ...filters.filter((f) => f.category === 'label' && f.label === 'Beds'),
       ...filters.filter((f) => f.category === 'beds')],
   );
-  return buildSelect(bedsOptions);
+  return buildSelect('beds', bedsOptions);
 }
 
 function buildCityFilter() {
@@ -181,7 +191,7 @@ function buildCityFilter() {
       ...filters.filter((f) => f.category === 'label' && f.label === 'City'),
       ...filters.filter((f) => f.category === 'city')],
   );
-  return buildSelect(cityOptions);
+  return buildSelect('city', cityOptions);
 }
 
 function buildSquareFeetFilter() {
@@ -190,7 +200,7 @@ function buildSquareFeetFilter() {
       ...filters.filter((f) => f.category === 'label' && f.label === 'Square Feet'),
       ...filters.filter((f) => f.category === 'sqft')],
   );
-  return buildSelect(sqFtOptions);
+  return buildSelect('sqft', sqFtOptions);
 }
 
 function buildBathsFilter() {
@@ -199,7 +209,7 @@ function buildBathsFilter() {
       ...filters.filter((f) => f.category === 'label' && f.label === 'Baths'),
       ...filters.filter((f) => f.category === 'baths')],
   );
-  return buildSelect(bathsOptions);
+  return buildSelect('baths', bathsOptions);
 }
 
 function buildCarsFilter() {
@@ -208,7 +218,7 @@ function buildCarsFilter() {
       ...filters.filter((f) => f.category === 'label' && f.label === 'Cars'),
       ...filters.filter((f) => f.category === 'cars')],
   );
-  return buildSelect(carsOptions);
+  return buildSelect('cars', carsOptions);
 }
 
 function buildStatusFilter() {
@@ -217,7 +227,7 @@ function buildStatusFilter() {
       ...filters.filter((f) => f.category === 'label' && f.label === 'Status'),
       ...filters.filter((f) => f.category === 'status')],
   );
-  return buildSelect(statusOptions);
+  return buildSelect('status', statusOptions);
 }
 
 export default async function buildFilters() {

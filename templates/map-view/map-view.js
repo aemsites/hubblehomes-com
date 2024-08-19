@@ -6,9 +6,8 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 import buildFilters from './map-filters.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
 import { calculateMonthlyPayment, loadRates } from '../../scripts/mortgage.js';
+import { addMapMarkers, markers, map } from './delayed-map.js';
 
-let map;
-const markers = [];
 const BATCH_SIZE = 10;
 let currentIndex = BATCH_SIZE;
 let filtersToApply;
@@ -68,19 +67,6 @@ function fitMarkerWithinBounds(marker) {
 }
 
 /**
- * Adds map markers for the given homes.
- * @async
- * @function addMapMarkers
- * @param {Array} homes - The inventory data.
- * @returns {Promise<void>}
- */
-async function addMapMarkers(homes) {
-  if (typeof window.addMapMarkers === 'function') {
-    await window.addMapMarkers(homes);
-  }
-}
-
-/**
  * Builds the map elements and placeholder image.
  */
 function buildMap() {
@@ -115,7 +101,7 @@ function filterListeners() {
   });
 }
 
-let isHighlighting = false;
+// let isHighlighting = false;
 let loadingNewHomes = false;
 
 /**
@@ -124,9 +110,6 @@ let loadingNewHomes = false;
  * @param {number} i - The index of the home to highlight.
  */
 function highlightActiveHome(i) {
-  if (isHighlighting) return;
-  isHighlighting = true;
-
   resetActiveHomes();
 
   // card actions
@@ -161,14 +144,9 @@ function highlightActiveHome(i) {
 
   if (!$marker) {
     if (map && markers[i] && markers[i].position) {
+      // if the user had scrolled away on the map and the mouses over a card scroll the map
+      // to the card
       map.panTo(markers[i].position);
-      setTimeout(() => {
-        isHighlighting = false;
-        highlightActiveHome(i);
-      }, 100);
-    } else {
-      // Map or marker not loaded yet, just reset the highlighting
-      isHighlighting = false;
     }
   } else {
     $marker.classList.add('active');
@@ -176,7 +154,6 @@ function highlightActiveHome(i) {
     if (map) {
       fitMarkerWithinBounds($marker);
     }
-    isHighlighting = false;
   }
 }
 
@@ -186,17 +163,20 @@ function highlightActiveHome(i) {
  */
 function resetActiveHomes() {
   const allMarkers = document.querySelectorAll('.marker');
+
   allMarkers.forEach((marker) => {
     marker.classList.remove('active');
     marker.parentNode.parentNode.style.zIndex = '';
   });
-  document.querySelectorAll('.item-listing').forEach((item) => item.classList.remove('active'));
+
+  document.querySelectorAll('.item-listing')
+    .forEach((item) => item.classList.remove('active'));
 }
 
 /**
  * Builds inventory cards for the given homes.
  * @function buildInventoryCards
- * @param {Array} homes - The homes data.
+ * @param {Array} homes - The homes' data.
  * @param {number} [startIndex=0] - The starting index for the homes.
  * @returns {Array} An array of inventory card elements.
  */
@@ -232,12 +212,12 @@ function buildInventoryCards(homes, startIndex = 0) {
 /**
  * Adjusts the map-filter-container element height if dynamic header changes.
  * @function adjustMapFilterHeight
- * @param {Document} doc - The document object.
  */
-function adjustMapFilterHeight(doc) {
+function adjustMapFilterHeight() {
+  const doc = document;
   const $header = doc.querySelector('header');
   const $mapFilterContainer = doc.querySelector('.map-filter-container');
-  const $map = doc.querySelector('.map');
+  const mapEl = doc.querySelector('.map');
   const $scrollContainer = doc.querySelector('.scroll-container');
   const $filterContainer = doc.querySelector('.filter-container');
 
@@ -247,11 +227,11 @@ function adjustMapFilterHeight(doc) {
 
     const newHeight = windowHeight - headerHeight;
     $mapFilterContainer.style.height = `${newHeight}px`;
-    $map.style.height = `${newHeight}px`;
+    mapEl.style.height = `${newHeight}px`;
     $scrollContainer.style.height = `${newHeight - $filterContainer.offsetHeight}px`;
   }
 
-  if ($header && $mapFilterContainer && $map && $scrollContainer) {
+  if ($header && $mapFilterContainer && mapEl && $scrollContainer) {
     // Initial height adjustment
     updateHeight();
 
@@ -269,6 +249,62 @@ function adjustMapFilterHeight(doc) {
       listingsObserver.observe($listingsWrapper, { childList: true, subtree: true });
     }
   }
+}
+
+function listenForMarkerClicks() {
+  window.addEventListener('markerClicked', async (event) => {
+    const { index, mls } = event.detail;
+    const $listingsWrapper = document.querySelector('.listings-wrapper');
+    let existingCard = $listingsWrapper.querySelector(`[data-mls="${mls}"]`);
+
+    if (!existingCard) {
+      loadingNewHomes = true;
+      let newCards = [];
+
+      const newHomes = inventory.slice(currentIndex, index + BATCH_SIZE);
+
+      if (newHomes.length > 0) {
+        newCards = newCards.concat(buildInventoryCards(newHomes, currentIndex));
+        currentIndex = (index + BATCH_SIZE) <= inventory.length
+          ? index + BATCH_SIZE
+          : inventory.length;
+        existingCard = newCards.find((card) => card.dataset.mls === mls);
+      }
+
+      if (newCards.length > 0) {
+        newCards.forEach((card) => $listingsWrapper.appendChild(card));
+      }
+
+      loadingNewHomes = false;
+    }
+
+    if (existingCard) {
+      highlightActiveHome(index);
+      existingCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    adjustMapFilterHeight();
+  });
+}
+
+function handleInfiniteLoading() {
+  const footerEl = document.querySelector('footer');
+  const observer = new IntersectionObserver((entries) => {
+    if (entries.some((entry) => entry.isIntersecting)) {
+      if (currentIndex < inventory.length) {
+        const nextBatch = inventory.slice(currentIndex, currentIndex + BATCH_SIZE);
+        const newCards = buildInventoryCards(nextBatch, currentIndex);
+        const $listingsWrapper = document.querySelector('.listings-wrapper');
+        newCards.forEach((card) => $listingsWrapper.appendChild(card));
+        currentIndex += BATCH_SIZE;
+      }
+    }
+  }, {
+    root: null,
+    rootMargin: '200px 0px 0px 0px',
+    threshold: 0,
+  });
+  observer.observe(footerEl);
 }
 
 export default async function decorate(doc) {
@@ -312,64 +348,7 @@ export default async function decorate(doc) {
   });
 
   buildMap();
-  adjustMapFilterHeight(doc);
-
-  const footerEl = document.querySelector('footer');
-  const observer = new IntersectionObserver((entries) => {
-    if (entries.some((entry) => entry.isIntersecting)) {
-      if (currentIndex < inventory.length) {
-        const nextBatch = inventory.slice(currentIndex, currentIndex + BATCH_SIZE);
-        const newCards = buildInventoryCards(nextBatch, currentIndex);
-        const $listingsWrapper = document.querySelector('.listings-wrapper');
-        newCards.forEach((card) => $listingsWrapper.appendChild(card));
-        currentIndex += BATCH_SIZE;
-      }
-    }
-  }, {
-    root: null,
-    rootMargin: '200px 0px 0px 0px',
-    threshold: 0,
-  });
-  observer.observe(footerEl);
-
-  // Prevent scroll reset when clicking on markers
-  document.addEventListener('click', (event) => {
-    if (event.target.closest('.marker')) {
-      event.preventDefault();
-    }
-  }, true);
-
-  window.addEventListener('markerClicked', async (event) => {
-    const { index, mls } = event.detail;
-    const $listingsWrapper = document.querySelector('.listings-wrapper');
-    let existingCard = $listingsWrapper.querySelector(`[data-mls="${mls}"]`);
-
-    if (!existingCard) {
-      loadingNewHomes = true;
-      let newCards = [];
-
-      const newHomes = inventory.slice(currentIndex, index + BATCH_SIZE);
-
-      if (newHomes.length > 0) {
-        newCards = newCards.concat(buildInventoryCards(newHomes, currentIndex));
-        currentIndex = (index + BATCH_SIZE) <= inventory.length
-          ? index + BATCH_SIZE
-          : inventory.length;
-        existingCard = newCards.find((card) => card.dataset.mls === mls);
-      }
-
-      if (newCards.length > 0) {
-        newCards.forEach((card) => $listingsWrapper.appendChild(card));
-        await addMapMarkers(inventory.slice(0, currentIndex));
-      }
-      loadingNewHomes = false;
-    }
-
-    if (existingCard) {
-      highlightActiveHome(index);
-      existingCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-
-    adjustMapFilterHeight(doc);
-  });
+  adjustMapFilterHeight();
+  handleInfiniteLoading();
+  listenForMarkerClicks();
 }

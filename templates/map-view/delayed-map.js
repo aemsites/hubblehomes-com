@@ -7,8 +7,9 @@ import { getAllInventoryHomes } from '../../scripts/inventory.js';
 
 let mapInitialized = false;
 let bounds;
+// eslint-disable-next-line import/no-mutable-exports
 let map;
-let markers = [];
+const markers = [];
 
 /**
  * Resets the active homes by removing the 'active' class from pins and item listings.
@@ -21,24 +22,6 @@ function resetActiveHomes() {
   document.querySelectorAll('[data-card]').forEach((item) => {
     item.classList.remove('active');
   });
-}
-
-/**
- * Highlights the active home by adding the 'active' class to the pin and item listing.
- * @param {number} i - The index of the active home.
- */
-function highlightActiveHome(i) {
-  resetActiveHomes();
-  const activeMarker = markers[i];
-  if (activeMarker) {
-    activeMarker.content.classList.add('active');
-    activeMarker.zIndex = 999; // must use javascript to set/unset
-  }
-  const activeListItem = document.querySelector(`[data-card="${i}"]`);
-  if (activeListItem) {
-    activeListItem.classList.add('active');
-    activeListItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
 }
 
 /**
@@ -55,7 +38,7 @@ function createMarker(home, i) {
       { class: 'details' },
       h4(home['model name']),
       h5(home.address),
-      createOptimizedPicture(home.image),
+      createOptimizedPicture(home.image, home['model name'], false, [{ width: 200 }]),
       p({ class: 'price' }, formatPrice(home.price)),
       a({ class: 'btn yellow', href: home.path }, 'Details'),
     ),
@@ -63,8 +46,6 @@ function createMarker(home, i) {
 
   markerElement.addEventListener('click', (e) => {
     e.stopPropagation();
-    highlightActiveHome(i);
-    // load more results if needed
     const event = new CustomEvent('markerClicked', { detail: { index: i, mls: home.mls } });
     window.dispatchEvent(event);
   });
@@ -73,11 +54,10 @@ function createMarker(home, i) {
 }
 
 /**
- * Adds map markers for each home in the inventory.
- * @param {Array} inventory - The array of homes to add as markers on the map.
+ * Adds map markers for each home in the collection.
  * @returns {Promise<void>} - A promise that resolves when the markers are added.
  */
-async function addMapMarkers(inventory) {
+async function addMapMarkers(homes) {
   if (!mapInitialized || !map) return;
 
   // eslint-disable-next-line no-undef
@@ -87,12 +67,12 @@ async function addMapMarkers(inventory) {
 
   // Clear existing markers
   markers.forEach((marker) => marker.setMap(null));
-  markers = [];
+  markers.length = 0;
 
-  // if inventory data is empty reset map
-  if (inventory.length === 0) return;
+  // if we have no homes, then return no markers to create
+  if (homes.length === 0) return;
 
-  inventory.forEach((home, i) => {
+  homes.forEach((home, i) => {
     const lat = Number(home.latitude);
     const lng = Number(home.longitude);
     const position = { lat, lng };
@@ -106,9 +86,7 @@ async function addMapMarkers(inventory) {
     bounds.extend(position);
 
     // Note: this empty click listener must be added in order for any other events to work
-    marker.addListener('click', () => {
-      highlightActiveHome(i);
-    });
+    marker.addListener('click', () => {});
   });
 
   // Only adjust bounds if we have markers
@@ -125,7 +103,7 @@ async function addMapMarkers(inventory) {
   });
 }
 
-export default async function initMap() {
+async function initMap() {
   if (mapInitialized) return;
 
   // eslint-disable-next-line no-undef
@@ -167,7 +145,7 @@ export default async function initMap() {
   }
 
   // Call addMapMarkers after map initialization
-  const inventory = await getAllInventoryHomes(null);
+  const inventory = await getAllInventoryHomes();
   await addMapMarkers(inventory);
 }
 
@@ -180,6 +158,9 @@ const googleMapScript = script(`
 `);
 document.head.appendChild(googleMapScript);
 
-// Export the initMap function and addMapMarkers
-window.initMap = initMap;
-window.addMapMarkers = addMapMarkers;
+export {
+  initMap,
+  addMapMarkers,
+  markers,
+  map,
+};
