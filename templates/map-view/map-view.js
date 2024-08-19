@@ -1,12 +1,11 @@
 /* eslint-disable no-use-before-define, no-undef, no-promise-executor-return */
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, aside, a, strong, p, h3, span, ul, li, button, img } from '../../scripts/dom-helpers.js';
+import { div, aside, a, strong, p, h3, span, ul, li, button } from '../../scripts/dom-helpers.js';
 import { getAllInventoryHomes } from '../../scripts/inventory.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import buildFilters from './map-filters.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
 import { calculateMonthlyPayment, loadRates } from '../../scripts/mortgage.js';
-import { debounce } from '../../scripts/utils.js';
 
 let map;
 const markers = [];
@@ -308,16 +307,12 @@ export default async function decorate(doc) {
   buildMap();
   adjustMapFilterHeight(doc);
 
-  const $scrollContainer = document.querySelector('.scroll-container');
   let currentIndex = 10;
 
   const footerEl = document.querySelector('footer');
   const observer = new IntersectionObserver((entries) => {
-    console.log('fired');
     if (entries.some((entry) => entry.isIntersecting)) {
       if (currentIndex < inventory.length) {
-        console.log(`loading more homes from ${currentIndex} to ${currentIndex
-        + BATCH_SIZE} of ${inventory.length}`);
         const nextBatch = inventory.slice(currentIndex, currentIndex + BATCH_SIZE);
         const newCards = buildInventoryCards(nextBatch, currentIndex);
         const $listingsWrapper = document.querySelector('.listings-wrapper');
@@ -352,7 +347,9 @@ export default async function decorate(doc) {
 
       if (newHomes.length > 0) {
         newCards = newCards.concat(buildInventoryCards(newHomes, currentIndex));
-        currentIndex = (index + BATCH_SIZE) <= inventory.length ? index + BATCH_SIZE : inventory.length;
+        currentIndex = (index + BATCH_SIZE) <= inventory.length
+          ? index + BATCH_SIZE
+          : inventory.length;
         existingCard = newCards.find((card) => card.dataset.mls === mls);
       }
 
