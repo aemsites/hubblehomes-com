@@ -13,7 +13,6 @@ const BATCH_SIZE = 10;
 let currentIndex = BATCH_SIZE;
 let filtersToApply;
 let inventory;
-const scrolling = false;
 
 /**
  * Fits a marker within the map bounds.
@@ -103,12 +102,16 @@ function filterListeners() {
     const updatedFilters = event.detail.chosenFilters;
     filtersToApply = updatedFilters.map((filter) => filter.value).join(',');
     const inventoryData = filterHomes(inventory, filtersToApply);
-    // const inventoryData = await getAllInventoryHomes(filtersToApply);
     const inventoryContainer = document.querySelector('.listings-wrapper');
     const inventoryCards = buildInventoryCards(inventoryData);
     inventoryContainer.innerHTML = inventoryCards.length === 0 ? 'No homes found.' : '';
     inventoryCards.forEach((card) => inventoryContainer.appendChild(card));
     await addMapMarkers(inventoryData);
+
+    document.querySelector('.scroll-container').scrollTo({
+      top: 0,
+      behavior: 'instant',
+    });
   });
 }
 
@@ -236,15 +239,16 @@ function adjustMapFilterHeight(doc) {
   const $mapFilterContainer = doc.querySelector('.map-filter-container');
   const $map = doc.querySelector('.map');
   const $scrollContainer = doc.querySelector('.scroll-container');
+  const $filterContainer = doc.querySelector('.filter-container');
 
   function updateHeight() {
     const headerHeight = $header.offsetHeight;
     const windowHeight = window.innerHeight;
+
     const newHeight = windowHeight - headerHeight;
     $mapFilterContainer.style.height = `${newHeight}px`;
     $map.style.height = `${newHeight}px`;
-    $scrollContainer.style.height = `${newHeight}px`;
-    $scrollContainer.style.overflowY = 'auto';
+    $scrollContainer.style.height = `${newHeight - $filterContainer.offsetHeight}px`;
   }
 
   if ($header && $mapFilterContainer && $map && $scrollContainer) {
@@ -313,9 +317,7 @@ export default async function decorate(doc) {
   const footerEl = document.querySelector('footer');
   const observer = new IntersectionObserver((entries) => {
     if (entries.some((entry) => entry.isIntersecting)) {
-      console.log('entry is intersecting');
       if (currentIndex < inventory.length) {
-        console.log(`Loading more homes from ${currentIndex} to ${currentIndex + BATCH_SIZE}`);
         const nextBatch = inventory.slice(currentIndex, currentIndex + BATCH_SIZE);
         const newCards = buildInventoryCards(nextBatch, currentIndex);
         const $listingsWrapper = document.querySelector('.listings-wrapper');
@@ -360,7 +362,6 @@ export default async function decorate(doc) {
         newCards.forEach((card) => $listingsWrapper.appendChild(card));
         await addMapMarkers(inventory.slice(0, currentIndex));
       }
-
       loadingNewHomes = false;
     }
 
@@ -368,5 +369,7 @@ export default async function decorate(doc) {
       highlightActiveHome(index);
       existingCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
+
+    adjustMapFilterHeight(doc);
   });
 }

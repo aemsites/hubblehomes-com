@@ -128,6 +128,7 @@ async function addMapMarkers(inventory) {
 export default async function initMap() {
   if (mapInitialized) return;
 
+  // eslint-disable-next-line no-undef
   const { Map, StyledMapType } = await google.maps.importLibrary('maps');
 
   const mapContainer = document.getElementById('google-map');
