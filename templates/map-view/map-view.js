@@ -10,7 +10,7 @@ import { debounce } from '../../scripts/utils.js';
 
 let map;
 const markers = [];
-let reachedEnd = false;
+const BATCH_SIZE = 10;
 
 /**
  * Creates a skeleton for the map.
@@ -19,7 +19,7 @@ let reachedEnd = false;
  */
 function createMapSkeleton() {
   const skeleton = div({ class: 'map-skeleton' },
-    img({ src: '/icons/map-placeholder.jpg', alt: 'Map loading' }),
+    createOptimizedPicture('/icons/map-placeholder.jpg', 'Map loading', true, [{ width: '1024' }]),
   );
   return skeleton;
 }
@@ -119,7 +119,7 @@ function filterListeners() {
 }
 
 let isHighlighting = false;
-let isInfiniteScrolling = false;
+let loadingNewHomes = false;
 
 /**
  * Highlights the active home on both the map and the listing.
@@ -146,8 +146,8 @@ function highlightActiveHome(i) {
       && activeCardRect.bottom <= scrollContainerRect.bottom
     );
 
-    if (!isVisible && !isInfiniteScrolling) {
-      // only scroll if the card is not visible and we're not in infinite scroll
+    if (!isVisible && !loadingNewHomes) {
+      // only scroll if the card is not visible and we're not in loading more homes
       const scrollOffset = activeCardRect.top - scrollContainerRect.top
         - (scrollContainerRect.height / 2) + (activeCardRect.height / 2);
       $scrollContainer.scrollBy({ top: scrollOffset, behavior: 'smooth' });
@@ -201,7 +201,7 @@ function buildInventoryCards(homes, startIndex = 0) {
   return homes.map((home, i) => {
     const globalIndex = startIndex + i;
     const $home = div({ class: `item-listing listing-${globalIndex}`, 'data-card': globalIndex, 'data-mls': home.mls },
-      createOptimizedPicture(home.image, home.address, false, [{ width: '300' }]),
+      createOptimizedPicture(home.image, home.address, true, [{ width: '300' }]),
       div({ class: 'listing-info' },
         h3(home.address),
         div(span(home.city), span(home['home style'])),
@@ -218,11 +218,10 @@ function buildInventoryCards(homes, startIndex = 0) {
       ),
     );
 
-    const debouncedHighlight = debounce(() => highlightActiveHome(globalIndex), 10);
-
     $home.addEventListener('mouseenter', () => {
-      debouncedHighlight();
+      highlightActiveHome(globalIndex);
     });
+
     return $home;
   });
 }
@@ -268,19 +267,6 @@ function adjustMapFilterHeight(doc) {
   }
 }
 
-/**
- * Creates a loading indicator element.
- * @function createLoadingIndicator
- * @returns {HTMLElement} The loading indicator element.
- */
-function createLoadingIndicator() {
-  return div({ class: 'loading-indicator' },
-    span('See More Homes'),
-    span({ class: 'ellipsis' }, '...'),
-    div({ class: 'spinner' }),
-  );
-}
-
 export default async function decorate(doc) {
   filterListeners();
   await loadRates();
@@ -306,7 +292,6 @@ export default async function decorate(doc) {
         div({ class: 'listings-wrapper' },
           ...buildInventoryCards(inventory.slice(0, 10)),
         ),
-        createLoadingIndicator(),
         $footer,
       ),
     ),
@@ -325,84 +310,27 @@ export default async function decorate(doc) {
 
   const $scrollContainer = document.querySelector('.scroll-container');
   let currentIndex = 10;
-  let isLoading = false;
-  const $loadingIndicator = $scrollContainer.querySelector('.loading-indicator');
 
-  $scrollContainer.addEventListener('scroll', debounce(async () => {
-    if (isLoading || reachedEnd) return;
-
-    const scrollPosition = $scrollContainer.scrollTop + $scrollContainer.clientHeight;
-    const scrollThreshold = $scrollContainer.scrollHeight - 400;
-
-    if (scrollPosition >= scrollThreshold && currentIndex < inventory.length) {
-      isLoading = true;
-      isInfiniteScrolling = true;
-      $loadingIndicator.classList.add('loading');
-
-      const isMobile = window.innerWidth <= 990;
-      const batchSize = isMobile ? inventory.length - currentIndex : 10;
-      const nextBatch = inventory.slice(currentIndex, currentIndex + batchSize);
-
-      if (nextBatch.length > 0) {
-        const $listingsWrapper = document.querySelector('.listings-wrapper');
-
-        // Remember the current scroll position and height
-        const initialScrollTop = $scrollContainer.scrollTop;
-        const initialScrollHeight = $scrollContainer.scrollHeight;
-
-        // Create a temporary container for new cards
-        const tempContainer = document.createElement('div');
+  const footerEl = document.querySelector('footer');
+  const observer = new IntersectionObserver((entries) => {
+    console.log('fired');
+    if (entries.some((entry) => entry.isIntersecting)) {
+      if (currentIndex < inventory.length) {
+        console.log(`loading more homes from ${currentIndex} to ${currentIndex
+        + BATCH_SIZE} of ${inventory.length}`);
+        const nextBatch = inventory.slice(currentIndex, currentIndex + BATCH_SIZE);
         const newCards = buildInventoryCards(nextBatch, currentIndex);
-        newCards.forEach((card) => tempContainer.appendChild(card));
-
-        // Append new cards
-        $listingsWrapper.appendChild(tempContainer);
-
-        await addMapMarkers(inventory.slice(0, currentIndex + batchSize));
-
-        if (isMobile) {
-          // calculate how much new content was added
-          const newContentHeight = $scrollContainer.scrollHeight - initialScrollHeight;
-
-          // scroll back up to show some of the new content
-          const newScrollPosition = initialScrollTop + (newContentHeight - 800);
-
-          // Use smooth scrolling for a nicer effect
-          $scrollContainer.scrollTo({
-            top: newScrollPosition,
-            behavior: 'smooth',
-          });
-        } else {
-          // desktop behavior
-          const newScrollPosition = $scrollContainer.scrollTop
-          + ($scrollContainer.scrollHeight - initialScrollHeight) - 800;
-          $scrollContainer.scrollTop = Math.max(newScrollPosition, 0);
-        }
-
-        currentIndex += batchSize;
-
-        // Remove the temporary container and move its children to the listings wrapper
-        while (tempContainer.firstChild) {
-          $listingsWrapper.appendChild(tempContainer.firstChild);
-        }
-        tempContainer.remove();
+        const $listingsWrapper = document.querySelector('.listings-wrapper');
+        newCards.forEach((card) => $listingsWrapper.appendChild(card));
+        currentIndex += BATCH_SIZE;
       }
-
-      isLoading = false;
-      $loadingIndicator.classList.remove('loading');
-
-      // check if we've reached the end of the inventory
-      if (currentIndex >= inventory.length) {
-        reachedEnd = true;
-        $loadingIndicator.style.display = 'none';
-      }
-
-      // delay for smooth transition
-      setTimeout(() => {
-        isInfiniteScrolling = false;
-      }, 100);
     }
-  }, 200));
+  }, {
+    root: null,
+    rootMargin: '200px 0px 0px 0px',
+    threshold: 0,
+  });
+  observer.observe(footerEl);
 
   // Prevent scroll reset when clicking on markers
   document.addEventListener('click', (event) => {
@@ -417,42 +345,23 @@ export default async function decorate(doc) {
     let existingCard = $listingsWrapper.querySelector(`[data-mls="${mls}"]`);
 
     if (!existingCard) {
-      isLoading = true;
-      isInfiniteScrolling = true;
-      $loadingIndicator.classList.add('loading');
-
+      loadingNewHomes = true;
       let newCards = [];
-      while (currentIndex < inventory.length && !existingCard) {
-        const batchSize = 10;
-        const nextBatch = inventory.slice(currentIndex, currentIndex + batchSize);
 
-        if (nextBatch.length > 0) {
-          newCards = newCards.concat(buildInventoryCards(nextBatch, currentIndex));
-          currentIndex += batchSize;
+      const newHomes = inventory.slice(currentIndex, index + BATCH_SIZE);
 
-          existingCard = newCards.find((card) => card.dataset.mls === mls);
-        } else {
-          break;
-        }
+      if (newHomes.length > 0) {
+        newCards = newCards.concat(buildInventoryCards(newHomes, currentIndex));
+        currentIndex = (index + BATCH_SIZE) <= inventory.length ? index + BATCH_SIZE : inventory.length;
+        existingCard = newCards.find((card) => card.dataset.mls === mls);
       }
 
       if (newCards.length > 0) {
         newCards.forEach((card) => $listingsWrapper.appendChild(card));
         await addMapMarkers(inventory.slice(0, currentIndex));
-        adjustMapFilterHeight(doc);
       }
 
-      isLoading = false;
-      $loadingIndicator.classList.remove('loading');
-
-      if (currentIndex >= inventory.length) {
-        reachedEnd = true;
-        $loadingIndicator.style.display = 'none';
-      }
-
-      setTimeout(() => {
-        isInfiniteScrolling = false;
-      }, 100);
+      loadingNewHomes = false;
     }
 
     if (existingCard) {
