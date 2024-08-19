@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define, no-undef, no-promise-executor-return */
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, aside, a, strong, p, h3, span, ul, li, button } from '../../scripts/dom-helpers.js';
-import { getAllInventoryHomes } from '../../scripts/inventory.js';
+import { a, aside, button, div, h3, li, p, span, strong, ul } from '../../scripts/dom-helpers.js';
+import { filterHomes, getAllInventoryHomes } from '../../scripts/inventory.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import buildFilters from './map-filters.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
@@ -10,18 +10,10 @@ import { calculateMonthlyPayment, loadRates } from '../../scripts/mortgage.js';
 let map;
 const markers = [];
 const BATCH_SIZE = 10;
-
-/**
- * Creates a skeleton for the map.
- * @function createMapSkeleton
- * @returns {HTMLElement} The skeleton element.
- */
-function createMapSkeleton() {
-  const skeleton = div({ class: 'map-skeleton' },
-    createOptimizedPicture('/icons/map-placeholder.jpg', 'Map loading', true, [{ width: '1024' }]),
-  );
-  return skeleton;
-}
+let currentIndex = BATCH_SIZE;
+let filtersToApply;
+let inventory;
+const scrolling = false;
 
 /**
  * Fits a marker within the map bounds.
@@ -77,27 +69,27 @@ function fitMarkerWithinBounds(marker) {
 }
 
 /**
- * Adds map markers for the given inventory.
+ * Adds map markers for the given homes.
  * @async
  * @function addMapMarkers
- * @param {Array} inventory - The inventory data.
+ * @param {Array} homes - The inventory data.
  * @returns {Promise<void>}
  */
-async function addMapMarkers(inventory) {
+async function addMapMarkers(homes) {
   if (typeof window.addMapMarkers === 'function') {
-    await window.addMapMarkers(inventory);
+    await window.addMapMarkers(homes);
   }
 }
 
 /**
- * Builds the initial map structure.
- * @async
- * @function buildMap
- * @returns {Promise<void>}
+ * Builds the map elements and placeholder image.
  */
-async function buildMap() {
+function buildMap() {
   const mapContainer = document.getElementById('google-map');
-  mapContainer.appendChild(createMapSkeleton());
+  const loader = div({ class: 'map-skeleton' },
+    createOptimizedPicture('/icons/map-placeholder.jpg', 'Map loading', true, [{ width: '1024' }]),
+  );
+  mapContainer.appendChild(loader);
 }
 
 /**
@@ -106,14 +98,17 @@ async function buildMap() {
  */
 function filterListeners() {
   window.addEventListener('filtersChanged', async (event) => {
+    // when working with filters, we use the entire inventory not just the current batch
+    currentIndex = inventory.length;
     const updatedFilters = event.detail.chosenFilters;
-    const filterValues = updatedFilters.map((filter) => filter.value).join(',');
-    const inventoryData = await getAllInventoryHomes(filterValues);
+    filtersToApply = updatedFilters.map((filter) => filter.value).join(',');
+    const inventoryData = filterHomes(inventory, filtersToApply);
+    // const inventoryData = await getAllInventoryHomes(filtersToApply);
     const inventoryContainer = document.querySelector('.listings-wrapper');
     const inventoryCards = buildInventoryCards(inventoryData);
     inventoryContainer.innerHTML = inventoryCards.length === 0 ? 'No homes found.' : '';
     inventoryCards.forEach((card) => inventoryContainer.appendChild(card));
-    addMapMarkers(inventoryData);
+    await addMapMarkers(inventoryData);
   });
 }
 
@@ -133,6 +128,7 @@ function highlightActiveHome(i) {
 
   // card actions
   const $card = document.querySelector(`[data-card="${i}"]`);
+
   if ($card) {
     $card.classList.add('active');
 
@@ -140,9 +136,14 @@ function highlightActiveHome(i) {
     const $scrollContainer = document.querySelector('.scroll-container');
     const scrollContainerRect = $scrollContainer.getBoundingClientRect();
     const activeCardRect = $card.getBoundingClientRect();
+
     const isVisible = (
-      activeCardRect.top >= scrollContainerRect.top
-      && activeCardRect.bottom <= scrollContainerRect.bottom
+      // if the active card is partially visible then we consider it visible otherwise
+      // the list will continue to scroll and scroll
+      activeCardRect.bottom >= scrollContainerRect.top
+      // OR if the active card is fully visible then it's in the view
+      || (activeCardRect.top >= scrollContainerRect.top
+      && activeCardRect.bottom <= scrollContainerRect.bottom)
     );
 
     if (!isVisible && !loadingNewHomes) {
@@ -269,7 +270,9 @@ function adjustMapFilterHeight(doc) {
 export default async function decorate(doc) {
   filterListeners();
   await loadRates();
-  const inventory = await getAllInventoryHomes(null);
+
+  inventory = await getAllInventoryHomes();
+
   const filters = await buildFilters();
   const $page = doc.querySelector('main .section');
   const $footer = doc.querySelector('footer');
@@ -307,12 +310,12 @@ export default async function decorate(doc) {
   buildMap();
   adjustMapFilterHeight(doc);
 
-  let currentIndex = 10;
-
   const footerEl = document.querySelector('footer');
   const observer = new IntersectionObserver((entries) => {
     if (entries.some((entry) => entry.isIntersecting)) {
+      console.log('entry is intersecting');
       if (currentIndex < inventory.length) {
+        console.log(`Loading more homes from ${currentIndex} to ${currentIndex + BATCH_SIZE}`);
         const nextBatch = inventory.slice(currentIndex, currentIndex + BATCH_SIZE);
         const newCards = buildInventoryCards(nextBatch, currentIndex);
         const $listingsWrapper = document.querySelector('.listings-wrapper');
