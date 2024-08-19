@@ -16,6 +16,9 @@ let bounds;
 let map;
 let markers = [];
 
+/**
+ * Resets the active homes by removing the 'active' class from pins and item listings.
+ */
 function resetActiveHomes() {
   markers.forEach((marker) => {
     marker.content.classList.remove('active');
@@ -26,12 +29,16 @@ function resetActiveHomes() {
   });
 }
 
+/**
+ * Highlights the active home by adding the 'active' class to the pin and item listing.
+ * @param {number} i - The index of the active home.
+ */
 function highlightActiveHome(i) {
   resetActiveHomes();
   const activeMarker = markers[i];
   if (activeMarker) {
     activeMarker.content.classList.add('active');
-    activeMarker.zIndex = 999;
+    activeMarker.zIndex = 999; // must use javascript to set/unset
   }
   const activeListItem = document.querySelector(`[data-card="${i}"]`);
   if (activeListItem) {
@@ -40,6 +47,12 @@ function highlightActiveHome(i) {
   }
 }
 
+/**
+ * Creates a marker element for a home.
+ * @param {Object} home - The home object.
+ * @param {number} i - The index of the home.
+ * @returns {HTMLElement} - The marker element.
+ */
 function createMarker(home, i) {
   const markerElement = div(
     { class: `marker marker-${i}`, 'data-marker': i },
@@ -65,6 +78,11 @@ function createMarker(home, i) {
   return markerElement;
 }
 
+/**
+ * Adds map markers for each home in the inventory.
+ * @param {Array} inventory - The array of homes to add as markers on the map.
+ * @returns {Promise<void>} - A promise that resolves when the markers are added.
+ */
 async function addMapMarkers(inventory) {
   if (!mapInitialized || !map) return;
 
@@ -75,6 +93,7 @@ async function addMapMarkers(inventory) {
   markers.forEach((marker) => marker.setMap(null));
   markers = [];
 
+  // if inventory data is empty reset map
   if (inventory.length === 0) return;
 
   inventory.forEach((home, i) => {
@@ -90,6 +109,7 @@ async function addMapMarkers(inventory) {
     markers.push(marker);
     bounds.extend(position);
 
+    // Note: this empty click listener must be added in order for any other events to work
     marker.addListener('click', () => {
       highlightActiveHome(i);
     });
@@ -97,6 +117,7 @@ async function addMapMarkers(inventory) {
 
   // Only adjust bounds if we have markers
   if (markers.length > 0) {
+    // add padding to bounds so markers aren't hiden when active
     map.fitBounds(bounds, { top: 220, right: 100, bottom: 40, left: 100 });
   }
 
@@ -118,17 +139,18 @@ async function initMap() {
     center: { lat: 43.696, lng: -116.641 },
     zoom: 12,
     mapId: 'IM_IMPORTANT',
-    disableDefaultUI: true,
-    zoomControl: true,
-    streetViewControl: true,
-    fullscreenControl: true,
-    gestureHandling: 'greedy',
+    disableDefaultUI: true, // remove all buttons
+    zoomControl: true, // allow zoom buttons
+    streetViewControl: true, // allow street view control
+    fullscreenControl: true, // allow fullscreen
+    gestureHandling: 'greedy', // allow map to pan when scrolling
   });
 
+  // style map to remove unwanted points
   const mapStyle = [{
     featureType: 'poi',
     elementType: 'labels',
-    stylers: [{ visibility: 'off' }],
+    stylers: [{ visibility: 'off' }], // hide points of interest
   }];
   const mapType = new StyledMapType(mapStyle, { name: 'Grayscale' });
   map.mapTypes.set('grey', mapType);

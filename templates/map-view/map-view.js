@@ -12,6 +12,11 @@ let map;
 const markers = [];
 let reachedEnd = false;
 
+/**
+ * Creates a skeleton for the map.
+ * @function createMapSkeleton
+ * @returns {HTMLElement} The skeleton element.
+ */
 function createMapSkeleton() {
   const skeleton = div({ class: 'map-skeleton' },
     img({ src: '/icons/map-placeholder.jpg', alt: 'Map loading' }),
@@ -19,7 +24,13 @@ function createMapSkeleton() {
   return skeleton;
 }
 
+/**
+ * Fits a marker within the map bounds.
+ * @function fitMarkerWithinBounds
+ * @param {HTMLElement} marker - The marker element.
+ */
 function fitMarkerWithinBounds(marker) {
+  // padding around marker when moved into view
   const padding = {
     top: 60,
     right: 60,
@@ -33,6 +44,7 @@ function fitMarkerWithinBounds(marker) {
   const { top: markerTop, left: markerLeft, right: markerRight, bottom: markerBottom } = markerRect;
   const { top: mapTop, left: mapLeft, right: mapRight, bottom: mapBottom } = mapRect;
 
+  // calculate distances
   const markerPXfromTop = markerTop - mapTop;
   const markerPXfromLeft = markerLeft - mapLeft;
   const markerPXfromRight = mapRight - markerRight;
@@ -53,6 +65,7 @@ function fitMarkerWithinBounds(marker) {
     panX = (padding.right - markerPXfromRight);
   }
 
+  // pan the map if needed
   if (panX !== 0 || panY !== 0) {
     const currentCenter = map.getCenter();
     const projection = map.getProjection();
@@ -64,17 +77,34 @@ function fitMarkerWithinBounds(marker) {
   }
 }
 
+/**
+ * Adds map markers for the given inventory.
+ * @async
+ * @function addMapMarkers
+ * @param {Array} inventory - The inventory data.
+ * @returns {Promise<void>}
+ */
 async function addMapMarkers(inventory) {
   if (typeof window.addMapMarkers === 'function') {
     await window.addMapMarkers(inventory);
   }
 }
 
+/**
+ * Builds the initial map structure.
+ * @async
+ * @function buildMap
+ * @returns {Promise<void>}
+ */
 async function buildMap() {
   const mapContainer = document.getElementById('google-map');
   mapContainer.appendChild(createMapSkeleton());
 }
 
+/**
+ * Sets up event listeners for filter changes.
+ * @function filterListeners
+ */
 function filterListeners() {
   window.addEventListener('filtersChanged', async (event) => {
     const updatedFilters = event.detail.chosenFilters;
@@ -91,16 +121,23 @@ function filterListeners() {
 let isHighlighting = false;
 let isInfiniteScrolling = false;
 
+/**
+ * Highlights the active home on both the map and the listing.
+ * @function highlightActiveHome
+ * @param {number} i - The index of the home to highlight.
+ */
 function highlightActiveHome(i) {
   if (isHighlighting) return;
   isHighlighting = true;
 
   resetActiveHomes();
 
+  // card actions
   const $card = document.querySelector(`[data-card="${i}"]`);
   if ($card) {
     $card.classList.add('active');
 
+    // scroll card into view if it's not visible
     const $scrollContainer = document.querySelector('.scroll-container');
     const scrollContainerRect = $scrollContainer.getBoundingClientRect();
     const activeCardRect = $card.getBoundingClientRect();
@@ -110,7 +147,7 @@ function highlightActiveHome(i) {
     );
 
     if (!isVisible && !isInfiniteScrolling) {
-      // Only scroll if the card is not visible and we're not in infinite scroll
+      // only scroll if the card is not visible and we're not in infinite scroll
       const scrollOffset = activeCardRect.top - scrollContainerRect.top
         - (scrollContainerRect.height / 2) + (activeCardRect.height / 2);
       $scrollContainer.scrollBy({ top: scrollOffset, behavior: 'smooth' });
@@ -140,6 +177,10 @@ function highlightActiveHome(i) {
   }
 }
 
+/**
+ * Resets the active homes on both the map and the listing.
+ * @function resetActiveHomes
+ */
 function resetActiveHomes() {
   const allMarkers = document.querySelectorAll('.marker');
   allMarkers.forEach((marker) => {
@@ -149,6 +190,13 @@ function resetActiveHomes() {
   document.querySelectorAll('.item-listing').forEach((item) => item.classList.remove('active'));
 }
 
+/**
+ * Builds inventory cards for the given homes.
+ * @function buildInventoryCards
+ * @param {Array} homes - The homes data.
+ * @param {number} [startIndex=0] - The starting index for the homes.
+ * @returns {Array} An array of inventory card elements.
+ */
 function buildInventoryCards(homes, startIndex = 0) {
   return homes.map((home, i) => {
     const globalIndex = startIndex + i;
@@ -180,20 +228,51 @@ function buildInventoryCards(homes, startIndex = 0) {
 }
 
 /**
- * Adjust map-filter-container element height if dynamic header changes
+ * Adjusts the map-filter-container element height if dynamic header changes.
+ * @function adjustMapFilterHeight
+ * @param {Document} doc - The document object.
  */
 function adjustMapFilterHeight(doc) {
   const $header = doc.querySelector('header');
-  if ($header) {
-    const observer = new MutationObserver((mutationsList) => mutationsList.forEach(() => {
-      const $mapFilterContainer = doc.querySelector('.map-filter-container');
-      const height = $header.offsetHeight;
-      $mapFilterContainer.style.height = `calc(100vh - ${height}px)`;
-    }));
-    observer.observe($header, { childList: true });
+  const $mapFilterContainer = doc.querySelector('.map-filter-container');
+  const $map = doc.querySelector('.map');
+  const $scrollContainer = doc.querySelector('.scroll-container');
+
+  function updateHeight() {
+    const headerHeight = $header.offsetHeight;
+    const windowHeight = window.innerHeight;
+    const newHeight = windowHeight - headerHeight;
+    $mapFilterContainer.style.height = `${newHeight}px`;
+    $map.style.height = `${newHeight}px`;
+    $scrollContainer.style.height = `${newHeight}px`;
+    $scrollContainer.style.overflowY = 'auto';
+  }
+
+  if ($header && $mapFilterContainer && $map && $scrollContainer) {
+    // Initial height adjustment
+    updateHeight();
+
+    // Observe header changes
+    const headerObserver = new MutationObserver(updateHeight);
+    headerObserver.observe($header, { childList: true, subtree: true });
+
+    // Observe window resize
+    window.addEventListener('resize', updateHeight);
+
+    // Observe content changes in the listings wrapper
+    const $listingsWrapper = doc.querySelector('.listings-wrapper');
+    if ($listingsWrapper) {
+      const listingsObserver = new MutationObserver(updateHeight);
+      listingsObserver.observe($listingsWrapper, { childList: true, subtree: true });
+    }
   }
 }
 
+/**
+ * Creates a loading indicator element.
+ * @function createLoadingIndicator
+ * @returns {HTMLElement} The loading indicator element.
+ */
 function createLoadingIndicator() {
   return div({ class: 'loading-indicator' },
     span('See More Homes'),
@@ -221,9 +300,9 @@ export default async function decorate(doc) {
       ),
       div({ id: 'google-map' }),
     ),
-    aside(
+    aside({ style: 'overflow: hidden;' },
       filters,
-      div({ class: 'scroll-container' },
+      div({ class: 'scroll-container', style: 'overflow-y: auto;' },
         div({ class: 'listings-wrapper' },
           ...buildInventoryCards(inventory.slice(0, 10)),
         ),
@@ -332,16 +411,6 @@ export default async function decorate(doc) {
     }
   }, true);
 
-  // adjust the scroll container height for footer behavior
-  function adjustScrollContainerHeight() {
-    const header = document.querySelector('header');
-    const windowHeight = window.innerHeight;
-    const headerHeight = header ? header.offsetHeight : 0;
-    $scrollContainer.style.height = `${windowHeight - headerHeight}px`;
-  }
-
-  window.addEventListener('load', adjustScrollContainerHeight);
-  window.addEventListener('resize', adjustScrollContainerHeight);
   window.addEventListener('markerClicked', async (event) => {
     const { index, mls } = event.detail;
     const $listingsWrapper = document.querySelector('.listings-wrapper');
@@ -370,6 +439,7 @@ export default async function decorate(doc) {
       if (newCards.length > 0) {
         newCards.forEach((card) => $listingsWrapper.appendChild(card));
         await addMapMarkers(inventory.slice(0, currentIndex));
+        adjustMapFilterHeight(doc);
       }
 
       isLoading = false;
@@ -379,6 +449,10 @@ export default async function decorate(doc) {
         reachedEnd = true;
         $loadingIndicator.style.display = 'none';
       }
+
+      setTimeout(() => {
+        isInfiniteScrolling = false;
+      }, 100);
     }
 
     if (existingCard) {
