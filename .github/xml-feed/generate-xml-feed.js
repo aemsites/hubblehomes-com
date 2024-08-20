@@ -61,27 +61,32 @@ async function addInventoryData(model, community) {
   let inventoryXml = '';
   for (const inventoryhome of inventoryData.data) {
     if (inventoryhome.community.toLowerCase() === community.toLowerCase() && inventoryhome['model name'].toLowerCase() === model.toLowerCase()) {
-      inventoryXml += ` <Spec Type="SingleFamily"> 
-        <SpecNumber>${inventoryhome.mls}</SpecNumber> 
-        <SpecAddress> 
-        <SpecLot>${inventoryhome.address}</SpecLot> 
-        <SpecStreet1>${inventoryhome.address}</SpecStreet1> 
-        <SpecCity>${salesOfficehelper['city']}</SpecCity> 
-        <SpecState>${salesOfficehelper['zip-code-abbr']}</SpecState> 
-        <SpecZIP>${salesOfficehelper['zipcode']}</SpecZIP> 
-        <SpecCountry>USA</SpecCountry> 
-        <SpecGeocode> 
-        <SpecLatitude>${inventoryhome.latitude}</SpecLatitude> 
-        <SpecLongitude>${inventoryhome.longitude}</SpecLongitude> 
-        </SpecGeocode> 
-        </SpecAddress> 
-        <SpecStatus>${inventoryhome.status}</SpecStatus> 
-        <SpecPrice>${inventoryhome.price}</SpecPrice> 
-        <SpecSqft>${inventoryhome['square feet']}</SpecSqft> 
-        <SpecBaths>${inventoryhome.baths}</SpecBaths> 
-        <SpecHalfBaths></SpecHalfBaths> 
-        <SpecBedrooms MasterBedLocation="${inventoryhome['primary bed']}">${inventoryhome.beds}</SpecBedrooms> 
-        <SpecGarage>${inventoryhome.cars}</SpecGarage>`;
+      const bedrooms = inventoryhome.beds.includes('-') ? inventoryhome.beds.split('-')[0] : inventoryhome.beds;
+      const baths = inventoryhome.baths.includes('-') ? parseFloat(inventoryhome.baths.split('-')[0].trim()) : parseFloat(inventoryhome.baths.trim());
+      const fullBaths = Math.floor(baths);
+      const halfBaths = baths - fullBaths;
+      const garage = inventoryhome.cars.includes('-') ? inventoryhome.cars.split('-')[0].trim() : inventoryhome.cars;      
+      inventoryXml += ` <Spec Type="SingleFamily">
+        <SpecNumber>${inventoryhome.mls}</SpecNumber>
+        <SpecAddress>
+        <SpecLot>${inventoryhome.address}</SpecLot>
+        <SpecStreet1>${inventoryhome.address}</SpecStreet1>
+        <SpecCity>${salesOfficehelper['city']}</SpecCity>
+        <SpecState>${salesOfficehelper['zip-code-abbr']}</SpecState>
+        <SpecZIP>${salesOfficehelper['zipcode']}</SpecZIP>
+        <SpecCountry>USA</SpecCountry>
+        <SpecGeocode>
+        <SpecLatitude>${inventoryhome.latitude}</SpecLatitude>
+        <SpecLongitude>${inventoryhome.longitude}</SpecLongitude>
+        </SpecGeocode>
+        </SpecAddress>
+        <SpecStatus>${inventoryhome.status}</SpecStatus>
+        <SpecPrice>${inventoryhome.price}</SpecPrice>
+        <SpecSqft>${inventoryhome['square feet']}</SpecSqft>
+        <SpecBaths>${fullBaths}</SpecBaths>
+        <SpecHalfBaths>${halfBaths}</SpecHalfBaths>
+        <SpecBedrooms MasterBedLocation="${inventoryhome['primary bed']}">${bedrooms}</SpecBedrooms>
+        <SpecGarage>${garage}</SpecGarage>`;
       const pageURL = "https://main--hubblehomes-com--aemsites.hlx.live" + inventoryhome.path + ".plain.html";
       const response = await fetch(pageURL);
       const pageText = await response.text();
@@ -214,16 +219,23 @@ async function addPlanInfo(community) {
   for (const [key, value] of modelHomePlanMap.entries()) {
     const imagedata = await addImagesDescription(value['path'], key['model name']);
     const inventoryHome = await addInventoryData(key['model name'], key['community']);
+    const bedrooms = key['beds'].includes('-') ? key['beds'].split('-')[0] : key['beds'];
+    const baths = key['baths'].includes('-') ? parseFloat(key['baths'].split('-')[0].trim()) : parseFloat(key['baths'].trim());
+    const fullBaths = Math.floor(baths);
+    const halfBaths = baths - fullBaths;
+    const garage = key['cars'].includes('-') ? key['cars'].split('-')[0].trim() : key['cars'];
+    const stories = Math.ceil(key['home style'].split(' ')[0]) != NaN ?  Math.ceil(key['home style'].split(' ')[0]) : '';
     homePlanInfo += `<Plan Type="${value['type']}"> 
             <PlanNumber>${value['plan number']}</PlanNumber> 
             <PlanName>${key['model name']}</PlanName> 
             <PlanTypeName>Single Family</PlanTypeName> 
             <BasePrice>${key['price']}</BasePrice> 
             <BaseSqft>${key['square feet']}</BaseSqft> 
-            <Stories>${key['home style']}</Stories> 
-            <Baths>${key['baths']}</Baths> 
-            <Bedrooms MasterBedLocation="${key['primary bed']}">${key['beds']}</Bedrooms> 
-            <Garage>${key['cars']}</Garage> 
+            <Stories>${stories}</Stories> 
+            <Baths>${fullBaths}</Baths>
+            <HalfBaths>${Math.ceil(halfBaths)}</HalfBaths>
+            <Bedrooms MasterBedLocation="${key['primary bed']}">${bedrooms.trim()}</Bedrooms> 
+            <Garage>${garage}</Garage> 
           ${imagedata} 
           <PlanWebsite>https://www.hubblehomes.com${key['path']}</PlanWebsite> 
           ${inventoryHome} 
