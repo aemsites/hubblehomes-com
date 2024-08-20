@@ -19,7 +19,6 @@ let inventory;
  * @param {HTMLElement} marker - The marker element.
  */
 function fitMarkerWithinBounds(marker) {
-  // padding around marker when moved into view
   const padding = {
     top: 60,
     right: 60,
@@ -90,9 +89,23 @@ function filterListeners() {
     const inventoryData = filterHomes(inventory, filtersToApply);
     const inventoryContainer = document.querySelector('.listings-wrapper');
     const inventoryCards = buildInventoryCards(inventoryData);
-    inventoryContainer.innerHTML = inventoryCards.length === 0 ? 'No homes found.' : '';
+
+    const toggleBtn = document.querySelector('button.btn.toggle-view');
+    if (inventoryCards.length === 0) {
+      toggleBtn.style.display = 'none';
+      inventoryContainer.innerHTML = 'No homes found.';
+    } else {
+      toggleBtn.style.display = 'block';
+      inventoryContainer.innerHTML = '';
+    }
+
     inventoryCards.forEach((card) => inventoryContainer.appendChild(card));
     await addMapMarkers(inventoryData);
+
+    setTimeout(() => {
+      // must allow the filters to clean up before adjusting the height
+      adjustMapFilterHeight();
+    }, 100);
 
     document.querySelector('.scroll-container').scrollTo({
       top: 0,
@@ -201,9 +214,17 @@ function buildInventoryCards(homes, startIndex = 0) {
       ),
     );
 
-    $home.addEventListener('mouseenter', () => {
-      highlightActiveHome(globalIndex);
-    });
+    const mobileMediaQuery = window.matchMedia('(max-width: 991px)');
+
+    if (!mobileMediaQuery.matches) {
+      $home.addEventListener('mouseenter', () => {
+        highlightActiveHome(globalIndex);
+      });
+    } else {
+      $home.addEventListener('click', () => {
+        highlightActiveHome(globalIndex);
+      });
+    }
 
     return $home;
   });
@@ -316,7 +337,7 @@ export default async function decorate(doc) {
   const filters = await buildFilters();
   const $page = doc.querySelector('main .section');
   const $footer = doc.querySelector('footer');
-  const $toggleViewBtn = button({ class: 'btn toggle-view' }, 'View Map');
+  const $toggleViewBtn = button({ class: 'btn toggle-view blue' }, 'View Map');
 
   const $mapFilter = div({ class: 'map-filter-container' },
     $toggleViewBtn,
@@ -345,6 +366,16 @@ export default async function decorate(doc) {
     const text = $toggleViewBtn.textContent;
     $toggleViewBtn.textContent = text === 'View Map' ? 'View List' : 'View Map';
     $mapFilter.setAttribute('data-view', text === 'View Map' ? 'map' : 'list');
+    if (text === 'View Map' && map) {
+      const active = document.querySelector('.item-listing.active');
+      let index = 0;
+      if (active) {
+        index = active.getAttribute('data-card');
+      }
+      setTimeout(() => {
+        highlightActiveHome(index);
+      }, 200);
+    }
   });
 
   buildMap();

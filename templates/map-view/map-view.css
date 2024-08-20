@@ -12,7 +12,10 @@
     max-width: 100vw;
 
     /* Mobile view toggle */
-    .btn.toggle-view { display: none }
+    .btn.toggle-view {
+      padding: 10px;
+      display: none
+    }
 
     @media (max-width: 990px) {
       .map { display: none }
@@ -30,12 +33,15 @@
       .btn.toggle-view {
         display: block;
         position: absolute;
-        top: 70px;
-        right: 20px;
-        z-index: 9;
+        bottom: 60px;
+        right: 50%;
+        z-index: 100;
+        transform: translateX(50%);
       }
 
-      .listings-wrapper { padding: 40px 0 0 !important; }
+      .listings-wrapper {
+        padding: 0 !important;
+      }
     }
 
     .map {
@@ -62,7 +68,7 @@
       }
 
       #google-map {
-        height: calc(100vh - var(--header-height));
+        height: 100%;
 
         /* disable maps blue border */
         .gm-style iframe + div { border: none !important; }
@@ -166,7 +172,8 @@
       .filter-container {
         .filters {
           gap: 2px;
-          grid-template-columns: 1fr 1fr 1fr 1fr;
+          grid-template-columns: repeat(4, 25%);
+          padding-right: 6px;
 
           select {
             flex: 1;
@@ -184,6 +191,7 @@
         }
 
         .filter-choices {
+          width: 100%;
           display: none;
 
           &.show {
@@ -342,6 +350,7 @@
         }
 
         .listings-wrapper {
+          text-align: center;
           padding: 0 0 40px; /* Adjust this value as needed */
           width: 100%;
           display: flex;
@@ -368,16 +377,16 @@
               padding: 0 10px 20px 0;
             }
 
+            &:hover, &.active {
+              background: var(--blue);
+              border: 6px solid var(--blue);
+              color: #fff;
+              z-index:99;
+            }
+
             @media (min-width: 990px) {
               padding: 0;
               gap: 10px;
-
-              &:hover, &.active {
-                background: var(--blue);
-                border: 6px solid var(--blue);
-                color: #fff;
-                z-index:99;
-              }
             }
 
             img {
