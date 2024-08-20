@@ -382,6 +382,42 @@ function getHeaderTitleForFilter(filterStr) {
 }
 
 /**
+ * Flatten the community map to a list of homes.
+ * @param communityMap - the community map
+ * @returns {U[]} - the list of homes
+ */
+function flatten(communityMap) {
+  if (Array.isArray(communityMap)) return communityMap;
+
+  return Array.from(communityMap)
+    .flatMap(([, value]) => Object.values(value));
+}
+
+/**
+ * Filter the inventory homes based on the filter string.  The filter string is a comma-separated
+ * list of filters.  The filters are applied in order and the results are accumulated.
+ * @param inventory - the inventory of homes
+ * @param community - the community to filter on.
+ * @param filterStr - the filter string
+ */
+function filterHomes(inventory, filterStr, community) {
+  // no filtering return everything
+  if (!filterStr) {
+    return community ? inventory.get(community) : flatten(inventory);
+  }
+
+  if (!filterStr) {
+    return community ? inventory.get(community) : flatten(inventory);
+  }
+
+  const searchFilters = filterStr.split(',');
+  return searchFilters.reduce((acc, curr) => {
+    const filter = filters.find((f) => f.value === curr);
+    return filter ? filter.rule(acc) : acc;
+  }, community ? inventory.get(community) : flatten(inventory));
+}
+
+/**
  * Retrieves the inventory homes for a specific community and filter.
  * @param {string} community - The name of the community.
  * @param {string} filterStr - The filter string. If empty, all homes are returned. Otherwise,
@@ -390,24 +426,8 @@ function getHeaderTitleForFilter(filterStr) {
  * @returns {Promise<Array>} The filtered inventory homes for the community.
  */
 async function getInventoryHomesForCommunity(community, filterStr) {
-  function flatten(communityMap) {
-    return Array.from(communityMap)
-      .flatMap(([, value]) => Object.values(value));
-  }
-
   const inventory = await createCommunityInventoryMap();
-
-  // no filtering return everything
-  if (!filterStr) {
-    return community ? inventory.get(community) : flatten(inventory);
-  }
-
-  const searchFilters = filterStr.split(',');
-  const filteredItems = searchFilters.reduce((acc, curr) => {
-    const filter = filters.find((f) => f.value === curr);
-    return filter ? filter.rule(acc) : acc;
-  }, community ? inventory.get(community) : flatten(inventory));
-
+  const filteredItems = filterHomes(inventory, filterStr, community);
   return Promise.resolve(filteredItems);
 }
 
@@ -435,7 +455,7 @@ async function getInventoryHomeModelByCommunities(modelName) {
  * @param filter
  * @returns {Promise<Array>}
  */
-async function getAllInventoryHomes(filter) {
+async function getAllInventoryHomes(filter = '') {
   return getInventoryHomesForCommunity(null, filter);
 }
 
@@ -460,5 +480,6 @@ export {
   getInventoryHomeModelByCommunities,
   getInventoryHomeByPath,
   getHeaderTitleForFilter,
+  filterHomes,
   filters,
 };
