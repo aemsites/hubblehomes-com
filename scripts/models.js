@@ -1,5 +1,6 @@
 import { getHomePlansSheet, getModelsSheet } from './workbook.js';
 import { getCommunityDetailsByName } from './communities.js';
+import { getSalesCenterForCommunity } from './sales-center.js';
 
 /**
  * Fetches the models data.
@@ -8,7 +9,11 @@ import { getCommunityDetailsByName } from './communities.js';
  * @throws {Error} If the fetch request fails.
  */
 async function getModels() {
-  return getModelsSheet('data');
+  const models = await getModelsSheet('data');
+  return Promise.all(models.map(async (model) => {
+    model.salesCenter = await getSalesCenterForCommunity(model.community);
+    return model;
+  }));
 }
 
 /**

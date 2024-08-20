@@ -1,5 +1,5 @@
 import BaseCard from './BaseCard.js';
-import { div, span } from '../../../scripts/dom-helpers.js';
+import { a, div, span } from '../../../scripts/dom-helpers.js';
 import { formatPrice } from '../../../scripts/currency-formatter.js';
 import { calculateMonthlyPayment } from '../../../scripts/mortgage.js';
 
@@ -21,6 +21,17 @@ class FeaturedCard extends BaseCard {
       );
       taglineContainer.appendChild(monthlyRate);
     }
+  }
+
+  async renderMiddleRowOfDetailsContainer_right(gridContainer) {
+    const link = a({
+      target: '_blank',
+      class: 'btn dark-gray square',
+      href: `https://www.google.com/maps/dir/Current+Location/${this.cardData.salesCenter.latitude},${this.cardData.salesCenter.longitude}`,
+    }, 'Directions');
+
+    const middleLeft = div(link);
+    gridContainer.appendChild(middleLeft);
   }
 
   /**

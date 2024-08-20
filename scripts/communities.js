@@ -1,4 +1,5 @@
 import { getCommunitiesSheet, getModelsSheet } from './workbook.js';
+import { getSalesCenterForCommunity } from './sales-center.js';
 
 /**
  * Given a URL, attempts to locate the associated community.
@@ -8,7 +9,11 @@ import { getCommunitiesSheet, getModelsSheet } from './workbook.js';
  */
 async function getCommunityForUrl(url) {
   const communities = await getCommunitiesSheet('data');
-  return communities.find((community) => url.startsWith(community.path));
+  const community = communities.find((c) => url.startsWith(c.path));
+  if (community) {
+    community.salesCenter = await getSalesCenterForCommunity(community.name);
+  }
+  return community;
 }
 
 /**
@@ -19,7 +24,11 @@ async function getCommunityForUrl(url) {
  */
 async function getCommunityDetailsByName(communityName) {
   const communities = await getCommunitiesSheet('data');
-  return communities.find((community) => community.name === communityName);
+  const community = communities.find((c) => c.name === communityName);
+  if (community) {
+    community.salesCenter = await getSalesCenterForCommunity(community.name);
+  }
+  return community;
 }
 
 /**
@@ -45,9 +54,14 @@ async function getCitiesInCommunities() {
  */
 async function getCommunitiesInCity(city) {
   const communities = await getCommunitiesSheet('data');
-  return communities
+  const all = communities
     .filter((community) => community.city.toLowerCase() === city.toLowerCase())
     .filter((community) => community.price !== 'Sold Out');
+
+  return Promise.all(all.map(async (community) => {
+    community.salesCenter = await getSalesCenterForCommunity(community.name);
+    return community;
+  }));
 }
 
 /**
@@ -83,7 +97,7 @@ async function getCommunitiesForRegion(region) {
  */
 async function getCommunitiesForState(state) {
   const communities = await getCommunitiesSheet('data');
-  return communities
+  const all = communities
     .filter((community) => community.state.toLowerCase() === state.toLowerCase())
     .filter((community) => community.price !== 'Sold Out')
     .reduce((acc, community) => {
@@ -92,6 +106,11 @@ async function getCommunitiesForState(state) {
       }
       return acc;
     }, []);
+
+  return Promise.all(all.map(async (community) => {
+    community.salesCenter = await getSalesCenterForCommunity(community.name);
+    return community;
+  }));
 }
 
 /**

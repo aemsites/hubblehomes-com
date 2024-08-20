@@ -4,17 +4,12 @@ import {
 } from '../../../scripts/dom-helpers.js';
 import { getCommunityMinMaxDetails } from '../../../scripts/communities.js';
 import formatPhoneNumber from '../../../scripts/phone-formatter.js';
-import { getSalesCenterForCommunity } from '../../../scripts/sales-center.js';
 import { getModelsByCommunity } from '../../../scripts/models.js';
 import {
   getInventoryHomesForCommunity,
 } from '../../../scripts/inventory.js';
 
 class CommunityCard extends BaseCard {
-  async getSalesCenter() {
-    return getSalesCenterForCommunity(this.cardData.name);
-  }
-
   renderTitle() {
     return h3(this.cardData.name || '');
   }
@@ -68,17 +63,21 @@ class CommunityCard extends BaseCard {
   }
 
   async renderMiddleRowOfDetailsContainer_left(gridContainer) {
-    const salesCenter = await this.getSalesCenter();
-    const link = a({ class: 'btn yellow square', href: `tel:${salesCenter.phone}` }, formatPhoneNumber(salesCenter.phone));
+    const link = a(
+      {
+        class: 'btn yellow square',
+        href: `tel:${this.cardData.salesCenter.phone}`,
+      },
+      formatPhoneNumber(this.cardData.salesCenter.phone),
+    );
     gridContainer.appendChild(link);
   }
 
   async renderMiddleRowOfDetailsContainer_right(gridContainer) {
-    const salesCenter = await this.getSalesCenter();
     const link = a({
       target: '_blank',
       class: 'btn dark-gray square',
-      href: `https://www.google.com/maps/dir/Current+Location/${salesCenter.latitude},${salesCenter.longitude}`,
+      href: `https://www.google.com/maps/dir/Current+Location/${this.cardData.salesCenter.latitude},${this.cardData.salesCenter.longitude}`,
     }, 'Directions');
 
     const middleLeft = div(link);
