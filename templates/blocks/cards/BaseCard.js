@@ -9,11 +9,11 @@ class BaseCard {
   constructor(data, community) {
     this.cardData = data;
     this.community = community;
-    this.preload = false;
+    this.eager = false;
   }
 
-  async render(preload = false) {
-    this.preload = preload;
+  async render(eager = false) {
+    this.eager = eager;
     const header = this.renderHeaderArea();
     const imageBox = await this.renderModelImage();
     const topActionsBar = this.renderTopActionBar();
@@ -263,7 +263,7 @@ class BaseCard {
     }
 
     const imageUrl = new URL(url);
-    return createOptimizedPicture(imageUrl.pathname, title, this.preload, [
+    return createOptimizedPicture(imageUrl.pathname, title, this.eager, [
       { media: '(max-width: 767px)', width: '767' },
       { media: '(max-width: 991px)', width: '400' }]);
   }

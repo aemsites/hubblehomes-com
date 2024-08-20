@@ -5,6 +5,30 @@
     padding: 0;
   }
 
+  .accordion {
+    .accordion-item .section {
+      padding: 0;
+    }
+
+    .cards {
+      .model-card {
+        width: 270px;
+
+        img {
+          min-width: auto;
+        }
+      }
+
+      .repeating-grid {
+        justify-items: center;
+
+        li * {
+          justify-self: normal;
+        }
+      }
+    }
+  }
+
   @media (max-width: 992px) {
     h1 {
       padding-top: 10px;
