@@ -7,29 +7,46 @@ import {
 
 /** Create Embed block */
 const createEmbedBlock = (document) => {
-  const videoContainer = document.querySelector('.video-container');
-  if (videoContainer) {
+  // Assuming `newsVideoContainers` is a NodeList of all video containers in the news
+  const newsVideoContainers = document.querySelectorAll('.video-container');
+
+  newsVideoContainers.forEach((videoContainer) => {
+    // eslint-disable-next-line no-debugger
+    debugger;
+
     const iframe = videoContainer.querySelector('iframe');
     if (iframe) {
-      const videoUrl = iframe.src;
+      const videoUrl = iframe.getAttribute('src');
+
+      // Create a new <a> element
+      const videoLink = document.createElement('a');
+      videoLink.setAttribute('href', videoUrl);
+      videoLink.textContent = 'Video Source';
+
+      // Wrap URL in inline code for Markdown
+      const codeUrl = `${videoUrl}`;
+
       let source = '';
 
       if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
         source = 'YouTube';
       } else if (videoUrl.includes('canva.com')) {
         source = 'Canva';
-      } else if (videoUrl.includes('aws')) {
-        source = 'AWS';
+      } else if (videoUrl.includes('animoto')) {
+        source = 'animoto';
       } else {
         source = 'Unknown';
       }
 
-      const cells = [[`Embed (${source})`], ['URL', videoUrl]];
+      // const encodedUrl = encodeForHTML(videoUrl);
+
+      // Prepare the cells content ---> Continue with this  tomorrow
+      const cells = [[`Embed (${source})`], ['URL', videoLink]];
 
       const table = WebImporter.DOMUtils.createTable(cells, document);
       videoContainer.replaceWith(table);
     }
-  }
+  });
 };
 
 const createAboutColumnBlock = (document) => {
@@ -215,19 +232,35 @@ export default {
 
     return main;
   },
-
   generateDocumentPath: ({
-    document,
-    url,
-    html,
-    params,
+    document, url, html, params,
   }) => {
-    // if it is a heart of hubble page, then update the path, otherwise return the default path
+    const pathsToSkip = [
+      '/news/news-detail/hubble-hero-house-coming-soon-to-the-nampa-market-32',
+      '/news/news-detail/test-blog-133/news/news-detail/interior-design-trends-2021-paint-colors-51',
+      '/news/news-detail/interior-design-trends-2021-paint-colors-50',
+      '/news/news-detail/hubble-grant-childrens-home-society-of-idaho-55',
+    ];
+
+    const importPath = new URL(url).pathname
+      .replace(/\.html$/, '')
+      .replace(/\/$/, '');
+
+    // Normalize paths by replacing multiple hyphens with a single hyphen
+    const normalizePath = (path) => path.replace(/-+/g, '-');
+
+    // Skip processing if the normalized path matches one of the paths to skip
+    if (pathsToSkip.some((path) => normalizePath(path) === normalizePath(importPath))) {
+      return WebImporter.FileUtils.sanitizePath('');
+    }
+
+    // Handle "heart of hubble" pages
     if (url.includes('heart-detail')) {
-      const urlPath = new URL(url).pathname; // Get the pathname from the URL
-      const lastPart = urlPath.substring(urlPath.lastIndexOf('/') + 1).replace(/\.html$/, ''); // Extract the last part and remove .html if present
+      const lastPart = importPath.substring(importPath.lastIndexOf('/') + 1);
       return WebImporter.FileUtils.sanitizePath(`news/news-detail/${lastPart}`);
     }
-    return WebImporter.FileUtils.sanitizePath(new URL(url).pathname.replace(/\.html$/, '').replace(/\/$/, ''));
+
+    // Default sanitized path
+    return WebImporter.FileUtils.sanitizePath(importPath);
   },
 };

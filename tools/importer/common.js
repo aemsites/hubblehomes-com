@@ -16,6 +16,10 @@ const createLinksBlock = (document, main) => {
 
   if (linksContainer) {
     const links = Array.from(linksContainer.querySelectorAll('a'))
+      .filter((link) => {
+        const href = link.getAttribute('href');
+        return !href.includes('interactive-site-plan') && !href.includes('driving-directions');
+      })
       .map((link) => link.outerHTML) // Get the outer HTML of each link
       .join('<br>'); // Join them with a line break
 
