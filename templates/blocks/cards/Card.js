@@ -43,7 +43,7 @@ export default async function renderCards(type, items, maxRender = -1) {
     parent.append(cardWrapper);
   }
 
-  if (items.length > maxRender) {
+  if (items && items.length > maxRender) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(async (entry) => {
         if (entry.isIntersecting) {
