@@ -49,13 +49,21 @@ export default async function decorate(block) {
 
   const promises = data.map(async (cardData) => {
     const liEl = li({ class: 'model-card' });
-    if (isInventory) {
-      window.hh.current.sale_center = await getSalesCenterForCommunity(cardData.community);
-    }
-    const card = isInventory ? CardFactory.createCard('inventory', cardData, cardData.community) : CardFactory.createCard(classTokenList, cardData, community);
-    const cardEl = await card.render();
-    liEl.appendChild(cardEl);
-    ulEl.append(liEl);
+    const observer = new IntersectionObserver(async (entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        console.log('intersection fired');
+        observer.disconnect();
+        if (isInventory) {
+          window.hh.current.sale_center = await getSalesCenterForCommunity(cardData.community);
+        }
+        const card = isInventory ? CardFactory.createCard('inventory', cardData, cardData.community) : CardFactory.createCard(classTokenList, cardData, community);
+        const cardEl = await card.render();
+        liEl.appendChild(cardEl);
+        ulEl.append(liEl);
+      }
+    });
+    observer.observe(block);
+    
   });
   await Promise.all(promises);
 
