@@ -263,7 +263,7 @@ class BaseCard {
     }
 
     const imageUrl = new URL(url);
-    return createOptimizedPicture(imageUrl.pathname, title, false, [
+    return createOptimizedPicture(imageUrl.pathname, title, true, [
       { media: '(max-width: 767px)', width: '767' },
       { media: '(max-width: 991px)', width: '400' }]);
   }
