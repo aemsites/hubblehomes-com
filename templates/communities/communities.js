@@ -115,7 +115,7 @@ async function createRightAside(doc, salesCenter) {
     mainDiv.append(p({ class: 'note' }, note));
   }
 
-  if (specialists) {
+  if (specialists && specialists.length > 0) {
     const emailIcon = await loadSVG('/icons/email.svg');
     const phoneIcon = await loadSVG('/icons/phone.svg');
     const sEl = specialists.map((specialist) => {
