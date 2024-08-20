@@ -60,18 +60,22 @@
     border-radius: 50%;
   }
 
-  &:hover {
-    background: var(--btn-hover);
-    border-color: var(--btn-hover)
+  @media (hover: hover) {
+    &:hover {
+      background: var(--btn-hover);
+      border-color: var(--btn-hover)
+    }
   }
 
   &.blue {
     background: var(--btn-blue);
     border-color: var(--btn-blue);
 
-    &:hover {
-      background: var(--btn-blue-hover);
-      border-color: var(--btn-blue-hover)
+    @media (hover: hover) {
+      &:hover {
+        background: var(--btn-blue-hover);
+        border-color: var(--btn-blue-hover)
+      }
     }
   }
 
