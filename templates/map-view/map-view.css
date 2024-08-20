@@ -62,7 +62,7 @@
       }
 
       #google-map {
-        height: 100%;
+        height: calc(100vh - var(--header-height));
 
         /* disable maps blue border */
         .gm-style iframe + div { border: none !important; }
@@ -251,6 +251,7 @@
 
               .col-1 {
                 padding: 0 50px;
+
                 ul {
                   column-count: 1;
                 }
@@ -328,8 +329,10 @@
                 width: 100%;
                 &:empty { display: none }
               }
+
               .col-1, .col-2, .col-3 {
                 width: auto;
+
                 ul {
                   column-count: 1;
                 }
@@ -453,18 +456,6 @@
               }
             }
           }
-        }
-
-        footer {
-          margin-top: 80px;
-
-          /*
-          Todo: footer is pushing out sidebar width
-          this should probabily be fixed in footer styles
-          */
-          width: 585px;
-          overflow: hidden;
-
         }
       }
     }
