@@ -50,8 +50,7 @@ export default async function decorate(block) {
   const promises = data.map(async (cardData) => {
     const liEl = li({ class: 'model-card' });
     const observer = new IntersectionObserver(async (entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) {
-        console.log('intersection fired');
+      if (entries.some((entry) => entry.isIntersecting)) {        
         observer.disconnect();
         if (isInventory) {
           window.hh.current.sale_center = await getSalesCenterForCommunity(cardData.community);
