@@ -69,12 +69,61 @@ In context of Hubble Homes, [Hubble Homes Master Spreadsheet](https://main--hubb
 
 Please review the official documentation around Indexing on AEM Edge delivery services : https://www.aem.live/developer/indexing
 
-### Search
-Search on Hubble Homes is driven by [Hubble Homes Master Spreadsheet](https://main--hubblehomes-com--aemsites.hlx.live/data/hubblehomes.json). As the Communities, Home Plans, Inventory pages etc are added to the master sheet, new data is available for use across the site. 
+## Search Functionality and Data Management
 
-`Master sheet need to Previewed and Published for the new results to be available. `
+### How Search Works
 
-When search term is entered, search handler, looks in hubblehomes.xlsx and displays relavent results.
+The search functionality on hubblehomes.com is powered by data from the Hubble Homes Master Spreadsheet. This spreadsheet contains multiple sheets that provide data for different aspects of the site:
+
+- Communities
+- Staff
+- Models
+- Inventory
+- Home Plans
+- Cities
+
+The search bar in the header uses this data to provide autocomplete suggestions as users type. It combines results from all these data sources to offer a comprehensive search experience.
+
+### Updating Data for Authors
+
+Authors can update the site's data by modifying the Hubble Homes Master Spreadsheet `hubblehomes.xlsx`. This spreadsheet is located at:
+
+`https://woodsidegroup.sharepoint.com/:f:/r/sites/HubbleHomesWebsite/Shared%20Documents/Website/hubblehomes/data/`
+
+To update the data:
+
+1. Open the hubblehomes.xlsx spreadsheet in SharePoint.
+2. Navigate to the appropriate sheet (e.g., helix-communities, helix-staff, helix-models, etc.) depending on what data needs to be updated.
+3. Make the necessary changes or additions to the data.
+4. Save the spreadsheet.
+
+After updating the spreadsheet, the changes need to be published for them to take effect on the live site:
+
+1. Open the [Hubble Homes Master Spreadsheet](https://main--hubblehomes-com--aemsites.hlx.live/data/hubblehomes.json) in a web browser.
+2. Use the Sidekick to preview and publish the updated spreadsheet.
+
+Once published, the new data will be available for the search functionality and other parts of the website that use this data.
+
+Note: It may take a few minutes for the changes to propagate and be reflected in the search results on the live site.
+
+
+### Technical Details of Search Implementation
+
+The search functionality on hubblehomes.com is implemented using JavaScript and relies on data from the Hubble Homes Master Spreadsheet. Here's a more detailed breakdown of the search process:
+
+1. Data Fetching:
+
+The search data is fetched from various sheets in the Hubble Homes Master Spreadsheet using functions defined in the `workbook.js`   file. These functions include `getCommunitiesSheet()`, `getStaffSheet()`, `getModelsSheet()`, `getInventorySheet()`, `getHomePlansSheet()`, and `getCitySheet()`.
+
+2. Data Formatting:
+
+The fetched data is then formatted for use in the autocomplete functionality. This is done using helper functions defined in the `search-helper.js` file:
+
+These functions transform the raw data into a consistent format suitable for display in the autocomplete suggestions.
+
+3. Autocomplete Implementation:
+
+The autocomplete functionality is set up in the `header.js` file. It uses a debounced input event listener to trigger the search as the user types:
 
 
 ### Templates
