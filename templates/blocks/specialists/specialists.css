@@ -10,13 +10,16 @@
         border: 1px solid #e9eae9;
         border-radius: 50%;
         width: 95px;
+        height: 95px;
 
         @media (width >= 768px) {
           width: 125px;
+          height: 125px;
         }
 
         @media (width >= 992px) {
           width: 195px;
+          height: 195px;
         }
       }
     }

@@ -276,7 +276,6 @@ export default async function decorate(doc) {
 
   const filterSectionTitle = div({ class: 'grey-divider full-width' }, getHeaderTitleForFilter(filter));
   const data = await getInventoryHomesForCommunity(community.name, filter);
-  const inventory = await renderCards('inventory', data);
 
   const modelNameAddr = div({ class: 'page-info' }, h1(community.name), a({
     class: 'directions',
@@ -296,15 +295,13 @@ export default async function decorate(doc) {
 
   const plansAnchor = a({ id: 'plans' }, '');
   const inventoryAnchor = a({ id: 'inventory' }, '');
-  const inventoryEl = div({ class: 'section inventory' }, inventory);
+  const inventoryEl = div({ class: 'section inventory' });
   const disclaimer = doc.querySelector('.fragment-wrapper');
-  const featuredPlansTitle = div({ class: 'grey-divider featured full-width' }, 'Featured Plans');
-  // const models = await buildFeaturedPlans(community.name);
+  const featuredPlansTitle = div({ class: 'grey-divider full-width' }, 'Featured Plans');
 
   const featured = await getModelsByCommunity(community.name);
-  const featuredCards = await renderCards('featured', featured);
   const hasFeaturedModels = featured.length > 0;
-  const featuredModels = div({ class: 'section featured' }, featuredCards);
+  const featuredModels = div({ class: 'section featured-models' });
 
   let specialistsSection;
   let specialistBanner;
@@ -353,4 +350,18 @@ export default async function decorate(doc) {
     specialistsSection,
     div({ class: 'section disclaimer' }, disclaimer),
   );
+
+  const newHomesObserver = new IntersectionObserver(async (entries) => {
+    if (entries[0].isIntersecting) {
+      const inventory = await renderCards('inventory', data);
+      document.querySelector('.inventory').replaceWith(inventory);
+
+      const featuredCards = await renderCards('featured', featured);
+      document.querySelector('.featured-models').replaceWith(featuredCards);
+      newHomesObserver.disconnect();
+    }
+  }, {
+    rootMargin: '0px',
+  });
+  newHomesObserver.observe(document.querySelector('.filter-form'));
 }

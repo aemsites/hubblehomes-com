@@ -14,21 +14,23 @@ import { loadCSS } from '../../../scripts/aem.js';
  * @param type - The type of card to render. Can be 'featured', 'home-plans', 'inventory',
  * or 'community'.
  * @param items - The data to render the cards with.
+ * @param eagarLoadCnt - The number of cards to eagar load.  This is useful for the first few cards.
  * @returns {Promise<Element>}
  */
-export default async function renderCards(type, items) {
+export default async function renderCards(type, items, eagarLoadCnt = 4) {
   await loadCSS(`${window.hlx.codeBasePath}/templates/blocks/cards/cards.css`);
 
   if (!items || items.length === 0) {
-    return p({ class: 'no-results' }, 'Sorry, no homes match your criteria.');
+    return p({ class: 'no-results' }, 'No Quick Move-in\'s available at this time');
   }
 
   const ulEl = ul({ class: 'repeating-grid' });
 
-  const promises = items.map(async (cardData) => {
+  const promises = items.map(async (cardData, index) => {
     const liEl = li({ class: 'model-card' });
+    const eagarLoading = eagarLoadCnt > 0 && index < eagarLoadCnt;
     const card = CardFactory.createCard(type, cardData);
-    const cardEl = await card.render();
+    const cardEl = await card.render(eagarLoading);
     liEl.appendChild(cardEl);
     ulEl.append(liEl);
   });

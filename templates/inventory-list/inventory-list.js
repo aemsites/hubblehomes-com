@@ -7,7 +7,7 @@ export default async function decorate(doc) {
   await loadWorkbook();
 
   const inventoryHomes = await getAllInventoryHomes(SearchFilters.UNDER_CONSTRUCTION);
-  const blockWrapper = await renderCards('inventory', inventoryHomes);
+  const blockWrapper = await renderCards('inventory', inventoryHomes, 2);
   const cards = div({ class: 'section featured' }, blockWrapper);
 
   const fragment = doc.querySelector('.fragment-wrapper');
