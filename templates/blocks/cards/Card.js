@@ -22,10 +22,11 @@ export default async function renderCards(type, items, maxRender = -1) {
   await loadCSS(`${window.hlx.codeBasePath}/templates/blocks/cards/cards.css`);
   const parent = div({ class: `section ${type}` });
 
+  let ulEl;
   if (!items || items.length === 0) {
     parent.append(p({ class: 'no-results' }, 'No Quick Move-in\'s available at this time.'));
   } else {
-    const ulEl = ul({ class: 'repeating-grid' });
+    ulEl = ul({ class: 'repeating-grid' });
     const promises = items.map(async (cardData, index) => {
       if (maxRender === -1 || index < maxRender) {
         const liEl = li({ class: 'model-card' });
@@ -40,6 +41,26 @@ export default async function renderCards(type, items, maxRender = -1) {
     const cards = div({ class: `cards ${type}` }, ulEl);
     const cardWrapper = div({ class: 'cards-wrapper' }, cards);
     parent.append(cardWrapper);
+  }
+
+  if (items.length > maxRender) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(async (entry) => {
+        if (entry.isIntersecting) {
+          observer.disconnect();
+          const wrapper = await renderCards(type, items.splice(5));
+          const liEls = wrapper.querySelectorAll('.cards > ul > li');
+          // there might not be any homes
+          if (liEls && liEls.length > 0) {
+            liEls.forEach(ulEl.appendChild.bind(ulEl));
+          }
+        }
+      });
+    });
+    // give it time to render the cards before observing the last card
+    setTimeout(() => {
+      observer.observe(document.querySelector('.model-card:last-of-type'));
+    }, 0);
   }
 
   return parent;

@@ -13,12 +13,12 @@ export default async function decorate(doc) {
   const singleFamilyPlans = homePlans.filter((plan) => plan.type === 'Single Family');
   const townHomePlans = homePlans.filter((plan) => plan.type === 'Townhome');
 
-  const singleCards = await renderCards('home-plans', singleFamilyPlans);
+  const singleCards = await renderCards('home-plans', singleFamilyPlans, 5);
   const cards = div({ class: 'section featured' }, h3('Single Family Homes'), singleCards);
   fragment.insertAdjacentElement('beforebegin', cards);
 
   if (townHomePlans && townHomePlans.length > 0) {
-    const townHomeCards = await renderCards('home-plans', townHomePlans);
+    const townHomeCards = await renderCards('home-plans', townHomePlans, 5);
     const tcards = div({ class: 'section featured' }, h3('Townhome Plans'), townHomeCards);
     fragment.insertAdjacentElement('beforebegin', tcards);
   }
