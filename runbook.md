@@ -88,21 +88,21 @@ The search bar in the header uses this data to provide autocomplete suggestions 
 
 Authors can update the site's data by modifying the Hubble Homes Master Spreadsheet `hubblehomes.xlsx`. This spreadsheet is located at:
 
-`https://woodsidegroup.sharepoint.com/:f:/r/sites/HubbleHomesWebsite/Shared%20Documents/Website/hubblehomes/data/`
+[Hubble Homes Data Directory](https://woodsidegroup.sharepoint.com/:f:/r/sites/HubbleHomesWebsite/Shared%20Documents/Website/hubblehomes/data/)
 
 To update the data:
 
-1. Open the hubblehomes.xlsx spreadsheet in SharePoint.
+1. Open the `hubblehomes.xlsx` spreadsheet in SharePoint.
 2. Navigate to the appropriate sheet (e.g., helix-communities, helix-staff, helix-models, etc.) depending on what data needs to be updated.
 3. Make the necessary changes or additions to the data.
 4. Save the spreadsheet.
 
 After updating the spreadsheet, the changes need to be published for them to take effect on the live site:
 
-1. Open the [Hubble Homes Master Spreadsheet](https://main--hubblehomes-com--aemsites.hlx.live/data/hubblehomes.json) in a web browser.
+1. If not already open, open the `hubblehomes.xlsx` in a web browser.
 2. Use the Sidekick to preview and publish the updated spreadsheet.
 
-Once published, the new data will be available for the search functionality and other parts of the website that use this data.
+Once published, the new data will be available for the search functionality and other parts of the website that use this data. You can verify here: [Hubble Homes Master Spreadsheet](https://main--hubblehomes-com--aemsites.hlx.live/data/hubblehomes.json)
 
 Note: It may take a few minutes for the changes to propagate and be reflected in the search results on the live site.
 
