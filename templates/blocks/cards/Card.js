@@ -20,23 +20,25 @@ import { loadCSS } from '../../../scripts/aem.js';
 export default async function renderCards(type, items, eagarLoadCnt = 4) {
   await loadCSS(`${window.hlx.codeBasePath}/templates/blocks/cards/cards.css`);
 
+  const parent = div({ class: `section ${type}` });
+
   if (!items || items.length === 0) {
-    return p({ class: 'no-results' }, 'No Quick Move-in\'s available at this time');
+    parent.append(p({ class: 'no-results' }, 'No Quick Move-in\'s available at this time.'));
+  } else {
+    const ulEl = ul({ class: 'repeating-grid' });
+    const promises = items.map(async (cardData, index) => {
+      const liEl = li({ class: 'model-card' });
+      const eagarLoading = eagarLoadCnt > 0 && index < eagarLoadCnt;
+      const card = CardFactory.createCard(type, cardData);
+      const cardEl = await card.render(eagarLoading);
+      liEl.appendChild(cardEl);
+      ulEl.append(liEl);
+    });
+    await Promise.all(promises);
+    const cards = div({ class: `cards ${type}` }, ulEl);
+    const cardWrapper = div({ class: 'cards-wrapper' }, cards);
+    parent.append(cardWrapper);
   }
 
-  const ulEl = ul({ class: 'repeating-grid' });
-
-  const promises = items.map(async (cardData, index) => {
-    const liEl = li({ class: 'model-card' });
-    const eagarLoading = eagarLoadCnt > 0 && index < eagarLoadCnt;
-    const card = CardFactory.createCard(type, cardData);
-    const cardEl = await card.render(eagarLoading);
-    liEl.appendChild(cardEl);
-    ulEl.append(liEl);
-  });
-  await Promise.all(promises);
-
-  const cards = div({ class: `cards ${type}` }, ulEl);
-  const cardWrapper = div({ class: 'cards-wrapper' }, cards);
-  return div({ class: `section ${type}` }, cardWrapper);
+  return parent;
 }
