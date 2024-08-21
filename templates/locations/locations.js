@@ -28,25 +28,30 @@ function renderTitle(community) {
   return div({ class: 'grey-divider full-width' }, a({ href: url }, community.city));
 }
 
-async function renderCityAndCommunityCards(mainSection, communities) {
+async function renderCityAndCommunityCards(mainSection, communities, forceRender) {
   const filterSectionTitle = renderTitle(communities[0]);
   mainSection.append(filterSectionTitle);
-  mainSection.append(div({ class: 'card-container' }));
 
-  const sectionObserver = new IntersectionObserver((entries) => {
-    entries.forEach(async (entry) => {
-      if (entry.isIntersecting) {
-        sectionObserver.disconnect();
-        // console.log(`Intersection observed for community ${filterSectionTitle.textContent}`);
-        const cards = await renderCards('community', communities, 1);
-        filterSectionTitle.nextSibling.remove();
-        filterSectionTitle.insertAdjacentElement('afterend', cards);
-      }
+  if (!forceRender) {
+    mainSection.append(div({ class: 'card-container' }));
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(async (entry) => {
+        if (entry.isIntersecting) {
+          sectionObserver.disconnect();
+          // console.log(`Intersection observed for community ${filterSectionTitle.textContent}`);
+          const cards = await renderCards('community', communities, 1);
+          filterSectionTitle.nextSibling.remove();
+          filterSectionTitle.insertAdjacentElement('afterend', cards);
+        }
+      });
+    }, {
+      rootMargin: '0px',
     });
-  }, {
-    rootMargin: '0px',
-  });
-  sectionObserver.observe(filterSectionTitle);
+    sectionObserver.observe(filterSectionTitle);
+  } else {
+    const cards = await renderCards('community', communities, 5);
+    filterSectionTitle.insertAdjacentElement('afterend', cards);
+  }
 }
 
 /**
@@ -79,8 +84,8 @@ async function renderStateAndRegion(mainSection) {
   // fetch the region or state communities based on the metadata
   const communities = await fetchCommunities(location);
 
-  await Promise.all(Object.keys(communities).map(async (cityName) => {
-    await renderCityAndCommunityCards(mainSection, communities[cityName]);
+  await Promise.all(Object.keys(communities).map(async (cityName, index) => {
+    await renderCityAndCommunityCards(mainSection, communities[cityName], index === 0);
   }));
 }
 
