@@ -1,5 +1,6 @@
 // eslint-disable-next-line func-names
-/*-- Google Tag Manager -- */
+/*  -- Google Tag Manager --  */
+/* eslint-disable */
 (function (w, d, s, l, i) {
   w[l] = w[l] || []; w[l].push({
     'gtm.start':
@@ -8,4 +9,4 @@
     j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
       'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
 })(window, document, 'script', 'dataLayer', 'GTM-MXVF5HB');
-/*-- End Google Tag Manager -- */
+/*  -- End Google Tag Manager --  */

@@ -5,8 +5,6 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 import formatPhoneNumber from '../../scripts/phone-formatter.js';
 
 function createSpecialistBlock(specialist) {
-  const specialistEmail = a({ href: `mailto:${specialist.email}` }, specialist.email);
-  specialistEmail.classList.add('gtm.linkClick');
   const agent = div(
     { class: 'specialist' },
     div({ class: 'specialist-image-container-sales-team' }, createOptimizedPicture(specialist.photo, specialist.name, false, [{ width: '750' }, { width: '400' }])),
@@ -16,7 +14,7 @@ function createSpecialistBlock(specialist) {
       div({ class: 'designation' }, specialist.designation),
       div({ class: 'line-break' }),
       div({ class: 'phone' }, a({ href: `tel:${specialist.phone}` }, `${formatPhoneNumber(specialist.phone)} ${small('Direct').innerHTML}`)),
-      div({ class: 'email' }, specialistEmail),
+      div({ class: 'email' }, a({ href: `mailto:${specialist.email}` }, specialist.email)),
     ),
   );
   if (specialist.communities !== '' && specialist.communities !== undefined) {
