@@ -14,7 +14,7 @@ function createSpecialistBlock(specialist) {
       div({ class: 'designation' }, specialist.designation),
       div({ class: 'line-break' }),
       div({ class: 'phone' }, a({ href: `tel:${specialist.phone}` }, `${formatPhoneNumber(specialist.phone)} ${small('Direct').innerHTML}`)),
-      div({ class: 'email, gtm.linkClick' }, a({ href: `mailto:${specialist.email}` }, specialist.email)),
+      div({ class: 'email' }, a({ class: 'gtm.linkClick' }, { href: `mailto:${specialist.email}` }, specialist.email)),
     ),
   );
   if (specialist.communities !== '' && specialist.communities !== undefined) {
