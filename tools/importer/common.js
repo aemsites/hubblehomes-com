@@ -48,7 +48,7 @@ const createOverviewBlock = (document, main) => {
     const overviewCategories = Array.from(overviewElement.querySelectorAll('dt'))
       .map((el) => {
         let key = el.textContent.trim().toLowerCase();
-        if (key.includes('from') || key.includes('pricing')) {
+        if (key.startsWith('pric')) {
           key = 'price';
         }
         return key;
