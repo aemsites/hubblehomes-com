@@ -49,15 +49,35 @@ async function getSalesCenterCommunityNameFromUrl(url) {
 }
 
 /**
- * Return the sales office details for a given community name.
+ * Return the sales office details for a given community name.  Some communities don't have a sales
+ * office, but refer to another community's sales office as their location.  Return that location.
  *
  * @param {string} community - The name of the community.
- * @returns {Promise<Object>} The sales office details for the community,
- * or an empty object if not found.
+ * @returns {Promise<Object>} The sales office details for the community, or an empty object
+ * if not found.
  */
 async function getSalesCenterForCommunity(community) {
   const salesOffices = await getSalesOfficesSheet('data');
-  const salesOffice = salesOffices.find((office) => office.community === community);
+  const salesOfficeVirtual = salesOffices.find((office) => office.community === community);
+
+  const salesOffice = salesOffices
+    .find((office) => office.community === salesOfficeVirtual['sales-center-location']);
+
+  const staff = await getStaffSheet('sales');
+  const specialists = salesOffice
+    ? staff.filter((specialist) => Object.keys(specialist)
+      .some((key) => key.startsWith('office location') && specialist[key] === community))
+    : [];
+
+  if (specialists && specialists.length > 0) {
+    salesOffice.specialists = specialists.map((specialist) => ({
+      name: specialist.name,
+      email: specialist.email,
+      phone: specialist.phone,
+      headshotImage: specialist.headshot,
+    }));
+  }
+
   return salesOffice || {};
 }
 

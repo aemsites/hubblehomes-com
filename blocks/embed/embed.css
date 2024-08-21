@@ -63,7 +63,6 @@
 }
 
 .embed .hubspot-form form {
-  width: 100%;
   max-width: 750px;
   margin: auto;
   font-size: var(--body-font-size-m);

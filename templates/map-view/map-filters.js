@@ -1,9 +1,9 @@
 import {
   button, div, li, option, select, strong, ul,
 } from '../../scripts/dom-helpers.js';
-import { filters } from '../../scripts/inventory.js';
 import { getCitiesInCommunities } from '../../scripts/communities.js';
 import { debounce } from '../../scripts/utils.js';
+import { filters } from '../../scripts/inventory-filters.js';
 
 const originalArray = [];
 let filterChoices;

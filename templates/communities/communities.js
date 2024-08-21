@@ -14,11 +14,9 @@ import {
   select, span, strong,
 } from '../../scripts/dom-helpers.js';
 import {
-  filters,
   getHeaderTitleForFilter,
   getInventoryHomesForCommunity,
 } from '../../scripts/inventory.js';
-import { getSalesCentersForCommunityUrl } from '../../scripts/sales-center.js';
 import { getCommunityForUrl } from '../../scripts/communities.js';
 import { getModelsByCommunity } from '../../scripts/models.js';
 import { loadRates } from '../../scripts/mortgage.js';
@@ -29,19 +27,8 @@ import { loadWorkbook } from '../../scripts/workbook.js';
 import { getPageTitleForUrl } from '../../scripts/pages.js';
 import { safeAppend } from '../../scripts/block-helper.js';
 import renderCards from '../blocks/cards/Card.js';
-
-async function fetchRequiredPageData() {
-  await loadWorkbook();
-  await loadRates();
-
-  const salesCenter = await getSalesCentersForCommunityUrl(window.location);
-  const community = await getCommunityForUrl(window.location.pathname);
-
-  return {
-    salesCenter: salesCenter.sales_center,
-    community,
-  };
-}
+import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
+import { filters } from '../../scripts/inventory-filters.js';
 
 async function createSpecialists(specialists) {
   const agents = [];
@@ -67,43 +54,27 @@ async function createSpecialists(specialists) {
   return deferred.promise;
 }
 
-async function createRightAside(doc, salesCenter) {
-  // The third column of the description box
-  const {
-    hours,
-    phone,
-    specialists,
-    latitude,
-    longitude,
-    models,
-    note,
-    community,
-    address,
-    zipcode,
-    city,
-    'zip-code-abbr': zipCodeAbbr,
-    'sales-center-model': salesCenterModel,
-  } = salesCenter;
+async function createRightAside(doc, community, salesCenter) {
   const mainDiv = div({ class: 'sales-center-info' });
-  const heading = h2(formatPhoneNumber(phone));
+  const heading = h2(formatPhoneNumber(community.phone));
 
   mainDiv.append(heading);
 
-  if (hours) {
-    const hoursEl = div({ class: 'hours' }, ...hours.split('\n')
+  if (salesCenter.hours) {
+    const hoursEl = div({ class: 'hours' }, ...salesCenter.hours.split('\n')
       .map((hour) => span(hour, br())));
     mainDiv.append(div({ class: 'sales-office-hours' }, strong('Regular Hours'), hoursEl));
   }
 
-  if (salesCenterModel || models) {
+  if (salesCenter['sales-center-model'] || salesCenter.models) {
     const salesCenterModelInfo = div();
-    if (salesCenterModel) {
+    if (salesCenter['sales-center-model']) {
       salesCenterModelInfo.append(
         div(span({ class: 'label' }, 'Sales Center: '), span(salesCenter['sales-center-model'])),
       );
     }
 
-    if (models) {
+    if (salesCenter.models) {
       salesCenterModelInfo.append(
         div(span({ class: 'label' }, 'Model: '), span(salesCenter.models)),
       );
@@ -111,14 +82,14 @@ async function createRightAside(doc, salesCenter) {
     mainDiv.append(salesCenterModelInfo);
   }
 
-  if (note) {
-    mainDiv.append(p({ class: 'note' }, note));
+  if (salesCenter.note) {
+    mainDiv.append(p({ class: 'note' }, salesCenter.note));
   }
 
-  if (specialists && specialists.length > 0) {
+  if (salesCenter.specialists && salesCenter.specialists.length > 0) {
     const emailIcon = await loadSVG('/icons/email.svg');
     const phoneIcon = await loadSVG('/icons/phone.svg');
-    const sEl = specialists.map((specialist) => {
+    const sEl = salesCenter.specialists.map((specialist) => {
       const emailEl = emailIcon.cloneNode(true);
       const phoneEl = phoneIcon.cloneNode(true);
       return dd(
@@ -129,13 +100,12 @@ async function createRightAside(doc, salesCenter) {
     });
     mainDiv.append(dl({ class: 'sales-center-data' }, dt({ class: 'label' }, 'New Home Specialists: '), ...sEl));
   }
-
-  if (address && community && city && zipCodeAbbr && zipcode) {
+  if (salesCenter.address && community && salesCenter.city && salesCenter['zip-code-abbr'] && salesCenter.zipcode) {
     const directionsIcon = await loadSVG('/icons/directions.svg');
     let googleLink;
-    if (longitude && latitude) {
+    if (salesCenter.longitude && salesCenter.latitude) {
       googleLink = a({
-        href: `https://www.google.com/maps/dir/Current+Location/${latitude},${longitude}`,
+        href: `https://www.google.com/maps/dir/Current+Location/${salesCenter.latitude},${salesCenter.longitude}`,
         target: '_blank',
       }, directionsIcon);
     }
@@ -146,9 +116,9 @@ async function createRightAside(doc, salesCenter) {
         'Sales Center Location: ',
         googleLink,
       ),
-      span(community),
-      span(address),
-      span(`${city}, ${zipCodeAbbr}, ${zipcode}`),
+      span(salesCenter['sales-center-location']),
+      span(salesCenter.address),
+      span(`${salesCenter.city}, ${salesCenter['zip-code-abbr']}, ${salesCenter.zipcode}`),
     );
     mainDiv.append(addressEl);
   }
@@ -258,16 +228,17 @@ async function checkIfSoldOut(community, doc) {
 }
 
 export default async function decorate(doc) {
+  await loadWorkbook();
+  await loadRates();
+
   const url = new URL(window.location);
   const params = url.searchParams;
   const filter = params.get('filter');
   const areaName = getMetadata('city', doc);
-  const mainSection = doc.querySelector('main > .section');
 
-  const {
-    salesCenter,
-    community,
-  } = await fetchRequiredPageData();
+  const mainSection = doc.querySelector('main > .section');
+  const community = await getCommunityForUrl(window.location.pathname);
+  const salesCenter = await getSalesCenterForCommunity(community.name);
 
   const isSoldOut = await checkIfSoldOut(community, doc);
   if (isSoldOut) {
@@ -275,11 +246,11 @@ export default async function decorate(doc) {
   }
 
   const filterSectionTitle = div({ class: 'grey-divider full-width' }, getHeaderTitleForFilter(filter));
-  const data = await getInventoryHomesForCommunity(community.name, filter);
+  const data = await getInventoryHomesForCommunity(community.name, filter || 'priceasc');
 
   const modelNameAddr = div({ class: 'page-info' }, h1(community.name), a({
     class: 'directions',
-    href: `https://www.google.com/maps/dir/Current+Location/${salesCenter.latitude},${salesCenter.longitude}`,
+    href: `https://www.google.com/maps/dir/Current+Location/${community.latitude},${community.longitude}`,
     target: '_blank',
   }, h4(`${areaName}, ${community['zip-code-abbr']}`)));
 
@@ -290,18 +261,24 @@ export default async function decorate(doc) {
 
   const overview = doc.querySelector('.overview-wrapper');
   const tabsWrapper = doc.querySelector('.tabs-wrapper');
-  const rightAside = await createRightAside(doc, salesCenter);
+  const rightAside = await createRightAside(doc, community, salesCenter);
   const modelFilter = buildFilterForm(filter);
 
   const plansAnchor = a({ id: 'plans' }, '');
   const inventoryAnchor = a({ id: 'inventory' }, '');
-  const inventoryEl = div({ class: 'section inventory' });
+  const inventory = await renderCards('inventory', data, 5);
+  const inventoryEl = div({ class: 'section inventory' }, inventory);
   const disclaimer = doc.querySelector('.fragment-wrapper');
   const featuredPlansTitle = div({ class: 'grey-divider full-width' }, 'Featured Plans');
 
   const featured = await getModelsByCommunity(community.name);
+  if (featured.length > 0) {
+    featured.sort((f1, f2) => f1.price - f2.price);
+  }
+
   const hasFeaturedModels = featured.length > 0;
-  const featuredModels = div({ class: 'section featured-models' });
+  const featuredCards = await renderCards('featured', featured, 2);
+  const featuredModels = div({ class: 'section featured-models' }, featuredCards);
 
   let specialistsSection;
   let specialistBanner;
@@ -350,18 +327,4 @@ export default async function decorate(doc) {
     specialistsSection,
     div({ class: 'section disclaimer' }, disclaimer),
   );
-
-  const newHomesObserver = new IntersectionObserver(async (entries) => {
-    if (entries[0].isIntersecting) {
-      const inventory = await renderCards('inventory', data);
-      document.querySelector('.inventory').replaceWith(inventory);
-
-      const featuredCards = await renderCards('featured', featured);
-      document.querySelector('.featured-models').replaceWith(featuredCards);
-      newHomesObserver.disconnect();
-    }
-  }, {
-    rootMargin: '0px',
-  });
-  newHomesObserver.observe(document.querySelector('.filter-form'));
 }

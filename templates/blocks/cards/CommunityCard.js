@@ -66,9 +66,9 @@ class CommunityCard extends BaseCard {
     const link = a(
       {
         class: 'btn yellow square',
-        href: `tel:${this.cardData.salesCenter.phone}`,
+        href: `tel:${this.cardData.phone}`,
       },
-      formatPhoneNumber(this.cardData.salesCenter.phone),
+      formatPhoneNumber(this.cardData.phone),
     );
     gridContainer.appendChild(link);
   }
@@ -77,7 +77,7 @@ class CommunityCard extends BaseCard {
     const link = a({
       target: '_blank',
       class: 'btn dark-gray square',
-      href: `https://www.google.com/maps/dir/Current+Location/${this.cardData.salesCenter.latitude},${this.cardData.salesCenter.longitude}`,
+      href: `https://www.google.com/maps/dir/Current+Location/${this.cardData.latitude},${this.cardData.longitude}`,
     }, 'Directions');
 
     const middleLeft = div(link);

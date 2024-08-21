@@ -21,6 +21,7 @@ import { loadCSS } from '../../../scripts/aem.js';
 export default async function renderCards(type, items, maxRender = -1) {
   await loadCSS(`${window.hlx.codeBasePath}/templates/blocks/cards/cards.css`);
   const parent = div({ class: `section ${type}` });
+  let observer;
 
   let ulEl;
   if (!items || items.length === 0) {
@@ -43,12 +44,16 @@ export default async function renderCards(type, items, maxRender = -1) {
     parent.append(cardWrapper);
   }
 
-  if (items && items.length > maxRender) {
-    const observer = new IntersectionObserver((entries) => {
+  // if maxRender is -1, then all card were previously rendered
+  // if maxRender is not -1, and the items aren't all rendered yet then we
+  // need to observe the last card
+  if (maxRender !== -1 && items && items.length > maxRender) {
+    observer = new IntersectionObserver((entries) => {
       entries.forEach(async (entry) => {
         if (entry.isIntersecting) {
           observer.disconnect();
-          const wrapper = await renderCards(type, items.splice(5));
+          // console.log(`Intersection observed for ${type}`);
+          const wrapper = await renderCards(type, items.splice(maxRender));
           const liEls = wrapper.querySelectorAll('.cards > ul > li');
           // there might not be any homes
           if (liEls && liEls.length > 0) {
@@ -59,8 +64,11 @@ export default async function renderCards(type, items, maxRender = -1) {
     });
     // give it time to render the cards before observing the last card
     setTimeout(() => {
-      observer.observe(document.querySelector('.model-card:last-of-type'));
-    }, 0);
+      const card = ulEl.querySelector('.model-card:last-of-type');
+      if (card && observer) {
+        observer.observe(card);
+      }
+    }, 100);
   }
 
   return parent;

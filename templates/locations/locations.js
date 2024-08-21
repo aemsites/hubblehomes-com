@@ -3,10 +3,10 @@ import {
   getMetadata,
 } from '../../scripts/aem.js';
 import {
-  getCommunitiesForRegion,
-  getCommunitiesInCity, getCommunitiesForState,
+  getCommunitiesInCity,
+  getCommunitiesByCityForState,
+  getCommunitiesByCityForRegion,
 } from '../../scripts/communities.js';
-import { loadWorkbook } from '../../scripts/workbook.js';
 import renderCards from '../blocks/cards/Card.js';
 
 /**
@@ -27,12 +27,30 @@ function renderTitle(community) {
   return div({ class: 'grey-divider full-width' }, a({ href: url }, community.city));
 }
 
-async function renderCard(mainSection, city) {
-  const communities = await getCommunitiesInCity(city);
+async function renderCityAndCommunityCards(mainSection, communities, forceRender) {
   const filterSectionTitle = renderTitle(communities[0]);
   mainSection.append(filterSectionTitle);
-  const cards = await renderCards('community', communities);
-  filterSectionTitle.insertAdjacentElement('afterend', cards);
+
+  if (!forceRender) {
+    mainSection.append(div({ class: 'card-container' }));
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(async (entry) => {
+        if (entry.isIntersecting) {
+          sectionObserver.disconnect();
+          // console.log(`Intersection observed for community ${filterSectionTitle.textContent}`);
+          const cards = await renderCards('community', communities, 1);
+          filterSectionTitle.nextSibling.remove();
+          filterSectionTitle.insertAdjacentElement('afterend', cards);
+        }
+      });
+    }, {
+      rootMargin: '0px',
+    });
+    sectionObserver.observe(filterSectionTitle);
+  } else {
+    const cards = await renderCards('community', communities, 5);
+    filterSectionTitle.insertAdjacentElement('afterend', cards);
+  }
 }
 
 /**
@@ -42,7 +60,11 @@ async function renderCard(mainSection, city) {
  */
 async function renderCity(mainSection) {
   const city = getMetadata('city');
-  await renderCard(mainSection, city);
+  const communities = await getCommunitiesInCity(city);
+  const filterSectionTitle = renderTitle(communities[0]);
+  mainSection.append(filterSectionTitle);
+  const cards = await renderCards('community', communities, 1);
+  filterSectionTitle.insertAdjacentElement('afterend', cards);
 }
 
 /**
@@ -55,21 +77,18 @@ async function renderStateAndRegion(mainSection) {
   const region = getMetadata('region');
   const state = getMetadata('state');
 
-  const fetchCommunities = region ? getCommunitiesForRegion : getCommunitiesForState;
+  const fetchCommunities = region ? getCommunitiesByCityForRegion : getCommunitiesByCityForState;
   const location = region || state;
 
   // fetch the region or state communities based on the metadata
-  const cities = await fetchCommunities(location);
+  const communities = await fetchCommunities(location);
 
-  await Promise.all(cities.map(async (city) => {
-    await renderCard(mainSection, city);
+  await Promise.all(Object.keys(communities).map(async (cityName, index) => {
+    await renderCityAndCommunityCards(mainSection, communities[cityName], index === 0);
   }));
 }
 
 export default async function decorate(doc) {
-  // load the workbook so that everything is cached
-  await loadWorkbook();
-
   const mainSection = doc.querySelector('main .section');
 
   if (isCity()) {
