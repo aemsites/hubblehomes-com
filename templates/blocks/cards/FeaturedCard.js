@@ -2,6 +2,7 @@ import BaseCard from './BaseCard.js';
 import { a, div, span } from '../../../scripts/dom-helpers.js';
 import { formatPrice } from '../../../scripts/currency-formatter.js';
 import { calculateMonthlyPayment } from '../../../scripts/mortgage.js';
+import { getCommunityForUrl } from '../../../scripts/communities.js';
 
 class FeaturedCard extends BaseCard {
   renderTaglineItems(taglineContainer) {
@@ -23,11 +24,13 @@ class FeaturedCard extends BaseCard {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   async renderMiddleRowOfDetailsContainer_right(gridContainer) {
+    const community = await getCommunityForUrl(window.location.pathname);
     const link = a({
       target: '_blank',
       class: 'btn dark-gray square',
-      href: `https://www.google.com/maps/dir/Current+Location/${this.cardData.salesCenter.latitude},${this.cardData.salesCenter.longitude}`,
+      href: `https://www.google.com/maps/dir/Current+Location/${community.latitude},${community.longitude}`,
     }, 'Directions');
 
     const middleLeft = div(link);
