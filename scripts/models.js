@@ -17,14 +17,15 @@ async function getModels() {
 }
 
 /**
- * Retrieves models that belong to a specific community.
+ * Retrieves models that belong to a specific community sorted by price acsending.
  *
  * @param {string} communityName - The name of the community.
  * @returns {Promise<Array>} The list of models for the specified community.
  */
 async function getModelsByCommunity(communityName) {
   const models = await getModels();
-  return models.filter((model) => model.community === communityName);
+  return models.filter((model) => model.community === communityName)
+    .sort((f1, f2) => f1.price - f2.price);
 }
 
 /**

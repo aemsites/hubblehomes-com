@@ -18,7 +18,6 @@ import {
   getHeaderTitleForFilter,
   getInventoryHomesForCommunity,
 } from '../../scripts/inventory.js';
-import { getSalesCentersForCommunityUrl } from '../../scripts/sales-center.js';
 import { getCommunityForUrl } from '../../scripts/communities.js';
 import { getModelsByCommunity } from '../../scripts/models.js';
 import { loadRates } from '../../scripts/mortgage.js';
@@ -29,19 +28,7 @@ import { loadWorkbook } from '../../scripts/workbook.js';
 import { getPageTitleForUrl } from '../../scripts/pages.js';
 import { safeAppend } from '../../scripts/block-helper.js';
 import renderCards from '../blocks/cards/Card.js';
-
-async function fetchRequiredPageData() {
-  await loadWorkbook();
-  await loadRates();
-
-  const salesCenter = await getSalesCentersForCommunityUrl(window.location);
-  const community = await getCommunityForUrl(window.location.pathname);
-
-  return {
-    salesCenter: salesCenter.sales_center,
-    community,
-  };
-}
+import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
 
 async function createSpecialists(specialists) {
   const agents = [];
@@ -81,9 +68,11 @@ async function createRightAside(doc, salesCenter) {
     address,
     zipcode,
     city,
+    'sales-center-location': location,
     'zip-code-abbr': zipCodeAbbr,
     'sales-center-model': salesCenterModel,
   } = salesCenter;
+
   const mainDiv = div({ class: 'sales-center-info' });
   const heading = h2(formatPhoneNumber(phone));
 
@@ -99,13 +88,13 @@ async function createRightAside(doc, salesCenter) {
     const salesCenterModelInfo = div();
     if (salesCenterModel) {
       salesCenterModelInfo.append(
-        div(span({ class: 'label' }, 'Sales Center: '), span(salesCenter['sales-center-model'])),
+        div(span({ class: 'label' }, 'Sales Center: '), span(salesCenterModel)),
       );
     }
 
     if (models) {
       salesCenterModelInfo.append(
-        div(span({ class: 'label' }, 'Model: '), span(salesCenter.models)),
+        div(span({ class: 'label' }, 'Model: '), span(models)),
       );
     }
     mainDiv.append(salesCenterModelInfo);
@@ -146,8 +135,8 @@ async function createRightAside(doc, salesCenter) {
         'Sales Center Location: ',
         googleLink,
       ),
-      span(community),
-      span(address),
+      span(location),
+      span(salesCenter.address),
       span(`${city}, ${zipCodeAbbr}, ${zipcode}`),
     );
     mainDiv.append(addressEl);
@@ -258,16 +247,17 @@ async function checkIfSoldOut(community, doc) {
 }
 
 export default async function decorate(doc) {
+  await loadWorkbook();
+  await loadRates();
+
   const url = new URL(window.location);
   const params = url.searchParams;
   const filter = params.get('filter');
   const areaName = getMetadata('city', doc);
-  const mainSection = doc.querySelector('main > .section');
 
-  const {
-    salesCenter,
-    community,
-  } = await fetchRequiredPageData();
+  const mainSection = doc.querySelector('main > .section');
+  const community = await getCommunityForUrl(window.location.pathname);
+  const salesCenter = await getSalesCenterForCommunity(community.name);
 
   const isSoldOut = await checkIfSoldOut(community, doc);
   if (isSoldOut) {
@@ -275,11 +265,11 @@ export default async function decorate(doc) {
   }
 
   const filterSectionTitle = div({ class: 'grey-divider full-width' }, getHeaderTitleForFilter(filter));
-  const data = await getInventoryHomesForCommunity(community.name, filter);
+  const data = await getInventoryHomesForCommunity(community.name, filter || 'priceasc');
 
   const modelNameAddr = div({ class: 'page-info' }, h1(community.name), a({
     class: 'directions',
-    href: `https://www.google.com/maps/dir/Current+Location/${salesCenter.latitude},${salesCenter.longitude}`,
+    href: `https://www.google.com/maps/dir/Current+Location/${community.latitude},${community.longitude}`,
     target: '_blank',
   }, h4(`${areaName}, ${community['zip-code-abbr']}`)));
 
@@ -295,13 +285,19 @@ export default async function decorate(doc) {
 
   const plansAnchor = a({ id: 'plans' }, '');
   const inventoryAnchor = a({ id: 'inventory' }, '');
-  const inventoryEl = div({ class: 'section inventory' });
+  const inventory = await renderCards('inventory', data, 5);
+  const inventoryEl = div({ class: 'section inventory' }, inventory);
   const disclaimer = doc.querySelector('.fragment-wrapper');
   const featuredPlansTitle = div({ class: 'grey-divider full-width' }, 'Featured Plans');
 
   const featured = await getModelsByCommunity(community.name);
+  if (featured.length > 0) {
+    featured.sort((f1, f2) => f1.price - f2.price);
+  }
+
   const hasFeaturedModels = featured.length > 0;
-  const featuredModels = div({ class: 'section featured-models' });
+  const featuredCards = await renderCards('featured', featured, 2);
+  const featuredModels = div({ class: 'section featured-models' }, featuredCards);
 
   let specialistsSection;
   let specialistBanner;
@@ -350,18 +346,4 @@ export default async function decorate(doc) {
     specialistsSection,
     div({ class: 'section disclaimer' }, disclaimer),
   );
-
-  const newHomesObserver = new IntersectionObserver(async (entries) => {
-    if (entries[0].isIntersecting) {
-      const inventory = await renderCards('inventory', data);
-      document.querySelector('.inventory').replaceWith(inventory);
-
-      const featuredCards = await renderCards('featured', featured);
-      document.querySelector('.featured-models').replaceWith(featuredCards);
-      newHomesObserver.disconnect();
-    }
-  }, {
-    rootMargin: '0px',
-  });
-  newHomesObserver.observe(document.querySelector('.filter-form'));
 }

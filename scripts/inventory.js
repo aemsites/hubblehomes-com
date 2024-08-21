@@ -58,15 +58,15 @@ const filters = [
   },
   {
     category: 'priceAcsDesc',
-    value: 'pricesasc',
+    value: 'priceasc',
     label: 'Price - Low to High',
-    rule: (models) => models.sort((a, b) => parseInt(a.pricing, 10) - parseInt(b.pricing, 10)),
+    rule: (models) => models.sort((a, b) => parseInt(a.price, 10) - parseInt(b.price, 10)),
   },
   {
     category: 'priceAcsDesc',
     value: 'pricedesc',
     label: 'Price - High to Low',
-    rule: (models) => models.sort((a, b) => parseInt(b.pricing, 10) - parseInt(a.pricing, 10)),
+    rule: (models) => models.sort((a, b) => parseInt(b.price, 10) - parseInt(a.price, 10)),
   },
   {
     category: 'sqftAcsDesc',
