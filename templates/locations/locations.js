@@ -90,9 +90,6 @@ async function renderStateAndRegion(mainSection) {
 }
 
 export default async function decorate(doc) {
-  // load the workbook so that everything is cached
-  await loadWorkbook();
-
   const mainSection = doc.querySelector('main .section');
 
   if (isCity()) {
