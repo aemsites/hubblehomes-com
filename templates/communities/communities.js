@@ -14,7 +14,6 @@ import {
   select, span, strong,
 } from '../../scripts/dom-helpers.js';
 import {
-  filters,
   getHeaderTitleForFilter,
   getInventoryHomesForCommunity,
 } from '../../scripts/inventory.js';
@@ -29,6 +28,7 @@ import { getPageTitleForUrl } from '../../scripts/pages.js';
 import { safeAppend } from '../../scripts/block-helper.js';
 import renderCards from '../blocks/cards/Card.js';
 import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
+import { filters } from '../../scripts/inventory-filters.js';
 
 async function createSpecialists(specialists) {
   const agents = [];
