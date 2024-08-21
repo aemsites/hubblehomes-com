@@ -12,6 +12,7 @@ import {
   loadCSS,
   getMetadata, loadBreadcrumbs,
 } from './aem.js';
+import setupDataLayer from './gtm-data-layer.js';
 
 const LCP_BLOCKS = ['carousel']; // add your LCP blocks to the list
 
@@ -195,6 +196,8 @@ async function loadLazy(doc) {
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
+
+  setupDataLayer();
 
   await loadTopBanner(doc);
   loadHeader(doc.querySelector('header'));
