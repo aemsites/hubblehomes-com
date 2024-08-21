@@ -54,60 +54,42 @@ async function createSpecialists(specialists) {
   return deferred.promise;
 }
 
-async function createRightAside(doc, salesCenter) {
-  // The third column of the description box
-  const {
-    hours,
-    phone,
-    specialists,
-    latitude,
-    longitude,
-    models,
-    note,
-    community,
-    address,
-    zipcode,
-    city,
-    'sales-center-location': location,
-    'zip-code-abbr': zipCodeAbbr,
-    'sales-center-model': salesCenterModel,
-  } = salesCenter;
-
+async function createRightAside(doc, community, salesCenter) {
   const mainDiv = div({ class: 'sales-center-info' });
-  const heading = h2(formatPhoneNumber(phone));
+  const heading = h2(formatPhoneNumber(community.phone));
 
   mainDiv.append(heading);
 
-  if (hours) {
-    const hoursEl = div({ class: 'hours' }, ...hours.split('\n')
+  if (salesCenter.hours) {
+    const hoursEl = div({ class: 'hours' }, ...salesCenter.hours.split('\n')
       .map((hour) => span(hour, br())));
     mainDiv.append(div({ class: 'sales-office-hours' }, strong('Regular Hours'), hoursEl));
   }
 
-  if (salesCenterModel || models) {
+  if (salesCenter['sales-center-model'] || salesCenter.models) {
     const salesCenterModelInfo = div();
-    if (salesCenterModel) {
+    if (salesCenter['sales-center-model']) {
       salesCenterModelInfo.append(
-        div(span({ class: 'label' }, 'Sales Center: '), span(salesCenterModel)),
+        div(span({ class: 'label' }, 'Sales Center: '), span(salesCenter['sales-center-model'])),
       );
     }
 
-    if (models) {
+    if (salesCenter.models) {
       salesCenterModelInfo.append(
-        div(span({ class: 'label' }, 'Model: '), span(models)),
+        div(span({ class: 'label' }, 'Model: '), span(salesCenter.models)),
       );
     }
     mainDiv.append(salesCenterModelInfo);
   }
 
-  if (note) {
-    mainDiv.append(p({ class: 'note' }, note));
+  if (salesCenter.note) {
+    mainDiv.append(p({ class: 'note' }, salesCenter.note));
   }
 
-  if (specialists && specialists.length > 0) {
+  if (salesCenter.specialists && salesCenter.specialists.length > 0) {
     const emailIcon = await loadSVG('/icons/email.svg');
     const phoneIcon = await loadSVG('/icons/phone.svg');
-    const sEl = specialists.map((specialist) => {
+    const sEl = salesCenter.specialists.map((specialist) => {
       const emailEl = emailIcon.cloneNode(true);
       const phoneEl = phoneIcon.cloneNode(true);
       return dd(
@@ -118,13 +100,12 @@ async function createRightAside(doc, salesCenter) {
     });
     mainDiv.append(dl({ class: 'sales-center-data' }, dt({ class: 'label' }, 'New Home Specialists: '), ...sEl));
   }
-
-  if (address && community && city && zipCodeAbbr && zipcode) {
+  if (salesCenter.address && community && salesCenter.city && salesCenter['zip-code-abbr'] && salesCenter.zipcode) {
     const directionsIcon = await loadSVG('/icons/directions.svg');
     let googleLink;
-    if (longitude && latitude) {
+    if (salesCenter.longitude && salesCenter.latitude) {
       googleLink = a({
-        href: `https://www.google.com/maps/dir/Current+Location/${latitude},${longitude}`,
+        href: `https://www.google.com/maps/dir/Current+Location/${salesCenter.latitude},${salesCenter.longitude}`,
         target: '_blank',
       }, directionsIcon);
     }
@@ -135,9 +116,9 @@ async function createRightAside(doc, salesCenter) {
         'Sales Center Location: ',
         googleLink,
       ),
-      span(location),
+      span(salesCenter['sales-center-location']),
       span(salesCenter.address),
-      span(`${city}, ${zipCodeAbbr}, ${zipcode}`),
+      span(`${salesCenter.city}, ${salesCenter['zip-code-abbr']}, ${salesCenter.zipcode}`),
     );
     mainDiv.append(addressEl);
   }
@@ -280,7 +261,7 @@ export default async function decorate(doc) {
 
   const overview = doc.querySelector('.overview-wrapper');
   const tabsWrapper = doc.querySelector('.tabs-wrapper');
-  const rightAside = await createRightAside(doc, salesCenter);
+  const rightAside = await createRightAside(doc, community, salesCenter);
   const modelFilter = buildFilterForm(filter);
 
   const plansAnchor = a({ id: 'plans' }, '');
