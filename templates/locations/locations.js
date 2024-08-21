@@ -7,7 +7,6 @@ import {
   getCommunitiesByCityForState,
   getCommunitiesByCityForRegion,
 } from '../../scripts/communities.js';
-import { loadWorkbook } from '../../scripts/workbook.js';
 import renderCards from '../blocks/cards/Card.js';
 
 /**
