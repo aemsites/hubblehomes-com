@@ -22,8 +22,8 @@ function createBannerText(block) {
 
   let spotlightButton;
   if (hrefValue) {
-    spotlightButton = button({
-      class: 'spotlight-button banner-blue',
+    spotlightButton = a({
+      class: ' btn light-blue banner-blue',
       onclick: () => { window.location.href = hrefValue; },
     }, 'Learn More');
   }
