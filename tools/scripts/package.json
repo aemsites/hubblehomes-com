@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "communites": "node communities.js",
     "models": "node models.js",
     "homeplans": "node home-plans.js"
   },

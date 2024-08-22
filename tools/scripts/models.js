@@ -1,6 +1,7 @@
 // Import necessary modules
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
+const { findValue } = require('./card-helper.js');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
 let useDelay = true;
@@ -61,24 +62,17 @@ async function fetchAndParseHTML(community, url) {
     const model = $('.col-sm-6 h2').first().text().replace('The', '')
       .trim();
 
-    function findValue(term) {
-      const dtElement = $('dt').filter(function () {
-        return $(this).text().trim() === term;
-      });
-      return dtElement.next('dd').text().trim().replace('  ', ' ');
-    }
-
     // Find values for "Primary Bed" and "Full Bed on First"
-    const price = findValue('From');
-    const sqFt = findValue('Square Feet');
-    const beds = findValue('Beds');
-    const baths = findValue('Baths');
-    const cars = findValue('Cars');
-    const dens = findValue('Den/Study');
-    const primaryBed = findValue('Primary Bed');
-    const fullBedOnFirst = findValue('Full Bed on First');
-    const fullBathOnMain = findValue('Full Bath Main');
-    const homeStyle = findValue('Home Style');
+    const price = findValue($, 'From');
+    const sqFt = findValue($, 'Square Feet');
+    const beds = findValue($, 'Beds');
+    const baths = findValue($, 'Baths');
+    const cars = findValue($, 'Cars');
+    const dens = findValue($, 'Den/Study');
+    const primaryBed = findValue($, 'Primary Bed');
+    const fullBedOnFirst = findValue($, 'Full Bed on First');
+    const fullBathOnMain = findValue($, 'Full Bath Main');
+    const homeStyle = findValue($, 'Home Style');
 
     return {
       path: url,
