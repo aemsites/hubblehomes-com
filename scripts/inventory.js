@@ -106,11 +106,14 @@ function filterHomes(inventory, filterStr, community) {
     return community ? inventory.get(community) : flatten(inventory);
   }
 
+  const homes = community ? inventory.get(community) || [] : flatten(inventory);
   const searchFilters = filterStr.split(',');
+
+  // run any filtering rules against the homes
   return searchFilters.reduce((acc, curr) => {
     const filter = filters.find((f) => f.value === curr);
     return filter ? filter.rule(acc) : acc;
-  }, community ? inventory.get(community) : flatten(inventory));
+  }, homes);
 }
 
 /**
