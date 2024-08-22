@@ -248,11 +248,13 @@ export default async function decorate(doc) {
   const filterSectionTitle = div({ class: 'grey-divider full-width' }, getHeaderTitleForFilter(filter));
   const data = await getInventoryHomesForCommunity(community.name, filter || 'priceasc');
 
+  const directionsIcon = await loadSVG('/icons/directions.svg', 'directions-icon');
+
   const modelNameAddr = div({ class: 'page-info' }, h1(community.name), a({
     class: 'directions',
     href: `https://www.google.com/maps/dir/Current+Location/${community.latitude},${community.longitude}`,
     target: '_blank',
-  }, h4(`${areaName}, ${community['zip-code-abbr']}`)));
+  }, div({ class: 'directions-container' }, h4(`${areaName}, ${community['zip-code-abbr']}`), directionsIcon)));
 
   const requestButtons = div({ class: 'request-btns' }, a({
     class: 'btn yellow fancy',
