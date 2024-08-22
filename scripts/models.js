@@ -24,8 +24,14 @@ async function getModels() {
  */
 async function getModelsByCommunity(communityName) {
   const models = await getModels();
-  return models.filter((model) => model.community === communityName)
+  const community = await getCommunityDetailsByName(communityName);
+  const sortedModels = models.filter((model) => model.community === communityName)
     .sort((f1, f2) => f1.price - f2.price);
+
+  return sortedModels.map((model) => {
+    model.community = community;
+    return model;
+  });
 }
 
 /**
