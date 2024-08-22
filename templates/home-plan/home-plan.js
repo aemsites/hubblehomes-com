@@ -36,6 +36,7 @@ async function buildAccordion(model) {
 
   await Promise.all(communityName.map(async (community) => {
     const models = await renderCards('inventory', homesByCommunity[community]);
+    models.classList.remove('section');
     content.push([`View All ${model} Quick-Delivery Homes in ${community}`, models]);
   }));
 
