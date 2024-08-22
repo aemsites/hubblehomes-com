@@ -6,12 +6,19 @@ import renderCards from '../blocks/cards/Card.js';
 export default async function decorate(doc) {
   await loadRates();
   const homePlans = await getHomePlansSheet('data');
+  if (homePlans) {
+    homePlans.sort((a, b) => a.price - b.price);
+  }
 
   const fragment = doc.querySelector('.fragment-wrapper');
   fragment.classList.add('disclaimer');
 
   const singleFamilyPlans = homePlans.filter((plan) => plan.type === 'Single Family');
   const townHomePlans = homePlans.filter((plan) => plan.type === 'Townhome');
+
+  if (townHomePlans) {
+    townHomePlans.sort((a, b) => a.price - b.price);
+  }
 
   const singleCards = await renderCards('home-plans', singleFamilyPlans, 5);
   const cards = div({ class: 'section featured' }, h3('Single Family Homes'), singleCards);
