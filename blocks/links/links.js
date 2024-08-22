@@ -5,6 +5,7 @@ export default function decorate(block) {
   block.innerHTML = '';
   const linksDiv = div('Links:');
   links.forEach((link) => {
+    link.classList.remove('btn', 'fancy');
     link.setAttribute('target', '_blank');
     linksDiv.appendChild(link);
   });
