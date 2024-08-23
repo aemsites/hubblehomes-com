@@ -106,6 +106,7 @@ function getSlideText(col) {
   const frag = document.createDocumentFragment();
   const topText = col.querySelector('h2');
   const bottomText = col.querySelector('h3');
+  const centerText = col.querySelector('h4');
 
   // decorate CTA
   col.querySelectorAll('a').forEach((cta) => cta.classList.add('button'));
@@ -126,6 +127,13 @@ function getSlideText(col) {
     currentNode = currentNode.nextElementSibling;
   }
 
+  const centerNodes = [];
+  currentNode = centerText ? centerText.nextElementSibling : null;
+  while (currentNode) {
+    centerNodes.push(currentNode);
+    currentNode = currentNode.nextElementSibling;
+  }
+
   if (topText) {
     const $top = div({ class: 'content top' });
     if (topText.textContent.trim()) {
@@ -133,6 +141,15 @@ function getSlideText(col) {
     }
     topNodes.forEach((node) => $top.append(node));
     frag.append($top);
+  }
+
+  if (centerText) {
+    const $center = div({ class: 'content center' });
+    if (centerText.textContent.trim()) {
+      $center.append(p(centerText));
+    }
+    centerNodes.forEach((node) => $center.append(node));
+    frag.append($center);
   }
 
   if (bottomText) {

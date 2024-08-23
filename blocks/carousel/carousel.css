@@ -89,6 +89,13 @@
 .carousel .content.top { top: 20px }
 .carousel .content.bottom { bottom: 20px }
 
+.carousel .content.center {
+  top: 50%;
+  transform: translate(-50%, -50%);
+  h4 { font-size: var(--heading-font-size-xxl) };
+  p { font-size: var(--heading-font-size-l) };
+}
+
 .carousel .content strong {
   font-size: 40px;
   line-height: 1em;
@@ -132,7 +139,7 @@
 }
 
 .carousel .content .button::after {
-  display: inline-block;  
+  display: inline-block;
   font-family: glyphicons;
   font-style: normal;
   padding-left: 6px;
@@ -246,7 +253,8 @@
     font-size: 18px;
   }
 
-  .carousel .content.bottom {
+  .carousel .content.bottom,
+  .carousel .content.center {
     bottom: auto;
     background: var(--light-blue);
 
