@@ -5,4 +5,8 @@
     height: 58px;
     justify-content: center;
   }
+
+  .card-container {
+    min-height: 350px;
+  }
 }

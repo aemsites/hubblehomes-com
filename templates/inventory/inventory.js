@@ -24,6 +24,7 @@ import { loadWorkbook } from '../../scripts/workbook.js';
 import {
   buildBlock, decorateBlock, loadBlock,
 } from '../../scripts/aem.js';
+import renderCards from '../blocks/cards/Card.js';
 
 async function fetchRequiredPageData() {
   await loadWorkbook();
@@ -39,19 +40,6 @@ async function fetchRequiredPageData() {
   };
 }
 
-async function buildInventoryCards(inventoryHomes, community) {
-  window.hh.current.models = window.hh.current.models || {};
-  window.hh.current.models[community] = inventoryHomes;
-  window.hh.current.sale_center = window.hh.current.sale_center || {};
-  window.hh.current.sale_center[community] = await getSalesCenterForCommunity(community);
-  const modelsBlock = buildBlock('cards', [['community', community]]);
-  modelsBlock.classList.add('inventory');
-  const blockWrapper = div(modelsBlock);
-  decorateBlock(modelsBlock);
-  await loadBlock(modelsBlock, true);
-  return blockWrapper;
-}
-
 async function buildAccordion(model) {
   const homesByCommunity = await getInventoryHomeModelByCommunities(model);
   const content = [];
@@ -59,7 +47,8 @@ async function buildAccordion(model) {
   const communityName = Object.keys(homesByCommunity);
 
   await Promise.all(communityName.map(async (community) => {
-    const models = await buildInventoryCards(homesByCommunity[community], community);
+    const models = await renderCards('inventory', homesByCommunity[community]);
+    models.classList.remove('section');
     content.push([`View All ${model} Quick-Delivery Homes in ${community}`, models]);
   }));
 
@@ -130,7 +119,15 @@ export default async function decorate(doc) {
 
   const buttons = div(
     { class: 'button-container' },
-    button({ class: 'fancy yellow' }, 'Request Information'),
+    button(
+      {
+        class: 'fancy yellow',
+        onclick: () => {
+          window.location.href = '/contact-us';
+        },
+      },
+      'Request Information',
+    ),
   );
 
   const twoCols = div(

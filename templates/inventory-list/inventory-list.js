@@ -1,41 +1,19 @@
-import { getInventorySheet } from '../../scripts/workbook.js';
-import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
-import { div, button } from '../../scripts/dom-helpers.js';
+import { getAllInventoryHomes } from '../../scripts/inventory.js';
+import renderCards from '../blocks/cards/Card.js';
+import { loadWorkbook } from '../../scripts/workbook.js';
 import { loadRates } from '../../scripts/mortgage.js';
-
-let startIndex = 0;
-let endIndex;
-const limit = 8;
-
-async function displayCards(inventoryHomes, fragment) {
-  endIndex = startIndex + limit;
-  window.hh.current.inventory = inventoryHomes.slice(startIndex, endIndex);
-  const modelsBlock = buildBlock('cards', []);
-  modelsBlock.classList.add('inventory');
-  const blockWrapper = div(modelsBlock);
-  decorateBlock(modelsBlock);
-  await loadBlock(modelsBlock, true);
-  const cards = div({ class: 'section featured' }, blockWrapper);
-  fragment.insertAdjacentElement('beforebegin', cards);
-}
+import { SearchFilters } from '../../scripts/inventory-filters.js';
 
 export default async function decorate(doc) {
+  await loadWorkbook();
   await loadRates();
+
+  const inventoryHomes = await getAllInventoryHomes(SearchFilters.UNDER_CONSTRUCTION);
+
+  const blockWrapper = await renderCards('inventory', inventoryHomes, 5);
+
   const fragment = doc.querySelector('.fragment-wrapper');
   fragment.classList.add('disclaimer');
-  const inventoryHomes = await getInventorySheet('data');
-  const filteredInventory = inventoryHomes.filter((home) => home.status === 'Under Construction');
-  const inventorySize = filteredInventory.length;
-  const loadMoreBtn = button({ class: 'load-more-btn' }, 'See More');
-  const loadMore = div({ class: 'load-more' }, loadMoreBtn);
-  await displayCards(filteredInventory, fragment);
-  loadMoreBtn.addEventListener(('click'), async () => {
-    startIndex = endIndex;
-    endIndex += limit;
-    await displayCards(filteredInventory, loadMore);
-    if (inventorySize <= endIndex) {
-      loadMore.classList.add('hidden');
-    }
-  });
-  fragment.insertAdjacentElement('beforebegin', loadMore);
+
+  fragment.insertAdjacentElement('beforebegin', blockWrapper);
 }

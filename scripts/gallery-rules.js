@@ -37,3 +37,7 @@ export default function rebuildImageStyles(pictures) {
     picture.classList.add(style);
   });
 }
+
+export function galleryReset() {
+  previousRange = -1;
+}
