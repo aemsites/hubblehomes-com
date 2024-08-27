@@ -99,7 +99,7 @@
 
   header {
     height: var(--header-height);
-    width: 100vw;
+    width: 100%;
   }
 
   helix-sidekick[pushdown] ~ header { top: 49px }
@@ -355,6 +355,12 @@ main > .section > *:not(.carousel-wrapper) {
 main section but the first child, and the footer should be removed */
 body.gallery-active {
   overflow: hidden;
+
+  main {
+    height: calc(100dvh - var(--header-height));
+    overflow-y: auto;
+  }
+
 
   main > *:not(:first-child),
   footer {

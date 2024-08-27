@@ -9,9 +9,11 @@ class BaseCard {
   constructor(data, community) {
     this.cardData = data;
     this.community = community;
+    this.eager = false;
   }
 
-  async render() {
+  async render(eager = false) {
+    this.eager = eager;
     const header = this.renderHeaderArea();
     const imageBox = await this.renderModelImage();
     const topActionsBar = this.renderTopActionBar();
@@ -221,9 +223,7 @@ class BaseCard {
    */
   // eslint-disable-next-line class-methods-use-this
   renderMiddleRowOfDetailsContainer_left(gridContainer) {
-    const { phone } = window.hh.current.sale_center[this.community]
-      ? window.hh.current.sale_center[this.community]
-      : window.hh.current.sale_center;
+    const { phone } = this.cardData.salesCenter;
     const link = a({ class: 'btn yellow square', href: `tel:${phone}` }, formatPhoneNumber(phone));
     gridContainer.appendChild(link);
   }
@@ -263,7 +263,7 @@ class BaseCard {
     }
 
     const imageUrl = new URL(url);
-    return createOptimizedPicture(imageUrl.pathname, title, false, [
+    return createOptimizedPicture(imageUrl.pathname, title, this.eager, [
       { media: '(max-width: 767px)', width: '767' },
       { media: '(max-width: 991px)', width: '400' }]);
   }

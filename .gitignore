@@ -9,4 +9,3 @@ helix-importer-ui
 *.bak
 .idea
 .github/xml-feed/node_modules
-

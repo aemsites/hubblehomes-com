@@ -1,4 +1,8 @@
 .home-plan {
+  h1 {
+    text-align: left !important;
+  }
+
   .accordion {
     details .accordion-item-body {
       padding: 0 5px;

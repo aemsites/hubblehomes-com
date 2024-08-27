@@ -126,13 +126,23 @@ const getDefaultEmbed = (url) => `
 // Generates YouTube embed code
 const embedYouTube = (url, autoplay) => {
   const params = new URLSearchParams(url.search);
-  const videoId = url.pathname.includes('youtu.be') ? url.pathname.split('/')[1] : params.get('v');
+  let videoId;
+
+  // if we are given a youtu.be short link, we need to extract the video id from the
+  // if we are given a youtube embed link, we need to extract the video id from the pathname
+  if (url.host.includes('youtu.be')) {
+    videoId = url.host.includes('youtu.be') ? url.pathname.split('/')[1] : params.get('v');
+  } else if (url.pathname.includes('/embed/')) {
+    // eslint-disable-next-line prefer-destructuring
+    videoId = url.pathname.match(/\/embed\/([^/?]+)/)[1];
+  }
+
   const autoplayParams = autoplay ? '&muted=1&autoplay=1' : '';
   return `
-    <div style="position: relative; padding-bottom: 56.25%; width: 100%; height: 0;">
+    <div style="position: relative; padding-bottom: 56.25%; padding-top: 30px; width: 100%; height: 0;">
       <iframe src="https://www.youtube.com/embed/${videoId}?rel=0${autoplayParams}" 
         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
-        allow="autoplay; fullscreen" allowfullscreen 
+        allow="autoplay; fullscreen"  
         title="Content from YouTube" loading="lazy">
       </iframe>
     </div>`;
@@ -209,7 +219,9 @@ const loadEmbed = (block, embedSrc, autoplay) => {
 
   if (config) {
     if (config.match.includes('hubspot')) {
-      const uniqueId = `hubspot-form-${Math.random().toString(36).substr(2, 9)}`;
+      const uniqueId = `hubspot-form-${Math.random()
+        .toString(36)
+        .substr(2, 9)}`;
       config.decorate(block, uniqueId);
       config.embed(embedSrc, uniqueId);
     } else {
@@ -232,7 +244,7 @@ export default async function decorate(block) {
   let embedSrc;
 
   if (block.classList.contains('hubspot')) {
-    const secondParagraph = block.querySelector('div div:nth-child(2) p');
+    const secondParagraph = block.querySelector('div:nth-child(2)');
     embedSrc = secondParagraph ? secondParagraph.textContent : '';
   } else {
     const linkElement = block.querySelector('a');
@@ -246,7 +258,12 @@ export default async function decorate(block) {
       { media: '(max-width: 480px)', width: '400' },
       { media: '(min-width: 480px)', width: '720' },
     ];
-    const optimizedPicture = createOptimizedPicture(placeholder.querySelector('img').src, placeholder.alt, placeholder.title, imgSizes);
+    const optimizedPicture = createOptimizedPicture(
+      placeholder.querySelector('img').src,
+      placeholder.alt,
+      placeholder.title,
+      imgSizes,
+    );
     const wrapper = document.createElement('div');
     wrapper.className = 'embed-placeholder';
     wrapper.innerHTML = '<div class="embed-placeholder-play"><button type="button" title="Play"></button></div>';

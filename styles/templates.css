@@ -73,6 +73,10 @@
       }
     }
 
+    .no-results {
+      text-align: center;
+    }
+
     .full-width {
       max-width: 100%;
     }
