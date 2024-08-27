@@ -10,9 +10,9 @@ export default async function decorate(doc) {
   leftSection.style.display = 'block';
   rightSection.style.display = 'block';
   const divPromotion = div({ class: 'section' }, div({ class: 'promotion-section' }, leftSection, rightSection));
-  const bottomsection = div({ class: 'bottom-section' });
-  const returnButton = a({ class: 'return-button', href: 'https://main--hubblehomes-com--aemsites.hlx.page/promotions' }, 'Return To Promotions');
-  bottomsection.append(returnButton);
+  const bottomSection = div({ class: 'bottom-section' });
+  const returnButton = a({ class: 'return-button', href: 'https://www.hubblehomes.com/promotions' }, 'Return To Promotions');
+  bottomSection.append(returnButton);
   $page.append(divPromotion);
-  $page.append(bottomsection);
+  $page.append(bottomSection);
 }

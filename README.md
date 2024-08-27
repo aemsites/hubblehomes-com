@@ -2,8 +2,8 @@
 Your project's description...
 
 ## Environments
-- Preview: https://main--hubblehomes-com--aemsites.hlx.page/
-- Live: https://main--hubblehomes-com--aemsites.hlx.live/
+- Preview: https://main--hubblehomes-com--aemsites.aem.page/
+- Live: https://main--hubblehomes-com--aemsites.aem.live/
 
 ## Installation
 
