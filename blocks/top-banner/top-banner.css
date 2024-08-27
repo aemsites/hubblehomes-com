@@ -30,6 +30,7 @@
 
 .top-banner-content {
   text-align: center;
+  color: var(--light-color);
 }
 
 .top-banner-link {
