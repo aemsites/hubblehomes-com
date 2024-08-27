@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: */model-reviews
+
+Sitemap: https://hubblehomes.com/sitemap.xml
