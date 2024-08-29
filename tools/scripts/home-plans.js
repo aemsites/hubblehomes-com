@@ -4,7 +4,30 @@ const cheerio = require('cheerio');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const fs = require('fs');
 
-const FILE_NAME = 'home-plans.csv';
+// load the models.csv file
+function loadModels() {
+  // if the file doesn't exist, throw an error
+  if (!fs.existsSync('models.csv')) {
+    throw new Error('models.csv file does not exist!');
+  }
+
+  const models = fs.readFileSync('models.csv', 'utf8').split('\n');
+  return models.map((model) => model.split(';'));
+}
+
+const allModels = loadModels().reduce((acc, model, currentIndex) => {
+  if (currentIndex === 0) return acc;
+
+  if (model.length > 1) {
+    const name = model[2].toLowerCase().replace(' ', '-');
+    if (!acc.includes(name)) {
+      acc.push(name);
+    }
+  }
+  return acc;
+}, []);
+
+const FILE_NAME = `home-plans-${Date.now()}.csv`;
 
 fs.unlink(FILE_NAME, () => {});
 const useDelay = true;
@@ -49,6 +72,18 @@ const modelToImage = [
   { name: 'iris', url: 'https://main--hubblehomes-com--aemsites.hlx.live/images/models/card/iris.jpg' },
 ];
 
+// verify that we have all the images for the models
+allModels.forEach((modelName) => {
+  const found = modelToImage.find((item) => item.name === modelName);
+  if (!found) {
+    console.error(`Missing a mapping image for ${modelName}!`);
+  }
+});
+
+if (modelToImage.length !== allModels.length) {
+  console.error('The models to model image mapping is not complete! There are missing models!');
+}
+
 const homePlans = { };
 function getWriter() {
   return createCsvWriter({
@@ -90,7 +125,7 @@ async function appendToCsv(newRecords) {
 }
 
 async function getHomePlanDetails(plan) {
-  await delay(Math.floor(Math.random() * (10 - 5 + 1)) + 5);
+  console.log(`Fetching details for ${plan.path}`);
 
   const response = await fetch(`https://www.hubblehomes.com${plan.path}`);
 
@@ -110,7 +145,15 @@ async function getHomePlanDetails(plan) {
   }
 
   const formId = $('form[id^="CompareForm"]').attr('id');
-  const planNumber = formId.split('_')[2];
+
+  let planNumber;
+  try {
+    planNumber = formId.split('_')[2];
+    console.log(`plan number ${planNumber}`);
+  } catch (e) {
+    console.log(`failed for ${plan.path}`);
+    process.exit(1);
+  }
 
   // Find values for "Primary Bed" and "Full Bed on First"
   const sqFt = findValue('Square Feet');
@@ -181,7 +224,10 @@ async function walkHomePlans(url) {
   }
 
   const sortedHomePlans = Object.values(homePlans).sort(sortPlansByName);
-  const results = await Promise.all(sortedHomePlans.map((plan) => getHomePlanDetails(plan)));
+  const results = await Promise.all(sortedHomePlans.map(async (plan) => {
+    await delay(Math.floor((Math.random() * (20)) + 5) * 1000);
+    return getHomePlanDetails(plan);
+  }));
 
   await appendToCsv(results);
 }

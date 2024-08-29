@@ -1,17 +1,16 @@
 // Import necessary modules
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
+const { findValue } = require('./card-helper.js');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-const fs = require('fs');
 
-fs.unlink('models.csv', () => {});
 let useDelay = true;
 
 const writer = getWriter();
 function getWriter() {
   return createCsvWriter({
     fieldDelimiter: ';',
-    path: 'models.csv',
+    path: `models-${Date.now()}.csv`,
     header: [
       { id: 'path', title: 'path' },
       { id: 'community', title: 'community' },
@@ -63,24 +62,17 @@ async function fetchAndParseHTML(community, url) {
     const model = $('.col-sm-6 h2').first().text().replace('The', '')
       .trim();
 
-    function findValue(term) {
-      const dtElement = $('dt').filter(function () {
-        return $(this).text().trim() === term;
-      });
-      return dtElement.next('dd').text().trim().replace('  ', ' ');
-    }
-
     // Find values for "Primary Bed" and "Full Bed on First"
-    const price = findValue('From');
-    const sqFt = findValue('Square Feet');
-    const beds = findValue('Beds');
-    const baths = findValue('Baths');
-    const cars = findValue('Cars');
-    const dens = findValue('Den/Study');
-    const primaryBed = findValue('Primary Bed');
-    const fullBedOnFirst = findValue('Full Bed on First');
-    const fullBathOnMain = findValue('Full Bath Main');
-    const homeStyle = findValue('Home Style');
+    const price = findValue($, 'From');
+    const sqFt = findValue($, 'Square Feet');
+    const beds = findValue($, 'Beds');
+    const baths = findValue($, 'Baths');
+    const cars = findValue($, 'Cars');
+    const dens = findValue($, 'Den/Study');
+    const primaryBed = findValue($, 'Primary Bed');
+    const fullBedOnFirst = findValue($, 'Full Bed on First');
+    const fullBathOnMain = findValue($, 'Full Bath Main');
+    const homeStyle = findValue($, 'Home Style');
 
     return {
       path: url,
@@ -103,6 +95,8 @@ async function fetchAndParseHTML(community, url) {
 }
 
 async function gatherUrls(url) {
+  console.log(`Fetching ${url}`);
+
   const response = await fetch(url);
   if (!response.ok) {
     console.error(`Failed to fetch page ${url}:`, response.statusText);
@@ -118,7 +112,7 @@ async function gatherUrls(url) {
   const lastModelsElement = modelsElements.last();
 
   if (lastModelsElement.length === 0) {
-    console.error('No models found');
+    console.error(`No models found for ${url}`);
     return;
   }
 
