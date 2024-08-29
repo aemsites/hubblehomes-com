@@ -72,7 +72,7 @@ const getThumbnailImage = (url) => {
 
   // Synchronous XMLHttpRequest to fetch the mapping file
   const xhr = new XMLHttpRequest();
-  xhr.open('GET', 'https://main--hubblehomes-com--aemsites.hlx.live/data/news-thumbails.json', false);
+  xhr.open('GET', 'https://main--hubblehomes-com--aemsites.aem.live/data/news-thumbails.json', false);
   xhr.send(null);
 
   if (xhr.status === 200) {

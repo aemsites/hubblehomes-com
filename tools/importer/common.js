@@ -1,7 +1,7 @@
 /* eslint-disable no-undef,max-len,no-param-reassign  */
 
 const createDisclaimerFragment = (document, main) => {
-  const cells = [['Fragment (disclaimer)'], ['https://main--hubblehomes-com--aemsites.hlx.live/fragments/disclaimer']];
+  const cells = [['Fragment (disclaimer)'], ['https://main--hubblehomes-com--aemsites.aem.page/fragments/disclaimer']];
   const table = WebImporter.DOMUtils.createTable(cells, document);
   main.append(table);
 };
@@ -337,7 +337,7 @@ function sanitizeHref(href) {
 }
 
 const convertRelativeLinks = (main) => {
-  const prefix = 'https://main--hubblehomes-com--aemsites.hlx.page/assets';
+  const prefix = 'https://main--hubblehomes-com--aemsites.aem.page/assets';
   main.querySelectorAll('a').forEach((a) => {
     const href = a.getAttribute('href');
     if (href && !href.startsWith('http') && /(\.jpg|\.jpeg|\.png|\.gif|\.bmp|\.webp|\.mp4|\.avi|\.mov|\.mkv|\.mp3|\.wav|\.pdf)$/i.test(href)) {
