@@ -1,5 +1,6 @@
 import { getHomePlansSheet, getModelsSheet } from './workbook.js';
 import { getCommunityDetailsByName } from './communities.js';
+import { getSalesCenterForCommunity } from './sales-center.js';
 
 /**
  * Fetches the models data.
@@ -8,18 +9,29 @@ import { getCommunityDetailsByName } from './communities.js';
  * @throws {Error} If the fetch request fails.
  */
 async function getModels() {
-  return getModelsSheet('data');
+  const models = await getModelsSheet('data');
+  return Promise.all(models.map(async (model) => {
+    model.salesCenter = await getSalesCenterForCommunity(model.community);
+    return model;
+  }));
 }
 
 /**
- * Retrieves models that belong to a specific community.
+ * Retrieves models that belong to a specific community sorted by price acsending.
  *
  * @param {string} communityName - The name of the community.
  * @returns {Promise<Array>} The list of models for the specified community.
  */
 async function getModelsByCommunity(communityName) {
   const models = await getModels();
-  return models.filter((model) => model.community === communityName);
+  const community = await getCommunityDetailsByName(communityName);
+  const sortedModels = models.filter((model) => model.community === communityName)
+    .sort((f1, f2) => f1.price - f2.price);
+
+  return sortedModels.map((model) => {
+    model.community = community;
+    return model;
+  });
 }
 
 /**

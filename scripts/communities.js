@@ -1,4 +1,5 @@
 import { getCommunitiesSheet, getModelsSheet } from './workbook.js';
+import { getSalesCenterForCommunity } from './sales-center.js';
 
 /**
  * Given a URL, attempts to locate the associated community.
@@ -8,7 +9,11 @@ import { getCommunitiesSheet, getModelsSheet } from './workbook.js';
  */
 async function getCommunityForUrl(url) {
   const communities = await getCommunitiesSheet('data');
-  return communities.find((community) => url.startsWith(community.path));
+  const community = communities.find((c) => url.startsWith(c.path));
+  if (community) {
+    community.salesCenter = await getSalesCenterForCommunity(community.name);
+  }
+  return community;
 }
 
 /**
@@ -19,7 +24,11 @@ async function getCommunityForUrl(url) {
  */
 async function getCommunityDetailsByName(communityName) {
   const communities = await getCommunitiesSheet('data');
-  return communities.find((community) => community.name === communityName);
+  const community = communities.find((c) => c.name === communityName);
+  if (community) {
+    community.salesCenter = await getSalesCenterForCommunity(community.name);
+  }
+  return community;
 }
 
 /**
@@ -45,53 +54,71 @@ async function getCitiesInCommunities() {
  */
 async function getCommunitiesInCity(city) {
   const communities = await getCommunitiesSheet('data');
-  return communities
+  const all = communities
     .filter((community) => community.city.toLowerCase() === city.toLowerCase())
     .filter((community) => community.price !== 'Sold Out');
+
+  return Promise.all(all.map(async (community) => {
+    community.salesCenter = await getSalesCenterForCommunity(community.name);
+    return community;
+  }));
 }
 
 /**
- * Return a list of cities located in an area.  For example, the area of Boise Metro
- * contains the city of Boise, Meridian, and Nampa. Therefore, the area of Boise Metro
- * would be passed in as the area parameter. The cities of Boise, Meridian, and Nampa would
- * be returned as a result.
- *
- * @param region - The area to search for.
- * @returns {Promise<*>} The list of cities in the area.
+ * Return all communities in a city for a given state.  Filter out sold out communities.
+ * @param state
+ * @returns {Promise<void>}
  */
-async function getCommunitiesForRegion(region) {
+async function getCommunitiesByCityForState(state) {
   const communities = await getCommunitiesSheet('data');
-  return communities
-    .filter((community) => community.region.toLowerCase() === region.toLowerCase())
-    .filter((community) => community.price !== 'Sold Out')
-    .reduce((acc, community) => {
-      if (!acc.includes(community.city)) {
-        acc.push(community.city);
-      }
-      return acc;
-    }, []);
-}
-
-/**
- * Return the list of communities that are located in a state.
- * For example, the community Mason Creek is located in the area of Boise Metro, in the state of
- * Idaho. Therefore, the state of Idaho would be passed in as the state parameter.
- * The city of Boise would be returned as a result.
- *
- * @param state - The state to search for.
- * @returns {Promise<*>} The list of cities in the state.
- */
-async function getCommunitiesForState(state) {
-  const communities = await getCommunitiesSheet('data');
-  return communities
+  const all = communities
     .filter((community) => community.state.toLowerCase() === state.toLowerCase())
     .filter((community) => community.price !== 'Sold Out')
     .reduce((acc, community) => {
-      if (!acc.includes(community.city)) {
-        acc.push(community.city);
+      if (!acc.includes(community.name)) {
+        acc.push(community);
       }
       return acc;
     }, []);
+
+  const result = await Promise.all(all.map(async (community) => {
+    community.salesCenter = await getSalesCenterForCommunity(community.name);
+    return community;
+  }));
+
+  return result.reduce((acc, community) => {
+    if (!acc[community.city]) {
+      acc[community.city] = [];
+    }
+    acc[community.city].push(community);
+    return acc;
+  }, {});
+}
+
+async function getCommunitiesByCityForRegion(region) {
+  const communities = await getCommunitiesSheet('data');
+  const all = communities
+    .filter((community) => community.region.toLowerCase() === region.toLowerCase())
+    .filter((community) => community.price !== 'Sold Out')
+    .reduce((acc, community) => {
+      if (!acc.includes(community.name)) {
+        acc.push(community);
+      }
+      return acc;
+    }, []);
+
+  const result = await Promise.all(all.map(async (community) => {
+    community.salesCenter = await getSalesCenterForCommunity(community.name);
+    return community;
+  }));
+
+  return result.reduce((acc, community) => {
+    if (!acc[community.city]) {
+      acc[community.city] = [];
+    }
+    acc[community.city].push(community);
+    return acc;
+  }, {});
 }
 
 /**
@@ -155,6 +182,6 @@ export {
   getCityForCommunity,
   getCommunityMinMaxDetails,
   getCommunitiesInCity,
-  getCommunitiesForRegion,
-  getCommunitiesForState,
+  getCommunitiesByCityForState,
+  getCommunitiesByCityForRegion,
 };

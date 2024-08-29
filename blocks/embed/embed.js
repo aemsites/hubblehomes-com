@@ -244,7 +244,7 @@ export default async function decorate(block) {
   let embedSrc;
 
   if (block.classList.contains('hubspot')) {
-    const secondParagraph = block.querySelector('div div:nth-child(2) p');
+    const secondParagraph = block.querySelector('div:nth-child(2)');
     embedSrc = secondParagraph ? secondParagraph.textContent : '';
   } else {
     const linkElement = block.querySelector('a');
