@@ -5,7 +5,7 @@ export default function decorate(block) {
   const config = readBlockConfig(block);
   const variant = config.variant || '';
 
-  const contentText = block.textContent.trim();
+  const contentText = block.querySelector('div').textContent.trim();
 
   // no content or banner was dismissed don't show it
   if (sessionStorage.getItem('topBannerDismissed') || contentText === '') {
