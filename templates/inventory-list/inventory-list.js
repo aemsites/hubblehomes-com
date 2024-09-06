@@ -8,9 +8,9 @@ let endIndex;
 const limit = 8;
 
 async function displayCards(inventoryHomes, fragment) {
-  //endIndex = startIndex + limit;
-  //window.hh.current.inventory = inventoryHomes.slice(startIndex, endIndex);
-  window.hh.current.inventory = inventoryHomes
+  endIndex = startIndex + limit;
+  window.hh.current.inventory = inventoryHomes.slice(startIndex, endIndex);
+  //window.hh.current.inventory = inventoryHomes
   const modelsBlock = buildBlock('cards', []);
   modelsBlock.classList.add('inventory');
   const blockWrapper = div(modelsBlock);
@@ -30,7 +30,7 @@ export default async function decorate(doc) {
   const loadMoreBtn = button({ class: 'load-more-btn' }, 'See More');
   const loadMore = div({ class: 'load-more' }, loadMoreBtn);
   await displayCards(filteredInventory, fragment);
- /* loadMoreBtn.addEventListener(('click'), async () => {
+ loadMoreBtn.addEventListener(('click'), async () => {
     startIndex = endIndex;
     endIndex += limit;
     await displayCards(filteredInventory, loadMore);
@@ -38,5 +38,5 @@ export default async function decorate(doc) {
       loadMore.classList.add('hidden');
     }
   });
-  fragment.insertAdjacentElement('beforebegin', loadMore);*/
+  fragment.insertAdjacentElement('beforebegin', loadMore);
 }
