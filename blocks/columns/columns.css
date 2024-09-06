@@ -1,7 +1,6 @@
 .columns > div {
   display: flex;
-  flex-direction: column;
-  text-align: center;
+  flex-direction: column;  
 }
 
 .columns img {
