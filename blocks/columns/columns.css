@@ -1,6 +1,7 @@
 .columns > div {
   display: flex;
   flex-direction: column;
+  text-align: center;
 }
 
 .columns img {
@@ -24,7 +25,10 @@
     align-items: flex-start;
     flex-direction: unset;
     gap: 32px;
-    padding-bottom: 10px;
+    padding-bottom: 10px;    
+    h2 {
+      line-height: 100px;
+    }
   }
 
   .columns > div > div {
