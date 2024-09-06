@@ -25,4 +25,6 @@
     white-space: pre;    
 }
 
-  
+.description.center {
+    text-align: center;
+}

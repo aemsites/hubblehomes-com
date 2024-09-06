@@ -1,6 +1,6 @@
 .columns > div {
   display: flex;
-  flex-direction: column;
+  flex-direction: column;  
 }
 
 .columns img {
@@ -9,6 +9,7 @@
 
 .columns > div > div {
   order: 1;
+  padding-bottom: 10px;
 }
 
 .columns > div > .columns-img-col {
@@ -24,6 +25,11 @@
     align-items: flex-start;
     flex-direction: unset;
     gap: 32px;
+    padding-bottom: 10px;
+    
+    h2 {
+      line-height: 100px;
+    }
   }
 
   .columns > div > div {
