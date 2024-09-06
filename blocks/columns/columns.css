@@ -10,6 +10,7 @@
 
 .columns > div > div {
   order: 1;
+  padding-bottom: 10px;
 }
 
 .columns > div > .columns-img-col {
