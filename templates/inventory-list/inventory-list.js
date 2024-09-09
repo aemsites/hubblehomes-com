@@ -17,8 +17,7 @@ async function displayCards(inventoryHomes, fragment) {
   decorateBlock(modelsBlock);
   await loadBlock(modelsBlock, true);
   const cards = div({ class: 'section featured' }, blockWrapper);
-  fragment.insertAdjacentElement('beforebegin', cards); 
-   
+  fragment.insertAdjacentElement('beforebegin', cards);   
 }
 
 export default async function decorate(doc) {
@@ -32,7 +31,7 @@ export default async function decorate(doc) {
   await displayCards(inventoryHomes, fragment);
   observer = new IntersectionObserver((entries) => {    
     entries.forEach(async (entry) => {
-      if (entry.isIntersecting) {            
+      if (entry.isIntersecting && inventorySize >= endIndex) {            
         startIndex = endIndex;
         displayCards(inventoryHomes, fragment);        
       }
@@ -40,4 +39,3 @@ export default async function decorate(doc) {
   });  
   observer.observe(fragment); 
 }
-
