@@ -35,6 +35,7 @@ export default async function decorate(doc) {
         startIndex = endIndex;
         displayCards(inventoryHomes, fragment);
       }
+      if (endIndex >= inventorySize) observer.disconnect();
     });
   });
   observer.observe(fragment);
