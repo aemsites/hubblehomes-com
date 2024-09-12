@@ -28,7 +28,7 @@ export default async function decorate(doc) {
   const inventoryHomes = await getInventorySheet('data');
   const filteredInventory = inventoryHomes.filter((home) => home.status === 'Under Construction');
   const inventorySize = filteredInventory.length;
-  //await (inventoryHomes, fragment);
+  await (inventoryHomes, fragment);
   observer = new IntersectionObserver((entries) => {
     entries.forEach(async (entry) => {
       if (entry.isIntersecting && inventorySize >= endIndex) {
