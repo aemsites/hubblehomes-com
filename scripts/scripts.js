@@ -13,7 +13,7 @@ import {
   getMetadata, loadBreadcrumbs,
 } from './aem.js';
 
-const LCP_BLOCKS = []; // add your LCP blocks to the list
+const LCP_BLOCKS = ['carousel']; // add your LCP blocks to the list
 
 /**
  * Any session storage that needs to managed before loading the page
