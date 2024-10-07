@@ -176,7 +176,7 @@ function createSlide(row, i) {
           { media: '(min-width: 1024px)', width: '1920' },
         ];
         col.innerHTML = '';
-        col.append(createOptimizedPicture(img.src, img.alt || `slide ${index}`, true, imgSizes));
+        col.append(createOptimizedPicture(img.src, img.alt || `slide ${index}`, false, imgSizes));
         // prevent the image from being dragged so that it doesn't interfere with the carousel
         col.addEventListener('dragstart', (e) => e.preventDefault());
         $slideWrapper.append(col);
