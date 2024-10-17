@@ -16,20 +16,16 @@ import {
   getInventoryHomeByPath,
   getInventoryHomeModelByCommunities,
 } from '../../scripts/inventory.js';
-import { loadRates, calculateMonthlyPayment } from '../../scripts/mortgage.js';
+import { calculateMonthlyPayment } from '../../scripts/mortgage.js';
 import { formatPrice } from '../../scripts/currency-formatter.js';
 import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import { getSalesCenterForCommunity } from '../../scripts/sales-center.js';
-import { loadWorkbook } from '../../scripts/workbook.js';
 import {
   buildBlock, decorateBlock, loadBlock,
 } from '../../scripts/aem.js';
 import renderCards from '../blocks/cards/Card.js';
 
 async function fetchRequiredPageData() {
-  await loadWorkbook();
-  await loadRates();
-
   const homeDetails = await getInventoryHomeByPath(window.location.pathname);
   const salesCenter = await getSalesCenterForCommunity(homeDetails.community);
   const phone = salesCenter ? salesCenter.phone : '';

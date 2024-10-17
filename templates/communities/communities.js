@@ -23,7 +23,6 @@ import { loadRates } from '../../scripts/mortgage.js';
 import DeferredPromise from '../../scripts/deferred.js';
 import formatPhoneNumber from '../../scripts/phone-formatter.js';
 import loadSVG from '../../scripts/svg-helper.js';
-import { loadWorkbook } from '../../scripts/workbook.js';
 import { getPageTitleForUrl } from '../../scripts/pages.js';
 import { safeAppend } from '../../scripts/block-helper.js';
 import renderCards from '../blocks/cards/Card.js';
@@ -228,7 +227,6 @@ async function checkIfSoldOut(community, doc) {
 }
 
 export default async function decorate(doc) {
-  await loadWorkbook();
   await loadRates();
 
   const url = new URL(window.location);

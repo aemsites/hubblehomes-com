@@ -34,8 +34,10 @@ async function getSheet(sheetNames) {
 
   const cachedSheets = sheets.filter((sheetName) => window.hh[sheetName]);
   if (cachedSheets.length === sheets.length) {
+    // console.log(`Returning cached ${sheetNames} data.`);
     return Object.fromEntries(cachedSheets.map((sheetName) => [sheetName, window.hh[sheetName]]));
   }
+  // console.log(`Fetching ${sheetNames} sheet not from cache.`);
 
   const data = await fetchWorkbook(sheets.length === Object.keys(Sheets).length ? 'all' : sheets);
 

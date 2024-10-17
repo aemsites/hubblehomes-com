@@ -5,18 +5,14 @@ import {
   h1, br,
 } from '../../scripts/dom-helpers.js';
 import { createTemplateBlock, safeAppend } from '../../scripts/block-helper.js';
-import { loadWorkbook } from '../../scripts/workbook.js';
 import {
   getInventoryHomeModelByCommunities,
 } from '../../scripts/inventory.js';
 import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
-import { loadRates } from '../../scripts/mortgage.js';
 import { getModelByPath } from '../../scripts/models.js';
 import renderCards from '../blocks/cards/Card.js';
 
 async function fetchRequiredPageData() {
-  await loadWorkbook();
-  await loadRates();
   return getModelByPath(window.location.pathname);
 }
 

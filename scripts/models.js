@@ -10,6 +10,7 @@ import { getSalesCenterForCommunity } from './sales-center.js';
  */
 async function getModels() {
   const models = await getModelsSheet('data');
+
   return Promise.all(models.map(async (model) => {
     // first time calling getModels the community is a string it's loaded from the spread sheet
     // then we need to convert it to an object for future lookup.

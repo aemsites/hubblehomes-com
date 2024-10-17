@@ -13,6 +13,8 @@ import {
   getMetadata, loadBreadcrumbs,
 } from './aem.js';
 import setupDataLayer from './gtm-data-layer.js';
+import { loadWorkbook } from './workbook.js';
+import { loadRates } from './mortgage.js';
 
 const LCP_BLOCKS = ['carousel']; // add your LCP blocks to the list
 
@@ -281,6 +283,11 @@ if (sk) {
 async function loadPage() {
   manageSessionStorage();
   setupGlobalVars();
+
+  // prime the cache
+  await loadWorkbook();
+  await loadRates();
+
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();

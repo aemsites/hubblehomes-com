@@ -6,7 +6,6 @@ import {
   getStaffSheet,
   getModelsSheet,
   getInventorySheet,
-  loadWorkbook,
   getHomePlansSheet, getCitySheet,
 } from '../../scripts/workbook.js';
 import {
@@ -154,8 +153,6 @@ async function setupAutocomplete() {
 }
 
 export default async function decorate(block) {
-  await loadWorkbook();
-
   block.innerHTML = '';
 
   const $logo = a(

@@ -5,7 +5,6 @@ import {
   h1, br,
 } from '../../scripts/dom-helpers.js';
 import { createTemplateBlock, safeAppend } from '../../scripts/block-helper.js';
-import { loadWorkbook } from '../../scripts/workbook.js';
 import { getHomePlanByPath } from '../../scripts/home-plans.js';
 import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
 import { loadRates } from '../../scripts/mortgage.js';
@@ -13,7 +12,6 @@ import { getInventoryHomeModelByCommunities } from '../../scripts/inventory.js';
 import renderCards from '../blocks/cards/Card.js';
 
 async function fetchRequiredPageData() {
-  await loadWorkbook();
   await loadRates();
   return getHomePlanByPath(window.location.pathname);
 }
