@@ -1,4 +1,4 @@
-import { getCommunitiesSheet, getModelsSheet } from './workbook.js';
+import { getCommunitiesSheet } from './workbook.js';
 import { getSalesCenterForCommunity } from './sales-center.js';
 
 /**
@@ -131,56 +131,11 @@ async function getCityForCommunity(communityName) {
   return community.city;
 }
 
-async function getCommunityMinMaxDetails(communityName) {
-  const models = await getModelsSheet('data');
-
-  const communityModels = models.filter((model) => model.community === communityName);
-
-  if (communityModels.length === 0) {
-    return {
-      'square feet': { min: 0, max: 0 },
-      beds: { min: 0, max: 0 },
-      baths: { min: 0, max: 0 },
-      cars: { min: 0, max: 0 },
-    };
-  }
-
-  const minMax = {
-    'square feet': { min: Infinity, max: -1 },
-    beds: { min: Infinity, max: -1 },
-    baths: { min: Infinity, max: -1 },
-    cars: { min: Infinity, max: -1 },
-  };
-
-  function getValueForField(field, model) {
-    const fieldValues = model[field].split('-');
-    if (fieldValues.length === 2) {
-      const min = parseFloat(fieldValues[0].trim().replace(',', ''));
-      const max = parseFloat(fieldValues[1].trim().replace(',', ''));
-      minMax[field].min = Math.min(minMax[field].min, min);
-      minMax[field].max = Math.max(minMax[field].max, max);
-    } else {
-      minMax[field].min = Math.min(minMax[field].min, model[field].trim().replace(',', ''));
-      minMax[field].max = Math.max(minMax[field].max, model[field].trim().replace(',', ''));
-    }
-  }
-
-  communityModels.forEach((model) => {
-    getValueForField('square feet', model);
-    getValueForField('beds', model);
-    getValueForField('baths', model);
-    getValueForField('cars', model);
-  });
-
-  return minMax;
-}
-
 export {
   getCommunityForUrl,
   getCommunityDetailsByName,
   getCitiesInCommunities,
   getCityForCommunity,
-  getCommunityMinMaxDetails,
   getCommunitiesInCity,
   getCommunitiesByCityForState,
   getCommunitiesByCityForRegion,

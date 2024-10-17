@@ -11,27 +11,28 @@ import { getSalesCenterForCommunity } from './sales-center.js';
 async function getModels() {
   const models = await getModelsSheet('data');
   return Promise.all(models.map(async (model) => {
-    model.salesCenter = await getSalesCenterForCommunity(model.community);
+    // first time calling getModels the community is a string it's loaded from the spread sheet
+    // then we need to convert it to an object for future lookup.
+    if (typeof model.community === 'string') {
+      model.community = await getCommunityDetailsByName(model.community);
+    }
+    // using the name of the community locate the sales center
+    model.salesCenter = await getSalesCenterForCommunity(model.community.name);
+    // return the updated model
     return model;
   }));
 }
 
 /**
- * Retrieves models that belong to a specific community sorted by price acsending.
- *
+ * Retrieves models that belong to a specific community sorted by price ascending.
  * @param {string} communityName - The name of the community.
  * @returns {Promise<Array>} The list of models for the specified community.
  */
 async function getModelsByCommunity(communityName) {
   const models = await getModels();
-  const community = await getCommunityDetailsByName(communityName);
-  const sortedModels = models.filter((model) => model.community === communityName)
+  return models
+    .filter((model) => model.community.name === communityName)
     .sort((f1, f2) => f1.price - f2.price);
-
-  return sortedModels.map((model) => {
-    model.community = community;
-    return model;
-  });
 }
 
 /**

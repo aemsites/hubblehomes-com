@@ -2,12 +2,12 @@ import BaseCard from './BaseCard.js';
 import {
   a, div, h3,
 } from '../../../scripts/dom-helpers.js';
-import { getCommunityMinMaxDetails } from '../../../scripts/communities.js';
 import formatPhoneNumber from '../../../scripts/phone-formatter.js';
 import { getModelsByCommunity } from '../../../scripts/models.js';
 import {
   getInventoryHomesForCommunity,
 } from '../../../scripts/inventory.js';
+import { getCommunityMinMaxDetails } from '../../../scripts/community-utils.js';
 
 class CommunityCard extends BaseCard {
   renderTitle() {
