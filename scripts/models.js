@@ -11,7 +11,8 @@ import { getSalesCenterForCommunity } from './sales-center.js';
 async function getModels() {
   const models = await getModelsSheet('data');
   return Promise.all(models.map(async (model) => {
-    model.salesCenter = await getSalesCenterForCommunity(model.community);
+    if (typeof model.community === 'string') model.salesCenter = await getSalesCenterForCommunity(model.community);
+    else model.salesCenter = await getSalesCenterForCommunity(model.community.name);
     return model;
   }));
 }
