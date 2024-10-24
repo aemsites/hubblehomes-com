@@ -9,7 +9,7 @@ class InventoryCard extends BaseCard {
   renderAddress() {
     const addressTitle = h4({ class: 'model-address' }, this.cardData.address);
     const addressHref = a(addressTitle);
-    addressHref.href = this.cardData.url;
+    addressHref.href = this.cardData.path;
     return addressHref;
   }
 
