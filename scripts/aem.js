@@ -754,40 +754,37 @@ init();
 
 const currentPath = window.location.pathname;
 if (currentPath === '/contact-us') {
-  // Your code here
-  console.log('You are on the contact-us page!');
-  const savedContent = localStorage.getItem('headerContent');
-  if (savedContent) {
-      console.log('savedContent', savedContent);
+  let savedContent = localStorage.getItem('headerContent');
+
+  // Quick adjustment for misspellings in the form. Easier to change this then to recreate the form
+  if (savedContent === 'Sera Sole') {
+    savedContent = 'Sera Sol';
+  } else if (savedContent === 'Franklin Village North') {
+    savedContent = 'Frankling Village North';
   }
 
+  // Interval created to check when HubSpot form have loaded
   const checkForm = setInterval(() => {
-    const formInput = document.querySelector('.hubspot-form'); // Change the selector as needed
+    const formInput = document.querySelector('.hubspot-form');
     if (formInput) {
-
-      clearInterval(checkForm); // Stop checking once the form is found
-      // Your logic here
-      const pageValue = savedContent; // Value to check against
+      clearInterval(checkForm);
+      const pageValue = savedContent;
+      // Interval created to check when HubSpot form input have loaded
       const checkInput = setInterval(() => {
-          // Get all checkbox inputs in the form
-          const checkboxes = document.querySelectorAll('.hubspot-form input[type="checkbox"]');
+        const checkboxes = document.querySelectorAll('.hubspot-form input[type="checkbox"]');
 
-          if (checkboxes.length > 0) {
-            // console.log('checkboses', checkboxes);
-            checkboxes.forEach(checkbox => {
-              // Check if the checkbox is unchecked and its value matches pageValue
-              if (!checkbox.checked && checkbox.value === pageValue) {
-                checkbox.checked = true; // Check the checkbox if conditions are met
-              } else {
-                console.log('this is workingt i think');
-              }
-            });
+        if (checkboxes.length > 0) {
+          checkboxes.forEach((checkbox) => {
+            // Check if the checkbox is unchecked and its value matches pageValue
+            if (!checkbox.checked && checkbox.value === pageValue) {
+              checkbox.checked = true; // Check the checkbox if conditions are met
+            }
+          });
           clearInterval(checkInput);
         }
-      }, 500)
-
+      }, 500);
     }
-  }, 100); // Check every 100 milliseconds
+  }, 100);
 }
 
 export {

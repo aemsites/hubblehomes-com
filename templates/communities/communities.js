@@ -250,7 +250,7 @@ export default async function decorate(doc) {
 
   const directionsIcon = await loadSVG('/icons/directions.svg', 'directions-icon');
 
-  const modelNameAddr = div({ class: 'page-info' }, h1({id: 'community-name'}, community.name), a({
+  const modelNameAddr = div({ class: 'page-info' }, h1({ id: 'community-name' }, community.name), a({
     class: 'directions',
     href: `https://www.google.com/maps/dir/Current+Location/${community.latitude},${community.longitude}`,
     target: '_blank',
@@ -261,7 +261,6 @@ export default async function decorate(doc) {
     class: 'btn yellow fancy',
     href: '/contact-us',
   }, 'Request Information'));
-
 
   const overview = doc.querySelector('.overview-wrapper');
   const tabsWrapper = doc.querySelector('.tabs-wrapper');
@@ -332,13 +331,8 @@ export default async function decorate(doc) {
     div({ class: 'section disclaimer' }, disclaimer),
   );
 
-
-  document.getElementById('request-info').addEventListener('click', function() {
-    console.log('clicked');
+  document.getElementById('request-info').addEventListener('click', () => {
     const headerContent = document.getElementById('community-name').innerText;
     localStorage.setItem('headerContent', headerContent);
-});
-
+  });
 }
-
-console.log('testing');
