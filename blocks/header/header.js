@@ -201,8 +201,8 @@ export default async function decorate(block) {
   const $headerLeft = div(
     { id: 'header-left' },
     $logo,
-    $search
-  )
+    $search,
+  );
 
   const $bgrBtn = div({ class: 'bgr-btn' }, span(), span(), span());
   $bgrBtn.addEventListener('click', () => {

@@ -21,6 +21,7 @@ header nav {
   bottom: 35px;
   top: 50%;
   left: 50%;
+  
   /* transform: translate(-50%, -50%); */
   user-select: none;
   flex: 1;
@@ -112,6 +113,7 @@ header nav>div>ul>li>ul>li:not(:has(> ul)) > a /* headings w/out children */ {
   position: relative;
   margin: auto;
   z-index: 9;
+
   /* max-width: var(--max-content-width); */
   max-width: 1900px;
   font-family: var(--body-font-family);
@@ -179,7 +181,7 @@ body.has-top-banner .bgr-btn {
 
 #search input[type='text'] {
   /* left: 472px; */
-  left: 0px;
+  left: 0;
   border-left: 0 solid;
   border-radius: 0 4px 4px 0;
   width: 300px;
@@ -214,6 +216,7 @@ input[type='text']::placeholder {
   left: 210px;
   background-color: #e9e9e9;
   width: 566px;
+
   /* box-shadow: 0 4px 6px rgb(0 0 0 / 10%); /* Add a shadow for better visibility */
   border-radius: 6px;
 }
@@ -284,6 +287,12 @@ input[type='text']::placeholder {
 }
 
 @media (width <= 1170px) {
+  .header
+  {
+    padding: 10px 0;
+    width: 90%;
+  }
+
   #search
   {
     display: none;
@@ -295,6 +304,7 @@ input[type='text']::placeholder {
 
   .bgr-btn {
     display: block;
+    right: 0;
   }
 
   header nav {
