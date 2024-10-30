@@ -21,7 +21,7 @@ header nav {
   bottom: 35px;
   top: 50%;
   left: 50%;
-  
+
   /* transform: translate(-50%, -50%); */
   user-select: none;
   flex: 1;
@@ -289,8 +289,8 @@ input[type='text']::placeholder {
 @media (width <= 1170px) {
   .header
   {
-    padding: 10px 0;
-    width: 90%;
+    padding: 10px 20px;
+    width: 100%;
   }
 
   #search
@@ -304,7 +304,8 @@ input[type='text']::placeholder {
 
   .bgr-btn {
     display: block;
-    right: 0;
+    right: 20px;
+    bottom: 25px;
   }
 
   header nav {
@@ -321,6 +322,7 @@ input[type='text']::placeholder {
     overflow: hidden;
     background: #fff;
     transition: height 300ms ease-in-out;
+    top: 90px;
   }
 
   .mobile-nav-open {
@@ -362,7 +364,7 @@ input[type='text']::placeholder {
   }
 
   header nav > div > ul > li:nth-child(2) > ul {
-    min-height: 420px;
+    min-height: 150px;
   }
 }
 
