@@ -331,8 +331,6 @@ export default async function decorate(doc) {
     div({ class: 'section disclaimer' }, disclaimer),
   );
 
-  document.getElementById('request-info').addEventListener('click', () => {
-    const headerContent = document.getElementById('community-name').innerText;
-    localStorage.setItem('headerContent', headerContent);
-  });
+  const headerContent = document.getElementById('community-name').innerText;
+  localStorage.setItem('headerContent', headerContent);
 }
