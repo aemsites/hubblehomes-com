@@ -157,21 +157,6 @@ export default async function decorate(block) {
   await loadWorkbook();
 
   block.innerHTML = '';
-
-  const $logo = a(
-    {
-      id: 'logo',
-      href: '/',
-      'aria-label': 'Visit Home Page',
-    },
-    img({
-      src: '/icons/hubble-homes-logo.svg',
-      width: '110',
-      height: '56',
-      alt: 'Hubble Homes, LLC',
-    }),
-  );
-
   const $search = div(
     { id: 'search' },
     label(
@@ -198,6 +183,27 @@ export default async function decorate(block) {
     }),
     div({ id: 'autocomplete-list', class: 'autocomplete-items' }),
   );
+
+  const $logo = a(
+    {
+      id: 'logo',
+      href: '/',
+      'aria-label': 'Visit Home Page',
+    },
+    img({
+      src: '/icons/hubble-homes-logo.svg',
+      width: '110',
+      height: '56',
+      alt: 'Hubble Homes, LLC',
+    }),
+  );
+
+  const $headerLeft = div(
+    { id: 'header-left' },
+    $logo,
+    $search,
+  );
+
   const $bgrBtn = div({ class: 'bgr-btn' }, span(), span(), span());
   $bgrBtn.addEventListener('click', () => {
     const navTransitionTime = 600;
@@ -214,5 +220,5 @@ export default async function decorate(block) {
   buildNav();
   setupAutocomplete();
 
-  block.append($logo, $search, $bgrBtn);
+  block.append($headerLeft, $bgrBtn);
 }
