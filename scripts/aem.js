@@ -752,6 +752,41 @@ async function waitForLCP(lcpBlocks) {
 
 init();
 
+const currentPath = window.location.pathname;
+if (currentPath === '/contact-us') {
+  let savedContent = localStorage.getItem('headerContent');
+
+  // Quick adjustment for misspellings in the form. Easier to change this then to recreate the form
+  if (savedContent === 'Sera Sole') {
+    savedContent = 'Sera Sol';
+  } else if (savedContent === 'Franklin Village North') {
+    savedContent = 'Frankling Village North';
+  }
+
+  // Interval created to check when HubSpot form have loaded
+  const checkForm = setInterval(() => {
+    const formInput = document.querySelector('.hubspot-form');
+    if (formInput) {
+      clearInterval(checkForm);
+      const pageValue = savedContent;
+      // Interval created to check when HubSpot form input have loaded
+      const checkInput = setInterval(() => {
+        const checkboxes = document.querySelectorAll('.hubspot-form input[type="checkbox"]');
+
+        if (checkboxes.length > 0) {
+          checkboxes.forEach((checkbox) => {
+            // Check if the checkbox is unchecked and its value matches pageValue
+            if (!checkbox.checked && checkbox.value === pageValue) {
+              checkbox.checked = true; // Check the checkbox if conditions are met
+            }
+          });
+          clearInterval(checkInput);
+        }
+      }, 500);
+    }
+  }, 100);
+}
+
 export {
   buildBlock,
   createOptimizedPicture,

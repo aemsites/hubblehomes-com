@@ -59,7 +59,7 @@ export default async function decorate(doc) {
   if (matterport) {
     matterport.classList.add('section');
   }
-  const descriptionWrapper = doc.querySelector('.description-wrapper');
+  const descriptionWrapper = doc.querySelector('.description-wrappers');
   const elevations = doc.querySelector('.elevations-wrapper');
   if (elevations) {
     elevations.classList.add('section');
