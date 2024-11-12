@@ -10,3 +10,10 @@
       'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
 })(window, document, 'script', 'dataLayer', 'GTM-MXVF5HB');
 /*  -- End Google Tag Manager --  */
+
+  // Add Google site verification meta tag
+
+  var meta = document.createElement('meta');
+  meta.name = 'google-site-verification';
+  meta.content = 'L_xWut4dxejekn-saqrxD4-rZO_mrHLd5cA0Er4rDYg';
+  document.getElementsByTagName('head')[0].appendChild(meta);
