@@ -11,4 +11,8 @@
 })(window, document, 'script', 'dataLayer', 'GTM-MXVF5HB');
 /*  -- End Google Tag Manager --  */
 
-<meta name="google-site-verification" content="L_xWut4dxejekn-saqrxD4-rZO_mrHLd5cA0Er4rDYg" />
+  // Add Google site verification meta tag
+  var meta = d.createElement('meta');
+  meta.name = 'google-site-verification';
+  meta.content = 'L_xWut4dxejekn-saqrxD4-rZO_mrHLd5cA0Er4rDYg';
+  d.getElementsByTagName('head')[0].appendChild(meta);
